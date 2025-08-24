@@ -1,5 +1,6 @@
 import consultation from "@/assets/consultation.png";
 import consumables from "@/assets/consumables.png";
+import industrial from "@/assets/industrial.png";
 import machinery from "@/assets/machinery2.png";
 import maintenance from "@/assets/maintenance.png";
 import rawmaterials from "@/assets/raw-materials2.png";
@@ -101,12 +102,12 @@ export const serviceCategories = [
     isServiceCard: true,
   },
   {
-    title: "Sell Old Items",
-    slug: "sell-old-items",
-    subtitle: "Asset Liquidation & Value Recovery",
+    title: "Buy & Sell Machinery",
+    slug: "buy-sell-machinery",
+    subtitle: "Asset Equipment & Value Recovery",
     description:
-      "Unlock the value of your underutilized machinery, surplus spare parts, and excess raw materials. Our expert consultancy provides tailored strategies for efficient asset valuation, responsible disposal, and remarketing, transforming idle inventory into capital and optimizing your operational footprint. We guide you through process audits and compliance, ensuring cost-effective and sustainable solutions",
-    image: "/services.png",
+      "Buy and sell industrial machinery through our trusted marketplace. Whether you're looking to upgrade your equipment or liquidate surplus assets, we provide comprehensive valuation, marketing, and transaction support to maximize your return on investment.",
+    image: machinery,
     isServiceCard: true,
   },
   {
@@ -114,26 +115,17 @@ export const serviceCategories = [
     slug: "investment-and-takeover",
     subtitle: "Investment & Acquisition Solutions",
     description:
-      "List your factory for equity investment or outright sale. We connect asset owners with vetted buyers and investors, delivering tailored deals—from partial stake placements to full acquisitions—with data-driven valuations and seamless transaction support.",
-    image: "/services.png",
+      "Connect with vetted investors and buyers for equity investment or complete acquisitions. We facilitate seamless transactions with data-driven valuations, from partial stake placements to full business takeovers, ensuring optimal deals for all parties involved.",
+    image: industrial,
     isServiceCard: true,
   },
   {
-    title: "Manpower Hiring",
-    slug: "manpower-hiring",
-    subtitle: "Skilled Equipment Specialists",
+    title: "Job Finder",
+    slug: "job-finder",
+    subtitle: "Asset Liquidation & Value Recovery",
     description:
-      "Find skilled workers and technicians for your industrial operations. We provide certified machine operators, technicians, maintenance workers, and supervisors with expertise in CNC, assembly lines, and heavy equipment. Our skilled, safety-trained manpower helps optimize your production with minimal downtime.",
-    image: "/services.png",
-    isServiceCard: true,
-  },
-  {
-    title: "Job Seeker",
-    slug: "job-seeker",
-    subtitle: "Career Opportunities",
-    description:
-      "Submit your profile to find exciting opportunities in the industrial sector. Whether you're a skilled machine operator, technician, or maintenance worker, we connect job seekers with leading industrial companies looking for talent.",
-    image: "/services.png",
+      "Find your next opportunity in the industrial sector. Whether you're a skilled machine operator, technician, or maintenance worker, we connect job seekers with leading industrial companies looking for talent. Submit your profile and discover exciting career possibilities.",
+    image: consultation,
     isServiceCard: true,
   },
 ];

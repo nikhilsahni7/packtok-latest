@@ -1,7 +1,5 @@
-import Image from "next/image";
-import newsletterLeft from "@/assets/newsletter-left.png";
-import newsletterRight from "@/assets/newsletter-right.png";
 import { Button } from "@packtok/ui/components/button";
+import Image from "next/image";
 
 export default function Newsletter() {
   return (
@@ -33,24 +31,26 @@ export default function Newsletter() {
       </div>
 
       {/* Left image absolute */}
-      <div className="absolute left-0 top-1/2 transform -translate-x-1/4 -translate-y-1/2 overflow-visible hidden xl:block">
+      <div className="absolute left-0 top-1/2 transform -translate-x-1/6 -translate-y-1/2 overflow-visible hidden xl:block">
         <Image
-          src={newsletterLeft}
+          src="/news-right.png"
           alt="Newsletter Left Image"
           className="object-contain"
-          width={500}
-          height={500}
+          width={350}
+          height={280}
+          priority
         />
       </div>
 
       {/* Right image absolute */}
-      <div className="absolute right-0 top-1/2 transform translate-x-1/4 -translate-y-1/2 overflow-visible hidden xl:block">
+      <div className="absolute right-0 top-1/2 transform translate-x-1/6 -translate-y-1/2 overflow-visible hidden xl:block">
         <Image
-          src={newsletterRight}
+          src="/news-left.png"
           alt="Newsletter Right Image"
           className="object-contain"
-          width={450}
-          height={450}
+          width={350}
+          height={350}
+          priority
         />
       </div>
     </div>

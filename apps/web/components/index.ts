@@ -1,30 +1,32 @@
-import Navbar from "./navbar/navbar";
 import Hero from "./landing/hero/hero";
+import Navbar from "./navbar/navbar";
 
-import SplitSection from "./split-section/split-section";
-import Newsletter from "./landing/newsletter/newsletter";
-import Footer from "./footer/footer";
-import PageHeader from "./page/page-header";
+import Features from "@/components/landing/features/features";
+import IndustrialPromo from "@/components/landing/industrial-promo/industrial-promo";
 import CategoryList from "./category/category-list";
 import ContactCard from "./contact/contact-card";
 import ContactForm from "./contact/contact-form";
-import ShopNow from "./landing/shop-now/shop-now";
+import Footer from "./footer/footer";
 import NewArrivals from "./landing/new-arrivals/new-arrivals";
-import Features from "@/components/landing/features/features";
-import IndustrialPromo from "@/components/landing/industrial-promo/industrial-promo";
+import Newsletter from "./landing/newsletter/newsletter";
+import ShopNow from "./landing/shop-now/shop-now";
+import PageHeader from "./page/page-header";
+import ServiceCard from "./services/service-card";
+import SplitSection from "./split-section/split-section";
 
 export {
-  Navbar,
-  Hero,
-  ShopNow,
-  NewArrivals,
-  Features,
-  IndustrialPromo,
-  SplitSection,
-  PageHeader,
   CategoryList,
-  Newsletter,
-  Footer,
   ContactCard,
   ContactForm,
+  Features,
+  Footer,
+  Hero,
+  IndustrialPromo,
+  Navbar,
+  NewArrivals,
+  Newsletter,
+  PageHeader,
+  ServiceCard,
+  ShopNow,
+  SplitSection,
 };

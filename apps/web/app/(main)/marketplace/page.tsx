@@ -1,6 +1,6 @@
+import marketplace2 from "@/assets/marketplace2.png";
 import { CategoryList, Newsletter, PageHeader } from "@/components";
 import { marketplaceCategories } from "@/constant";
-import marketplace2 from "@/assets/marketplace2.png";
 
 export default function Page() {
   return (
