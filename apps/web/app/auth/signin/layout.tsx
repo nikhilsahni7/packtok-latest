@@ -11,7 +11,7 @@ export default function AuthLayout({
       {/* Left side - Image */}
       <div className="hidden bg-gray-100 lg:flex lg:w-1/2 items-center justify-center p-12">
         <Image
-          src="/auth.png"
+          src="/signin-user.png"
           alt="Packtok Logo"
           className="object-contain"
           width={600}

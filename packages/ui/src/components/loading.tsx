@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { cn } from "../lib/utils";
 
@@ -8,7 +10,16 @@ interface LoadingProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
-  ({ className, size = "md", variant = "spinner", fullScreen = false, ...props }, ref) => {
+  (
+    {
+      className,
+      size = "md",
+      variant = "spinner",
+      fullScreen = false,
+      ...props
+    },
+    ref
+  ) => {
     const sizeClasses = {
       sm: "h-4 w-4",
       md: "h-8 w-8",
@@ -52,10 +63,12 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
           )}
           {...props}
         >
-          <div className={cn(
-            "rounded-full bg-blue-600 animate-pulse",
-            sizeClasses[size]
-          )}></div>
+          <div
+            className={cn(
+              "rounded-full bg-blue-600 animate-pulse",
+              sizeClasses[size]
+            )}
+          ></div>
         </div>
       );
     }
@@ -85,7 +98,7 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
             .jimu-primary-loading:after {
               position: absolute;
               top: 0;
-              content: '';
+              content: "";
             }
 
             .jimu-primary-loading:before {
@@ -102,7 +115,8 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
             .jimu-primary-loading:after,
             .jimu-primary-loading {
               background: #076fe5;
-              -webkit-animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+              -webkit-animation: loading-keys-app-loading 0.8s infinite
+                ease-in-out;
               animation: loading-keys-app-loading 0.8s infinite ease-in-out;
               width: 13.6px;
               height: 32px;

@@ -1,6 +1,8 @@
-import * as React from "react";
+"use client";
+
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
+import * as React from "react";
 import {
   Controller,
   FormProvider,
@@ -24,7 +26,7 @@ type FormFieldContextValue<
 };
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue,
+  {} as FormFieldContextValue
 );
 
 const FormField = <
@@ -68,7 +70,7 @@ type FormItemContextValue = {
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
+  {} as FormItemContextValue
 );
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
@@ -155,12 +157,12 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
 }
 
 export {
-  useFormField,
   Form,
-  FormItem,
-  FormLabel,
   FormControl,
   FormDescription,
-  FormMessage,
   FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  useFormField,
 };

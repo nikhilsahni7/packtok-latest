@@ -1,6 +1,8 @@
-import * as React from "react";
+"use client";
+
 import { Check, ChevronsUpDown, Plus, Search } from "lucide-react";
-import { useRef, useEffect } from "react";
+import * as React from "react";
+import { useEffect, useRef } from "react";
 
 import { cn } from "../lib/utils";
 import { Button } from "./button";
@@ -48,10 +50,17 @@ export function CustomCombobox({
     option.label.toLowerCase().includes(search.toLowerCase())
   );
 
-  console.log('Options:', options.length, 'Filtered:', filteredOptions.length, 'Search:', search); // Debug log
+  console.log(
+    "Options:",
+    options.length,
+    "Filtered:",
+    filteredOptions.length,
+    "Search:",
+    search
+  ); // Debug log
 
   const handleSelect = (selectedValue: string) => {
-    console.log('Selected value:', selectedValue); // Debug log
+    console.log("Selected value:", selectedValue); // Debug log
     onValueChange?.(selectedValue === value ? "" : selectedValue);
     handleOpenChange(false);
   };
@@ -64,7 +73,7 @@ export function CustomCombobox({
 
   const handleCreateNew = () => {
     if (search.trim() && onCreateNew) {
-      console.log('Creating new category:', search.trim()); // Debug log
+      console.log("Creating new category:", search.trim()); // Debug log
       onCreateNew(search.trim());
       setSearch("");
       handleOpenChange(false);
@@ -74,18 +83,18 @@ export function CustomCombobox({
   // Check if dropdown should appear on top based on available space
   const checkPosition = () => {
     if (!containerRef.current) return;
-    
+
     const rect = containerRef.current.getBoundingClientRect();
     const dropdownHeight = 400; // max-height of dropdown
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
-    
+
     // Show on top if there's not enough space below but there is above
     setShowOnTop(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
   };
 
   const handleOpenChange = (newOpen: boolean) => {
-    console.log('Open state changing to:', newOpen); // Debug log
+    console.log("Open state changing to:", newOpen); // Debug log
     setOpen(newOpen);
     if (newOpen) {
       checkPosition();
@@ -101,15 +110,19 @@ export function CustomCombobox({
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        console.log('Clicking outside, closing dropdown'); // Debug log
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        console.log("Clicking outside, closing dropdown"); // Debug log
         handleOpenChange(false);
       }
     };
 
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [open]);
 
@@ -137,7 +150,7 @@ export function CustomCombobox({
       document.addEventListener("keydown", handleKeyDown);
       window.addEventListener("resize", handleResize);
       window.addEventListener("scroll", handleScroll, true);
-      
+
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
         window.removeEventListener("resize", handleResize);
@@ -160,7 +173,7 @@ export function CustomCombobox({
         {selectedOption ? selectedOption.label : placeholder}
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
-      
+
       {open && (
         <div
           ref={dropdownRef}
@@ -180,54 +193,54 @@ export function CustomCombobox({
             />
           </div>
           <div className="max-h-[300px] overflow-y-auto overflow-x-hidden">
-              {filteredOptions.length === 0 ? (
-                <div className="py-6 text-center text-sm">
-                  <p className="mb-2">{emptyText}</p>
-                  {onCreateNew && search.trim() && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCreateNew}
-                      className="mt-2"
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      {createNewLabel} "{search.trim()}"
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <div className="p-1">
-                  {filteredOptions.map((option) => (
-                    <div
-                      key={option.value}
-                      onClick={(e) => handleItemClick(option.value, e)}
-                      className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100 hover:text-gray-900"
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          value === option.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {option.label}
-                    </div>
-                  ))}
-                  {onCreateNew && search.trim() && (
-                    <div
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleCreateNew();
-                      }}
-                      className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100 hover:text-gray-900"
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      {createNewLabel} "{search.trim()}"
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            {filteredOptions.length === 0 ? (
+              <div className="py-6 text-center text-sm">
+                <p className="mb-2">{emptyText}</p>
+                {onCreateNew && search.trim() && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCreateNew}
+                    className="mt-2"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    {createNewLabel} "{search.trim()}"
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="p-1">
+                {filteredOptions.map((option) => (
+                  <div
+                    key={option.value}
+                    onClick={(e) => handleItemClick(option.value, e)}
+                    className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === option.value ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {option.label}
+                  </div>
+                ))}
+                {onCreateNew && search.trim() && (
+                  <div
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleCreateNew();
+                    }}
+                    className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    {createNewLabel} "{search.trim()}"
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
