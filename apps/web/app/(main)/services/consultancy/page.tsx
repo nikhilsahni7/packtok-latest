@@ -1,22 +1,460 @@
-import { PageHeader } from "@/components";
-import Protected from "@/components/auth/protected";
-import { ConsultancyForm } from "./components/consultancy-form";
+"use client";
+
+import { Checkbox } from "@packtok/ui/components/checkbox";
+import { cn } from "@packtok/ui/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function ConsultancyPage() {
   return (
-    <Protected>
-      <main>
-        <div className="w-[85%] mx-auto">
-          <PageHeader
-            title="Consultancy Services"
-            subtitle="Get expert consultancy services to optimize your operations."
-            image="/services.png"
-          />
-          <div className="py-12">
-            <ConsultancyForm />
+    <main
+      className={cn(
+        // Layout & box model
+        "flex w-full flex-col",
+
+        // Typography
+        "text-foreground",
+
+        // Colors
+        "bg-background"
+      )}
+    >
+      <HeroSection />
+      <AboutSection />
+      <WhyChooseUs />
+      <ConsultancyGrid />
+      <CtaBanner />
+    </main>
+  );
+}
+
+function HeroSection() {
+  return (
+    <section
+      className={cn(
+        // Layout & box model
+        "container mx-auto px-4 sm:px-6 lg:px-8",
+        "pt-24 sm:pt-28", // space under fixed navbar per Figma
+        "pb-12 sm:pb-16 lg:pb-20"
+      )}
+    >
+      <div
+        className={cn(
+          // Layout & box model
+          "grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12"
+        )}
+      >
+        {/* Text Column */}
+        <div className={cn("lg:col-span-7")}>
+          <div
+            className={cn(
+              "mb-4 text-xs uppercase tracking-[0.2em] text-muted-foreground"
+            )}
+          >
+            Consultancy Services
+          </div>
+          <h1
+            className={cn(
+              // Typography
+              "text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl"
+            )}
+          >
+            Unlock Your Business Potential with Our Expert Consultancy Services
+          </h1>
+          <p className={cn("mt-4 max-w-2xl text-muted-foreground")}>
+            Leverage our specialized consultancy services to enhance operational
+            efficiency and capitalize on new opportunities. We provide strategic
+            solutions to overcome challenges and achieve sustainable success.
+          </p>
+          <div className={cn("mt-6")}>
+            <Link
+              href="#consultancy-grid"
+              className={cn(
+                // Layout & box model
+                "inline-flex items-center justify-center rounded-sm px-5 py-2.5",
+
+                // Typography
+                "text-sm font-medium",
+
+                // Colors
+                "bg-primary text-primary-foreground",
+
+                // Visuals
+                "shadow-xs",
+
+                // States
+                "hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              )}
+            >
+              Book Now
+            </Link>
           </div>
         </div>
-      </main>
-    </Protected>
+
+        {/* Stats Column */}
+        <div className={cn("lg:col-span-5")}>
+          <div
+            className={cn(
+              // Layout & box model
+              "grid grid-cols-2 gap-6 rounded-md border p-6 sm:gap-8",
+
+              // Colors
+              "border-border"
+            )}
+          >
+            <StatBox label="Years of Experience" value="35+" />
+            <StatBox label="Professionals Available" value="80+" />
+          </div>
+        </div>
+      </div>
+
+      {/* Wide Image */}
+      <div
+        className={cn("mt-5 overflow-hidden rounded-md border border-border")}
+      >
+        <div className={cn("relative h-[380px] sm:h-[440px] lg:h-[520px]")}>
+          <Image
+            src="/consult-mainpage1.png"
+            alt="Consultancy overview"
+            fill
+            sizes="(min-width: 1024px) 1200px, 100vw"
+            className={cn("w-full object-cover")}
+            priority
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StatBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div className={cn("flex flex-col items-start gap-2")}>
+      <div className={cn("text-3xl font-semibold")}>{value}</div>
+      <div className={cn("text-xs text-muted-foreground")}>{label}</div>
+    </div>
+  );
+}
+
+function AboutSection() {
+  return (
+    <section
+      className={cn(
+        // Layout & box model
+        "container mx-auto px-4 sm:px-6 lg:px-8",
+        "py-14 lg:py-16"
+      )}
+    >
+      <div
+        className={cn(
+          "grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-12"
+        )}
+      >
+        {/* Image column */}
+        <div className={cn("lg:col-span-6")}>
+          <div
+            className={cn(
+              "relative h-[420px] sm:h-[460px] lg:h-[520px] overflow-hidden rounded-md border border-border"
+            )}
+          >
+            <Image
+              src="/consult-mainpage2.png"
+              alt="Consultancy team"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className={cn("object-cover")}
+            />
+          </div>
+        </div>
+        {/* Content column */}
+        <div className={cn("lg:col-span-6")}>
+          <div
+            className={cn(
+              "text-xs uppercase tracking-[0.2em] text-muted-foreground"
+            )}
+          >
+            About Us
+          </div>
+          <h2
+            className={cn(
+              "mt-2 text-3xl font-semibold sm:text-4xl lg:text-5xl"
+            )}
+          >
+            Your Trusted Consultancy Partner
+          </h2>
+          <p className={cn("mt-4 max-w-2xl text-muted-foreground")}>
+            We are dedicated to empowering businesses and individuals with
+            strategic insights and actionable solutions. Our expertise spans
+            various domains, helping you navigate challenges and seize
+            opportunities for growth.
+          </p>
+
+          <ul className={cn("mt-6 space-y-3")}>
+            {[
+              "Tailored Strategic Solutions",
+              "Transparent and Results-Oriented Approach",
+            ].map((item) => (
+              <li key={item} className={cn("flex items-start gap-3")}>
+                <Checkbox checked aria-readonly className={cn("mt-0.5")} />
+                <span className={cn("text-sm font-medium")}>{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className={cn("mt-8 grid grid-cols-2 gap-6 sm:max-w-md")}>
+            <KpiBox value="2X" label="Faster Problem Solving" />
+            <KpiBox value="90%" label="Client Success Rate" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function KpiBox({ value, label }: { value: string; label: string }) {
+  return (
+    <div
+      className={cn(
+        // Layout & box model
+        "rounded-md border p-4",
+        // Colors
+        "border-border"
+      )}
+    >
+      <div className={cn("text-2xl font-semibold")}>{value}</div>
+      <div className={cn("mt-1 text-xs text-muted-foreground")}>{label}</div>
+    </div>
+  );
+}
+
+function WhyChooseUs() {
+  return (
+    <section
+      className={cn(
+        // Layout & box model
+        "container mx-auto px-4 sm:px-6 lg:px-8",
+        "py-14 lg:py-16"
+      )}
+    >
+      <div className={cn("mx-auto max-w-3xl text-center")}>
+        <div
+          className={cn(
+            "text-xs uppercase tracking-[0.2em] text-muted-foreground"
+          )}
+        >
+          Why Choose Us
+        </div>
+        <h3 className={cn("mt-2 text-2xl font-semibold sm:text-3xl")}>
+          Experience the Difference
+        </h3>
+        <p className={cn("mx-auto mt-3 max-w-2xl text-muted-foreground")}>
+          We deliver expert, tailor-made solutions focused on your unique
+          needs—ensuring lasting success and measurable results for your
+          business.
+        </p>
+      </div>
+
+      <div className={cn("mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3")}>
+        <FeatureItem
+          title="Comprehensive Solutions"
+          desc="End-to-end strategic guidance, covering analysis, planning, and implementation for holistic business growth."
+          iconLabel="stack"
+        />
+        <FeatureItem
+          title="Confidentiality & Trust"
+          desc="Your sensitive business information is handled with utmost discretion, building a foundation of trust."
+          iconLabel="lock"
+        />
+        <FeatureItem
+          title="24/7 Customer Support"
+          desc="Continuous communication and dedicated support throughout our engagement to keep objectives on track."
+          iconLabel="support"
+        />
+      </div>
+    </section>
+  );
+}
+
+function FeatureItem({
+  title,
+  desc,
+}: {
+  title: string;
+  desc: string;
+  iconLabel?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        // Layout & box model
+        "rounded-md border p-6",
+        // Colors
+        "border-border"
+      )}
+    >
+      <div className={cn("h-10 w-10 rounded-sm bg-muted")} />
+      <h4 className={cn("mt-4 text-base font-semibold")}>{title}</h4>
+      <p className={cn("mt-2 text-sm text-muted-foreground")}>{desc}</p>
+    </div>
+  );
+}
+
+function ConsultancyGrid() {
+  return (
+    <section
+      id="consultancy-grid"
+      className={cn(
+        // Layout & box model
+        "container mx-auto px-4 sm:px-6 lg:px-8",
+        "py-12 sm:py-16 lg:py-20"
+      )}
+    >
+      <div
+        className={cn(
+          "text-xs uppercase tracking-[0.2em] text-muted-foreground"
+        )}
+      >
+        Consultancy List
+      </div>
+      <h3 className={cn("mt-3 text-3xl font-semibold sm:text-4xl")}>
+        Explore Our Consultancy
+      </h3>
+
+      <div className={cn("mt-10 grid grid-cols-1 gap-8 md:grid-cols-3")}>
+        <ConsultancyCard
+          title="Machinery"
+          price="$950"
+          img="/consult-mainpage3.png"
+        />
+        <ConsultancyCard
+          title="Spare Parts"
+          price="$950"
+          img="/consult-mainpage4.png"
+        />
+        <ConsultancyCard
+          title="Raw Products"
+          price="$950"
+          img="/consult-mainpage5.png"
+        />
+      </div>
+    </section>
+  );
+}
+
+function ConsultancyCard({
+  title,
+  price,
+  img,
+}: {
+  title: string;
+  price: string;
+  img: string;
+}) {
+  return (
+    <div
+      className={cn(
+        // Layout & box model
+        "flex h-full flex-col overflow-hidden rounded-md border",
+        // Colors
+        "border-border",
+        // Visuals
+        "bg-card"
+      )}
+    >
+      <div className={cn("flex items-center justify-between px-5 pt-5")}>
+        <div className={cn("text-sm font-medium")}>{title}</div>
+        <div
+          className={cn(
+            "h-8 w-8 rounded-sm bg-foreground/90 text-background flex items-center justify-center text-[0.75rem]"
+          )}
+        >
+          ★
+        </div>
+      </div>
+      <div
+        className={cn(
+          "mt-4 aspect-[4/3] w-full overflow-hidden border-y border-border bg-muted"
+        )}
+      >
+        <Image
+          src={img}
+          alt={title}
+          width={800}
+          height={600}
+          className={cn("h-full w-full object-contain p-6")}
+        />
+      </div>
+      <div className={cn("flex flex-1 flex-col p-5")}>
+        <div className={cn("flex items-center justify-between")}>
+          <div className={cn("text-base font-semibold")}>
+            {price}
+            <span
+              className={cn("ml-1 align-top text-[10px] text-muted-foreground")}
+            >
+              /day
+            </span>
+          </div>
+        </div>
+        <button
+          className={cn(
+            // Layout & box model
+            "mt-5 inline-flex items-center justify-center rounded-sm px-4 py-2",
+            // Typography
+            "text-xs font-medium",
+            // Colors
+            "bg-primary text-primary-foreground",
+            // States
+            "hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          )}
+          type="button"
+        >
+          Book Now
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CtaBanner() {
+  return (
+    <section className={cn("bg-[#19A7FF]")}>
+      <div
+        className={cn(
+          // Layout & box model
+          "container mx-auto px-4 sm:px-6 lg:px-8",
+          "py-10 sm:py-12"
+        )}
+      >
+        <div
+          className={cn(
+            // Layout & box model
+            "flex flex-col items-center justify-between gap-6 sm:flex-row"
+          )}
+        >
+          <div className={cn("text-center sm:text-left max-w-3xl")}>
+            <div
+              className={cn("text-2xl sm:text-3xl font-semibold text-white")}
+            >
+              Not sure where to begin? Start with Filling the form
+            </div>
+          </div>
+          <Link
+            href="/services/consultancy/form"
+            className={cn(
+              // Layout & box model
+              "inline-flex items-center justify-center rounded-sm px-6 py-3",
+              // Typography
+              "text-sm font-semibold",
+              // Colors
+              "bg-white text-black",
+              // States
+              "hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            )}
+          >
+            Click Here
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
