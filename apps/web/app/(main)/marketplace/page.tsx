@@ -1,6 +1,6 @@
 import marketplace2 from "@/assets/marketplace2.png";
 import { CategoryList, Newsletter, PageHeader } from "@/components";
-import { marketplaceCategories } from "@/constant";
+// import { marketplaceCategories } from "@/constant";
 
 export default function Page() {
   return (
@@ -11,7 +11,7 @@ export default function Page() {
           subtitle="Explore Our Machinery & Industrial Solutions."
           image={marketplace2}
         />
-        <CategoryList categoryDataList={marketplaceCategories} />
+        <CategoryList />
       </div>
       <Newsletter />
     </main>
