@@ -1,10 +1,16 @@
 import { Footer, Navbar } from "@/components";
 import "@packtok/ui/globals.css";
-import "../styles/globals.css";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
 import React from "react";
+import "../styles/globals.css";
 import Providers from "./providers";
+
+const MobileInterstitial = dynamic(
+  () => import("@/components/mobile-interstitial"),
+  { ssr: false }
+);
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -25,9 +31,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
+          {/* Mobile/Tablet view: show interstitial only */}
+          <div className="block lg:hidden">
+            <MobileInterstitial />
+          </div>
+
+          {/* Desktop/Laptop view: show full site */}
+          <div className="hidden lg:block">
+            <Navbar />
+            {children}
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>
