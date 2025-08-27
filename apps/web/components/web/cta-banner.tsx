@@ -2,6 +2,7 @@
 
 import { cn } from "@packtok/ui/lib/utils";
 import Link from "next/link";
+import React from "react";
 
 interface CtaBannerProps {
   href: string;
