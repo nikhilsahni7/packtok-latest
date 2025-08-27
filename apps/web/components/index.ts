@@ -13,6 +13,7 @@ import ShopNow from "./landing/shop-now/shop-now";
 import PageHeader from "./page/page-header";
 import ServiceCard from "./services/service-card";
 import SplitSection from "./split-section/split-section";
+import Articles from "./landing/articles/articles";
 
 export {
   CategoryList,
@@ -29,4 +30,5 @@ export {
   ServiceCard,
   ShopNow,
   SplitSection,
+  Articles,
 };

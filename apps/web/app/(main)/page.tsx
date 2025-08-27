@@ -1,20 +1,20 @@
 import {
   Features,
   Hero,
-  IndustrialPromo,
   NewArrivals,
   Newsletter,
   ShopNow,
+  Articles
 } from "@/components";
 
 export default function Home() {
   return (
-    <main className="mt-16">
+    <main className="mt-16 fluid-bg">
       <Hero />
       <ShopNow />
       <NewArrivals />
       <Features />
-      <IndustrialPromo />
+      <Articles />
       <Newsletter />
     </main>
   );
