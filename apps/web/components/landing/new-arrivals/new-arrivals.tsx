@@ -75,11 +75,12 @@ export default function NewArrivals() {
     }
   };
 
+  // w-[95%] sm:w-[90%] md:w-[85%]
   return (
-    <section className="py-6 sm:py-8 md:py-10 w-[95%] sm:w-[90%] md:w-[85%] mx-auto">
-      <div className="container mx-auto px-4">
+    <section className="py-6 sm:py-8 md:py-10 mx-auto">
+      <div className="mx-auto px-4">
         {/* Section Header - Left Aligned */}
-        <div className="mb-6 sm:mb-8 md:mb-12 flex md:flex-row flex-col justify-between md:items-center items-left gap-4 md:gap-0">
+        <div className="container mx-auto mb-6 sm:mb-8 md:mb-12 flex md:flex-row flex-col justify-between md:items-center items-left gap-4 md:gap-0 w-[95%] sm:w-[90%] md:w-[85%]">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 font-bold">
             New Arrivals
           </h2>
