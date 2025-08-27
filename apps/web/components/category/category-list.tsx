@@ -2,12 +2,13 @@ import Image from "next/image";
 // import CategoryItem from "./category-item";
 // import { CategoryItem as CategoryItemType } from "@/types";
 import { Button } from "@packtok/ui";
+import Link from "next/link";
 
-import Machinery from "@/assets/machinery4.jpg";
-import Spareparts from "@/assets/spare-parts3.png";
-import RawMaterial from "@/assets/raw-matserials3.png";
 import Consumables from "@/assets/consumables2.jpg";
+import Machinery from "@/assets/machinery4.jpg";
 import ManPower from "@/assets/man-power2.jpg";
+import RawMaterial from "@/assets/raw-matserials3.png";
+import Spareparts from "@/assets/spare-parts3.png";
 
 export default function CategoryList() {
   return (
@@ -43,10 +44,25 @@ export default function CategoryList() {
                   Premium Machinery for Peak Performance
                 </p>
                 <p className="text-gray-300 mb-10 leading-relaxed text-lg">
-                  Explore our extensive range of high-performance machinery designed to boost productivity and efficiency. From industrial-grade heavy equipment to precision tools, we offer reliable solutions for construction, manufacturing, agriculture, and more. Our selection includes top brands, ensuring durability, advanced technology, and exceptional performance. Whether you need excavators, CNC machines, tractors, or generators, we provide competitive pricing and trusted quality. Browse user-friendly listings with detailed specs, images, and customer reviews to make informed decisions. Enjoy seamless purchasing, flexible financing, and expert support. Upgrade your operations today with the best machinery
+                  Explore our extensive range of high-performance machinery
+                  designed to boost productivity and efficiency. From
+                  industrial-grade heavy equipment to precision tools, we offer
+                  reliable solutions for construction, manufacturing,
+                  agriculture, and more. Our selection includes top brands,
+                  ensuring durability, advanced technology, and exceptional
+                  performance. Whether you need excavators, CNC machines,
+                  tractors, or generators, we provide competitive pricing and
+                  trusted quality. Browse user-friendly listings with detailed
+                  specs, images, and customer reviews to make informed
+                  decisions. Enjoy seamless purchasing, flexible financing, and
+                  expert support. Upgrade your operations today with the best
+                  machinery
                 </p>
-                <Button className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/marketplace/machinery">Shop Now</Link>
                 </Button>
               </div>
             </div>
@@ -82,15 +98,27 @@ export default function CategoryList() {
                   Smooth Operations Guaranteed
                 </p>
                 <p className="text-gray-800 mb-10 leading-relaxed text-lg">
-                  Upgrade your machinery with our premium spare parts, designed for durability and peak performance. We stock a wide range of genuine components for construction, agriculture, industrial, and automotive equipment—ensuring seamless repairs and minimal downtime. From engine parts to hydraulic components, filters, and bearings, we source only high-quality replacements from trusted manufacturers. Enjoy easy browsing with detailed descriptions, compatibility guides, and competitive pricing. Whether for maintenance or urgent repairs, our spare parts keep your machines running longer and stronger. Shop now for reliable solutions and expert support
+                  Upgrade your machinery with our premium spare parts, designed
+                  for durability and peak performance. We stock a wide range of
+                  genuine components for construction, agriculture, industrial,
+                  and automotive equipment—ensuring seamless repairs and minimal
+                  downtime. From engine parts to hydraulic components, filters,
+                  and bearings, we source only high-quality replacements from
+                  trusted manufacturers. Enjoy easy browsing with detailed
+                  descriptions, compatibility guides, and competitive pricing.
+                  Whether for maintenance or urgent repairs, our spare parts
+                  keep your machines running longer and stronger. Shop now for
+                  reliable solutions and expert support
                 </p>
-                <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/marketplace/spare-parts">Shop Now</Link>
                 </Button>
               </div>
             </div>
           </section>
-
 
           {/* Raw Material Section */}
           <section className="grid grid-cols-1 md:grid-cols-5 py-18">
@@ -122,10 +150,25 @@ export default function CategoryList() {
                   Quality Uncompromised
                 </p>
                 <p className="text-gray-800 mb-10 leading-relaxed text-lg">
-                  Explore our extensive range of high-performance machinery designed to boost productivity and efficiency. From industrial-grade heavy equipment to precision tools, we offer reliable solutions for construction, manufacturing, agriculture, and more. Our selection includes top brands, ensuring durability, advanced technology, and exceptional performance. Whether you need excavators, CNC machines, tractors, or generators, we provide competitive pricing and trusted quality. Browse user-friendly listings with detailed specs, images, and customer reviews to make informed decisions. Enjoy seamless purchasing, flexible financing, and expert support. Upgrade your operations today with the best machinery
+                  Explore our extensive range of high-performance machinery
+                  designed to boost productivity and efficiency. From
+                  industrial-grade heavy equipment to precision tools, we offer
+                  reliable solutions for construction, manufacturing,
+                  agriculture, and more. Our selection includes top brands,
+                  ensuring durability, advanced technology, and exceptional
+                  performance. Whether you need excavators, CNC machines,
+                  tractors, or generators, we provide competitive pricing and
+                  trusted quality. Browse user-friendly listings with detailed
+                  specs, images, and customer reviews to make informed
+                  decisions. Enjoy seamless purchasing, flexible financing, and
+                  expert support. Upgrade your operations today with the best
+                  machinery
                 </p>
-                <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/marketplace/raw-materials">Shop Now</Link>
                 </Button>
               </div>
             </div>
@@ -161,10 +204,22 @@ export default function CategoryList() {
                   Unstoppable Productivity
                 </p>
                 <p className="text-gray-800 mb-10 leading-relaxed text-lg">
-                  Keep your operations running smoothly with our high-quality consumables, designed for efficiency and durability. From industrial lubricants and welding supplies to safety gear and cutting tools, we stock everything you need to minimize downtime and maximize productivity. Our competitively priced products come from trusted brands, ensuring consistent performance for workshops, factories, and job sites. Whether you need routine replacements or bulk orders, we deliver fast and hassle-free. Reduce waste and optimize costs with our carefully curated selection
+                  Keep your operations running smoothly with our high-quality
+                  consumables, designed for efficiency and durability. From
+                  industrial lubricants and welding supplies to safety gear and
+                  cutting tools, we stock everything you need to minimize
+                  downtime and maximize productivity. Our competitively priced
+                  products come from trusted brands, ensuring consistent
+                  performance for workshops, factories, and job sites. Whether
+                  you need routine replacements or bulk orders, we deliver fast
+                  and hassle-free. Reduce waste and optimize costs with our
+                  carefully curated selection
                 </p>
-                <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/marketplace/consumables">Shop Now</Link>
                 </Button>
               </div>
             </div>
@@ -206,7 +261,7 @@ export default function CategoryList() {
                   transaction support for successful business transformations.
                 </p>
                 <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                  Shop Now
                 </Button>
               </div>
             </div>

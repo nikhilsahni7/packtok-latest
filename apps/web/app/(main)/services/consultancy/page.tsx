@@ -1,5 +1,6 @@
 "use client";
 
+import { CtaBanner as WebCtaBanner } from "@/components";
 import { Checkbox } from "@packtok/ui/components/checkbox";
 import { cn } from "@packtok/ui/lib/utils";
 import Image from "next/image";
@@ -23,7 +24,7 @@ export default function ConsultancyPage() {
       <AboutSection />
       <WhyChooseUs />
       <ConsultancyGrid />
-      <CtaBanner />
+      <WebCtaBanner href="/services/consultancy/form" />
     </main>
   );
 }
@@ -415,46 +416,5 @@ function ConsultancyCard({
   );
 }
 
-function CtaBanner() {
-  return (
-    <section className={cn("bg-[#19A7FF]")}>
-      <div
-        className={cn(
-          // Layout & box model
-          "container mx-auto px-4 sm:px-6 lg:px-8",
-          "py-10 sm:py-12"
-        )}
-      >
-        <div
-          className={cn(
-            // Layout & box model
-            "flex flex-col items-center justify-between gap-6 sm:flex-row"
-          )}
-        >
-          <div className={cn("text-center sm:text-left max-w-3xl")}>
-            <div
-              className={cn("text-2xl sm:text-3xl font-semibold text-white")}
-            >
-              Not sure where to begin? Start with Filling the form
-            </div>
-          </div>
-          <Link
-            href="/services/consultancy/form"
-            className={cn(
-              // Layout & box model
-              "inline-flex items-center justify-center rounded-sm px-6 py-3",
-              // Typography
-              "text-sm font-semibold",
-              // Colors
-              "bg-white text-black",
-              // States
-              "hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            )}
-          >
-            Click Here
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
+
+

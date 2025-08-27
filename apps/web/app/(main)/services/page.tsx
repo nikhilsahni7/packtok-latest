@@ -1,5 +1,6 @@
 import { Button } from "@packtok/ui/components/button";
 import Image from "next/image";
+import Link from "next/link";
 import { Newsletter } from "../../../components";
 
 export default function ServicesPage() {
@@ -148,8 +149,11 @@ export default function ServicesPage() {
                   reduction, to sustainable business optimization and consulting
                   solutions.
                 </p>
-                <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/services/consultancy">Request</Link>
                 </Button>
               </div>
             </div>
@@ -232,8 +236,11 @@ export default function ServicesPage() {
                   provide comprehensive due diligence, valuation, and
                   transaction support for successful business transformations.
                 </p>
-                <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/services/investment-and-takeover">Request</Link>
                 </Button>
               </div>
             </div>

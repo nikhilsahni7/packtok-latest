@@ -7,18 +7,21 @@ import CategoryList from "./category/category-list";
 import ContactCard from "./contact/contact-card";
 import ContactForm from "./contact/contact-form";
 import Footer from "./footer/footer";
+import Articles from "./landing/articles/articles";
 import NewArrivals from "./landing/new-arrivals/new-arrivals";
 import Newsletter from "./landing/newsletter/newsletter";
 import ShopNow from "./landing/shop-now/shop-now";
 import PageHeader from "./page/page-header";
 import ServiceCard from "./services/service-card";
 import SplitSection from "./split-section/split-section";
-import Articles from "./landing/articles/articles";
+import CtaBanner from "./web/cta-banner";
 
 export {
+  Articles,
   CategoryList,
   ContactCard,
   ContactForm,
+  CtaBanner,
   Features,
   Footer,
   Hero,
@@ -30,5 +33,4 @@ export {
   ServiceCard,
   ShopNow,
   SplitSection,
-  Articles,
 };
