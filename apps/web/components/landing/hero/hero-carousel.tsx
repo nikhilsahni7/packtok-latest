@@ -2,7 +2,6 @@
 
 import home1 from "@/assets/hero-top.png";
 import home7 from "@/assets/home7.png";
-import home8 from "@/assets/home8.png";
 import home9 from "@/assets/home9.png";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
@@ -10,7 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
-const images = [home1, home7, home8, home9];
+const images = [home1, home7, home9];
 
 export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false }, [

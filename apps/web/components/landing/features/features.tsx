@@ -1,15 +1,13 @@
-import features1 from "@/assets/feature-turnkey.png";
-import features2 from "@/assets/feature-services.png";
+import bidding from "@/assets/bidding.jpg";
 import features3 from "@/assets/feature-consultancy.png";
-import features4 from "@/assets/feature-machinery.png";
 import features5 from "@/assets/feature-installer.png";
 import features6 from "@/assets/feature-investment.png";
-import bidding from "@/assets/bidding.jpg";
-import {
-  ChevronRight,
-  MoveRight,
-} from "lucide-react";
+import features4 from "@/assets/feature-machinery.png";
+import features2 from "@/assets/feature-services.png";
+import features1 from "@/assets/feature-turnkey.png";
+import { ChevronRight, MoveRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const GridSection = () => {
   // Sample data for the main grid items
@@ -18,21 +16,25 @@ const GridSection = () => {
       id: 1,
       heading: "Turnkey Projects",
       image: features1,
+      href: "/services/turnkey-projects",
     },
     {
       id: 2,
       heading: "Maintainance & Servicing",
       image: features2,
+      href: "/services/maintenance",
     },
     {
       id: 3,
       heading: "Consultancy Services",
       image: features3,
+      href: "/services/consultancy",
     },
     {
       id: 4,
       heading: "Sell Old Machinery",
       image: features4,
+      href: "/services/sell-old-items",
     },
     {
       id: 5,
@@ -43,12 +45,13 @@ const GridSection = () => {
       id: 6,
       heading: "Investment & Takeover",
       image: features6,
+      href: "/services/investment-and-takeover",
     },
   ];
 
   return (
     <div
-      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8
      sm:py-12 space-y-8 sm:space-y-12"
     >
       {/* Main Grid - 4 squares with images and text */}
@@ -66,15 +69,18 @@ const GridSection = () => {
               >
                 {item.heading}
               </h3>
-              <div className="flex items-center justify-center cursor-pointer group border-b-2 border-black w-fit">
+              <Link
+                href={item.href || "#"}
+                className="flex items-center justify-center cursor-pointer group border-b-2 border-black w-fit"
+              >
                 <span className="text-sm sm:text-base font-medium">
                   See more
                 </span>
                 <ChevronRight
-                  className="ml-1 h-4 w-4 sm:h-5 sm:w-5 
+                  className="ml-1 h-4 w-4 sm:h-5 sm:w-5
      transition-transform group-hover:translate-x-1"
                 />
-              </div>
+              </Link>
             </div>
 
             {/* Image at top for all screen sizes */}
@@ -91,7 +97,7 @@ const GridSection = () => {
         ))}
       </div>
 
-        <div className="h-4"></div>
+      <div className="h-4"></div>
 
       {/* Full card at bottom */}
       <div className="grid grid-cols-1 md:grid-cols-2 mt-12">
@@ -106,9 +112,18 @@ const GridSection = () => {
         <div className="flex flex-col justify-center gap-4 px-16 py-8 bg-[#F3F5F7]">
           <h1 className="text-4xl font-medium">Bidding</h1>
           <p className="text-lg">
-            Welcome to our Bidding Section – your gateway to exclusive deals and competitive offers. Participate in live auctions, place your bids with confidence, and grab the best prices on a wide range of products. Stay alert, bid smart, and win big with every opportunity. Let the bidding begin!
+            Welcome to our Bidding Section – your gateway to exclusive deals and
+            competitive offers. Participate in live auctions, place your bids
+            with confidence, and grab the best prices on a wide range of
+            products. Stay alert, bid smart, and win big with every opportunity.
+            Let the bidding begin!
           </p>
-          <button className="border-b-2 border-black w-fit py-1 cursor-pointer">Bid Now <MoveRight className="inline-block" /></button>
+          <Link
+            href="/bidding"
+            className="border-b-2 border-black w-fit py-1 cursor-pointer"
+          >
+            Bid Now <MoveRight className="inline-block" />
+          </Link>
         </div>
       </div>
     </div>
