@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Newsletter() {
   return (
-    <div className="relative w-full mx-auto py-8 sm:py-12 md:py-16 bg-gradient-to-r from-gray-50 to-white overflow-hidden">
+    <div className="relative w-full mx-auto py-8 sm:py-12 md:py-16 bg-gradient-to-r from-gray-50 to-white overflow-visible">
       {/* Center content */}
       <div className="relative z-10 flex flex-col items-center max-w-sm sm:max-w-md mx-auto text-center px-4">
         <h1 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-light text-gray-900 mb-2 sm:mb-3 tracking-wide">
@@ -31,7 +31,7 @@ export default function Newsletter() {
       </div>
 
       {/* Left image absolute */}
-      <div className="absolute left-0 top-1/2 transform -translate-x-1/6 -translate-y-1/2 overflow-visible hidden xl:block">
+      <div className="absolute left-0 top-1/2 transform -translate-y-1/2 overflow-visible hidden xl:block">
         <Image
           src="/news-right.png"
           alt="Newsletter Left Image"
@@ -43,7 +43,7 @@ export default function Newsletter() {
       </div>
 
       {/* Right image absolute */}
-      <div className="absolute right-0 top-1/2 transform translate-x-1/6 -translate-y-1/2 overflow-visible hidden xl:block">
+      <div className="absolute right-0 top-1/2 transform -translate-y-1/2 overflow-visible hidden xl:block">
         <Image
           src="/news-left.png"
           alt="Newsletter Right Image"
