@@ -1,6 +1,8 @@
 "use client";
 
+import home1 from "@/assets/hero-top.png";
 import home7 from "@/assets/home7.png";
+import home8 from "@/assets/home8.png";
 import home9 from "@/assets/home9.png";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
@@ -8,7 +10,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
-const images = [home7, home9];
+const images = [home1, home7, home8, home9];
 
 export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false }, [
@@ -41,7 +43,7 @@ export default function HeroCarousel() {
   }, [emblaApi, onSelect]);
 
   return (
-    <div className="relative select-none w-[95%] sm:w-[90%] md:w-[85%] mx-auto">
+    <div className="relative select-none">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {images.map((image, idx) => (
@@ -50,9 +52,9 @@ export default function HeroCarousel() {
                 src={image}
                 alt={"image"}
                 width={1920}
-                height={740}
+                height={840}
                 sizes="(max-width: 768px) 100vw, 1920px"
-                className="object-cover w-full h-[150px] sm:h-[200px] md:h-[250px] lg:h-[300px] xl:h-[350px]"
+                className="object-cover w-full h-[150px] sm:h-[200px] md:h-[250px] lg:h-[350px] xl:h-[450px]"
                 priority={idx == 0}
               />
             </div>

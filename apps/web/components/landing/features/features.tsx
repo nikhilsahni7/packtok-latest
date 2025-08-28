@@ -1,7 +1,9 @@
-import features1 from "@/assets/features1.png";
-import features2 from "@/assets/features2.png";
-import features3 from "@/assets/features3.png";
-import features4 from "@/assets/features4.png";
+import features1 from "@/assets/feature-turnkey.png";
+import features2 from "@/assets/feature-services.png";
+import features3 from "@/assets/feature-consultancy.png";
+import features4 from "@/assets/feature-machinery.png";
+import features5 from "@/assets/feature-installer.png";
+import features6 from "@/assets/feature-investment.png";
 import bidding from "@/assets/bidding.jpg";
 import {
   ChevronRight,
@@ -32,6 +34,16 @@ const GridSection = () => {
       heading: "Sell Old Machinery",
       image: features4,
     },
+    {
+      id: 5,
+      heading: "Machinery Installer",
+      image: features5,
+    },
+    {
+      id: 6,
+      heading: "Investment & Takeover",
+      image: features6,
+    },
   ];
 
   return (
@@ -44,13 +56,13 @@ const GridSection = () => {
         {mainGridItems.map((item) => (
           <div
             key={item.id}
-            className="bg-gray-100 rounded-lg p-4 sm:p-6 md:p-6 grid grid-cols-1 md:grid-cols-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-50"
+            className="bg-gray-100 rounded-lg p-4 sm:p-6 md:p-6 grid grid-cols-1 md:grid-cols-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-50 h-[318px]"
           >
             {/* Text content */}
             <div className="flex flex-col justify-end w-full text-left mt-4">
               <h3
-                className="text-xl sm:text-2xl md:text-3xl
-     text-gray-900 mb-4 leading-tight font-semibold"
+                className="text-xl sm:text-2xl md:text-4xl
+     text-gray-900 mb-4 leading-tight font-medium"
               >
                 {item.heading}
               </h3>
@@ -66,7 +78,7 @@ const GridSection = () => {
             </div>
 
             {/* Image at top for all screen sizes */}
-            <div className="flex-shrink-0 w-full overflow-hidden">
+            <div className="flex-shrink-0 w-full overflow-hidden flex items-center">
               <Image
                 src={item.image}
                 alt={item.heading}
@@ -79,8 +91,10 @@ const GridSection = () => {
         ))}
       </div>
 
+        <div className="h-4"></div>
+
       {/* Full card at bottom */}
-      <div className="grid grid-cols-1 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-12">
         <Image
           src={bidding}
           alt="Bidding Image"

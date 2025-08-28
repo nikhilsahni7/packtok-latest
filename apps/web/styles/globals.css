@@ -12,3 +12,13 @@
 *::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
 }
+
+body:has(main.fluid-bg) {
+  background-image: url("/BgVector.png");
+  /* background-size: cover; */
+  background-position-y: 10%;
+  background-position-x: center;
+  background-size: 100% 45%;
+  /* background-position: center; */
+  background-repeat: no-repeat;
+}

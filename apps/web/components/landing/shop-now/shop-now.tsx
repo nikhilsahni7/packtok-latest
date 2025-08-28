@@ -16,7 +16,7 @@ export default function ShopNow() {
       {/* Left Rectangle*/}
       <div className="bg-gray-100 flex flex-col justify-between row-span-2">
         <div className="p-4 sm:p-7 md:p-10">
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-bold">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-medium">
             Machinery
           </h2>
           <Link
@@ -36,7 +36,7 @@ export default function ShopNow() {
       {/* Top Right Rectangle */}
       <div className="bg-gray-100 p-2 sm:p-4 md:p-6 flex flex-col sm:flex-row items-center sm:items-end gap-2 sm:gap-4 md:gap-6">
         <div className="flex-1">
-          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-bold">
+          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-medium">
             Spare Parts
           </h3>
           <Link
@@ -56,7 +56,7 @@ export default function ShopNow() {
       {/* Bottom Right Rectangle */}
       <div className="bg-gray-100 p-2 sm:p-4 md:p-6 flex flex-col sm:flex-row items-center sm:items-end gap-2 sm:gap-4 md:gap-6">
         <div className="flex-1">
-          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-bold">
+          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-medium">
             Raw Materials
           </h3>
           <Link
@@ -75,7 +75,7 @@ export default function ShopNow() {
 
       <div className="bg-gray-100 p-2 sm:p-4 md:p-6 flex flex-col sm:flex-row items-center sm:items-end gap-2 sm:gap-4 md:gap-6">
         <div className="flex-1">
-          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-bold">
+          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-medium">
             Consumables
           </h3>
           <Link
@@ -94,7 +94,7 @@ export default function ShopNow() {
 
       <div className="bg-gray-100 p-2 sm:p-4 md:p-6 flex flex-col sm:flex-row items-center sm:items-end gap-2 sm:gap-4 md:gap-6">
         <div className="flex-1">
-          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-bold">
+          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-2 font-medium">
             Man Power
           </h3>
           <Link
