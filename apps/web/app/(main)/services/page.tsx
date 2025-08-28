@@ -63,8 +63,11 @@ export default function ServicesPage() {
                   handover. Our expert team ensures seamless execution, timely
                   delivery, and cost efficiency.
                 </p>
-                <Button className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/services/turnkey-projects">Request</Link>
                 </Button>
               </div>
             </div>
@@ -106,8 +109,11 @@ export default function ServicesPage() {
                   round-the-clock support to minimize downtime and maximize
                   productivity.
                 </p>
-                <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Request
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/services/maintenance">Request</Link>
                 </Button>
               </div>
             </div>
