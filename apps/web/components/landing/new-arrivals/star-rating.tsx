@@ -16,7 +16,7 @@ export default function StarRating({ rating }: { rating: number }) {
       {halfStar && (
         <Star
           key="half"
-          className="h-5 w-5 fill-black"
+          className="size-4 fill-black"
           style={{ clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }}
         />
       )}
@@ -25,7 +25,7 @@ export default function StarRating({ rating }: { rating: number }) {
         .map((_, i) => (
           <Star
             key={`empty-${i}`}
-            className="h-5 w-5 text-gray-300 fill-gray-300"
+            className="size-4 text-gray-300 fill-gray-300"
           />
         ))}
     </div>

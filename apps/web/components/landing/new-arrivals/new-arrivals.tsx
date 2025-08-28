@@ -4,41 +4,52 @@ import ProductCard from "./product-card";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import Cake1 from "@/assets/cake1.png";
+import Cake2 from "@/assets/cake2.png";
+import Cake3 from "@/assets/cake3.png";
+import Cake4 from "@/assets/cake4.png";
+import Cake5 from "@/assets/cake5.png";
+
 const newArrivalsData = [
   {
     id: 1,
     name: "Cake Machine",
-    price: 299,
+    price: 199,
     originalPrice: 399,
-    rating: 4.5,
+    rating: 5,
+    image: Cake1
   },
   {
     id: 2,
     name: "Cake Machine",
-    price: 89,
+    price: 24.99,
     originalPrice: 120,
     rating: 5,
+    image: Cake2
   },
   {
     id: 3,
     name: "Cake Machine",
-    price: 179,
+    price: 24.99,
     originalPrice: 250,
-    rating: 4,
+    rating: 5,
+    image: Cake3
   },
   {
     id: 4,
     name: "Cake Machine",
-    price: 129,
+    price: 24.99,
     originalPrice: 180,
-    rating: 4.5,
+    rating: 5,
+    image: Cake4
   },
   {
     id: 5,
     name: "Cake Machine",
-    price: 49,
+    price: 24.99,
     originalPrice: 75,
     rating: 5,
+    image: Cake5
   },
 ];
 
@@ -75,12 +86,13 @@ export default function NewArrivals() {
     }
   };
 
+  // w-[95%] sm:w-[90%] md:w-[85%]
   return (
-    <section className="py-6 sm:py-8 md:py-10 w-[95%] sm:w-[90%] md:w-[85%] mx-auto">
-      <div className="container mx-auto px-4">
+    <section className="py-6 sm:py-8 md:py-10">
+      <div className="mx-auto px-4">
         {/* Section Header - Left Aligned */}
-        <div className="mb-6 sm:mb-8 md:mb-12 flex md:flex-row flex-col justify-between md:items-center items-left gap-4 md:gap-0">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 font-bold">
+        <div className="container mx-auto mb-6 sm:mb-8 md:mb-12 flex md:flex-row flex-col justify-between md:items-center items-left gap-4 md:gap-0 w-[95%] sm:w-[90%] md:w-[85%]">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 font-semibold">
             New Arrivals
           </h2>
           <Link
@@ -92,16 +104,16 @@ export default function NewArrivals() {
         </div>
 
         {/* Horizontally Scrollable Product List */}
-        <div className="relative">
+        <div className="relative w-[97.5%] sm:w-[95%] md:w-[94.5%] ml-auto">
           {/* Left Shadow Gradient */}
-          <div
+          {/* <div
             className={`absolute left-0 top-0 bottom-0 w-16 rounded-l-md bg-gradient-to-r from-black/30 to-transparent z-10 pointer-events-none transition-opacity duration-300 ${canScrollLeft ? "opacity-100" : "opacity-0"}`}
-          />
+          /> */}
 
           {/* Right Shadow Gradient */}
-          <div
+          {/* <div
             className={`absolute right-0 top-0 bottom-0 w-16 rounded-r-md bg-gradient-to-l from-black/30 to-transparent z-10 pointer-events-none transition-opacity duration-300 ${canScrollRight ? "opacity-100" : "opacity-0"}`}
-          />
+          /> */}
 
           {/* Left Arrow */}
           <button
