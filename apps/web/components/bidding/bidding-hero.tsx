@@ -61,7 +61,10 @@ export function BiddingHero() {
           >
             {/* Circular text effect */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <svg className="w-20 h-20 animate-spin" style={{ animationDuration: '20s' }}>
+              <svg
+                className="w-20 h-20 animate-spin"
+                style={{ animationDuration: "20s" }}
+              >
                 <path
                   id="circle"
                   d="M 40, 40 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"
@@ -77,8 +80,13 @@ export function BiddingHero() {
             </div>
             {/* Center arrow */}
             <div className="text-white/90">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 16.5l-6-6h12z"/>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 16.5l-6-6h12z" />
               </svg>
             </div>
           </div>
@@ -96,17 +104,17 @@ export function BiddingHero() {
             >
               MACHINES
             </h1>
-          <h1
-            className={cn(
-              // Typography
+            <h1
+              className={cn(
+                // Typography
                 "text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-[0.85] tracking-tight",
 
-              // Colors
+                // Colors
                 "text-white drop-shadow-lg"
-            )}
-          >
-            AUCTIONS
-          </h1>
+              )}
+            >
+              AUCTIONS
+            </h1>
           </div>
         </div>
       </div>
