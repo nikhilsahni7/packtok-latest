@@ -38,7 +38,7 @@ const GridSection = () => {
     },
     {
       id: 5,
-      heading: "Machinery Installer",
+      heading: "Mechanics",
       image: features5,
     },
     {

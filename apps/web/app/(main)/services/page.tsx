@@ -276,7 +276,7 @@ export default function ServicesPage() {
             <div className="col-span-3 row-start-1 col-start-1">
               <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-[450px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-black text-center">
-                  Machinery Installer
+                  Mechanics
                 </h2>
                 <p className="text-sm uppercase tracking-widest mb-8 text-center font-semibold">
                   Asset Liquidation & Value Recovery
