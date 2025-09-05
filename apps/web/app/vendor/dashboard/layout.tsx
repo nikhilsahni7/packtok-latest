@@ -14,8 +14,10 @@ export default function VendorDashboardLayout({
   const user = useAuthStore((state) => state.user);
   const hasHydrated = useHasHydrated();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarHidden, setSidebarHidden] = useState(false);
 
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed);
+  const toggleSidebarHidden = () => setSidebarHidden((v) => !v);
 
   // Don't render anything until hydration is complete
   if (!hasHydrated) {
@@ -35,17 +37,23 @@ export default function VendorDashboardLayout({
     );
   }
 
+  const sidebarWidth = sidebarHidden
+    ? "ml-12"
+    : sidebarCollapsed
+      ? "ml-16"
+      : "ml-64";
+
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="bg-gray-100 pt-20">
       <VendorSidebar
         collapsed={sidebarCollapsed}
         onToggle={toggleSidebar}
+        hidden={sidebarHidden}
+        onHideToggle={toggleSidebarHidden}
         user={user}
       />
       <main
-        className={`flex-1 overflow-y-auto transition-all duration-300 ${
-          sidebarCollapsed ? "ml-16" : "ml-64"
-        }`}
+        className={`min-h-[calc(100vh-5rem)] overflow-y-auto pt-4 px-6 ${sidebarWidth}`}
       >
         {children}
       </main>
