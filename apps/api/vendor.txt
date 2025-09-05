@@ -1,0 +1,13 @@
+
+-- vendor auth needed signin and signup
+
+-- vendor should be able to post products and then admin will approve it and put in marektplace
+in main website
+
+-- vendor should be able to maintain its inventory
+
+-- for machinery products ,send quote request to admin flow will be followed same as normal
+user
+
+-- notifications ,analytics and earnings/refunds(optional)
+

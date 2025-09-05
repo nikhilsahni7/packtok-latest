@@ -12,6 +12,7 @@ import {
   Twitter,
   Youtube,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function PacktokFooter() {
   return (
@@ -58,24 +59,36 @@ export default function PacktokFooter() {
                 </h3>
                 <ul className="space-y-1 text-xs text-gray-300">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/"
+                      className="hover:text-white transition-colors"
+                    >
                       Home
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/marketplace"
+                      className="hover:text-white transition-colors"
+                    >
                       Marketplace
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/services"
+                      className="hover:text-white transition-colors"
+                    >
                       Services
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/contact"
+                      className="hover:text-white transition-colors"
+                    >
                       Contact Us
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -87,24 +100,27 @@ export default function PacktokFooter() {
                 </h3>
                 <ul className="space-y-1 text-xs text-gray-300">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/account"
+                      className="hover:text-white transition-colors"
+                    >
                       My Account
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <span className="text-muted-foreground cursor-not-allowed">
                       My Cart
-                    </a>
+                    </span>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <span className="text-muted-foreground cursor-not-allowed">
                       My Wishlist
-                    </a>
+                    </span>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <span className="text-muted-foreground cursor-not-allowed">
                       Orders
-                    </a>
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -116,24 +132,36 @@ export default function PacktokFooter() {
                 </h3>
                 <ul className="space-y-1 text-xs text-gray-300">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/terms"
+                      className="hover:text-white transition-colors"
+                    >
                       Terms & Condition
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/privacy"
+                      className="hover:text-white transition-colors"
+                    >
                       Privacy Policy
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/refund"
+                      className="hover:text-white transition-colors"
+                    >
                       Refund Policy
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/shipping"
+                      className="hover:text-white transition-colors"
+                    >
                       Shipping & Delivery
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -145,24 +173,33 @@ export default function PacktokFooter() {
                 </h3>
                 <ul className="space-y-1 text-xs text-gray-300">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/bidding"
+                      className="hover:text-white transition-colors"
+                    >
                       Bidding
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/services/turnkey-projects"
+                      className="hover:text-white transition-colors"
+                    >
                       Turnkey Projects
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <span className="text-muted-foreground cursor-not-allowed">
                       Sell Old Items
-                    </a>
+                    </span>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <Link
+                      href="/services/maintenance"
+                      className="hover:text-white transition-colors"
+                    >
                       Maintenance
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -191,7 +228,7 @@ export default function PacktokFooter() {
 
               <div className="flex items-center gap-2">
                 {/* Google Play Button */}
-                <div className="bg-black rounded-lg px-3 py-1.5 flex items-center gap-2">
+                <div className="bg-black rounded-lg px-3 py-1.5 flex items-center gap-2 cursor-not-allowed opacity-75">
                   <svg className="size-8" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M3 20.5V3.5C3 2.91 3.34 2.39 3.84 2.15L13.69 12L3.84 21.85C3.34 21.61 3 21.09 3 20.5Z"
@@ -217,7 +254,7 @@ export default function PacktokFooter() {
                 </div>
 
                 {/* App Store Button */}
-                <div className="bg-black rounded-lg px-3 py-1.5 flex items-center gap-2">
+                <div className="bg-black rounded-lg px-3 py-1.5 flex items-center gap-2 cursor-not-allowed opacity-75">
                   <svg className="size-8" viewBox="0 0 24 24" fill="white">
                     <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.19 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
                   </svg>
@@ -231,10 +268,18 @@ export default function PacktokFooter() {
               </div>
 
               <div className="pt-4 flex items-center gap-2">
-                <a href="#" className="flex items-center justify-center">
+                <a
+                  href="#"
+                  className="flex items-center justify-center hover:text-orange-500 transition-colors"
+                  aria-label="Follow us on Twitter"
+                >
                   <Twitter className="size-6" />
                 </a>
-                <a href="#" className="flex items-center justify-center">
+                <a
+                  href="#"
+                  className="flex items-center justify-center hover:text-orange-500 transition-colors"
+                  aria-label="Follow us on TikTok"
+                >
                   <svg
                     className="size-6"
                     viewBox="0 0 24 24"
@@ -243,16 +288,32 @@ export default function PacktokFooter() {
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                   </svg>
                 </a>
-                <a href="#" className="flex items-center justify-center">
+                <a
+                  href="#"
+                  className="flex items-center justify-center hover:text-orange-500 transition-colors"
+                  aria-label="Follow us on LinkedIn"
+                >
                   <Linkedin className="size-6" />
                 </a>
-                <a href="#" className="flex items-center justify-center">
+                <a
+                  href="#"
+                  className="flex items-center justify-center hover:text-orange-500 transition-colors"
+                  aria-label="Follow us on Instagram"
+                >
                   <Instagram className="size-6" />
                 </a>
-                <a href="#" className="flex items-center justify-center">
+                <a
+                  href="#"
+                  className="flex items-center justify-center hover:text-orange-500 transition-colors"
+                  aria-label="Follow us on Facebook"
+                >
                   <Facebook className="size-6" />
                 </a>
-                <a href="#" className="flex items-center justify-center">
+                <a
+                  href="#"
+                  className="flex items-center justify-center hover:text-orange-500 transition-colors"
+                  aria-label="Subscribe to our YouTube channel"
+                >
                   <Youtube className="size-6" />
                 </a>
               </div>
