@@ -80,7 +80,7 @@ export function CompanyAcquisitionForm() {
       // Convert integer fields to numbers
       const formattedData = {
         ...data,
-        sellerYearEstablished: data.sellerYearEstablished 
+        sellerYearEstablished: data.sellerYearEstablished
           ? parseInt(data.sellerYearEstablished.toString(), 10)
           : undefined
       } as CompanyAcquisitionFormData;
@@ -90,9 +90,9 @@ export function CompanyAcquisitionForm() {
       reset();
       setAdvisors([]);
       setInquirerType("");
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message =
-        error?.response?.data?.message ||
+        (error as any)?.response?.data?.message ||
         "Failed to submit company acquisition inquiry";
       setError(message);
       setIsSuccess(false);
@@ -513,7 +513,7 @@ export function CompanyAcquisitionForm() {
           </form>
         </CardContent>
       </Card>
-      
+
       <ServiceSubmissionModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

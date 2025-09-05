@@ -6,16 +6,22 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 
-export default function Protected({ children }: { children: ReactNode }) {
+export default function Protected({
+  children,
+  redirectTo = "/auth/signin",
+}: {
+  children: ReactNode;
+  redirectTo?: string;
+}) {
   const router = useRouter();
   const token = useAuthStore((s) => s.accessToken);
   const { isLoading } = useCurrentUser();
 
   useEffect(() => {
     if (!token && !isLoading) {
-      router.replace("/auth/signin");
+      router.replace(redirectTo);
     }
-  }, [token, isLoading, router]);
+  }, [token, isLoading, router, redirectTo]);
 
   if (!token || isLoading)
     return (

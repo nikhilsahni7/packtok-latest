@@ -241,6 +241,7 @@ model User {
   serviceRequests         ServiceRequest[]         @relation("SubmittedByUser")
   assignedServiceRequests ServiceRequest[]         @relation("AssignedToAdmin")
   serviceActionLogs       ServiceActionLog[]       @relation("ActionByActor")
+  vendorApplication       VendorApplication?
 
   @@map("users")
 }
@@ -304,6 +305,9 @@ model MarketplaceProduct {
   quoteRequests QuoteRequest[]
 
   @@map("marketplace_products")
+  @@index([createdById])
+  @@index([categoryId])
+  @@index([status, submissionStatus])
 }
 
 model QuoteRequest {
@@ -323,6 +327,7 @@ model QuoteRequest {
   productId String
 
   @@map("quote_requests")
+  @@index([userId])
 }
 
 model ServiceRequest {
@@ -536,4 +541,28 @@ model JobSeekerProfile {
   serviceRequestId            String         @unique
 
   @@map("job_seeker_profiles")
+}
+
+// Additions for Vendor Application approval flow
+
+enum VendorApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model VendorApplication {
+  id         String                  @id @default(cuid())
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+  status     VendorApplicationStatus @default(PENDING)
+  companyName String?
+  notes      String?                 @db.Text
+
+  // Relation to User
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String  @unique
+
+  @@map("vendor_applications")
+  @@index([status, createdAt])
 }

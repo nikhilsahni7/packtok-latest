@@ -47,6 +47,8 @@ api.interceptors.response.use(
       "/api/v1/auth/login",
       "/api/v1/auth/signup",
       "/api/v1/auth/verify-otp",
+      "/api/v1/auth/login-vendor",
+      "/api/v1/auth/signup-vendor",
     ];
 
     const isUnauthEndpoint = unauthenticatedEndpoints.some((ep) =>

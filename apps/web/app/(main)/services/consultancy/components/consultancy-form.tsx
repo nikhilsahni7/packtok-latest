@@ -118,16 +118,16 @@ export function ConsultancyForm() {
       // Convert date fields to ISO format and integer fields to numbers
       const formattedData = {
         ...data,
-        preferredStartDate: data.preferredStartDate 
+        preferredStartDate: data.preferredStartDate
           ? new Date(data.preferredStartDate).toISOString()
           : undefined,
-        expectedCompletionDate: data.expectedCompletionDate 
+        expectedCompletionDate: data.expectedCompletionDate
           ? new Date(data.expectedCompletionDate).toISOString()
           : undefined,
-        employeesOperatingMachines: data.employeesOperatingMachines 
+        employeesOperatingMachines: data.employeesOperatingMachines
           ? parseInt(data.employeesOperatingMachines.toString(), 10)
           : undefined,
-        yearsInOperation: data.yearsInOperation 
+        yearsInOperation: data.yearsInOperation
           ? parseInt(data.yearsInOperation.toString(), 10)
           : undefined
       } as ConsultancyFormData;
@@ -138,9 +138,9 @@ export function ConsultancyForm() {
       setSelectedServices([]);
       setSelectedGoals([]);
       setShowIndustryOther(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message =
-        error?.response?.data?.message ||
+        (error as any)?.response?.data?.message ||
         "Failed to submit consultancy request";
       setError(message);
       setIsSuccess(false);
@@ -481,7 +481,7 @@ export function ConsultancyForm() {
           </form>
         </CardContent>
       </Card>
-      
+
       <ServiceSubmissionModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

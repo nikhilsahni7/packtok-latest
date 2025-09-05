@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
-import logo from "@/assets/navbar-logo.png";
 import navbarLogoDark from "@/assets/navbar-logo-dark.png";
+import logo from "@/assets/navbar-logo.png";
 import LogoutButton from "@/components/auth/logout-button";
 import { navbarLinks } from "@/constant/index";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -13,7 +12,7 @@ import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 export default function Navbar() {
   const [toggle, setToggle] = useState(false);
@@ -195,7 +194,14 @@ export default function Navbar() {
                 >
                   {user.name?.split(" ")[0] || user.email}
                 </Link>
-                <LogoutButton />
+                <LogoutButton
+                  className={cn(
+                    "transition-colors duration-500 ease-in-out",
+                    scrolled
+                      ? "text-gray-700 hover:text-gray-900"
+                      : "text-white hover:text-orange-300"
+                  )}
+                />
               </div>
             ) : (
               <Button

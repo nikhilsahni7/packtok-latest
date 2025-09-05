@@ -7,6 +7,7 @@ export default function TermsPage() {
         <PageHeader
           title="Terms & Conditions"
           subtitle="Please read these terms and conditions carefully before using our services."
+          image="/footer-logo1.png"
         />
 
         <div className="max-w-4xl mx-auto py-12 space-y-8">
@@ -15,10 +16,11 @@ export default function TermsPage() {
               1. Introduction
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              Welcome to PackTok. These Terms and Conditions ("Terms") govern
-              your use of our website and services. By accessing or using our
-              platform, you agree to be bound by these Terms. If you disagree
-              with any part of these terms, then you may not access the service.
+              Welcome to PackTok. These Terms and Conditions (&quot;Terms&quot;)
+              govern your use of our website and services. By accessing or using
+              our platform, you agree to be bound by these Terms. If you
+              disagree with any part of these terms, then you may not access the
+              service.
             </p>
           </section>
 

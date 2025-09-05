@@ -2,10 +2,15 @@
 
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@packtok/ui/components/button";
+import { cn } from "@packtok/ui/lib/utils";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-export default function LogoutButton() {
+interface LogoutButtonProps {
+  className?: string;
+}
+
+export default function LogoutButton({ className }: LogoutButtonProps) {
   const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
 
@@ -19,7 +24,7 @@ export default function LogoutButton() {
     <Button
       variant="ghost"
       onClick={handleClick}
-      className="text-sm font-medium"
+      className={cn("text-sm font-medium", className)}
     >
       Logout
     </Button>

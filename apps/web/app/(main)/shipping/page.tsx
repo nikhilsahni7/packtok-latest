@@ -7,6 +7,7 @@ export default function ShippingPage() {
         <PageHeader
           title="Shipping & Delivery"
           subtitle="Learn about our shipping options, delivery times, and what to expect with your order."
+          image="/footer-logo1.png"
         />
 
         <div className="max-w-4xl mx-auto py-12 space-y-8">
@@ -129,10 +130,10 @@ export default function ShippingPage() {
               6. Tracking Your Order
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              Once your order ships, you'll receive a tracking number via email.
-              Use this to monitor your shipment's progress through our partner
-              carriers' websites or our order tracking system in your account
-              dashboard.
+              Once your order ships, you&apos;ll receive a tracking number via
+              email. Use this to monitor your shipment&apos;s progress through
+              our partner carriers&apos; websites or our order tracking system
+              in your account dashboard.
             </p>
           </section>
 

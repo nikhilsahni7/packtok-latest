@@ -92,7 +92,7 @@ export function JobSeekerForm() {
       // Convert previousWorkEndDate to ISO format if provided
       const formattedData = {
         ...data,
-        previousWorkEndDate: data.previousWorkEndDate 
+        previousWorkEndDate: data.previousWorkEndDate
           ? new Date(data.previousWorkEndDate).toISOString()
           : undefined
       };
@@ -102,9 +102,9 @@ export function JobSeekerForm() {
       reset();
       setCv(null);
       setHasPreviousWork(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message =
-        error?.response?.data?.message || "Failed to submit job seeker profile";
+        (error as any)?.response?.data?.message || "Failed to submit job seeker profile";
       setError(message);
       setIsSuccess(false);
       setShowModal(true);
@@ -447,7 +447,7 @@ export function JobSeekerForm() {
           </form>
         </CardContent>
       </Card>
-      
+
       <ServiceSubmissionModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

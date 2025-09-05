@@ -10,12 +10,14 @@ import helmet from "helmet";
 import pinoHttp from "pino-http";
 import config from "./config";
 import adminRouter from "./routers/admin.routes";
+import adminServiceRouter from "./routers/admin.services.routes";
+import adminVendorsRouter from "./routers/admin.vendors.routes";
 import authRouter from "./routers/auth.routes";
 import categoryRouter from "./routers/category.routes";
 import productRouter from "./routers/product.routes";
 import quoteRouter from "./routers/quote.routes";
 import serviceRouter from "./routers/service.routes";
-import adminServiceRouter from "./routers/admin.services.routes";
+import vendorRouter from "./routers/vendor.routes";
 import { ApiError } from "./utils/apiError";
 import logger from "./utils/logger";
 
@@ -50,6 +52,8 @@ app.use("/api/v1/quotes", quoteRouter);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/services", serviceRouter);
 app.use("/api/v1/admins/services", adminServiceRouter);
+app.use("/api/v1/vendors", vendorRouter);
+app.use("/api/v1/admins/vendors", adminVendorsRouter);
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {

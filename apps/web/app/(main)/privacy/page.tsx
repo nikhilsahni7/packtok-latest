@@ -7,6 +7,7 @@ export default function PrivacyPage() {
         <PageHeader
           title="Privacy Policy"
           subtitle="Your privacy is important to us. Learn how we collect, use, and protect your information."
+          image="/footer-logo1.png"
         />
 
         <div className="max-w-4xl mx-auto py-12 space-y-8">
@@ -95,7 +96,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              7. Children's Privacy
+              7. Children&apos;s Privacy
             </h2>
             <p className="text-gray-700 leading-relaxed">
               Our services are not intended for individuals under the age of 18.
@@ -111,7 +112,7 @@ export default function PrivacyPage() {
             <p className="text-gray-700 leading-relaxed">
               We may update our Privacy Policy from time to time. We will notify
               you of any changes by posting the new Privacy Policy on this page
-              and updating the "Last updated" date.
+              and updating the &quot;Last updated&quot; date.
             </p>
           </section>
 

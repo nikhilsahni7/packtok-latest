@@ -7,6 +7,7 @@ export default function RefundPage() {
         <PageHeader
           title="Refund Policy"
           subtitle="Understanding our refund and return procedures for your peace of mind."
+          image="/footer-logo1.png"
         />
 
         <div className="max-w-4xl mx-auto py-12 space-y-8">

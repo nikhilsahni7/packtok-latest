@@ -1,5 +1,6 @@
 import { Button } from "@packtok/ui";
 import { cn } from "@packtok/ui/lib/utils";
+import Image from "next/image";
 
 interface MachineCardProps {
   machineName?: string;
@@ -42,9 +43,11 @@ export function MachineCard({
         )}
       >
         {imageUrl ? (
-          <img
+          <Image
             src={imageUrl}
             alt={machineName}
+            width={300}
+            height={200}
             className="w-full h-full object-cover"
           />
         ) : (
