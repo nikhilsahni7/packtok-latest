@@ -1,18 +1,18 @@
 import {
   BarChart3,
-  Calendar,
-  FileText,
-  MessageSquare,
   Bell,
-  Settings,
-  LayoutDashboard,
-  Users,
-  Package,
-  Truck,
+  Calendar,
   ClipboardList,
-  Tags,
-  UserCheck,
+  FileText,
+  LayoutDashboard,
   LucideIcon,
+  MessageSquare,
+  Package,
+  Settings,
+  Tags,
+  Truck,
+  UserCheck,
+  Users,
 } from "lucide-react";
 
 export interface NavigationItem {
@@ -65,6 +65,12 @@ export const navigation: NavigationItem[] = [
     name: "Submissions",
     href: "/dashboard/submissions",
     icon: UserCheck,
+    current: false,
+  },
+  {
+    name: "Vendors",
+    href: "/dashboard/vendors",
+    icon: Users,
     current: false,
   },
   {

@@ -82,8 +82,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const { accessToken, refreshToken, user } = await loginUser(email, password);
 
-  // Enforce role: only NORMAL_USER can use normal login
-  if (user.role !== Role.NORMAL_USER) {
+  // Enforce role routing: Vendors must use vendor login; allow Admins/Super Admins here
+  if (user.role === Role.VENDOR) {
     throw new ApiError(
       403,
       "Invalid role for these credentials. Please use vendor sign-in."
