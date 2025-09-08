@@ -243,6 +243,10 @@ model User {
   serviceActionLogs       ServiceActionLog[]       @relation("ActionByActor")
   vendorApplication       VendorApplication?
 
+  // Back-relations
+  reviewedProducts        MarketplaceProduct[] @relation("ProductsReviewedByUser")
+  createdStockMovements   StockMovement[]      @relation("StockMovementsCreatedByUser")
+
   @@map("users")
 }
 
@@ -304,10 +308,61 @@ model MarketplaceProduct {
   submissionStatus UserSubmissionStatus?
   quoteRequests QuoteRequest[]
 
+  // Moderation metadata
+  reviewedByUser User?     @relation("ProductsReviewedByUser", fields: [reviewedById], references: [id])
+  reviewedById   String?
+  reviewedAt     DateTime?
+  reviewNotes    String?   @db.Text
+
+  // Inventory and stock movement back-relations
+  inventory      ProductInventory?
+  stockMovements StockMovement[]
+
   @@map("marketplace_products")
   @@index([createdById])
   @@index([categoryId])
   @@index([status, submissionStatus])
+}
+
+// Inventory tracking for vendor products
+enum StockMovementReason {
+  ADJUSTMENT
+  SALE
+  RESTOCK
+  RESERVATION
+  CANCELLATION
+}
+
+model ProductInventory {
+  id                 String             @id @default(cuid())
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  stockOnHand        Int                @default(0)
+  lowStockThreshold  Int?
+  warehouseLocation  String?
+
+  // Relations
+  product   MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String             @unique
+
+  @@map("product_inventories")
+}
+
+model StockMovement {
+  id         String              @id @default(cuid())
+  createdAt  DateTime            @default(now())
+  delta      Int
+  reason     StockMovementReason
+  meta       Json?
+
+  // Relations
+  product    MarketplaceProduct  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String
+  createdBy  User                @relation("StockMovementsCreatedByUser", fields: [createdById], references: [id], onDelete: Restrict)
+  createdById String
+
+  @@map("stock_movements")
+  @@index([productId, createdAt])
 }
 
 model QuoteRequest {

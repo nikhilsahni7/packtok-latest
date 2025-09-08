@@ -63,6 +63,12 @@ const sidebarStructure: SidebarNode[] = [
     children: [
       {
         type: "link",
+        name: "Create New",
+        href: "/vendor/products/new",
+        icon: FileText,
+      },
+      {
+        type: "link",
         name: "Analytics",
         href: "/vendor/products/analytics",
         icon: BarChart3,

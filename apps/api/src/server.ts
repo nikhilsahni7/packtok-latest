@@ -17,6 +17,7 @@ import categoryRouter from "./routers/category.routes";
 import productRouter from "./routers/product.routes";
 import quoteRouter from "./routers/quote.routes";
 import serviceRouter from "./routers/service.routes";
+import vendorProductsRouter from "./routers/vendor.products.routes";
 import vendorRouter from "./routers/vendor.routes";
 import { ApiError } from "./utils/apiError";
 import logger from "./utils/logger";
@@ -48,6 +49,7 @@ app.get("/healthcheck", (req: Request, res: Response): void => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/admins", adminRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/vendors/products", vendorProductsRouter);
 app.use("/api/v1/quotes", quoteRouter);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/services", serviceRouter);

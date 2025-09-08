@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MarketplaceProductStatus } from "@packtok/db";
 import { Request, Response } from "express";
 import {
@@ -148,7 +149,8 @@ export const adminGetPendingSubmissions = asyncHandler(
 export const adminApproveSubmission = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const updated = await approveSubmission(id);
+    const { notes } = req.body as { notes?: string };
+    const updated = await approveSubmission(id, req.user!.id, notes);
     res.status(200).json(new ApiResponse(200, updated, "Submission approved"));
   }
 );
@@ -156,7 +158,8 @@ export const adminApproveSubmission = asyncHandler(
 export const adminRejectSubmission = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const updated = await rejectSubmission(id);
+    const { notes } = req.body as { notes?: string };
+    const updated = await rejectSubmission(id, req.user!.id, notes);
     res.status(200).json(new ApiResponse(200, updated, "Submission rejected"));
   }
 );

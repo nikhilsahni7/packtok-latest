@@ -11,6 +11,11 @@ const router = Router();
 
 router.get("/", listProducts);
 router.get("/:id", getProduct);
-router.post("/submit", authMiddleware, productMediaUpload, submitProduct);
+router.post(
+  "/submit",
+  authMiddleware,
+  productMediaUpload,
+  submitProduct
+);
 
 export default router;

@@ -14,7 +14,8 @@
     "prisma:migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
     "prisma:push": "prisma db push --schema=./prisma/schema.prisma",
     "seed": "tsx src/seed.ts",
-    "start:prod": "pnpm --filter @packtok/db build && node dist/apps/api/src/server.js"
+    "start:prod": "pnpm --filter @packtok/db build && node dist/apps/api/src/server.js",
+    "print:product": "tsx src/scripts/print-product.ts"
   },
   "dependencies": {
     "@packtok/db": "workspace:*",

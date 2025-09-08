@@ -1,18 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  productSubmissionSchema,
-  ProductSubmissionFormData,
-} from "@/schemas/product-submission-schema";
-import { useSubmitProduct } from "@/hooks/useSubmitProduct";
 import { useCategories } from "@/hooks/useCategories";
+import { useSubmitProduct } from "@/hooks/useSubmitProduct";
+import {
+  ProductSubmissionFormData,
+  productSubmissionSchema,
+} from "@/schemas/product-submission-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@packtok/ui/components/card";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
-import { Textarea } from "@packtok/ui/components/textarea";
 import {
   Select,
   SelectContent,
@@ -20,24 +23,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@packtok/ui/components/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@packtok/ui/components/card";
-import { toast } from "react-hot-toast";
-import {
-  X,
-  MapPin,
-  Plus,
-  Minus,
-  Upload,
-  FileVideo,
-  FileText,
-} from "lucide-react";
+import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
+import {
+  FileText,
+  FileVideo,
+  MapPin,
+  Minus,
+  Plus,
+  Upload,
+  X,
+} from "lucide-react";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
 export function ProductSubmissionForm() {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
@@ -211,15 +211,18 @@ export function ProductSubmissionForm() {
       const validSpecs = specifications.filter(
         (spec) => spec.key.trim() && spec.value.trim()
       );
-      const specsString = validSpecs.length > 0 
-        ? JSON.stringify(validSpecs.reduce(
-            (acc, spec) => {
-              acc[spec.key] = spec.value;
-              return acc;
-            },
-            {} as Record<string, string>
-          ))
-        : undefined;
+      const specsString =
+        validSpecs.length > 0
+          ? JSON.stringify(
+              validSpecs.reduce(
+                (acc, spec) => {
+                  acc[spec.key] = spec.value;
+                  return acc;
+                },
+                {} as Record<string, string>
+              )
+            )
+          : undefined;
 
       // Create the submission data matching backend API format
       const submissionData = {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   MarketplaceProductStatus,
   Prisma,
@@ -173,20 +174,36 @@ export const getPendingSubmissions = async () => {
   });
 };
 
-export const approveSubmission = async (productId: string) => {
+export const approveSubmission = async (
+  productId: string,
+  reviewerId?: string,
+  notes?: string
+) => {
   return prisma.marketplaceProduct.update({
     where: { id: productId },
     data: {
       submissionStatus: UserSubmissionStatus.APPROVED,
       status: MarketplaceProductStatus.AVAILABLE,
+      reviewedById: reviewerId,
+      reviewedAt: new Date(),
+      reviewNotes: notes,
     },
   });
 };
 
-export const rejectSubmission = async (productId: string) => {
+export const rejectSubmission = async (
+  productId: string,
+  reviewerId?: string,
+  notes?: string
+) => {
   return prisma.marketplaceProduct.update({
     where: { id: productId },
-    data: { submissionStatus: UserSubmissionStatus.REJECTED },
+    data: {
+      submissionStatus: UserSubmissionStatus.REJECTED,
+      reviewedById: reviewerId,
+      reviewedAt: new Date(),
+      reviewNotes: notes,
+    },
   });
 };
 
