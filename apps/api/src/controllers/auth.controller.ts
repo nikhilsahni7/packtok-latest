@@ -93,7 +93,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: "strict" as const,
+    sameSite: "lax" as const,
+    ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
   res
@@ -117,7 +118,8 @@ export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: "strict" as const,
+    sameSite: "lax" as const,
+    ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
   res
@@ -146,7 +148,8 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: "strict" as const,
+    sameSite: "lax" as const,
+    ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
   res
