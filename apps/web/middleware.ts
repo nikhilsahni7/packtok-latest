@@ -98,8 +98,8 @@ export async function middleware(req: NextRequest) {
 
   // Authenticated as Vendor
   if (role === "VENDOR" || role === "vendor") {
-    // Vendor shouldn't be on normal site or vendor auth pages
-    if (!isVendorPath || isVendorAuthPath) {
+    // Vendors can access both vendor and normal routes; only redirect from vendor auth pages
+    if (isVendorAuthPath) {
       const url = req.nextUrl.clone();
       url.pathname = VENDOR_DEFAULT;
       return NextResponse.redirect(url);

@@ -7,6 +7,7 @@ const nextConfig = {
     domains: ["localhost", "rcppgcrtnawltqbdpwsz.supabase.co"],
     unoptimized: false,
   },
+  output: 'standalone',
 };
 
 module.exports = nextConfig;
