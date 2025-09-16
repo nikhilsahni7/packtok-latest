@@ -24,6 +24,10 @@ export const navbarLinks: {
     href: "/services",
   },
   {
+    title: "Podcasts",
+    href: "/podcasts",
+  },
+  {
     title: "Contact Us",
     href: "/contact",
   },

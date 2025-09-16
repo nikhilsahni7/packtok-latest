@@ -12,7 +12,7 @@ import Spareparts from "@/assets/spare-parts3.png";
 
 export default function CategoryList() {
   return (
-    <div className="flex flex-col gap-8 py-8">
+    <div className="flex flex-col gap-8 pt-2 pb-8">
       <div className="relative overflow-hidden bg-gradient-to-b from-orange-50 to-white">
         <div className="max-w-7xl mx-auto px-4 py-20">
           <section className="grid grid-cols-1 md:grid-cols-5 py-18">

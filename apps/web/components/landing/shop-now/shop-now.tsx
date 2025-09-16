@@ -1,12 +1,9 @@
-import React from "react";
-import machinery from "@/assets/machinery3.png";
-import spareParts from "@/assets/spare-parts.png";
-import rawMaterials from "@/assets/raw-materials.png";
 import Consumables from "@/assets/consumables-buy-now.png";
+import machinery from "@/assets/machinery3.png";
 import ManPower from "@/assets/man-power.png";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 export default function ShopNow() {
   return (
@@ -47,9 +44,11 @@ export default function ShopNow() {
           </Link>
         </div>
         <Image
-          src={spareParts}
+          src="/spare-parts.png"
+          height={500}
+          width={500}
           alt="spare parts"
-          className="object-cover flex-shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
+          className="object-cover flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80"
         />
       </div>
 
@@ -67,9 +66,11 @@ export default function ShopNow() {
           </Link>
         </div>
         <Image
-          src={rawMaterials}
+          src="/rawmaterials.png"
+          width={500}
+          height={500}
           alt="raw materials"
-          className="object-cover flex-shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
+          className="object-cover flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80"
         />
       </div>
 
@@ -87,8 +88,8 @@ export default function ShopNow() {
         </div>
         <Image
           src={Consumables}
-          alt="raw materials"
-          className="object-cover flex-shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
+          alt="consumables"
+          className="object-cover flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80"
         />
       </div>
 
@@ -98,7 +99,7 @@ export default function ShopNow() {
             Man Power
           </h3>
           <Link
-            href={"/marketplace/man-power"}
+            href="/marketplace/manpower"
             className="text-xs sm:text-sm md:text-base lg:text-lg text-left border-b border-gray-800 inline-flex items-center gap-1"
           >
             Shop Now <ArrowRight className="inline-block" size={16} />
@@ -106,8 +107,8 @@ export default function ShopNow() {
         </div>
         <Image
           src={ManPower}
-          alt="raw materials"
-          className="object-cover flex-shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48"
+          alt="man power"
+          className="object-cover flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80"
         />
       </div>
     </div>
