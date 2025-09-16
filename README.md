@@ -1,4 +1,4 @@
-# 🚀 Packtok Platform - Monorepo
+# 🚀 Packtok Platform - Monorepo setup
 
 A comprehensive digital marketplace platform built with modern technologies and monorepo architecture.
 
@@ -19,6 +19,7 @@ A comprehensive digital marketplace platform built with modern technologies and 
 ## 🏗️ Architecture Overview
 
 This monorepo uses:
+
 - **pnpm** - Efficient package manager with workspace support
 - **Turborepo** - High-performance build system and task orchestrator
 - **TypeScript** - Type-safe development across all packages
@@ -110,28 +111,33 @@ pnpm --version
 ## 🚀 Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd packtok-monorepo
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 4. **Build all packages**
+
    ```bash
    pnpm build
    ```
 
 5. **Start development**
+
    ```bash
    pnpm dev
    ```
@@ -139,6 +145,7 @@ pnpm --version
 ## 🏃‍♂️ Running Applications
 
 ### Backend API
+
 ```bash
 # Development mode with hot reload
 cd apps/api
@@ -152,6 +159,7 @@ pnpm start
 ```
 
 ### Customer Web App
+
 ```bash
 # Development mode
 cd apps/web
@@ -165,6 +173,7 @@ pnpm start
 ```
 
 ### Admin Panel
+
 ```bash
 # Development mode
 cd apps/admin
@@ -178,6 +187,7 @@ pnpm start
 ```
 
 ### Mobile App
+
 ```bash
 # Development mode
 cd apps/mobile
@@ -262,16 +272,19 @@ module.exports = require("@packtok/config/prettier");
 ### Making Changes
 
 1. **Create a new branch**
+
    ```bash
    git checkout -b feature/new-feature
    ```
 
 2. **Make changes in packages/apps**
+
    - Edit shared packages in `packages/`
    - Changes are immediately available to apps
    - TypeScript provides compile-time safety
 
 3. **Test changes**
+
    ```bash
    pnpm lint      # Run linting
    pnpm build     # Build all packages
@@ -279,6 +292,7 @@ module.exports = require("@packtok/config/prettier");
    ```
 
 4. **Commit and push**
+
    ```bash
    git add .
    git commit -m "feat: add new feature"
@@ -288,12 +302,14 @@ module.exports = require("@packtok/config/prettier");
 ### Adding New Packages
 
 1. **Create package directory**
+
    ```bash
    mkdir packages/new-package
    cd packages/new-package
    ```
 
 2. **Initialize package.json**
+
    ```json
    {
      "name": "@packtok/new-package",
@@ -307,6 +323,7 @@ module.exports = require("@packtok/config/prettier");
    ```
 
 3. **Create TypeScript config**
+
    ```json
    {
      "extends": "../../tsconfig.base.json",
@@ -320,6 +337,7 @@ module.exports = require("@packtok/config/prettier");
 ## 📜 Scripts
 
 ### Root Level Scripts
+
 ```bash
 pnpm build        # Build all packages and apps
 pnpm dev          # Start all apps in development mode
@@ -329,6 +347,7 @@ pnpm type-check   # Run TypeScript type checking
 ```
 
 ### Package Level Scripts
+
 ```bash
 # Run script in specific package
 pnpm --filter @packtok/api dev
@@ -341,6 +360,7 @@ pnpm --filter "@packtok/*" build
 ## 🔐 Environment Variables
 
 ### API Backend (`apps/api`)
+
 ```bash
 DATABASE_URL="postgresql://username:password@localhost:5432/packtok"
 JWT_SECRET="your-jwt-secret-key-here"
@@ -349,12 +369,14 @@ API_HOST=localhost
 ```
 
 ### Web Frontend (`apps/web`)
+
 ```bash
 NEXT_PUBLIC_API_URL="http://localhost:3001"
 NEXT_PUBLIC_APP_NAME="Packtok"
 ```
 
 ### Admin Panel (`apps/admin`)
+
 ```bash
 NEXT_PUBLIC_API_URL="http://localhost:3001"
 NEXT_PUBLIC_APP_NAME="Packtok Admin"
@@ -398,6 +420,7 @@ pnpm test:watch
 ### Common Issues
 
 1. **Module not found errors**
+
    ```bash
    # Reinstall dependencies
    pnpm install
@@ -408,6 +431,7 @@ pnpm test:watch
    ```
 
 2. **TypeScript errors**
+
    ```bash
    # Rebuild all packages
    pnpm build
@@ -417,6 +441,7 @@ pnpm test:watch
    ```
 
 3. **pnpm workspace issues**
+
    ```bash
    # Check workspace configuration
    cat pnpm-workspace.yaml
