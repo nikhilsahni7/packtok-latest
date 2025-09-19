@@ -1,5 +1,7 @@
 import { CategoryList, Newsletter } from "@/components";
 import Image from "next/image";
+import marketiplace_bg from "@/assets/marketiplace_bg.png";
+
 
 export default function Page() {
   return (
@@ -9,7 +11,7 @@ export default function Page() {
         {/* Full Width Image Banner */}
         <div className="relative h-[50vh] w-screen ml-[calc(50%-50vw)] overflow-hidden">
           <Image
-            src="/marketplace.png"
+            src={marketiplace_bg}
             alt="Marketplace"
             fill
             className="object-cover object-center brightness-110 contrast-110"
@@ -19,9 +21,9 @@ export default function Page() {
         </div>
 
         {/* Black Band with Text */}
-        <div className="bg-black text-white py-6 px-4">
+        <div className="bg-black border-y-[3px] border-[#FE7B02] text-white py-6 px-4">
           <div className="flex flex-col items-center justify-center text-center">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <h1 className="text-[2.625rem] md:text-6xl font-bold tracking-tight">
               Marketplace
             </h1>
           </div>

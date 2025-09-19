@@ -97,7 +97,7 @@ export default function Navbar() {
           : "bg-black border-b-3 border-orange-500"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-[80%] mx-auto ">
         <div className="flex items-center justify-between py-3">
           {/* Logo */}
           <div className="flex-shrink-0">

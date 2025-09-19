@@ -51,7 +51,7 @@ const GridSection = () => {
 
   return (
     <div
-      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8
+      className="w-full md:w-[80%] mx-auto py-8
      sm:py-12 space-y-8 sm:space-y-12"
     >
       {/* Main Grid - 4 squares with images and text */}
@@ -59,13 +59,13 @@ const GridSection = () => {
         {mainGridItems.map((item) => (
           <div
             key={item.id}
-            className="bg-gray-100 rounded-lg p-4 sm:p-6 md:p-6 grid grid-cols-1 md:grid-cols-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-50 h-[318px]"
+            className="bg-gray-100 rounded-lg p-4 sm:p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-50 h-[318px]"
           >
             {/* Text content */}
             <div className="flex flex-col justify-end w-full text-left mt-4">
               <h3
-                className="text-xl sm:text-2xl md:text-4xl
-     text-gray-900 mb-4 leading-tight font-medium"
+                className="text-xl sm:text-2xl md:text-[2.125rem] 
+     text-gray-900 mb-4 leading-tight font-medium w-[200px]" 
               >
                 {item.heading}
               </h3>
@@ -110,8 +110,8 @@ const GridSection = () => {
         />
 
         <div className="flex flex-col justify-center gap-4 px-16 py-8 bg-[#F3F5F7]">
-          <h1 className="text-4xl font-medium">Bidding</h1>
-          <p className="text-lg">
+          <h1 className="text-[40px] font-medium">Bidding</h1>
+          <p className="text-lg text-justify ">
             Welcome to our Bidding Section – your gateway to exclusive deals and
             competitive offers. Participate in live auctions, place your bids
             with confidence, and grab the best prices on a wide range of

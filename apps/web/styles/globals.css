@@ -22,3 +22,11 @@ body:has(main.fluid-bg) {
   /* background-position: center; */
   background-repeat: no-repeat;
 }
+
+@theme {
+ 
+  --text-34: 2.125rem;
+  --bg-newsletter: url('/newsletter.png');
+
+
+}

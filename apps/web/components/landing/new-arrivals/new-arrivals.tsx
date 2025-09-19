@@ -89,9 +89,9 @@ export default function NewArrivals() {
   // w-[95%] sm:w-[90%] md:w-[85%]
   return (
     <section className="py-6 sm:py-8 md:py-10">
-      <div className="mx-auto px-4">
+      <div className="mx-auto ">
         {/* Section Header - Left Aligned */}
-        <div className="container mx-auto mb-6 sm:mb-8 md:mb-12 flex md:flex-row flex-col justify-between md:items-center items-left gap-4 md:gap-0 w-[95%] sm:w-[90%] md:w-[85%]">
+        <div className="container mx-auto mb-6 sm:mb-8 md:mb-12 flex md:flex-row flex-col justify-between md:items-center items-left gap-4 md:gap-0 w-[95%] sm:w-[90%] md:w-[80%]">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 font-semibold">
             New Arrivals
           </h2>
@@ -104,7 +104,7 @@ export default function NewArrivals() {
         </div>
 
         {/* Horizontally Scrollable Product List */}
-        <div className="relative w-[97.5%] sm:w-[95%] md:w-[94.5%] ml-auto">
+        <div className="relative w-[97.5%] sm:w-[95%] md:w-[91%] ml-auto">
           {/* Left Shadow Gradient */}
           {/* <div
             className={`absolute left-0 top-0 bottom-0 w-16 rounded-l-md bg-gradient-to-r from-black/30 to-transparent z-10 pointer-events-none transition-opacity duration-300 ${canScrollLeft ? "opacity-100" : "opacity-0"}`}
