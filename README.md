@@ -1,4 +1,4 @@
-# 🚀 Packtok Platform - Monorepo setup
+# 🚀 Packtok Platform - Monorepo 
 
 A comprehensive digital marketplace platform built with modern technologies and monorepo architecture.
 
