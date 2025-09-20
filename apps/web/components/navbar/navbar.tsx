@@ -91,10 +91,10 @@ export default function Navbar() {
   return (
     <div
       className={cn(
-        "fixed top-0 left-0 right-0 z-50  transition-all duration-500 ease-in-out",
+        " top-0 left-0 right-0 z-50  ",
         scrolled || toggle
-          ? "shadow-md bg-white"
-          : "bg-black border-b-3 border-orange-500"
+          ? "shadow-md bg-white fixed transition-all duration-500 ease-in-out"
+          : "bg-black border-b-3 border-orange-500 "
       )}
     >
       <div className="w-[80%] mx-auto ">

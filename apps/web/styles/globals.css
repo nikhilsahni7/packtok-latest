@@ -1,3 +1,5 @@
+
+
 /* Phone input country list width fix */
 .react-tel-input .country-list {
   width: 280px !important;
@@ -28,5 +30,26 @@ body:has(main.fluid-bg) {
   --text-34: 2.125rem;
   --bg-newsletter: url('/newsletter.png');
 
+}
 
+.marketplace-bg {
+  background-image: url("/BgVector.png");
+  /* background-size: cover; */
+  background-position-y: 19%;
+  background-position-x: center;
+  background-size: 100% 45%;
+  /* background-position: center; */
+  background-repeat: no-repeat;
+}
+
+.newsletter-bg {
+  background-image: url("../assets/newsletter.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.form-bg {
+  background-image: url("../assets/form_bg.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }

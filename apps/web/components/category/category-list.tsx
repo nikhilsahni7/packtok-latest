@@ -21,9 +21,9 @@ import man_power_bg from "@/assets/man_power_bg.png";
 export default function CategoryList() {
   return (
 
-    <div className="relative overflow-hidden ">
-      <div className="w-[95%] mx-auto px-4 py-20 ">
-        <section className={`grid grid-cols-1 md:grid-cols-5 py-18 bg-[url('/${Marketing}')] bg-cover bg-center`}>
+    <div className="relative z-[-1] marketplace-bg overflow-hidden ">
+      <div className="w-[95%]  mx-auto px-4 py-20 ">
+        <section className={`grid grid-cols-1 md:grid-cols-5 py-18  `}>
           <Image
             src={Machinery}
             alt="Machinery Image"
@@ -90,7 +90,7 @@ export default function CategoryList() {
         </section>
 
         {/* Maintenance Section */}
-        <section className="grid grid-cols-1 md:grid-cols-5 py-18">
+        <section className="grid relative z-[1] grid-cols-1 md:grid-cols-5 py-18">
           <Image
             src={spare}
             alt="Spareparts projects"

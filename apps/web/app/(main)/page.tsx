@@ -7,6 +7,9 @@ import {
   Articles
 } from "@/components";
 
+import "/styles/globals.css";
+
+
 export default function Home() {
   return (
     <main className="mt-16 fluid-bg">

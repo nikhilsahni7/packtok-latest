@@ -153,629 +153,647 @@ export function TurnkeyProjectForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-          <div className="p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-8">
-              Turnkey Project Inquiry
-            </h1>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Contact Information
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="contactName"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Contact Name
-                    </Label>
-                    <Input
-                      id="contactName"
-                      placeholder="John Doe"
-                      {...register("contactName")}
-                      className={cn(
-                        "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500",
-                        errors.contactName && "border-red-500"
-                      )}
-                    />
-                    {errors.contactName && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.contactName.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="companyName"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Company Name
-                    </Label>
-                    <Input
-                      id="companyName"
-                      placeholder="Alpha Industries"
-                      {...register("companyName")}
-                      className={cn(
-                        "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500",
-                        errors.companyName && "border-red-500"
-                      )}
-                    />
-                    {errors.companyName && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.companyName.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="role"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Role
-                    </Label>
-                    <Input
-                      id="role"
-                      placeholder="Project Manager"
-                      {...register("role")}
-                      className={cn(
-                        "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500",
-                        errors.role && "border-red-500"
-                      )}
-                    />
-                    {errors.role && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.role.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="email"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Email Address
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="john.doe@company.com"
-                      {...register("email")}
-                      className={cn(
-                        "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500",
-                        errors.email && "border-red-500"
-                      )}
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.email.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="phone"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Phone Number
-                    </Label>
-                    <Input
-                      id="phone"
-                      placeholder="+1 (555) 123-4567"
-                      {...register("phone")}
-                      className={cn(
-                        "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500",
-                        errors.phone && "border-red-500"
-                      )}
-                    />
-                    {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.phone.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="website"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Website (Optional)
-                    </Label>
-                    <Input
-                      id="website"
-                      placeholder="https://company.com"
-                      {...register("website")}
-                      className={cn(
-                        "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500",
-                        errors.website && "border-red-500"
-                      )}
-                    />
-                    {errors.website && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.website.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
+    <div className="min-h-screen py-24 bg-gradient-to-br from-purple-50 to-pink-50 p-4">
+      <div className="w-[95%]   mx-auto">
+        <div className="form-bg bg-white shadow-[0_10.8px_18px_3.6px_rgba(150,144,155,0.22)] rounded-[28.8px] py-10 w-full h-full">
+          <div className="bg-white w-11/12 border-[1px] border-[rgba(255, 255, 255, 1)] shadow-[0_0_4px_1px_rgba(255, 255, 255, 1)]  mx-auto h-full rounded-3xl overflow-hidden">
+            <div className="px-14 py-4">
+              <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
+                <h1 className=" bg-[#4A3AFF]  inline-block text-[24px] font-bold text-white rounded-2xl px-20 py-5 mb-8">
+                  Turnkey Project Inquiry
+                </h1>
               </div>
-
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Industry & Project Details
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-700">
-                      Industry (Select all that apply)
-                    </Label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
-                      {industryOptions.map((industry) => (
-                        <div
-                          key={industry.value}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={industry.value}
-                            checked={selectedIndustries.includes(
-                              industry.value
-                            )}
-                            onCheckedChange={(checked) =>
-                              handleIndustryChange(
-                                industry.value,
-                                checked as boolean
-                              )
-                            }
-                          />
-                          <Label
-                            htmlFor={industry.value}
-                            className="text-sm font-normal"
-                          >
-                            {industry.label}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                    {errors.industry && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.industry.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)]">
+                <div className="m-0">
+                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                    Section 1: Contact Information
+                  </h3>
+                  <div className="px-10 border-y-[1px] pt-4 border-[#E0E0E0]">
+                    <div className="grid grid-cols-2 mb-6  gap-5 space-y-2">
                       <Label
-                        htmlFor="facilityType"
+                        htmlFor="contactName"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Facility Type
+                        Contact Name
+                      </Label>
+                      <Input
+                        id="contactName"
+
+                        {...register("contactName")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
+                          errors.contactName && "border-red-500"
+                        )}
+                      />
+                      {errors.contactName && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.contactName.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                      <Label
+                        htmlFor="companyName"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Company Name
+                      </Label>
+                      <Input
+                        id="companyName"
+                        {...register("companyName")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]  px-4  focus:border-purple-500 focus:ring-purple-500",
+                          errors.companyName && "border-red-500"
+                        )}
+                      />
+                      {errors.companyName && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.companyName.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                      <Label
+                        htmlFor="role"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Role
+                      </Label>
+                      <Input
+                        id="role"
+
+                        {...register("role")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px] focus:border-purple-500 focus:ring-purple-500",
+                          errors.role && "border-red-500"
+                        )}
+                      />
+                      {errors.role && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.role.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                      <Label
+                        htmlFor="email"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Email Address
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+
+                        {...register("email")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
+                          errors.email && "border-red-500"
+                        )}
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.email.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                      <Label
+                        htmlFor="phone"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="phone"
+
+                        {...register("phone")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
+                          errors.phone && "border-red-500"
+                        )}
+                      />
+                      {errors.phone && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.phone.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 grid grid-cols-2 pb-5 gap-5 ">
+                      <Label
+                        htmlFor="website"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Website (Optional)
+                      </Label>
+                      <Input
+                        id="website"
+
+                        {...register("website")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
+                          errors.website && "border-red-500"
+                        )}
+                      />
+                      {errors.website && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.website.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="m-0">
+                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                    Section 2: Industry & Project Details
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="px-10 py-5 border-y-[1px] border-[#E0E0E0]">
+                      <Label className="text-sm font-medium text-gray-700">
+                        Industry Type:
+                      </Label>
+                      <div className="grid py-6 grid-cols-2 md:grid-cols-3 gap-10 mt-2">
+                        {industryOptions.map((industry) => (
+                          <div
+                            key={industry.value}
+                            className="flex items-center justify-center space-x-2 border p-4 border-[#D3D3D3]"
+                          >
+                            <Checkbox
+                              id={industry.value}
+                              checked={selectedIndustries.includes(
+                                industry.value
+                              )}
+                              onCheckedChange={(checked) =>
+                                handleIndustryChange(
+                                  industry.value,
+                                  checked as boolean
+                                )
+                              }
+                            />
+                            <Label
+                              htmlFor={industry.value}
+                              className="text-sm font-normal text-[#828282]"
+                            >
+                              {industry.label}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                      {errors.industry && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.industry.message}
+                        </p>
+                      )}
+
+
+                      <div className=" py-4">
+                        <div className="space-y-2 mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Label
+                            htmlFor="facilityType"
+                            className="text-sm font-medium text-gray-700"
+                          >
+                            Facility Type
+                          </Label>
+                          <Select
+                            onValueChange={(value) =>
+                              setValue(
+                                "facilityType",
+                                value as
+                                | "NEW_PRODUCTION_PLANT"
+                                | "EXPANSION_OF_EXISTING_FACILITY"
+                                | "MODERNIZATION_AUTOMATION"
+                                | "OTHER"
+                              )
+                            }
+
+                          >
+                            <SelectTrigger
+                              className={cn(
+                                "h-[44px]",
+                                errors.facilityType && "border-red-500"
+                              )}
+                            >
+                              <SelectValue placeholder="Select facility type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="NEW_PRODUCTION_PLANT">
+                                New Production Plant
+                              </SelectItem>
+                              <SelectItem value="EXPANSION_OF_EXISTING_FACILITY">
+                                Expansion of Existing Facility
+                              </SelectItem>
+                              <SelectItem value="MODERNIZATION_AUTOMATION">
+                                Modernization & Automation
+                              </SelectItem>
+                              <SelectItem value="OTHER">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {errors.facilityType && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {errors.facilityType.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2 mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Label
+                            htmlFor="targetProductionCapacity"
+                            className="text-sm font-medium text-gray-700"
+                          >
+                            Target Production Capacity
+                          </Label>
+                          <Input
+                            id="targetProductionCapacity"
+                            placeholder="1000 units/day"
+                            {...register("targetProductionCapacity")}
+                            className={cn(
+                              "h-[44px] focus:border-purple-500 focus:ring-purple-500",
+                              errors.targetProductionCapacity && "border-red-500"
+                            )}
+                          />
+                          {errors.targetProductionCapacity && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {errors.targetProductionCapacity.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className=" grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Label
+                            htmlFor="projectDescription"
+                            className="text-sm font-medium items-start text-gray-700"
+                          >
+                            Project Description
+                          </Label>
+
+                          <Textarea
+                            id="projectDescription"
+                            placeholder="Describe your turnkey project requirements..."
+                            rows={4}
+                            {...register("projectDescription")}
+                            className={cn(
+                              "h-[162px] focus:border-purple-500 focus:ring-purple-500 resize-none",
+                              errors.projectDescription && "border-red-500"
+                            )}
+                          />
+                          {errors.projectDescription && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {errors.projectDescription.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+                  </div>
+                </div>
+
+                <div className="m-0">
+                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                    Section 3: Timeline & Budget
+                  </h3>
+                  <div className=" border-y px-10 py-6 border-[#E0E0E0] ">
+                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <Label
+                        htmlFor="completionTimeline"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Completion Timeline
                       </Label>
                       <Select
                         onValueChange={(value) =>
                           setValue(
-                            "facilityType",
+                            "completionTimeline",
                             value as
-                              | "NEW_PRODUCTION_PLANT"
-                              | "EXPANSION_OF_EXISTING_FACILITY"
-                              | "MODERNIZATION_AUTOMATION"
-                              | "OTHER"
+                            | "MONTHS_0_6"
+                            | "MONTHS_6_12"
+                            | "YEARS_1_2"
+                            | "FLEXIBLE_TO_BE_DISCUSSED"
                           )
                         }
                       >
                         <SelectTrigger
                           className={cn(
-                            "border-gray-200 rounded-lg",
-                            errors.facilityType && "border-red-500"
+                            "  h-[44px]",
+                            errors.completionTimeline && "border-red-500"
                           )}
                         >
-                          <SelectValue placeholder="Select facility type" />
+                          <SelectValue placeholder="Select timeline" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="NEW_PRODUCTION_PLANT">
-                            New Production Plant
+                          <SelectItem value="MONTHS_0_6">0-6 Months</SelectItem>
+                          <SelectItem value="MONTHS_6_12">6-12 Months</SelectItem>
+                          <SelectItem value="YEARS_1_2">1-2 Years</SelectItem>
+                          <SelectItem value="FLEXIBLE_TO_BE_DISCUSSED">
+                            Flexible (To be discussed)
                           </SelectItem>
-                          <SelectItem value="EXPANSION_OF_EXISTING_FACILITY">
-                            Expansion of Existing Facility
-                          </SelectItem>
-                          <SelectItem value="MODERNIZATION_AUTOMATION">
-                            Modernization & Automation
-                          </SelectItem>
-                          <SelectItem value="OTHER">Other</SelectItem>
                         </SelectContent>
                       </Select>
-                      {errors.facilityType && (
+                      {errors.completionTimeline && (
                         <p className="text-red-500 text-sm mt-1">
-                          {errors.facilityType.message}
+                          {errors.completionTimeline.message}
                         </p>
                       )}
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <Label
-                        htmlFor="targetProductionCapacity"
+                        htmlFor="estimatedBudget"
                         className="text-sm font-medium text-gray-700"
                       >
-                        Target Production Capacity
+                        Estimated Budget
                       </Label>
-                      <Input
-                        id="targetProductionCapacity"
-                        placeholder="1000 units/day"
-                        {...register("targetProductionCapacity")}
-                        className={cn(
-                          "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500",
-                          errors.targetProductionCapacity && "border-red-500"
-                        )}
-                      />
-                      {errors.targetProductionCapacity && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.targetProductionCapacity.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="projectDescription"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Project Description
-                    </Label>
-                    <Textarea
-                      id="projectDescription"
-                      placeholder="Describe your turnkey project requirements..."
-                      rows={4}
-                      {...register("projectDescription")}
-                      className={cn(
-                        "border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500 resize-none",
-                        errors.projectDescription && "border-red-500"
-                      )}
-                    />
-                    {errors.projectDescription && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.projectDescription.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Timeline & Budget
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="completionTimeline"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Completion Timeline
-                    </Label>
-                    <Select
-                      onValueChange={(value) =>
-                        setValue(
-                          "completionTimeline",
-                          value as
-                            | "MONTHS_0_6"
-                            | "MONTHS_6_12"
-                            | "YEARS_1_2"
-                            | "FLEXIBLE_TO_BE_DISCUSSED"
-                        )
-                      }
-                    >
-                      <SelectTrigger
-                        className={cn(
-                          "border-gray-200 rounded-lg",
-                          errors.completionTimeline && "border-red-500"
-                        )}
-                      >
-                        <SelectValue placeholder="Select timeline" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="MONTHS_0_6">0-6 Months</SelectItem>
-                        <SelectItem value="MONTHS_6_12">6-12 Months</SelectItem>
-                        <SelectItem value="YEARS_1_2">1-2 Years</SelectItem>
-                        <SelectItem value="FLEXIBLE_TO_BE_DISCUSSED">
-                          Flexible (To be discussed)
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.completionTimeline && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.completionTimeline.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="estimatedBudget"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Estimated Budget
-                    </Label>
-                    <Select
-                      onValueChange={(value) =>
-                        setValue(
-                          "estimatedBudget",
-                          value as
+                      <Select
+                        onValueChange={(value) =>
+                          setValue(
+                            "estimatedBudget",
+                            value as
                             | "UNDER_1M"
                             | "M1_5"
                             | "M5_10"
                             | "OVER_10M"
                             | "TO_BE_DISCUSSED"
-                        )
-                      }
-                    >
-                      <SelectTrigger
-                        className={cn(
-                          "border-gray-200 rounded-lg",
-                          errors.estimatedBudget && "border-red-500"
-                        )}
+                          )
+                        }
                       >
-                        <SelectValue placeholder="Select budget range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="UNDER_1M">Under $1M</SelectItem>
-                        <SelectItem value="M1_5">$1M - $5M</SelectItem>
-                        <SelectItem value="M5_10">$5M - $10M</SelectItem>
-                        <SelectItem value="OVER_10M">Over $10M</SelectItem>
-                        <SelectItem value="TO_BE_DISCUSSED">
-                          To be discussed
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.estimatedBudget && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.estimatedBudget.message}
-                      </p>
-                    )}
-                  </div>
+                        <SelectTrigger
+                          className={cn(
+                            " h-[44px]",
+                            errors.estimatedBudget && "border-red-500"
+                          )}
+                        >
+                          <SelectValue placeholder="Select budget range" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="UNDER_1M">Under $1M</SelectItem>
+                          <SelectItem value="M1_5">$1M - $5M</SelectItem>
+                          <SelectItem value="M5_10">$5M - $10M</SelectItem>
+                          <SelectItem value="OVER_10M">Over $10M</SelectItem>
+                          <SelectItem value="TO_BE_DISCUSSED">
+                            To be discussed
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.estimatedBudget && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.estimatedBudget.message}
+                        </p>
+                      )}
+                    </div>
 
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="fundingStatus"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Funding Status
-                    </Label>
-                    <Select
-                      onValueChange={(value) =>
-                        setValue(
-                          "fundingStatus",
-                          value as
+                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <Label
+                        htmlFor="fundingStatus"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Funding Status
+                      </Label>
+                      <Select
+                        onValueChange={(value) =>
+                          setValue(
+                            "fundingStatus",
+                            value as
                             | "FULLY_FUNDED"
                             | "PARTIALLY_FUNDED"
                             | "SEEKING_FINANCING"
                             | "OTHER"
-                        )
-                      }
-                    >
-                      <SelectTrigger
-                        className={cn(
-                          "border-gray-200 rounded-lg",
-                          errors.fundingStatus && "border-red-500"
-                        )}
-                      >
-                        <SelectValue placeholder="Select funding status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="FULLY_FUNDED">
-                          Fully Funded
-                        </SelectItem>
-                        <SelectItem value="PARTIALLY_FUNDED">
-                          Partially Funded
-                        </SelectItem>
-                        <SelectItem value="SEEKING_FINANCING">
-                          Seeking Financing
-                        </SelectItem>
-                        <SelectItem value="OTHER">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.fundingStatus && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.fundingStatus.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="siteAvailableStatus"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Site Available Status
-                    </Label>
-                    <Select
-                      onValueChange={(value) =>
-                        setValue(
-                          "siteAvailableStatus",
-                          value as "YES" | "NO" | "IN_PLANNING"
-                        )
-                      }
-                    >
-                      <SelectTrigger
-                        className={cn(
-                          "border-gray-200 rounded-lg",
-                          errors.siteAvailableStatus && "border-red-500"
-                        )}
-                      >
-                        <SelectValue placeholder="Select site status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="YES">Yes</SelectItem>
-                        <SelectItem value="NO">No</SelectItem>
-                        <SelectItem value="IN_PLANNING">In Planning</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.siteAvailableStatus && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.siteAvailableStatus.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Services Needed
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {serviceOptions.map((service) => (
-                    <div
-                      key={service.value}
-                      className="flex items-center space-x-2"
-                    >
-                      <Checkbox
-                        id={service.value}
-                        checked={selectedServices.includes(service.value)}
-                        onCheckedChange={(checked) =>
-                          handleServiceChange(service.value, checked as boolean)
+                          )
                         }
-                      />
-                      <Label
-                        htmlFor={service.value}
-                        className="text-sm font-normal"
                       >
-                        {service.label}
-                      </Label>
+                        <SelectTrigger
+                          className={cn(
+                            " h-[44px]",
+                            errors.fundingStatus && "border-red-500"
+                          )}
+                        >
+                          <SelectValue placeholder="Select funding status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="FULLY_FUNDED">
+                            Fully Funded
+                          </SelectItem>
+                          <SelectItem value="PARTIALLY_FUNDED">
+                            Partially Funded
+                          </SelectItem>
+                          <SelectItem value="SEEKING_FINANCING">
+                            Seeking Financing
+                          </SelectItem>
+                          <SelectItem value="OTHER">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.fundingStatus && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.fundingStatus.message}
+                        </p>
+                      )}
                     </div>
-                  ))}
-                </div>
-                {errors.servicesNeeded && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.servicesNeeded.message}
-                  </p>
-                )}
-              </div>
 
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Additional Information
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="powerSupplyAvailable"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Power Supply Available
-                    </Label>
-                    <Input
-                      id="powerSupplyAvailable"
-                      placeholder="440V, 3-phase"
-                      {...register("powerSupplyAvailable")}
-                      className="border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500"
-                    />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="utilitiesAvailable"
-                      onCheckedChange={(checked) =>
-                        setValue("utilitiesAvailable", checked as boolean)
-                      }
-                    />
-                    <Label
-                      htmlFor="utilitiesAvailable"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Utilities Available
-                    </Label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="requiresOngoingSupport"
-                      onCheckedChange={(checked) =>
-                        setValue("requiresOngoingSupport", checked as boolean)
-                      }
-                    />
-                    <Label
-                      htmlFor="requiresOngoingSupport"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Requires Ongoing Support
-                    </Label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="interestedInFutureUpgrades"
-                      onCheckedChange={(checked) =>
-                        setValue(
-                          "interestedInFutureUpgrades",
-                          checked as boolean
-                        )
-                      }
-                    />
-                    <Label
-                      htmlFor="interestedInFutureUpgrades"
-                      className="text-sm font-medium text-gray-700"
-                    >
-                      Interested in Future Upgrades
-                    </Label>
+                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Label
+                        htmlFor="siteAvailableStatus"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Site Available Status
+                      </Label>
+                      <Select
+                        onValueChange={(value) =>
+                          setValue(
+                            "siteAvailableStatus",
+                            value as "YES" | "NO" | "IN_PLANNING"
+                          )
+                        }
+                      >
+                        <SelectTrigger
+                          className={cn(
+                            " h-[44px]",
+                            errors.siteAvailableStatus && "border-red-500"
+                          )}
+                        >
+                          <SelectValue placeholder="Select site status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="YES">Yes</SelectItem>
+                          <SelectItem value="NO">No</SelectItem>
+                          <SelectItem value="IN_PLANNING">In Planning</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.siteAvailableStatus && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.siteAvailableStatus.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="machineryPreferences"
-                    className="text-sm font-medium text-gray-700"
+                <div className="m-0">
+                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                    Section 4:  Services Needed
+                  </h3>
+                  <div className="border-y px-10 py-6 border-[#E0E0E0] grid grid-cols-1 md:grid-cols-2  gap-3">
+                    {serviceOptions.map((service) => (
+                      <div
+                        key={service.value}
+                        className="flex items-center space-x-2 border p-4 border-[#D3D3D3] justify-center"
+                      >
+                        <Checkbox
+                          id={service.value}
+                          checked={selectedServices.includes(service.value)}
+                          onCheckedChange={(checked) =>
+                            handleServiceChange(service.value, checked as boolean)
+                          }
+                        />
+                        <Label
+                          htmlFor={service.value}
+                          className="text-sm font-normal"
+                        >
+                          {service.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.servicesNeeded && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.servicesNeeded.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-6">
+                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                    Section 5: Additional Information
+                  </h3>
+                  <div className="border-t px-10 py-6 border-[#E0E0E0] ">
+                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2  gap-4">
+                      <Label
+                        htmlFor="powerSupplyAvailable"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Power Supply Available
+                      </Label>
+                      <Input
+                        id="powerSupplyAvailable"
+                        placeholder="440V, 3-phase"
+                        {...register("powerSupplyAvailable")}
+                        className="border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500"
+                      />
+                    </div>
+                    <div className="grid py-10 grid-cols-1 md:grid-cols-3  gap-4">
+
+                      <div className="flex items-center border p-4 border-[#D3D3D3] justify-center space-x-2">
+                        <Checkbox
+                          id="utilitiesAvailable"
+                          onCheckedChange={(checked) =>
+                            setValue("utilitiesAvailable", checked as boolean)
+                          }
+                        />
+                        <Label
+                          htmlFor="utilitiesAvailable"
+                          className="text-sm font-medium text-gray-700"
+                        >
+                          Utilities Available
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center border p-4 border-[#D3D3D3] justify-center space-x-2">
+                        <Checkbox
+                          id="requiresOngoingSupport"
+                          onCheckedChange={(checked) =>
+                            setValue("requiresOngoingSupport", checked as boolean)
+                          }
+                        />
+                        <Label
+                          htmlFor="requiresOngoingSupport"
+                          className="text-sm font-medium text-gray-700"
+                        >
+                          Requires Ongoing Support
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center border p-4 border-[#D3D3D3] justify-center space-x-2">
+                        <Checkbox
+                          id="interestedInFutureUpgrades"
+                          onCheckedChange={(checked) =>
+                            setValue(
+                              "interestedInFutureUpgrades",
+                              checked as boolean
+                            )
+                          }
+                        />
+                        <Label
+                          htmlFor="interestedInFutureUpgrades"
+                          className="text-sm font-medium text-gray-700"
+                        >
+                          Interested in Future Upgrades
+                        </Label>
+                      </div>
+                    </div>
+
+
+                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                      <Label
+                        htmlFor="machineryPreferences"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Machinery Preferences
+                      </Label>
+                      <Textarea
+                        id="machineryPreferences"
+                        placeholder="Specific machinery brands or requirements..."
+                        rows={3}
+                        {...register("machineryPreferences")}
+                        className="border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500 resize-none"
+                      />
+                    </div>
+
+                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Label
+                        htmlFor="specialRequirements"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Special Requirements
+                      </Label>
+                      <Textarea
+                        id="specialRequirements"
+                        placeholder="Any special requirements or considerations..."
+                        rows={3}
+                        {...register("specialRequirements")}
+                        className="border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500 resize-none"
+                      />
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div className="flex mb-6 mr-10 justify-end ">
+                  <Button
+                    type="submit"
+                    disabled={turnkeySubmission.isPending}
+                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors"
                   >
-                    Machinery Preferences
-                  </Label>
-                  <Textarea
-                    id="machineryPreferences"
-                    placeholder="Specific machinery brands or requirements..."
-                    rows={3}
-                    {...register("machineryPreferences")}
-                    className="border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500 resize-none"
-                  />
+                    {turnkeySubmission.isPending
+                      ? "Submitting..."
+                      : "Submit Inquiry"}
+                  </Button>
                 </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="specialRequirements"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Special Requirements
-                  </Label>
-                  <Textarea
-                    id="specialRequirements"
-                    placeholder="Any special requirements or considerations..."
-                    rows={3}
-                    {...register("specialRequirements")}
-                    className="border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500 resize-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end pt-6">
-                <Button
-                  type="submit"
-                  disabled={turnkeySubmission.isPending}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-medium transition-colors"
-                >
-                  {turnkeySubmission.isPending
-                    ? "Submitting..."
-                    : "Submit Inquiry"}
-                </Button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
+
+
       <ServiceSubmissionModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

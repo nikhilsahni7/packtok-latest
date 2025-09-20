@@ -34,7 +34,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Container */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-orange-50 to-white">
+      <div className="relative marketplace-bg overflow-hidden bg-gradient-to-b from-orange-50 to-white">
         <div className="w-[95%] mx-auto py-20">
           <section className="grid grid-cols-1 md:grid-cols-5 py-18">
             <Image
