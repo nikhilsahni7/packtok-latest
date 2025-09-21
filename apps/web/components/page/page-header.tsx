@@ -12,15 +12,16 @@ export default function PageHeader({
   image,
 }: PageHeaderProps) {
   return (
-    <div className="relative h-[35vh] w-full mt-20">
-      <Image src={image} alt={title} fill className="object-cover" />
-      <div className="absolute inset-0 bg-white/50 z-10" />
+    <div className=" h-full w-full">
+      <div className="relative h-[431px]">
+        <Image src={image} alt={title} fill className="object-cover  h-[431px]" />
+      </div>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-        <h1 className="font-bold md:text-6xl text-3xl text-shadow-lg">
+      <div className="bg-black border-y-[3px] border-[#FE7B02] flex flex-col py-4 items-center justify-center z-20">
+        <h1 className="font-medium text-[43px]  text-white ">
           {title}
         </h1>
-        <h2 className="text-shadow-md md:text-base text-sm text-center">
+        <h2 className="text-shadow-md text-white md:text-base text-sm text-center">
           {subtitle}
         </h2>
       </div>

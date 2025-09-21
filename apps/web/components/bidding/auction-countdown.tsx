@@ -47,7 +47,7 @@ export function AuctionCountdown() {
     >
       <div className="container mx-auto px-4 lg:px-8">
         {/* Main content container */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between w-[80%] mx-auto">
           {/* Left side - Announcement */}
           <div className="lg:flex-1 mb-12 lg:mb-0 text-left lg:text-left">
             <h2
@@ -76,22 +76,22 @@ export function AuctionCountdown() {
           </div>
 
           {/* Right side - Countdown Timer */}
-          <div className="lg:flex-1 lg:text-right">
-            {/* Countdown Numbers + Labels, grouped for alignment */}
+          {/* <div className="lg:flex-1 lg:text-right">
+           
             <div
               className={cn(
-                // Layout & box model
+                
                 "flex items-end justify-center lg:justify-end gap-4 lg:gap-6 xl:gap-8"
               )}
             >
-              {/* Hours */}
+             
               <div className="flex flex-col items-center">
                 <span
                   className={cn(
                     "tabular-nums",
-                    // Typography
+                   
                     "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
-                    // Colors
+                    
                     "text-gray-300"
                   )}
                 >
@@ -99,9 +99,9 @@ export function AuctionCountdown() {
                 </span>
                 <span
                   className={cn(
-                    // Typography
+                   
                     "mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider",
-                    // Colors
+                    
                     "text-gray-500"
                   )}
                 >
@@ -109,7 +109,7 @@ export function AuctionCountdown() {
                 </span>
               </div>
 
-              {/* Separator */}
+             
               <span
                 className={cn(
                   "hidden sm:block mx-1",
@@ -120,7 +120,7 @@ export function AuctionCountdown() {
                 /
               </span>
 
-              {/* Minutes */}
+             
               <div className="flex flex-col items-center">
                 <span
                   className={cn(
@@ -136,7 +136,7 @@ export function AuctionCountdown() {
                 </span>
               </div>
 
-              {/* Separator */}
+             
               <span
                 className={cn(
                   "hidden sm:block mx-1",
@@ -147,7 +147,7 @@ export function AuctionCountdown() {
                 /
               </span>
 
-              {/* Seconds */}
+            
               <div className="flex flex-col items-center">
                 <span
                   className={cn(
@@ -163,7 +163,7 @@ export function AuctionCountdown() {
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

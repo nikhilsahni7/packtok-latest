@@ -3,14 +3,14 @@ import { PageHeader } from "@/components";
 export default function TermsPage() {
   return (
     <main className="bg-white">
-      <div className="w-[85%] mx-auto">
+      <div className="w-full">
         <PageHeader
           title="Terms & Conditions"
           subtitle="Please read these terms and conditions carefully before using our services."
           image="/footer-logo1.png"
         />
 
-        <div className="max-w-4xl mx-auto py-12 space-y-8">
+        <div className="w-[80%] mx-auto py-12 space-y-8">
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
               1. Introduction

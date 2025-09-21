@@ -12,7 +12,7 @@ import "/styles/globals.css";
 
 export default function Home() {
   return (
-    <main className="mt-16 fluid-bg">
+    <main className="fluid-bg">
       <Hero />
       <ShopNow />
       <NewArrivals />

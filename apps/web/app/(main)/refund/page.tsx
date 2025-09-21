@@ -3,14 +3,14 @@ import { PageHeader } from "@/components";
 export default function RefundPage() {
   return (
     <main className="bg-white">
-      <div className="w-[85%] mx-auto">
+      <div className="w-full mx-auto">
         <PageHeader
           title="Refund Policy"
           subtitle="Understanding our refund and return procedures for your peace of mind."
           image="/footer-logo1.png"
         />
 
-        <div className="max-w-4xl mx-auto py-12 space-y-8">
+        <div className="w-[80%] mx-auto py-12 space-y-8">
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
               1. Refund Eligibility

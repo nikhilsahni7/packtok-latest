@@ -9,7 +9,7 @@ export default function Page() {
         <h1 className="md:text-6xl text-3xl leading-relaxed">
           Let’s Power Your Production
         </h1>
-        <p className="md:text-base text-sm text-gray-500 w-3/4 mb-8">
+        <p className="md:text-base text-sm text-gray-500 w-3/4 mb-8 text-justify">
           We’re committed to delivering high-performance industrial solutions,
           whether you need advanced machinery, quality raw materials, or
           reliable spare parts. Our team is here to assist with product

@@ -28,12 +28,16 @@ export default function CategoryPage({
 
   return (
     <main>
-      <div className="w-[85%] mx-auto">
+      <div className="w-full mx-auto">
         <PageHeader
           title={category.title}
           subtitle={category.subtitle}
           image={category.image}
         />
+
+      </div>
+
+      <div className="container mx-auto  px-4">
         <CategoryContent
           category={category}
           initialSearchTerm={searchParams.searchTerm}

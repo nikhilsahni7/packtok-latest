@@ -30,7 +30,7 @@ export default function SplitSection({
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-3 sm:mb-4 font-bold">
             {title}
           </h2>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 leading-relaxed">
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 leading-relaxed text-justify">
             {description}
           </p>
           <Link

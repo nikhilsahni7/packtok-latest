@@ -55,7 +55,7 @@ function Hero() {
           <Star className="h-3.5 w-3.5" />
           Expert Maintenance & Servicing
         </div>
-        <h1 className="mt-5 text-[44px] leading-[1.15] md:text-[56px] font-semibold text-gray-900">
+        <h1 className="mt-5 text-[44px] leading-[1.15]  font-semibold text-gray-900">
           Fast, reliable, affordable packaging machinery maintenance solutions.
         </h1>
 
@@ -135,7 +135,7 @@ function About() {
           <h2 className="text-[32px] md:text-[36px] font-semibold leading-snug">
             Your Trusted Partner in Maintenance & Servicing
           </h2>
-          <p className="mt-3 text-gray-600 leading-relaxed">
+          <p className="mt-3 text-gray-600 leading-relaxed text-justify">
             At PackTok, we ensure smooth board and converting line operations
             with proactive maintenance, timely repairs, expert troubleshooting,
             and reliable spare parts management—maximizing uptime, boosting
@@ -195,7 +195,7 @@ function Services() {
               {it.icon}
             </div>
             <div className="text-base font-semibold">{it.title}</div>
-            <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+            <p className="mt-2 text-sm text-gray-600 leading-relaxed text-justify">
               {it.desc}
             </p>
           </div>
@@ -251,7 +251,7 @@ function WhyPacktok() {
               </span>
               <div>
                 <div className="font-semibold">{b.title}</div>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed text-justify">
                   {b.desc}
                 </p>
               </div>

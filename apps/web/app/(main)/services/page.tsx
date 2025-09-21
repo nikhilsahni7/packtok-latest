@@ -17,7 +17,6 @@ export default function ServicesPage() {
         <Image
           src={service_bg}
           alt="Marketplace"
-
           className="object-cover w-full object-center brightness-110 contrast-110"
           priority
           quality={95}

@@ -22,7 +22,7 @@ const checklistRight = [
 export default function TunkeryPage() {
   return (
     <>
-      <main className="mt-16 w-[95%] sm:w-[90%] md:w-[85%] mx-auto">
+      <main className=" w-full">
         <HeroSection />
         <TrustedChoiceSection />
         <ExcellenceSection />
@@ -60,7 +60,7 @@ function HeroSection() {
             Transform Your Business with Our Turnkey
             <br /> Packaging solutions
           </h1>
-          <p className="mt-4 text-gray-800">
+          <p className="mt-4 text-gray-800 text-justify">
             We provide a comprehensive, all-in-one service—from design and
             production to logistics—streamlining the entire packaging process
             for efficiency, consistency, and cost savings.
@@ -84,7 +84,7 @@ function TrustedChoiceSection() {
           The Trusted Choice for Packaging
           <br /> Industry Installation &amp; Supply
         </h2>
-        <p className="mt-4 max-w-[760px] mx-auto text-gray-600 leading-relaxed">
+        <p className="mt-4 max-w-[760px] mx-auto text-gray-600 text-justify leading-relaxed">
           Beyond just repairs, PackTok offers ongoing guidance and proactive
           support to ensure your assets perform at their best and last longer.
           We work closely with you to optimize maintenance strategies, reduce
@@ -150,7 +150,7 @@ function FeatureCard({
         {icon}
       </div>
       <h4 className="text-[18px] font-semibold text-gray-900">{title}</h4>
-      <p className="mt-3 text-gray-600 text-sm leading-relaxed">{desc}</p>
+      <p className="mt-3 text-gray-600 text-sm leading-relaxed text-justify">{desc}</p>
     </div>
   );
 }
@@ -172,7 +172,7 @@ function ExcellenceSection() {
           <h2 className="text-3xl font-semibold">
             Partnering for Operational Excellence Since 35+ years
           </h2>
-          <p className="mt-4 text-gray-700 leading-relaxed">
+          <p className="mt-4 text-gray-700 leading-relaxed text-justify">
             From concept to commissioning, we provide reliable, innovative
             turnkey packaging solutions. With over 35 years of experience, we
             support industry leaders by streamlining operations, enhancing
@@ -282,7 +282,7 @@ function HowCard({
       />
       <div className="p-6">
         <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="mt-2 text-gray-600 text-sm leading-relaxed">{desc}</p>
+        <p className="mt-2 text-gray-600 text-sm leading-relaxed text-justify">{desc}</p>
       </div>
     </article>
   );

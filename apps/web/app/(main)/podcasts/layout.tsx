@@ -6,7 +6,7 @@ export default function PodcastsLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <section className="bg-white">
-      <div className="w-[85%] mx-auto">
+      <div className="w-full">
         <PageHeader
           title="Podcasts"
           subtitle="Industry insights, packaging trends, and expert conversations."

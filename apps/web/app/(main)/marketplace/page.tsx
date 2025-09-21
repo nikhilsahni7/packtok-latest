@@ -7,9 +7,9 @@ export default function Page() {
   return (
     <main>
       {/* Custom Marketplace Header - Full Width Banner */}
-      <div className="w-full  fluid-bg mt-16">
+      <div className="w-full  fluid-bg ">
         {/* Full Width Image Banner */}
-        <div className="relative h-[50vh] w-screen ml-[calc(50%-50vw)] overflow-hidden">
+        <div className="relative h-[431px] w-screen ml-[calc(50%-50vw)] overflow-hidden">
           <Image
             src={marketiplace_bg}
             alt="Marketplace"

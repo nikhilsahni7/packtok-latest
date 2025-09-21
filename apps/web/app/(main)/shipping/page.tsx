@@ -3,14 +3,14 @@ import { PageHeader } from "@/components";
 export default function ShippingPage() {
   return (
     <main className="bg-white">
-      <div className="w-[85%] mx-auto">
+      <div className="w-full mx-auto">
         <PageHeader
           title="Shipping & Delivery"
           subtitle="Learn about our shipping options, delivery times, and what to expect with your order."
           image="/footer-logo1.png"
         />
 
-        <div className="max-w-4xl mx-auto py-12 space-y-8">
+        <div className="w-[80%] mx-auto py-12 space-y-8">
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
               1. Shipping Coverage
