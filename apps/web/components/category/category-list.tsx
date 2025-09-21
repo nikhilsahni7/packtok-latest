@@ -5,14 +5,13 @@ import { Button } from "@packtok/ui";
 import Link from "next/link";
 
 import Consumables from "@/assets/consumables2.jpg";
-import Machinery from "@/assets/Machinery_1.jpg";
-import ManPower from "@/assets/man-power2.jpg";
-import RawMaterial from "@/assets/raw_materials.png";
-import spare from "@/assets/spare.png";
-import Marketing from "@/assets/Marketplace_bg_1.png";
 import Ellipse from "@/assets/Ellipse.png";
 import Ellipse_consumables from "@/assets/Ellipse_consumables.png";
+import Machinery from "@/assets/Machinery_1.jpg";
+import ManPower from "@/assets/man-power2.jpg";
 import man_power_bg from "@/assets/man_power_bg.png";
+import RawMaterial from "@/assets/raw_materials.png";
+import spare from "@/assets/spare.png";
 
 
 

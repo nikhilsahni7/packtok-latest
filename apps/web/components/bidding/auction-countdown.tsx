@@ -1,39 +1,8 @@
 "use client";
 
 import { cn } from "@packtok/ui/lib/utils";
-import * as React from "react";
 
 export function AuctionCountdown() {
-  const [timeLeft, setTimeLeft] = React.useState({
-    hours: 80,
-    minutes: 45,
-    seconds: 19,
-  });
-
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        let { hours, minutes, seconds } = prevTime;
-
-        if (seconds > 0) {
-          seconds--;
-        } else if (minutes > 0) {
-          minutes--;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours--;
-          minutes = 59;
-          seconds = 59;
-        }
-
-        return { hours, minutes, seconds };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatNumber = (num: number) => String(num).padStart(2, "0");
 
   return (
     <section
@@ -77,21 +46,21 @@ export function AuctionCountdown() {
 
           {/* Right side - Countdown Timer */}
           {/* <div className="lg:flex-1 lg:text-right">
-           
+
             <div
               className={cn(
-                
+
                 "flex items-end justify-center lg:justify-end gap-4 lg:gap-6 xl:gap-8"
               )}
             >
-             
+
               <div className="flex flex-col items-center">
                 <span
                   className={cn(
                     "tabular-nums",
-                   
+
                     "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
-                    
+
                     "text-gray-300"
                   )}
                 >
@@ -99,9 +68,9 @@ export function AuctionCountdown() {
                 </span>
                 <span
                   className={cn(
-                   
+
                     "mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider",
-                    
+
                     "text-gray-500"
                   )}
                 >
@@ -109,7 +78,7 @@ export function AuctionCountdown() {
                 </span>
               </div>
 
-             
+
               <span
                 className={cn(
                   "hidden sm:block mx-1",
@@ -120,7 +89,7 @@ export function AuctionCountdown() {
                 /
               </span>
 
-             
+
               <div className="flex flex-col items-center">
                 <span
                   className={cn(
@@ -136,7 +105,7 @@ export function AuctionCountdown() {
                 </span>
               </div>
 
-             
+
               <span
                 className={cn(
                   "hidden sm:block mx-1",
@@ -147,7 +116,7 @@ export function AuctionCountdown() {
                 /
               </span>
 
-            
+
               <div className="flex flex-col items-center">
                 <span
                   className={cn(

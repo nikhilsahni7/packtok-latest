@@ -1,5 +1,4 @@
 import { Button } from "@packtok/ui/components/button";
-import Image from "next/image";
 
 export default function Newsletter() {
   return (
