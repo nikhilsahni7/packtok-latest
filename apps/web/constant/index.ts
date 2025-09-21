@@ -3,8 +3,8 @@ import consumables from "@/assets/consumables.png";
 import industrial from "@/assets/industrial.png";
 import machinery from "@/assets/machinery2.png";
 import maintenance from "@/assets/maintenance.png";
-import rawmaterials from "@/assets/raw-materials2.png";
-import spareparts from "@/assets/spare-parts2.png";
+import rawmaterials from "@/assets/raw_material.png";
+import spareparts from "@/assets/spare_parts.png";
 import tunkeryprojects from "@/assets/tunkery-projects.png";
 
 export const navbarLinks: {
