@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@packtok/ui";
 
 export default function MaintenancePage() {
   return (
@@ -56,13 +57,16 @@ function Hero() {
           Expert Maintenance & Servicing
         </div>
         <h1 className="mt-5 text-[44px] leading-[1.15]  font-semibold text-gray-900">
-          Fast, reliable, affordable packaging machinery maintenance solutions.
+          Fast, reliable, corrugated packaging machinery maintenance solutions.
         </h1>
 
         <div className="mt-6 flex items-center gap-4">
-          <button className="px-6 py-3 rounded-full bg-white text-gray-900 border border-gray-300 text-sm font-medium">
-            Book Now!
-          </button>
+          <Button
+            asChild
+            className="bg-black text-white text-end hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+          >
+            <Link href="/services/maintenance/form">Book Now</Link>
+          </Button>
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-[#4B3CFB]" />
             <div className="text-[13px] leading-tight text-gray-800">
@@ -202,7 +206,7 @@ function Services() {
         ))}
       </div>
 
-      <div className="mt-6 flex items-center justify-between">
+      {/* <div className="mt-6 flex items-center justify-between">
         <p className="text-sm text-gray-600 max-w-3xl">
           We provide tailored packaging solutions that extend equipment lifespan
           and maximize operational efficiency beyond our core services.
@@ -212,7 +216,7 @@ function Services() {
             See All Services
           </button>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

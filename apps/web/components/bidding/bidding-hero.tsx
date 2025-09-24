@@ -96,24 +96,24 @@ export function BiddingHero() {
             <h1
               className={cn(
                 // Typography - Made larger and bolder to match Figma
-                "text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-[0.85] tracking-tight",
+                "text-6xl md:text-5xl lg:text-7xl xl:text-8xl uppercase font-black leading-[0.85] tracking-tight",
 
                 // Colors
                 "text-white drop-shadow-lg"
               )}
             >
-              MACHINES
+              Auction by
             </h1>
             <h1
               className={cn(
                 // Typography
-                "text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-[0.85] tracking-tight",
+                "text-6xl md:text-7xl lg:text-7xl xl:text-8xl font-black uppercase leading-[0.85] tracking-tight",
 
                 // Colors
                 "text-white drop-shadow-lg"
               )}
             >
-              AUCTIONS
+               Packtok
             </h1>
           </div>
         </div>

@@ -109,7 +109,7 @@ export default function ShopNow() {
             Man Power
           </h3>
           <Link
-            href="/marketplace/manpower"
+            href="/services/manpower-hiring"
             className="text-xs sm:text-sm md:text-base lg:text-lg text-left border-b border-gray-800 inline-flex items-center gap-1"
           >
             Shop Now <ArrowRight className="inline-block" size={16} />

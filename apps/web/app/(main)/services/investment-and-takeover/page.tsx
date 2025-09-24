@@ -224,10 +224,10 @@ export default function InvestmentAndTakeoverPage() {
               </h3>
 
               <div className="flex gap-4">
-                <button className="px-6 py-3 rounded-full bg-black text-white">
+                <button className="px-10 py-5 text-[1.3rem] rounded-full bg-black text-white">
                   Acquire
                 </button>
-                <button className="px-6 py-3 rounded-full border border-black text-black">
+                <button className="px-10 py-5 text-[1.3rem] rounded-full border border-black text-black">
                   Invest
                 </button>
               </div>

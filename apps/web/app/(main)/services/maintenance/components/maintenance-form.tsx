@@ -70,207 +70,215 @@ export function MaintenanceForm() {
 
   return (
     <>
-      <Card className="max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">
-            Maintenance Request
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="maintenanceType">Maintenance Type</Label>
-                <Select
-                  onValueChange={(value) =>
-                    setValue(
-                      "maintenanceType",
-                      value as
+
+
+      <div className="form-bg ">
+        <Card className="w-[85%] mx-auto p-5">
+          <CardHeader>
+
+            <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
+              <CardTitle className="text-2xl font-bold">
+                Maintenance Request
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="maintenanceType" className="text-[15.5px] pb-3">Maintenance Type</Label>
+                  <Select
+                    onValueChange={(value) =>
+                      setValue(
+                        "maintenanceType",
+                        value as
                         | "PREVENTIVE"
                         | "CORRECTIVE"
                         | "PREDICTIVE"
                         | "EMERGENCY"
-                    )
-                  }
-                >
-                  <SelectTrigger
-                    className={cn(errors.maintenanceType && "border-red-500")}
+                      )
+                    }
                   >
-                    <SelectValue placeholder="Select maintenance type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="PREVENTIVE">Preventive</SelectItem>
-                    <SelectItem value="CORRECTIVE">Corrective</SelectItem>
-                    <SelectItem value="PREDICTIVE">Predictive</SelectItem>
-                    <SelectItem value="EMERGENCY">Emergency</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.maintenanceType && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.maintenanceType.message}
-                  </p>
-                )}
-              </div>
+                    <SelectTrigger
+                      className={cn(errors.maintenanceType && "border-red-500")}
+                    >
+                      <SelectValue placeholder="Select maintenance type" />
+                    </SelectTrigger>
 
-              <div>
-                <Label htmlFor="companyName">Company Name</Label>
-                <Input
-                  id="companyName"
-                  placeholder="Alpha Packaging"
-                  {...register("companyName")}
-                  className={cn(errors.companyName && "border-red-500")}
-                />
-                {errors.companyName && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.companyName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="md:col-span-2">
-                <Label htmlFor="address">Address</Label>
-                <Input
-                  id="address"
-                  placeholder="Plot 21, Industrial Estate"
-                  {...register("address")}
-                  className={cn(errors.address && "border-red-500")}
-                />
-                {errors.address && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.address.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="machineName">Machine Name</Label>
-                <Input
-                  id="machineName"
-                  placeholder="Cartoner 2000"
-                  {...register("machineName")}
-                  className={cn(errors.machineName && "border-red-500")}
-                />
-                {errors.machineName && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.machineName.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="machineIdOrSerialNumber">
-                  Machine ID or Serial Number
-                </Label>
-                <Input
-                  id="machineIdOrSerialNumber"
-                  placeholder="C2K-23-XY"
-                  {...register("machineIdOrSerialNumber")}
-                  className={cn(
-                    errors.machineIdOrSerialNumber && "border-red-500"
+                    <SelectContent>
+                      <SelectItem value="PREVENTIVE">Preventive</SelectItem>
+                      <SelectItem value="CORRECTIVE">Corrective</SelectItem>
+                      <SelectItem value="PREDICTIVE">Predictive</SelectItem>
+                      <SelectItem value="EMERGENCY">Emergency</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.maintenanceType && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.maintenanceType.message}
+                    </p>
                   )}
-                />
-                {errors.machineIdOrSerialNumber && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.machineIdOrSerialNumber.message}
-                  </p>
-                )}
+                </div>
+
+                <div>
+                  <Label htmlFor="companyName" className="text-[15.5px] pb-3">Company Name</Label>
+                  <Input
+                    id="companyName"
+                    placeholder="Alpha Packaging"
+                    {...register("companyName")}
+                    className={cn(errors.companyName && "border-red-500")}
+                  />
+                  {errors.companyName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.companyName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label htmlFor="address" className="text-[15.5px] pb-3">Address</Label>
+                  <Input
+                    id="address"
+                    placeholder="Plot 21, Industrial Estate"
+                    {...register("address")}
+                    className={cn(errors.address && "border-red-500")}
+                  />
+                  {errors.address && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.address.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="machineName" className="text-[15.5px] pb-3">Machine Name</Label>
+                  <Input
+                    id="machineName"
+                    placeholder="Cartoner 2000"
+                    {...register("machineName")}
+                    className={cn(errors.machineName && "border-red-500")}
+                  />
+                  {errors.machineName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.machineName.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="machineIdOrSerialNumber" className="text-[15.5px] pb-3">
+                    Machine ID or Serial Number
+                  </Label>
+                  <Input
+                    id="machineIdOrSerialNumber"
+                    placeholder="C2K-23-XY"
+                    {...register("machineIdOrSerialNumber")}
+                    className={cn(
+                      errors.machineIdOrSerialNumber && "border-red-500"
+                    )}
+                  />
+                  {errors.machineIdOrSerialNumber && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.machineIdOrSerialNumber.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="locationInFacility" className="text-[15.5px] pb-3">Location in Facility</Label>
+                  <Input
+                    id="locationInFacility"
+                    placeholder="Line 3"
+                    {...register("locationInFacility")}
+                    className={cn(errors.locationInFacility && "border-red-500")}
+                  />
+                  {errors.locationInFacility && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.locationInFacility.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="manufacturer" className="text-[15.5px] pb-3">Manufacturer (Optional)</Label>
+                  <Input
+                    id="manufacturer"
+                    placeholder="ACME"
+                    {...register("manufacturer")}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="installationDate" className="text-[15.5px] pb-3">
+                    Installation Date (Optional)
+                  </Label>
+                  <Input
+                    id="installationDate"
+                    type="date"
+                    {...register("installationDate")}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="supervisorApprovalName" className="text-[15.5px] pb-3">
+                    Supervisor Approval Name (Optional)
+                  </Label>
+                  <Input
+                    id="supervisorApprovalName"
+                    placeholder="Raj Kumar"
+                    {...register("supervisorApprovalName")}
+                  />
+                </div>
               </div>
 
               <div>
-                <Label htmlFor="locationInFacility">Location in Facility</Label>
-                <Input
-                  id="locationInFacility"
-                  placeholder="Line 3"
-                  {...register("locationInFacility")}
-                  className={cn(errors.locationInFacility && "border-red-500")}
-                />
-                {errors.locationInFacility && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.locationInFacility.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="manufacturer">Manufacturer (Optional)</Label>
-                <Input
-                  id="manufacturer"
-                  placeholder="ACME"
-                  {...register("manufacturer")}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="installationDate">
-                  Installation Date (Optional)
+                <Label htmlFor="checklistDetails" className="text-[15.5px] pb-3">
+                  Checklist Details (Optional)
                 </Label>
-                <Input
-                  id="installationDate"
-                  type="date"
-                  {...register("installationDate")}
+                <Textarea
+                  id="checklistDetails"
+                  placeholder="vibration: high, noise: abnormal"
+                  rows={3}
+                  {...register("checklistDetails")}
                 />
               </div>
 
               <div>
-                <Label htmlFor="supervisorApprovalName">
-                  Supervisor Approval Name (Optional)
-                </Label>
-                <Input
-                  id="supervisorApprovalName"
-                  placeholder="Raj Kumar"
-                  {...register("supervisorApprovalName")}
+                <Label htmlFor="partsReplaced" className="text-[15.5px] pb-3">Parts Replaced (Optional)</Label>
+                <Textarea
+                  id="partsReplaced"
+                  placeholder="belt: yes, filter: no"
+                  rows={3}
+                  {...register("partsReplaced")}
                 />
               </div>
-            </div>
 
-            <div>
-              <Label htmlFor="checklistDetails">
-                Checklist Details (Optional)
-              </Label>
-              <Textarea
-                id="checklistDetails"
-                placeholder="vibration: high, noise: abnormal"
-                rows={3}
-                {...register("checklistDetails")}
-              />
-            </div>
+              <div>
+                <Label htmlFor="technicianNotes" className="text-[15.5px] pb-3">
+                  Technician Notes (Optional)
+                </Label>
+                <Textarea
+                  id="technicianNotes"
+                  placeholder="Gear slippage suspected"
+                  rows={4}
+                  {...register("technicianNotes")}
+                />
+              </div>
 
-            <div>
-              <Label htmlFor="partsReplaced">Parts Replaced (Optional)</Label>
-              <Textarea
-                id="partsReplaced"
-                placeholder="belt: yes, filter: no"
-                rows={3}
-                {...register("partsReplaced")}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="technicianNotes">
-                Technician Notes (Optional)
-              </Label>
-              <Textarea
-                id="technicianNotes"
-                placeholder="Gear slippage suspected"
-                rows={4}
-                {...register("technicianNotes")}
-              />
-            </div>
-
-            <div className="flex justify-end">
-              <Button
-                type="submit"
-                disabled={maintenanceSubmission.isPending}
-                className="px-8"
-              >
-                {maintenanceSubmission.isPending
-                  ? "Submitting..."
-                  : "Submit Request"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={maintenanceSubmission.isPending}
+                  className="px-8 h-[48px] bg-gradient-to-t from-[#4A3AFF] text-[1rem] to-[#8C82FF]"
+                >
+                  {maintenanceSubmission.isPending
+                    ? "Submitting..."
+                    : "Submit Request"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
 
       <ServiceSubmissionModal
         isOpen={showModal}
