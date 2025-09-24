@@ -13,14 +13,9 @@ import man_power_bg from "@/assets/man_power_bg.png";
 import RawMaterial from "@/assets/raw_materials.png";
 import spare from "@/assets/spare.png";
 
-
-
-
-
 export default function CategoryList() {
   return (
-
-    <div className="relative z-[-1] marketplace-bg overflow-hidden ">
+    <div className="relative z-0 marketplace-bg overflow-hidden ">
       <div className="w-[95%]  mx-auto px-4 py-20 ">
         <section className={`grid grid-cols-1 md:grid-cols-5 py-18  `}>
           <Image
@@ -65,8 +60,6 @@ export default function CategoryList() {
                   decisions. Enjoy seamless purchasing, flexible financing, and
                   expert support. Upgrade your operations today with the best
                   machinery.
-
-
                 </p>
                 <Button
                   asChild
@@ -75,7 +68,6 @@ export default function CategoryList() {
                   <Link href="/marketplace/machinery">Shop Now</Link>
                 </Button>
               </div>
-
             </div>
             <Image
               src={Ellipse}
@@ -84,7 +76,6 @@ export default function CategoryList() {
               height={450}
               className="w-32 object-cover absolute z-[-1] -top-15 -right-10"
             />
-
           </div>
         </section>
 
@@ -261,7 +252,6 @@ export default function CategoryList() {
               height={450}
               className="w-68  object-cover  absolute z-[-1] -bottom-30 -right-120"
             />
-
           </div>
         </section>
 
@@ -275,8 +265,6 @@ export default function CategoryList() {
             className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
           />
 
-
-
           <div className="col-start-2 row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-[569px]"></div>
           <div className="col-span-3  h-[569px]">
             <Image
@@ -284,7 +272,7 @@ export default function CategoryList() {
               alt="Man Power Image"
               width={700}
               height={450}
-              className="w-40 object-cover  absolute -top-5 right-0"
+              className="w-40 object-cover  pointer-events-none absolute -top-5 right-0"
             />
             <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-[569px] flex flex-col justify-center">
               <h2 className="text-5xl font-bold mb-6 text-black text-center">
@@ -300,17 +288,17 @@ export default function CategoryList() {
                   provide comprehensive due diligence, valuation, and
                   transaction support for successful business transformations.
                 </p>
-                <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                  Shop Now
+                <Button
+                  asChild
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                >
+                  <Link href="/services/manpower-hiring">Shop Now</Link>
                 </Button>
               </div>
             </div>
           </div>
-
-
         </section>
       </div>
     </div>
-
   );
 }
