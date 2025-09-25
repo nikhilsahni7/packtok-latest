@@ -1,6 +1,6 @@
-import bidding from "@/assets/bidding.jpg";
+import bidding from "@/assets/bidding1.webp";
 import features3 from "@/assets/feature-consultancy.png";
-import features5 from "@/assets/feature-installer.png";
+import features5 from "@/assets/Mechanics.png";
 import features6 from "@/assets/feature-investment.png";
 import features4 from "@/assets/feature-machinery.png";
 import features2 from "@/assets/feature-services.png";
@@ -44,7 +44,7 @@ const GridSection = () => {
     },
     {
       id: 6,
-      heading: "Investment & Takeover",
+      heading: "Acquisition & Takeover",
       image: features6,
       href: "/services/investment-and-takeover",
     },

@@ -7,6 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { MessageCircleMore } from 'lucide-react';
 
+import image1 from "@/assets/Spare-Part1.png";
+import image2 from "@/assets/image1.jpeg";
+
+
+
 export default function ConsultancyPage() {
   return (
     <main
@@ -162,7 +167,7 @@ function AboutSection() {
             )}
           >
             <Image
-              src="/consult-mainpage2.png"
+              src={image2}
               alt="Consultancy team"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
@@ -333,7 +338,7 @@ function ConsultancyGrid() {
         <ConsultancyCard
           title="Spare Parts"
           price="$950"
-          img="/consult-mainpage4.png"
+          img={image1}
         />
         <ConsultancyCard
           title="Raw Products"
@@ -352,7 +357,7 @@ function ConsultancyCard({
 }: {
   title: string;
   price: string;
-  img: string;
+  img: any;
 }) {
   return (
     <div

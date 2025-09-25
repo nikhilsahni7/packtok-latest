@@ -1,5 +1,5 @@
 import Consumables from "@/assets/Consumables1.png";
-import machinery from "@/assets/Machinery5.png";
+import machinery from "@/assets/machines_1.png";
 import ManPower from "@/assets/Man Power.png";
 import RawMaterials from "@/assets/Raw Materials.png";
 

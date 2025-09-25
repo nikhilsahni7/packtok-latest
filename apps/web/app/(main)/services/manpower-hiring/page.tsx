@@ -5,7 +5,7 @@ export default function ManpowerHiringPage() {
   return (
     
       <main>
-        <div className="w-[85%] mx-auto">
+        <div className="w-full mx-auto">
           
           <div className="py-12">
             <ManpowerHiringForm />

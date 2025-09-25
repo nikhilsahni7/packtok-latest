@@ -10,7 +10,7 @@ export default function Page() {
           Let’s Power Your Production
         </h1>
         <p className="md:text-base text-sm text-gray-500 w-3/4 mb-8 text-justify">
-          We’re packtok committed to delivering  high-performance corrugated machine solution,
+          Packtok committed to delivering  high-performance corrugated and packaging machine solution,
           whether you need advanced machinery, quality raw materials, or
           reliable spare parts. Our team is here to assist with product
           inquiries, custom quotes, technical support, and order
@@ -20,7 +20,7 @@ export default function Page() {
         <SplitSection
           image={industrial}
           title="About Us"
-          description="We specialize in industrial machinery, raw materials, and spare parts—providing high-quality, reliable solutions for manufacturers and businesses. Since 2019, we've been committed to delivering performance, precision, and dependable support to keep your operations running at their best."
+          description="We specialize in corrugated and packaging machinery, raw materials, and spare parts—providing high-quality, reliable solutions for manufacturers and businesses. Since 2019, we've been committed to delivering performance, precision, and dependable support to keep your operations running at their best."
         />
 
         <div className="md:mt-8 mt-32">
