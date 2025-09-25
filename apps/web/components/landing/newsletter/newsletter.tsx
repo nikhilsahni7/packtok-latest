@@ -1,5 +1,6 @@
 import { Button } from "@packtok/ui/components/button";
 
+
 export default function Newsletter() {
   return (
     <div className="relative w-full newsletter-bg mx-auto py-8 sm:py-12 md:py-24 bg-gradient-to-r from-gray-50 to-white overflow-visible">

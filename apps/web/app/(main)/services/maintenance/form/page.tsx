@@ -4,7 +4,7 @@ import { MaintenanceForm } from "../components/maintenance-form";
 
 export default function MaintenancePage() {
   return (
-    <Protected>
+   
       <main>
         <div className="w-full mx-auto">
           <div className="py-12">
@@ -13,7 +13,7 @@ export default function MaintenancePage() {
         </div>
       </main>
 
-    </Protected>
+   
 
   );
 }

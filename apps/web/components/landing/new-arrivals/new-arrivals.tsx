@@ -91,7 +91,7 @@ export default function NewArrivals() {
         {/* Section Header - Left Aligned */}
         <div className="container mx-auto mb-6 sm:mb-8 md:mb-12 flex md:flex-row flex-col justify-between md:items-center items-left gap-4 md:gap-0 w-[95%] sm:w-[90%] md:w-[80%]">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 font-semibold">
-            New Arrivals
+            Machinery
           </h2>
           <Link
             href={"/marketplace"}

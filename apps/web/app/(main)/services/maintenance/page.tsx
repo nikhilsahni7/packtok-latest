@@ -63,7 +63,7 @@ function Hero() {
         <div className="mt-6 flex items-center gap-4">
           <Button
             asChild
-            className="bg-black text-white text-end hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+            className="bg-black  text-white text-end hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
           >
             <Link href="/services/maintenance/form">Book Now</Link>
           </Button>
@@ -133,7 +133,7 @@ function About() {
           />
         </div>
         <div>
-          <div className="text-[11px] tracking-[0.2em] uppercase text-gray-600 mb-2">
+          <div className="text-[1.2rem] tracking-[0.2em] uppercase text-gray-600 mb-2">
             About us
           </div>
           <h2 className="text-[32px] md:text-[36px] font-semibold leading-snug">
@@ -147,21 +147,7 @@ function About() {
             performance.
           </p>
 
-          <div className="mt-6 flex items-center gap-12">
-            <div>
-              <div className="text-2xl font-semibold">1200+</div>
-              <div className="text-xs text-gray-500">Projects Completed</div>
-            </div>
-            <div>
-              <div className="text-2xl font-semibold">25+</div>
-              <div className="text-xs text-gray-500">
-                Efficient Technical teams
-              </div>
-            </div>
-            <button className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 text-gray-800">
-              →
-            </button>
-          </div>
+         
         </div>
       </div>
     </section>
@@ -189,7 +175,7 @@ function Services() {
 
   return (
     <section className="py-14">
-      <div className="text-[11px] tracking-[0.2em] uppercase text-gray-600 mb-6">
+      <div className="text-[1.2rem] tracking-[0.2em] uppercase text-gray-600 mb-6">
         Our Services
       </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -240,7 +226,7 @@ function WhyPacktok() {
   return (
     <section className="py-14 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
       <div>
-        <div className="text-[11px] tracking-[0.2em] uppercase text-gray-600 mb-4">
+        <div className="text-[1.2rem] tracking-[0.2em] uppercase text-gray-600 mb-4">
           Why Packtok
         </div>
         <h3 className="text-3xl md:text-4xl font-semibold leading-snug">

@@ -224,11 +224,11 @@ export default function InvestmentAndTakeoverPage() {
               </h3>
 
               <div className="flex gap-4">
-                <button className="px-10 py-5 text-[1.3rem] rounded-full bg-black text-white">
-                  Acquire
+                <button className="px-10 py-5 text-[2.3rem] rounded-full bg-black text-white">
+                  Acquisition
                 </button>
-                <button className="px-10 py-5 text-[1.3rem] rounded-full border border-black text-black">
-                  Invest
+                <button className="px-10 py-5 text-[2.3rem] rounded-full border border-black text-black">
+                  TakeOver
                 </button>
               </div>
             </div>
@@ -261,15 +261,15 @@ export default function InvestmentAndTakeoverPage() {
               ))}
             </div>
 
-            <div className="mt-12 text-center">
+            {/* <div className="mt-12 text-center">
               <button className="px-6 py-2 border border-black rounded-full">
                 Show more
               </button>
-            </div>
+            </div> */}
           </section>
 
           {/* Neighborhoods */}
-          <section className="mt-4 py-12">
+          {/* <section className="mt-4 py-12">
             <h3 className="text-lg text-indigo-500 font-normal uppercase">
               AREAS ACROSS THE TOWN
             </h3>
@@ -301,7 +301,7 @@ export default function InvestmentAndTakeoverPage() {
                 </div>
               ))}
             </div>
-          </section>
+          </section> */}
         </div>
 
         {/* Banner */}

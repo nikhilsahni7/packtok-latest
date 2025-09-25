@@ -1,6 +1,7 @@
 import { CtaBanner as WebCtaBanner } from "@/components";
 import { CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 const checklistLeft = [
@@ -44,7 +45,7 @@ export default function TunkeryPage() {
 
 function HeroSection() {
   return (
-    <section className="relative h-[520px] md:h-[560px] overflow-hidden rounded-b-[48px]">
+    <section className="relative h-[520px] before:absolute before:content-[''] before:z-10 before:top-0 before:overflow-hidden before:bg-[#00000078] before:w-full before:h-[500px]  md:h-[560px] overflow-hidden rounded-b-[48px]">
       <Image
         src="/tunkery1.png"
         alt="Turnkey Packaging Hero"
@@ -54,19 +55,19 @@ function HeroSection() {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
 
-      <div className="relative z-10 h-full max-w-[1100px] mx-auto px-6 md:px-0 flex items-center">
+      <div className="relative  z-10 h-full max-w-[1100px] mx-auto px-6 md:px-0 flex items-center">
         <div className="max-w-2xl text-gray-900">
-          <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+          <h1 className="text-4xl text-white md:text-5xl font-semibold leading-tight">
             Transform Your Business with Our Turnkey
             <br /> Packaging solutions
           </h1>
-          <p className="mt-4 text-gray-800 text-justify">
+          <p className="mt-4 text-white text-gray-800 text-justify">
             We provide a comprehensive, all-in-one service—from design and
             production to logistics—streamlining the entire packaging process
             for efficiency, consistency, and cost savings.
           </p>
           <button className="mt-6 px-6 py-3 bg-black text-white rounded-sm uppercase text-xs tracking-widest">
-            Submit Request
+            <Link href="/services/turnkey-projects/form">Submit Request </Link>
           </button>
         </div>
       </div>

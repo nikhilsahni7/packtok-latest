@@ -779,7 +779,7 @@ export function TurnkeyProjectForm() {
                   <Button
                     type="submit"
                     disabled={turnkeySubmission.isPending}
-                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors"
+                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cusror-pointer"
                   >
                     {turnkeySubmission.isPending
                       ? "Submitting..."
