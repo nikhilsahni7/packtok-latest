@@ -8,7 +8,6 @@ interface ProductCardProps {
   product: {
     rating: number;
     name: string;
-    price: number;
     originalPrice: number;
     image: string | StaticImageData;
   };
@@ -45,9 +44,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.name}
         </h3>
         <div className="flex items-baseline gap-2">
-          <p className="text-base font-semibold text-gray-900">
+          {/* <p className="text-base font-semibold text-gray-900">
             ${product.price}
-          </p>
+          </p> */}
           {/* <p className="text-sm sm:text-base text-gray-400 line-through">
             ${product.originalPrice}
           </p> */}

@@ -17,8 +17,8 @@ export default function PageHeader({
         <Image src={image} alt={title} fill className="object-cover  h-[431px]" />
       </div>
 
-      <div className="bg-black border-y-[3px] border-[#FE7B02] flex flex-col py-4 items-center justify-center z-20">
-        <h1 className="font-medium text-[43px]  text-white ">
+      <div className="bg-black border-y-[3px] border-[#FE7B02] flex flex-col py-2 items-center justify-center z-20">
+        <h1 className="font-medium text-[40px]  text-white ">
           {title}
         </h1>
         <h2 className="text-shadow-md text-white md:text-base text-sm text-center">

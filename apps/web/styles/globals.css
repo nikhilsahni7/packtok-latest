@@ -8,12 +8,10 @@
 /* Hide scrollbars globally */
 * {
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+
 }
 
-*::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
-}
+
 
 body:has(main.fluid-bg) {
   background-image: url("/BgVector.png");

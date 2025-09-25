@@ -10,7 +10,7 @@ export default function Page() {
           Let’s Power Your Production
         </h1>
         <p className="md:text-base text-sm text-gray-500 w-3/4 mb-8 text-justify">
-          We’re committed to delivering high-performance industrial solutions,
+          We’re packtok committed to delivering  high-performance corrugated machine solution,
           whether you need advanced machinery, quality raw materials, or
           reliable spare parts. Our team is here to assist with product
           inquiries, custom quotes, technical support, and order

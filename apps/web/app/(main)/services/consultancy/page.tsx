@@ -5,6 +5,7 @@ import { Checkbox } from "@packtok/ui/components/checkbox";
 import { cn } from "@packtok/ui/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { MessageCircleMore } from 'lucide-react';
 
 export default function ConsultancyPage() {
   return (
@@ -49,7 +50,7 @@ function HeroSection() {
         <div className={cn("lg:col-span-7")}>
           <div
             className={cn(
-              "mb-4 text-xs uppercase tracking-[0.2em] text-muted-foreground"
+              "mb-4 text-xs  uppercase tracking-[0.2em] text-muted-foreground"
             )}
           >
             Consultancy Services
@@ -92,6 +93,8 @@ function HeroSection() {
           </div>
         </div>
 
+        
+
         {/* Stats Column */}
         <div className={cn("lg:col-span-5")}>
           <div
@@ -104,7 +107,7 @@ function HeroSection() {
             )}
           >
             <StatBox label="Years of Experience" value="35+" />
-            <StatBox label="Professionals Available" value="80+" />
+            <StatBox label="Professionals Available" value={<MessageCircleMore  className="text-3xl mb-2"/>} style="text-3xl" />
           </div>
         </div>
       </div>
@@ -128,11 +131,11 @@ function HeroSection() {
   );
 }
 
-function StatBox({ label, value }: { label: string; value: string }) {
+function StatBox({ label, value, style }: { label: string; value: any; style?:any }) {
   return (
     <div className={cn("flex flex-col items-start gap-2")}>
-      <div className={cn("text-3xl font-semibold")}>{value}</div>
-      <div className={cn("text-xs text-muted-foreground")}>{label}</div>
+      <div className={cn(`text-3xl font-semibold ${style}`)}>{value}</div>
+      <div className={cn("text-xs font-semibold text-muted-foreground")}>{label}</div>
     </div>
   );
 }

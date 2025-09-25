@@ -14,7 +14,7 @@ const newArrivalsData = [
   {
     id: 1,
     name: "Cake Machine",
-    price: 199,
+    
     originalPrice: 399,
     rating: 5,
     image: Cake1
@@ -22,7 +22,6 @@ const newArrivalsData = [
   {
     id: 2,
     name: "Cake Machine",
-    price: 24.99,
     originalPrice: 120,
     rating: 5,
     image: Cake2
@@ -30,7 +29,7 @@ const newArrivalsData = [
   {
     id: 3,
     name: "Cake Machine",
-    price: 24.99,
+  
     originalPrice: 250,
     rating: 5,
     image: Cake3
@@ -38,7 +37,7 @@ const newArrivalsData = [
   {
     id: 4,
     name: "Cake Machine",
-    price: 24.99,
+
     originalPrice: 180,
     rating: 5,
     image: Cake4
@@ -46,7 +45,6 @@ const newArrivalsData = [
   {
     id: 5,
     name: "Cake Machine",
-    price: 24.99,
     originalPrice: 75,
     rating: 5,
     image: Cake5

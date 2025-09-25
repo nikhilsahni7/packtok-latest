@@ -24,9 +24,9 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Header */}
-      <section className="bg-black py-6 border-y-[3px] border-[#FE7B02]">
+      <section className="bg-black py-2 border-y-[3px] border-[#FE7B02]">
         <div className="w-[95%] mx-auto">
-          <h1 className="text-[43px] font-medium text-white text-center">
+          <h1 className="text-[40px] font-medium text-white text-center">
             Services
           </h1>
         </div>

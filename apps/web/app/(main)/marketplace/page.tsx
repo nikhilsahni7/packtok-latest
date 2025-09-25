@@ -21,9 +21,9 @@ export default function Page() {
         </div>
 
         {/* Black Band with Text */}
-        <div className="bg-black border-y-[3px] border-[#FE7B02] text-white py-6 px-4">
+        <div className="bg-black border-y-[3px] border-[#FE7B02] text-white py-2 px-4">
           <div className="flex flex-col items-center justify-center text-center">
-            <h1 className="text-[43px]  font-medium ">
+            <h1 className="text-[40px]  font-medium ">
               Marketplace
             </h1>
           </div>

@@ -6,7 +6,7 @@ export default function SellYourProductPage() {
   return (
     <Protected>
       <main>
-        <div className="w-[85%] mx-auto">
+        <div className="w-full">
           <PageHeader
             title="Sell Your Items"
             subtitle="List your equipment and machinery for sale on our marketplace."
@@ -18,5 +18,6 @@ export default function SellYourProductPage() {
         </div>
       </main>
     </Protected>
+
   );
 }

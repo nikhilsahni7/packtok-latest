@@ -13,7 +13,7 @@ export default function PodcastsLayout({
           image="/podcast.jpg"
         />
       </div>
-      <div className="w-[85%] mx-auto py-8">{children}</div>
+      <div className="w-[85%] mx-auto py-4">{children}</div>
     </section>
   );
 }
