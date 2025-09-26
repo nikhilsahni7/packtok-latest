@@ -44,7 +44,7 @@ const GridSection = () => {
     },
     {
       id: 6,
-      heading: "Acquisition & Takeover",
+      heading: "Acquisition Takeover",
       image: features6,
       href: "/services/investment-and-takeover",
     },
@@ -60,13 +60,13 @@ const GridSection = () => {
         {mainGridItems.map((item) => (
           <div
             key={item.id}
-            className="bg-gray-100 rounded-lg p-4 sm:p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 transition-all duration-300 hover:shadow-lg hover:bg-gray-50 h-[318px]"
+            className="bg-gray-100 rounded-lg p-4 sm:p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 transition-all duration-300 hover:shadow-lg  h-[318px]"
           >
             {/* Text content */}
             <div className="flex flex-col justify-end w-full text-left mt-4">
               <h3
                 className="text-xl sm:text-2xl md:text-[2.125rem] 
-     text-gray-900 mb-4 leading-tight font-medium w-[200px]" 
+     text-gray-900 mb-4 leading-tight font-medium w-[200px]"
               >
                 {item.heading}
               </h3>
@@ -91,7 +91,7 @@ const GridSection = () => {
                 alt={item.heading}
                 height={225}
                 width={400}
-                // className="w-[90%] sm:w-[80%] md:w-[75%] lg:w-[70%] xl:w-[65%] h-auto object-contain mx-auto"
+              // className="w-[90%] sm:w-[80%] md:w-[75%] lg:w-[70%] xl:w-[65%] h-auto object-contain mx-auto"
               />
             </div>
           </div>

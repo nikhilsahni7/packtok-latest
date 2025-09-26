@@ -1,15 +1,35 @@
 import { CtaBanner as WebCtaBanner } from "@/components";
 import {
   CalendarClock,
+  Check,
   CheckCircle2,
+  BadgeCheck,
   Clock8,
   FileText,
   PhoneCall,
   ShieldCheck,
+  MapPin,
   Users,
   Wrench,
 } from "lucide-react";
 import Image from "next/image";
+
+
+import installer_bg from "@/assets/installer_bg.png"
+import installer_bg_2 from "@/assets/installer_bg_2.png"
+import export_1 from "@/assets/export_1.png"
+import our_machinary from "@/assets/our_machinary.png"
+import Satisfaction_Guarantee from "@/assets/Satisfaction Guarantee.png"
+import Free_Quotes from "@/assets/Free Quotes.png"
+import Professionals from "@/assets/Professionals.png"
+import Fast_24_Hour from "@/assets/Fast 24-Hour Service.png"
+import Flexible_Scheduling from "@/assets/Flexible Scheduling.png"
+import Commitment from "@/assets/Commitment_Free.png"
+
+
+
+
+
 
 export default function MachineryInstallerPage() {
   return (
@@ -33,59 +53,57 @@ export default function MachineryInstallerPage() {
 
 function HeroSection() {
   return (
-    <section className="pt-20 md:pt-24">
-      <div className="w-[95%] sm:w-[90%] md:w-[85%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
+    <section className="pt-20 bg-black md:pt-24">
+      <div className="w-[95%] sm:w-[90%] md:w-[95%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
         {/* Left Image */}
-        <div className="md:col-span-3 hidden md:block">
-          <div className="relative h-[320px] lg:h-[360px] overflow-hidden rounded-lg">
+        <div className="md:col-span-3">
+          <div className="rounded-lg">
             <Image
-              src="/tunkery5.jpg"
+              src={installer_bg}
               alt="Technician"
-              fill
-              className="object-cover"
+              className="object-cover w-full"
               priority
             />
           </div>
         </div>
 
         {/* Center Card */}
-        <div className="md:col-span-6 bg-black text-white rounded-2xl p-8 md:p-10 relative overflow-hidden">
-          <div className="text-[11px] tracking-[0.25em] text-white/70">
+        <div className="md:col-span-6 bg-black text-white text-center rounded-2xl p-5 relative overflow-hidden">
+          <div className="text-[14px] tracking-[0.25em] font-meduim text-white/70">
             FOCUSED ON SKILLED PERSONNEL SUPPLY
           </div>
-          <h1 className="mt-2 text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight">
+          <h1 className="mt-2 text-[45px] pb-3 font-bold leading-tight">
             Manpower Services
             <br /> for Machinery Setup
             <br /> &amp; Operations
           </h1>
-          <div className="mt-3 flex gap-6 text-xs text-white/80">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-[#0DB0F3]" /> Free
+          <div className="mt-3 text-center justify-center pb-4 flex gap-6 text-xs text-white/80">
+            <div className="flex items-center text-[#15B2F5] gap-2">
+              <Check className="h-4 w-4 text-[#15B2F5]" /> Free
               Consultations
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-[#0DB0F3]" /> No Obligation
+            <div className="flex items-center text-[#15B2F5] gap-2">
+              <Check className="h-4 w-4 text-[#15B2F5]" /> No Obligation
             </div>
           </div>
-          <button className="mt-6 inline-flex items-center justify-center rounded-full bg-white px-5 py-2 text-xs font-medium text-black">
+          <button className="mt-6 inline-flex items-center justify-center rounded-full bg-white px-5 py-2 text-[1.1rem] font-medium text-black">
             Book Now
           </button>
 
           <div className="mt-8 grid grid-cols-3 gap-3 text-[11px]">
-            <FeaturePill label="Trained Machinery Operators" />
-            <FeaturePill label="Certified Local Professionals" />
-            <FeaturePill label="On-Site Setup & Installation" />
+            <div className="flex gap-2 justify-center items-center"><BadgeCheck className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">Trained Machinery Operators</span></div>
+            <div className="flex gap-2 justify-center items-center"><ShieldCheck className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">Certified Local Professionals</span></div>
+            <div className="flex gap-2 justify-center items-center"><MapPin className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">On-Site Setup & Installationl</span></div>
           </div>
         </div>
 
         {/* Right Image */}
-        <div className="md:col-span-3 hidden md:block">
-          <div className="relative h-[320px] lg:h-[360px] overflow-hidden rounded-lg">
+        <div className="md:col-span-3">
+          <div className=" rounded-lg">
             <Image
-              src="/tunkery8.png"
+              src={installer_bg_2}
               alt="Worker"
-              fill
-              className="object-cover"
+              className="object-cover w-full"
             />
           </div>
         </div>
@@ -106,41 +124,41 @@ function FeaturePill({ label }: { label: string }) {
 function ExpertSection() {
   return (
     <section className="py-12 md:py-16">
-      <div className="w-[95%] sm:w-[90%] md:w-[85%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-        <div className="md:col-span-5">
-          <h2 className="text-2xl md:text-3xl font-semibold leading-snug">
+      <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div className="md:col-span-6">
+          <h2 className="text-[2.5rem] font-bold leading-snug">
             Expert Manpower for
             <br /> Machinery Services
           </h2>
-          <p className="mt-3 text-sm text-gray-600 max-w-md">
+          <p className="mt-3 text-[14px] py-4 text-[#545971] max-w-md">
             Need skilled technicians for machinery setup, operation, or
             maintenance? We provide certified professionals to ensure your
             equipment runs smoothly and efficiently.
           </p>
-          <ul className="mt-5 space-y-3 text-sm">
+          <ul className="mt-5 space-y-3 text-[16px]">
             {[
               "Installation & Setup",
               "Maintenance & Repair",
               "Operator Training & Support",
             ].map((item) => (
-              <li key={item} className="flex items-start gap-3 text-gray-800">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 text-[#0DB0F3]" />
-                <span>{item}</span>
+              <li key={item} className="flex items-start font-bold gap-3 pb-4 text-gray-800">
+                <Check className="mt-0.5 h-5 w-5 text-black" />
+                <span className="font-bold">{item}</span>
               </li>
             ))}
           </ul>
-          <button className="mt-6 inline-flex items-center justify-center rounded-full border border-black px-4 py-2 text-xs font-medium">
+          <button className="mt-6 inline-flex items-center bg-black text-white justify-center rounded-full border border-black px-8 py-3 text-[13.5px] font-medium">
             Book your service Now
           </button>
         </div>
 
-        <div className="md:col-span-7">
-          <div className="relative h-[320px] sm:h-[360px] md:h-[420px] overflow-hidden rounded-xl">
+        <div className="md:col-span-6">
+          <div className="w-full">
             <Image
-              src="/tunkery7.jpg"
+              src={export_1}
               alt="Installers"
-              fill
-              className="object-cover"
+
+              className="object-cover w-full"
             />
           </div>
         </div>
@@ -169,38 +187,40 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-10">
-      <div className="w-[95%] sm:w-[90%] md:w-[85%] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        <div className="relative">
-          <div className="relative h-[260px] sm:h-[300px] md:h-[340px] overflow-hidden rounded-xl">
-            <Image
-              src="/newsletter.png"
-              alt="verified"
-              fill
-              className="object-contain p-4"
-            />
+    <section className="py-30">
+      <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div className="md:col-span-6">
+          <div className="relative left-[-12%]">
+            <div className=" rounded-xl">
+              <Image
+                src={our_machinary}
+                alt="verified"
+                className="object-contain w-full"
+              />
+            </div>
           </div>
         </div>
-        <div>
-          <h3 className="text-2xl md:text-3xl font-semibold">
+
+        <div className="md:col-span-6">
+          <h3 className="text-[2.5rem] leading-12 font-semibold">
             How Our Machinery
             <br /> Manpower Service Works
           </h3>
           <div className="mt-6 space-y-6">
             {steps.map((s, i) => (
-              <div key={s.title} className="flex gap-4">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700 ring-1 ring-blue-100">
-                  {s.icon}
+
+
+              <div key={s.title} className="flex gap-5 items-end">
+                <div className="flex gap-5 w-[176px]">
+                  <span className="text-[2.5rem] text-[#9EA3B5] font-semibold">{i + 1}.</span>
+                  <span className="text-[1.1rem] font-bold ">{s.title}</span>
                 </div>
-                <div>
-                  <div className="text-sm font-semibold">
-                    {i + 1}. {s.title}
-                  </div>
-                  <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                    {s.desc}
-                  </p>
-                </div>
+
+                <p className="text-[13.5px] text-[#545971] w-[323px] leading-relaxed">
+                  {s.desc}
+                </p>
               </div>
+
             ))}
           </div>
         </div>
@@ -214,58 +234,61 @@ function GuaranteeSection() {
     {
       title: "Satisfaction Guarantee",
       desc: "Trusted professionals—no scams, just proven results. We deliver quality work with optimal performance every time.",
-      icon: <ShieldCheck className="h-5 w-5" />,
+      icon: Satisfaction_Guarantee,
     },
     {
       title: "Professionals",
       desc: "Experts available in urban, suburban & rural areas—for both short-term projects and long-term maintenance.",
-      icon: <Users className="h-5 w-5" />,
+      icon: Professionals,
     },
     {
       title: "Flexible Scheduling",
       desc: "24/7 availability, including nights & weekends—we work around your operational hours to minimize downtime.",
-      icon: <Clock8 className="h-5 w-5" />,
+      icon: Flexible_Scheduling,
     },
     {
       title: "Free Quotes",
       desc: "Get personalized cost estimates without any obligation. Experience transparency and peace of mind as you explore our service.",
-      icon: <FileText className="h-5 w-5" />,
+      icon: Free_Quotes,
     },
     {
       title: "Fast 24-Hour Service",
       desc: "Need fast handling for repairs or installs? Our experts are available anytime to help you resolve the problem.",
-      icon: <Clock8 className="h-5 w-5" />,
+      icon: Fast_24_Hour,
     },
     {
       title: "100% Commitment-Free",
       desc: "You are free to ask us about the problems you are facing. We offer a no-commitment approach to put your mind at ease.",
-      icon: <ShieldCheck className="h-5 w-5" />,
+      icon: Commitment,
     },
   ];
 
   return (
-    <section className="py-12">
-      <div className="w-[95%] sm:w-[90%] md:w-[85%] mx-auto">
-        <div className="rounded-2xl bg-black text-white p-8 md:p-10">
-          <h3 className="text-2xl md:text-3xl font-semibold">
+    <section className="pt-12 pb-30">
+      <div className="w-[95%] sm:w-[90%] md:w-[90%] mx-auto">
+        <div className="rounded-2xl bg-black text-white p-20">
+          <h3 className="text-[2.5rem] pb-16 font-bold">
             Fast, Friendly, and
             <br /> Satisfaction Guarantee
           </h3>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-30 gap-y-[5rem] sm:grid-cols-2 lg:grid-cols-2">
             {items.map((it) => (
               <div
                 key={it.title}
-                className="rounded-xl bg-white/5 p-5 ring-1 ring-white/10"
+                className=" p-5"
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white/10">
-                    {it.icon}
+                <div className="flex items-center gap-8 ">
+                  <div className="flex w-[100px] h-[100px] items-center justify-center rounded-md ">
+                    <Image src={it.icon} alt={it.title} className="w-full" />
                   </div>
-                  <div className="text-sm font-semibold">{it.title}</div>
+                  <div>
+                    <div className="text-[1.1rem] font-semibold">{it.title}</div>
+                    <p className="mt-2 text-[0.9rem] text-white/80 leading-relaxed">
+                      {it.desc}
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-2 text-xs text-white/80 leading-relaxed">
-                  {it.desc}
-                </p>
+
               </div>
             ))}
           </div>

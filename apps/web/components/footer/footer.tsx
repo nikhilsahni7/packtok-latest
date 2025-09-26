@@ -25,11 +25,11 @@ export default function PacktokFooter() {
             {/* Logo and Contact Section */}
             <div className="flex-shrink-0">
               <div className="mb-3">
-                <div className="text-6xl font-bold leading-tight">
+                <div className="text-6xl font-bold leading-12">
                   <span className="text-white">Pack</span>
                   <span className="text-orange-500">tok</span>
                 </div>
-                <div className="text-sm text-gray-300 mt-0.5 font-normal">
+                <div className="text-sm text-gray-300  font-normal">
                   Complete Packaging Solution
                 </div>
               </div>

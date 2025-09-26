@@ -286,8 +286,8 @@ export function ProductSubmissionForm() {
       <Card className="w-[85%] mx-auto">
         <CardHeader>
           <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
-            <CardTitle className="text-2xl font-bold">
-              {currentStep === "details" ? "Product Details" : "Address"}
+            <CardTitle className="text-2xl capitalize font-bold">
+              {currentStep === "details" ? "Product Details for corrugated and packaging industry" : "Address"}
             </CardTitle>
           </div>
         </CardHeader>

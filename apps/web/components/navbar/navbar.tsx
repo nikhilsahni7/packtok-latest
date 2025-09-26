@@ -91,7 +91,7 @@ export default function Navbar() {
   return (
     <div
       className={cn(
-        " top-0 left-0 right-0 z-50  ",
+        " top-0 left-0 right-0 z-50 relative  ",
         scrolled || toggle
           ? "shadow-md bg-white fixed transition-all duration-500 ease-in-out"
           : "bg-black border-b-3 border-orange-500 "

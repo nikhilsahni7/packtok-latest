@@ -15,8 +15,17 @@ export function AuctionCountdown() {
       )}
     >
       <div className="container mx-auto px-4 lg:px-8">
+        <div className="text-left pb-5">
+          <strong>Auction Notice:</strong>
+          <p>        Complete project available for auction, including all machinery, raw materials, tools, and related assets.
+            Perfect opportunity for investors or businesses looking for a ready-to-run setup.
+            Assets are in good condition and suitable for immediate use or resale.
+            Detailed inventory and inspection available upon request.
+            Don't miss this chance to acquire a full operational unit at competitive rates.</p>
+        </div>
         {/* Main content container */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between w-[80%] mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between 
+        ">
           {/* Left side - Announcement */}
           <div className="lg:flex-1 mb-12 lg:mb-0 text-left lg:text-left">
             <h2

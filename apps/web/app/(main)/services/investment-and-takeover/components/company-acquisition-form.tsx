@@ -107,8 +107,8 @@ export function CompanyAcquisitionForm() {
 
           <CardHeader>
             <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
-              <CardTitle className="text-2xl font-bold">
-                Company Acquisition Inquiry
+              <CardTitle className="text-2xl capitalize font-bold">
+                Company Acquisition Inquiry for corrugated and packaging industry
               </CardTitle>
             </div>
 

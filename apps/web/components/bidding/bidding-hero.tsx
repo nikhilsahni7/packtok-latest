@@ -113,8 +113,10 @@ export function BiddingHero() {
                 "text-white drop-shadow-lg"
               )}
             >
-               Packtok
+              Packtok
             </h1>
+
+            <p className="pt-5">Auction of complete project including machinery, raw materials, finish goods and other assets. Ideal opportunity for turnkey takeover or asset liquidation</p>
           </div>
         </div>
       </div>

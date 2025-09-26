@@ -159,8 +159,8 @@ export function TurnkeyProjectForm() {
           <div className="bg-white w-11/12 border-[1px] border-[rgba(255, 255, 255, 1)] shadow-[0_0_4px_1px_rgba(255, 255, 255, 1)]  mx-auto h-full rounded-3xl overflow-hidden">
             <div className="px-14 py-4">
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
-                <h1 className=" bg-[#4A3AFF]  inline-block text-[24px] font-bold text-white rounded-2xl px-20 py-5 mb-8">
-                  Turnkey Project Inquiry
+                <h1 className=" bg-[#4A3AFF] capitalize inline-block text-[24px] font-bold text-white rounded-2xl px-20 py-5 mb-8">
+                  Turnkey Project Inquiry for corrugated and packaging industry
                 </h1>
               </div>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)]">

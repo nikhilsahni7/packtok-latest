@@ -1,3 +1,4 @@
+'use client'
 // import ChennaiImg from "@/assets/chennai.jpg";
 import Chimneys from "@/assets/chimneys.png";
 // import DelhiImg from "@/assets/delhi.jpg";
@@ -15,6 +16,7 @@ import SocialIcons from "@/assets/social_icons.png";
 import { CtaBanner as WebCtaBanner } from "@/components";
 import { House, SearchIcon } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 const facilities = new Array(6).fill(0).map((_, i) => ({
   id: i,
@@ -26,6 +28,11 @@ const facilities = new Array(6).fill(0).map((_, i) => ({
   city: "Mumbai, Maharashtra",
   image: Chimneys,
 }));
+
+
+
+
+
 
 // const neighborhoods = [
 //   {
@@ -60,6 +67,22 @@ const facilities = new Array(6).fill(0).map((_, i) => ({
 // ];
 
 export default function InvestmentAndTakeoverPage() {
+  const [dataShow1, setDataShow1] = useState(false);
+  const [dataShow2, setDataShow2] = useState(false);
+  const [dataShow3, setDataShow3] = useState(false);
+
+  const handlerbtn = () => {
+    setDataShow1(true);
+    setDataShow2(true);
+    setDataShow3(false)
+  }
+
+  const handlerbtn1 = () => {
+    setDataShow1(true);
+     setDataShow2(false);
+    setDataShow3(true);
+  }
+
   return (
     <>
       <main className="mt-16 w-[95%] sm:w-[90%] md:w-[85%] mx-auto bg-[url('/circle-bg.png')] bg-contain bg-no-repeat">
@@ -224,19 +247,27 @@ export default function InvestmentAndTakeoverPage() {
               </h3>
 
               <div className="flex gap-4">
-                <button className="px-10 py-5 text-[2.3rem] rounded-full bg-black text-white">
+                <button onClick={handlerbtn} className="px-10 py-5 text-[2.3rem] rounded-full bg-black text-white">
                   Acquisition
                 </button>
-                <button className="px-10 py-5 text-[2.3rem] rounded-full border border-black text-black">
+                <button onClick={handlerbtn1} className="px-10 py-5 text-[2.3rem] rounded-full border border-black text-black">
                   TakeOver
                 </button>
               </div>
             </div>
-            <p className="pl-4 text-gray-600 mt-2">
+
+            {dataShow1 ? "" : <p className="pl-4 text-gray-600 mt-2">
               Discover high-value manufacturing plants and
               warehouses—production-ready <br /> with turnkey operations for
               immediate acquisition.
-            </p>
+            </p>}
+
+
+            {dataShow2 ? <p className="pl-4 w-1/2 text-gray-600 mt-2">Through acquisitions, corrugated and packaging companies expand their reach and enhance production capacity.
+              It creates opportunities for innovation, efficiency, and stronger customer solutions.</p> : ""}
+
+            {dataShow3 ? <p className="pl-4 w-1/2 text-gray-600 mt-2">Takeovers in the packaging industry bring together strengths of two businesses.
+This drives cost efficiency, wider market presence, and long-term growth.</p> : ""}
 
             <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
               {facilities.map((f) => (

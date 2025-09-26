@@ -12,8 +12,7 @@ export default function Hero() {
           <span className="font-bold md:w-auto w-full hyphens-auto">
             PackTok
           </span>{" "}
-          is well-known for sourcing and selling corrugated, packaging and
-          converting equipment across the globe. With over 35 years of
+          is well-known for sourcing and selling used and new corrugated packaging and converting equipment's across the globe. With over 35 years of
           experience, we&apos;re recognized as a trusted leader in the industry.
         </p>
       </div>

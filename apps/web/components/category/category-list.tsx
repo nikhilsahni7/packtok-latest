@@ -10,7 +10,7 @@ import Ellipse_consumables from "@/assets/Ellipse_consumables.png";
 import Machinery from "@/assets/Machinery_1.jpg";
 import ManPower from "@/assets/man-power2.jpg";
 import man_power_bg from "@/assets/man_power_bg.png";
-import RawMaterial from "@/assets/raw_materials.png";
+import RawMaterial from "@/assets/Raw material on Marketplace.avif";
 import spare from "@/assets/spare.png";
 
 export default function CategoryList() {
@@ -167,19 +167,7 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  Explore our extensive range of high-performance machinery
-                  designed to boost productivity and efficiency. From
-                  industrial-grade heavy equipment to precision tools, we offer
-                  reliable solutions for construction, manufacturing,
-                  agriculture, and more. Our selection includes top brands,
-                  ensuring durability, advanced technology, and exceptional
-                  performance. Whether you need excavators, CNC machines,
-                  tractors, or generators, we provide competitive pricing and
-                  trusted quality. Browse user-friendly listings with detailed
-                  specs, images, and customer reviews to make informed
-                  decisions. Enjoy seamless purchasing, flexible financing, and
-                  expert support. Upgrade your operations today with the best
-                  machinery
+                  Our platform is a trusted destination for sourcing high-quality raw materials used in corrugated and packaging machinery. We offer a complete range including kraft paper, adhesives, inks, starch, and other essential consumables that form the backbone of efficient packaging production. By bringing sellers and buyers together, we make it easier to access reliable materials at competitive prices, ensuring consistency, durability, and cost-effectiveness. Whether you’re a manufacturer looking to streamline supply or a supplier aiming to reach new customers, our platform provides the right space to trade raw materials with ease and confidence.
                 </p>
                 <Button
                   asChild
