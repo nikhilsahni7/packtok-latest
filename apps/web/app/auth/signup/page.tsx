@@ -1,14 +1,23 @@
+"use client";
+
 import SignUpForm from "@/components/auth/signup-form";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
+  const params = useSearchParams();
+  const callbackUrl = params?.get("callbackUrl");
+  const signinHref = callbackUrl
+    ? `/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/auth/signin";
+
   return (
     <main className="space-y-8">
       <h1 className="text-3xl font-bold text-foreground mb-2">Sign Up</h1>
       <p className="text-muted-foreground">
         Already have an account?{" "}
         <Link
-          href="/auth/signin"
+          href={signinHref}
           className="text-orange-400 hover:text-orange-500 font-medium underline-offset-4 hover:underline"
         >
           Sign In

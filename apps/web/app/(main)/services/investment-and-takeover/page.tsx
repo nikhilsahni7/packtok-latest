@@ -1,16 +1,16 @@
-import ChennaiImg from "@/assets/chennai.jpg";
+// import ChennaiImg from "@/assets/chennai.jpg";
 import Chimneys from "@/assets/chimneys.png";
-import DelhiImg from "@/assets/delhi.jpg";
+// import DelhiImg from "@/assets/delhi.jpg";
 import Icon1 from "@/assets/icon1.svg";
 import Icon2 from "@/assets/icon2.svg";
 import Icon3 from "@/assets/icon3.jpg";
 import WhoWeAre1 from "@/assets/investment-experts1.png";
 import WhoWeAre2 from "@/assets/investment-experts2.png";
 import WhoWeAre3 from "@/assets/investment-experts3.png";
-import KolkataImg from "@/assets/kolkata.jpg";
+// import KolkataImg from "@/assets/kolkata.jpg";
 import Main from "@/assets/main.png";
-import MumbaiImg from "@/assets/mumbai.jpg";
-import PunjabImg from "@/assets/punjab.jpg";
+// import MumbaiImg from "@/assets/mumbai.jpg";
+// import PunjabImg from "@/assets/punjab.jpg";
 import SocialIcons from "@/assets/social_icons.png";
 import { CtaBanner as WebCtaBanner } from "@/components";
 import { House, SearchIcon } from "lucide-react";
@@ -27,37 +27,37 @@ const facilities = new Array(6).fill(0).map((_, i) => ({
   image: Chimneys,
 }));
 
-const neighborhoods = [
-  {
-    id: 1,
-    title: "Punjab",
-    count: 216,
-    span: "lg:col-span-5",
-    image: PunjabImg,
-  },
-  { id: 2, title: "Delhi", count: 141, span: "lg:col-span-5", image: DelhiImg },
-  {
-    id: 3,
-    title: "Mumbai",
-    count: 212,
-    span: "lg:col-span-5",
-    image: MumbaiImg,
-  },
-  {
-    id: 4,
-    title: "Chennai",
-    count: 183,
-    span: "lg:col-span-6",
-    image: ChennaiImg,
-  },
-  {
-    id: 5,
-    title: "Kolkata",
-    count: 112,
-    span: "lg:col-span-9",
-    image: KolkataImg,
-  },
-];
+// const neighborhoods = [
+//   {
+//     id: 1,
+//     title: "Punjab",
+//     count: 216,
+//     span: "lg:col-span-5",
+//     image: PunjabImg,
+//   },
+//   { id: 2, title: "Delhi", count: 141, span: "lg:col-span-5", image: DelhiImg },
+//   {
+//     id: 3,
+//     title: "Mumbai",
+//     count: 212,
+//     span: "lg:col-span-5",
+//     image: MumbaiImg,
+//   },
+//   {
+//     id: 4,
+//     title: "Chennai",
+//     count: 183,
+//     span: "lg:col-span-6",
+//     image: ChennaiImg,
+//   },
+//   {
+//     id: 5,
+//     title: "Kolkata",
+//     count: 112,
+//     span: "lg:col-span-9",
+//     image: KolkataImg,
+//   },
+// ];
 
 export default function InvestmentAndTakeoverPage() {
   return (

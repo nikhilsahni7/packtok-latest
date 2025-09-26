@@ -9,7 +9,12 @@ export default function Hero() {
           Built for Industry, <br /> Backed by Expertise.
         </h1>
         <p className="text-gray-500 w-[400px] text-sm sm:text-base hyphens-auto text-justify font-normal">
-          <span className="font-bold md:w-auto w-full hyphens-auto">PackTok</span> is well-known for sourcing and selling corrugated, packaging and converting equipment across the globe. With over 35 years of experience, we're recognized as a trusted leader in the industry.
+          <span className="font-bold md:w-auto w-full hyphens-auto">
+            PackTok
+          </span>{" "}
+          is well-known for sourcing and selling corrugated, packaging and
+          converting equipment across the globe. With over 35 years of
+          experience, we&apos;re recognized as a trusted leader in the industry.
         </p>
       </div>
     </section>

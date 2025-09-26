@@ -1,10 +1,9 @@
-import { PageHeader } from "@/components";
 import Protected from "@/components/auth/protected";
 import { JobSeekerForm } from "./components/job-seeker-form";
 
 export default function JobSeekerPage() {
   return (
-   
+    <Protected>
       <main>
         <div className="w-full">
           <div className="py-12">
@@ -12,5 +11,6 @@ export default function JobSeekerPage() {
           </div>
         </div>
       </main>
+    </Protected>
   );
 }

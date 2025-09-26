@@ -26,6 +26,7 @@ type FormData = z.infer<typeof schema>;
 export default function VerifyOtpForm() {
   const params = useSearchParams();
   const email = params.get("email") || "";
+  const callbackUrl = params.get("callbackUrl") || "";
   const router = useRouter();
 
   const form = useForm<FormData>({
@@ -39,8 +40,11 @@ export default function VerifyOtpForm() {
     },
     onSuccess: () => {
       toast.success("Email verified. You can now login.");
-      // Optionally auto-login
-      router.push("/auth/signin");
+      const signinPath = "/auth/signin";
+      const href = callbackUrl
+        ? `${signinPath}?callbackUrl=${encodeURIComponent(callbackUrl)}`
+        : signinPath;
+      router.push(href);
     },
     onError: (err: Error) => {
       const axiosError = err as { response?: { data?: { message?: string } } };

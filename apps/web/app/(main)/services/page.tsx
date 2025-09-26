@@ -1,13 +1,10 @@
+import Ellipse_consumables from "@/assets/Ellipse_consumables.png";
+import investment from "@/assets/investment.png";
+import service_bg from "@/assets/service_bg.png";
 import { Button } from "@packtok/ui/components/button";
 import Image from "next/image";
 import Link from "next/link";
 import { Newsletter } from "../../../components";
-import service_bg from "@/assets/service_bg.png";
-import Ellipse_consumables from "@/assets/Ellipse_consumables.png";
-import investment from "@/assets/investment.png";
-
-
-
 
 export default function ServicesPage() {
   return (
@@ -66,10 +63,10 @@ export default function ServicesPage() {
                 <div className="w-[521px] mx-auto">
                   <p className="text-gray-300 mb-10 leading-relaxed text-[12px] text-justify">
                     Packtak offers end-to-end turnkey project solutions for the
-                    packaging industry, managing everything from initial planning
-                    and machinery sourcing to installation, testing, and final
-                    handover. Our expert team ensures seamless execution, timely
-                    delivery, and cost efficiency.
+                    packaging industry, managing everything from initial
+                    planning and machinery sourcing to installation, testing,
+                    and final handover. Our expert team ensures seamless
+                    execution, timely delivery, and cost efficiency.
                   </p>
                   <Button
                     asChild
@@ -164,10 +161,10 @@ export default function ServicesPage() {
                 <div className="w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                     Packtak offers specialized consultancy services for the
-                    packaging industry, delivering strategic guidance to optimize
-                    operational efficiency. From process optimization, cost
-                    reduction, to sustainable business optimization and consulting
-                    solutions.
+                    packaging industry, delivering strategic guidance to
+                    optimize operational efficiency. From process optimization,
+                    cost reduction, to sustainable business optimization and
+                    consulting solutions.
                   </p>
                   <Button
                     asChild
@@ -190,7 +187,6 @@ export default function ServicesPage() {
               className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
             />
 
-
             <div className="col-start-4 row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-[580px]"></div>
             <div className="col-span-3 relative row-start-1 col-start-1 h-[580px]">
               <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
@@ -204,12 +200,16 @@ export default function ServicesPage() {
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                     PackTok helps packaging companies recover value from
                     underutilized machinery and surplus equipment. We conduct
-                    detailed audits and ensure compliance, turning idle inventory
-                    into capital while optimizing operational efficiency.
+                    detailed audits and ensure compliance, turning idle
+                    inventory into capital while optimizing operational
+                    efficiency.
                   </p>
                   <div className="text-end">
-                    <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                      Request
+                    <Button
+                      asChild
+                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                    >
+                      <Link href="/services/sell-old-items">Request</Link>
                     </Button>
                   </div>
                 </div>
@@ -235,8 +235,6 @@ export default function ServicesPage() {
               className="w-full border border-[#000] object-cover col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
             />
 
-
-
             <div className="col-start-2 row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-[580px]"></div>
             <div className="col-span-3 h-[580px]">
               <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
@@ -257,7 +255,9 @@ export default function ServicesPage() {
                     asChild
                     className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
                   >
-                    <Link href="/services/investment-and-takeover">Request</Link>
+                    <Link href="/services/investment-and-takeover">
+                      Request
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -274,7 +274,6 @@ export default function ServicesPage() {
               className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
             />
 
-
             <div className="col-start-4 row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-[580px]"></div>
             <div className="col-span-3 row-start-1 col-start-1 h-[580px]">
               <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
@@ -286,17 +285,20 @@ export default function ServicesPage() {
                 </p>
                 <div className="w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                    PackTok bridges skilled professionals and leading employers in
-                    the packaging industry. For job seekers, we offer tailored
-                    listings and career insights to match your expertise with
-                    ideal roles. For employers, we provide access to a qualified
-                    talent pool, helping you find the right candidates to drive
-                    your business forward. Together, we build stronger packaging
-                    teams for a successful future.
+                    PackTok bridges skilled professionals and leading employers
+                    in the packaging industry. For job seekers, we offer
+                    tailored listings and career insights to match your
+                    expertise with ideal roles. For employers, we provide access
+                    to a qualified talent pool, helping you find the right
+                    candidates to drive your business forward. Together, we
+                    build stronger packaging teams for a successful future.
                   </p>
                   <div className="text-end">
-                    <Button className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg">
-                      Request
+                    <Button
+                      asChild
+                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                    >
+                      <Link href="/services/manpower-hiring">Request</Link>
                     </Button>
                   </div>
                 </div>

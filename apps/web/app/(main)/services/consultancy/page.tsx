@@ -3,14 +3,12 @@
 import { CtaBanner as WebCtaBanner } from "@/components";
 import { Checkbox } from "@packtok/ui/components/checkbox";
 import { cn } from "@packtok/ui/lib/utils";
+import { MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircleMore } from 'lucide-react';
 
 import image1 from "@/assets/Spare-Part1.png";
 import image2 from "@/assets/image1.jpeg";
-
-
 
 export default function ConsultancyPage() {
   return (
@@ -75,7 +73,7 @@ function HeroSection() {
           </p>
           <div className={cn("mt-6")}>
             <Link
-              href="#consultancy-grid"
+              href="/services/consultancy/form"
               className={cn(
                 // Layout & box model
                 "inline-flex items-center justify-center rounded-sm px-5 py-2.5",
@@ -98,8 +96,6 @@ function HeroSection() {
           </div>
         </div>
 
-        
-
         {/* Stats Column */}
         <div className={cn("lg:col-span-5")}>
           <div
@@ -112,7 +108,11 @@ function HeroSection() {
             )}
           >
             <StatBox label="Years of Experience" value="35+" />
-            <StatBox label="Professionals Available" value={<MessageCircleMore  className="text-3xl mb-2"/>} style="text-3xl" />
+            <StatBox
+              label="Professionals Available"
+              value={<MessageCircleMore className="text-3xl mb-2" />}
+              style="text-3xl"
+            />
           </div>
         </div>
       </div>
@@ -136,11 +136,21 @@ function HeroSection() {
   );
 }
 
-function StatBox({ label, value, style }: { label: string; value: any; style?:any }) {
+function StatBox({
+  label,
+  value,
+  style,
+}: {
+  label: string;
+  value: any;
+  style?: any;
+}) {
   return (
     <div className={cn("flex flex-col items-start gap-2")}>
       <div className={cn(`text-3xl font-semibold ${style}`)}>{value}</div>
-      <div className={cn("text-xs font-semibold text-muted-foreground")}>{label}</div>
+      <div className={cn("text-xs font-semibold text-muted-foreground")}>
+        {label}
+      </div>
     </div>
   );
 }
@@ -335,11 +345,7 @@ function ConsultancyGrid() {
           price="$950"
           img="/consult-mainpage3.png"
         />
-        <ConsultancyCard
-          title="Spare Parts"
-          price="$950"
-          img={image1}
-        />
+        <ConsultancyCard title="Spare Parts" price="$950" img={image1} />
         <ConsultancyCard
           title="Raw Products"
           price="$950"
@@ -423,6 +429,3 @@ function ConsultancyCard({
     </div>
   );
 }
-
-
-

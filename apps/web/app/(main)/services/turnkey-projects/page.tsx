@@ -1,4 +1,5 @@
 import { CtaBanner as WebCtaBanner } from "@/components";
+import { Button } from "@packtok/ui/components/button";
 import { CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -151,7 +152,9 @@ function FeatureCard({
         {icon}
       </div>
       <h4 className="text-[18px] font-semibold text-gray-900">{title}</h4>
-      <p className="mt-3 text-gray-600 text-sm leading-relaxed text-justify">{desc}</p>
+      <p className="mt-3 text-gray-600 text-sm leading-relaxed text-justify">
+        {desc}
+      </p>
     </div>
   );
 }
@@ -180,9 +183,12 @@ function ExcellenceSection() {
             productivity, and ensuring long-term success through consistent
             guidance and comprehensive machinery setup and maintenance.
           </p>
-          <button className="mt-6 px-6 py-3 bg-black text-white rounded-sm uppercase text-xs tracking-widest">
-            Request Consultation
-          </button>
+          <Button
+            asChild
+            className="mt-6 px-6 py-3 bg-black text-white rounded-sm uppercase text-xs tracking-widest"
+          >
+            <Link href="/services/consultancy">Request Consultation</Link>
+          </Button>
         </div>
       </div>
     </section>
@@ -283,7 +289,9 @@ function HowCard({
       />
       <div className="p-6">
         <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="mt-2 text-gray-600 text-sm leading-relaxed text-justify">{desc}</p>
+        <p className="mt-2 text-gray-600 text-sm leading-relaxed text-justify">
+          {desc}
+        </p>
       </div>
     </article>
   );

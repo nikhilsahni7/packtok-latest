@@ -2,10 +2,10 @@
 
 import api from "@/lib/axios";
 import { useAuthStore } from "@/store/auth-store";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
 import { User } from "@/types/auth";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface LoginPayload {
   email: string;
@@ -16,6 +16,7 @@ export function useLogin() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setUser = useAuthStore((s) => s.setUser);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   return useMutation({
     mutationFn: async (payload: LoginPayload) => {
@@ -26,7 +27,10 @@ export function useLogin() {
       setAccessToken(accessToken);
       setUser(user);
       toast.success("Logged in successfully");
-      router.push("/");
+      const callbackUrl = searchParams?.get("callbackUrl");
+      router.push(
+        callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/"
+      );
     },
     onError: (err: Error) => {
       const axiosError = err as any;
