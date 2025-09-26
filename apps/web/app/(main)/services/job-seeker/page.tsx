@@ -1,16 +1,19 @@
 import Protected from "@/components/auth/protected";
+import { Suspense } from "react";
 import { JobSeekerForm } from "./components/job-seeker-form";
 
 export default function JobSeekerPage() {
   return (
-    <Protected>
-      <main>
-        <div className="w-full">
-          <div className="py-12">
-            <JobSeekerForm />
+    <Suspense fallback={<div className="flex justify-center items-center py-20 h-screen">Loading...</div>}>
+      <Protected>
+        <main>
+          <div className="w-full">
+            <div className="py-12">
+              <JobSeekerForm />
+            </div>
           </div>
-        </div>
-      </main>
-    </Protected>
+        </main>
+      </Protected>
+    </Suspense>
   );
 }

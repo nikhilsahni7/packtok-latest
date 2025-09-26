@@ -1,4 +1,5 @@
 import ForgotPasswordForm from "@/components/auth/forgot-password-form";
+import { Suspense } from "react";
 
 export default function Page() {
   return (
@@ -9,7 +10,9 @@ export default function Page() {
       <p className="text-muted-foreground">
         Enter your email to receive an OTP, then set a new password.
       </p>
-      <ForgotPasswordForm />
+      <Suspense fallback={null}>
+        <ForgotPasswordForm />
+      </Suspense>
     </main>
   );
 }
