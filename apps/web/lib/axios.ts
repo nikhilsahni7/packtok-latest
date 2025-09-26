@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/store/auth-store";
-import axios, { AxiosError, AxiosRequestConfig, AxiosHeaders } from "axios";
+import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from "axios";
 
 interface AxiosRequestConfigWithRetry extends AxiosRequestConfig {
   _retry?: boolean;
@@ -49,6 +49,8 @@ api.interceptors.response.use(
       "/api/v1/auth/verify-otp",
       "/api/v1/auth/login-vendor",
       "/api/v1/auth/signup-vendor",
+      "/api/v1/auth/forgot-password/request",
+      "/api/v1/auth/forgot-password/confirm",
     ];
 
     const isUnauthEndpoint = unauthenticatedEndpoints.some((ep) =>

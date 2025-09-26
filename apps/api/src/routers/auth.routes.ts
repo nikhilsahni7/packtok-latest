@@ -5,6 +5,8 @@ import {
   loginVendor,
   logout,
   refresh,
+  requestPasswordReset,
+  resetPassword,
   signup,
   signupVendor,
   verifyUserOtp,
@@ -20,6 +22,8 @@ router.post("/login-vendor", loginVendor);
 router.post("/logout", logout);
 router.post("/refresh", refresh);
 router.post("/verify-otp", verifyUserOtp);
+router.post("/forgot-password/request", requestPasswordReset);
+router.post("/forgot-password/confirm", resetPassword);
 
 router.get("/me", authMiddleware, getCurrentUser);
 

@@ -1,4 +1,4 @@
-import { User, prisma, Prisma } from "@packtok/db";
+import { prisma, Prisma, User } from "@packtok/db";
 import crypto from "crypto";
 import { Resend } from "resend";
 import config from "../config";
@@ -193,5 +193,57 @@ export const verifyOtp = async (email: string, otp: string): Promise<void> => {
     throw new ApiError(500, `Supabase update failed: ${error.message}`);
 
   // Clean up
+  await (prisma as any).otp.delete({ where: { id: otpRecord.id } });
+};
+
+// ------------------ PASSWORD RESET FLOW ------------------
+export const sendPasswordResetOtp = async (email: string): Promise<void> => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new ApiError(404, "User not found");
+
+  const otp = crypto.randomInt(100000, 999999).toString();
+  const hashedOtp = hashOtp(otp);
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
+  // Reuse the single OTP slot per user
+  await (prisma as any).otp.upsert({
+    where: { userId: user.id },
+    update: { hashedOtp, expiresAt },
+    create: { userId: user.id, hashedOtp, expiresAt },
+  });
+
+  await resend.emails.send({
+    from: config.resend.fromEmail,
+    to: email,
+    subject: "Your Packtok password reset code",
+    html: `<p>Your password reset OTP is <strong>${otp}</strong>. It expires in 10 minutes.</p>`,
+  });
+};
+
+export const resetPasswordWithOtp = async (
+  email: string,
+  otp: string,
+  newPassword: string
+): Promise<void> => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new ApiError(404, "User not found");
+
+  const otpRecord = await (prisma as any).otp.findUnique({
+    where: { userId: user.id },
+  });
+  if (!otpRecord) throw new ApiError(400, "Invalid OTP request");
+
+  const isMatch = otpRecord.hashedOtp === hashOtp(otp);
+  if (!isMatch || otpRecord.expiresAt < new Date())
+    throw new ApiError(400, "Invalid or expired OTP");
+
+  // Update password in Supabase auth
+  const { error } = await (supabase.auth.admin as any).updateUserById(user.id, {
+    password: newPassword,
+  });
+  if (error)
+    throw new ApiError(500, `Supabase update failed: ${error.message}`);
+
+  // Clean up OTP
   await (prisma as any).otp.delete({ where: { id: otpRecord.id } });
 };
