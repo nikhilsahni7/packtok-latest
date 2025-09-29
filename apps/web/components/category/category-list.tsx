@@ -167,7 +167,18 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  Our platform is a trusted destination for sourcing high-quality raw materials used in corrugated and packaging machinery. We offer a complete range including kraft paper, adhesives, inks, starch, and other essential consumables that form the backbone of efficient packaging production. By bringing sellers and buyers together, we make it easier to access reliable materials at competitive prices, ensuring consistency, durability, and cost-effectiveness. Whether you’re a manufacturer looking to streamline supply or a supplier aiming to reach new customers, our platform provides the right space to trade raw materials with ease and confidence.
+                  Our platform is a trusted destination for sourcing
+                  high-quality raw materials used in corrugated and packaging
+                  machinery. We offer a complete range including kraft paper,
+                  adhesives, inks, starch, and other essential consumables that
+                  form the backbone of efficient packaging production. By
+                  bringing sellers and buyers together, we make it easier to
+                  access reliable materials at competitive prices, ensuring
+                  consistency, durability, and cost-effectiveness. Whether
+                  you’re a manufacturer looking to streamline supply or a
+                  supplier aiming to reach new customers, our platform provides
+                  the right space to trade raw materials with ease and
+                  confidence.
                 </p>
                 <Button
                   asChild
@@ -280,7 +291,7 @@ export default function CategoryList() {
                   asChild
                   className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
                 >
-                  <Link href="/services/manpower-hiring">Shop Now</Link>
+                  <Link href="/marketplace/manpower">Shop Now</Link>
                 </Button>
               </div>
             </div>

@@ -1,25 +1,17 @@
+import heroimage from "@/assets/hero_manpower.png";
 import Image from "next/image";
-import heroimage from "@/assets/hero_manpower.png"
+import Link from "next/link";
 
-import briefcase from "@/assets/briefcase-duotone.png"
-import buildings from "@/assets/buildings-duotone.png"
-import users from "@/assets/users-duotone.png"
+import briefcase from "@/assets/briefcase-duotone.png";
+import buildings from "@/assets/buildings-duotone.png";
+import users from "@/assets/users-duotone.png";
 
-import userplus from "@/assets/user-plus.png"
-import cloudArrow from "@/assets/CV/cloud-arrow-up-duotone 1.png"
-import magnifying from "@/assets/magnifying-glass-plus.png"
-import circle_wavy from "@/assets/circle-wavy-check.png"
-import testi from "@/assets/testti.png"
-import Quote from "@/assets/Quote.png"
-
-
-
-
-
-
-
-
-
+import circle_wavy from "@/assets/circle-wavy-check.png";
+import cloudArrow from "@/assets/CV/cloud-arrow-up-duotone 1.png";
+import magnifying from "@/assets/magnifying-glass-plus.png";
+import Quote from "@/assets/Quote.png";
+import testi from "@/assets/testti.png";
+import userplus from "@/assets/user-plus.png";
 
 export default function ManpowerPage() {
   return (
@@ -42,7 +34,7 @@ function HeroSection() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           <div className="md:col-span-6">
             <h1 className="text-[2.7rem] font-medium leading-tight">
-              Find a job that suits your interest &amp; skills.
+              Find a job that suits your interest & skills.
             </h1>
             <p className="mt-4 text-gray-600 max-w-xl">
               Whether you are a skilled technician, machine operator, or looking
@@ -198,7 +190,9 @@ function HowItWorksSection() {
   return (
     <section className="bg-[#F1F2F499] py-26">
       <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto">
-        <h3 className="text-[2rem] pb-5 font-medium text-center">How ManPower work</h3>
+        <h3 className="text-[2rem] pb-5 font-medium text-center">
+          How ManPower work
+        </h3>
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, idx) => {
             const selected = idx === 1; // highlight Upload CV/Resume like Figma
@@ -242,7 +236,9 @@ function PopularCategorySection() {
   return (
     <section className="py-26">
       <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto">
-        <h3 className="text-center text-[2rem] pb-5 font-medium">Popular category</h3>
+        <h3 className="text-center text-[2rem] pb-5 font-medium">
+          Popular category
+        </h3>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {cats.map((c) => {
             const selected = c.title === "Packaging";
@@ -255,7 +251,9 @@ function PopularCategorySection() {
                   className={`h-[51px] w-[51px] rounded-md ${selected ? "bg-blue-50 ring-1 ring-blue-100" : "bg-blue-50 ring-1 ring-blue-100"}`}
                 />
                 <div className="flex-1">
-                  <div className="text-[13.5px] pb-1 font-medium">{c.title}</div>
+                  <div className="text-[13.5px] pb-1 font-medium">
+                    {c.title}
+                  </div>
                   <div
                     className={`text-[11px] ${selected ? "text-gray-500" : "text-gray-500"}`}
                   >
@@ -357,24 +355,32 @@ function BottomCtas() {
           <div>
             <h4 className="text-[24px] font-meduim">Become a Hiring Partner</h4>
             <p className="mt-2 text-sm text-gray-600 max-w-md">
-              Grow your workforce with qualified industrial talent. Our platform connects you with pre-screened machine operators, warehouse staff, and skilled tradespeople ready to work.
+              Grow your workforce with qualified industrial talent. Our platform
+              connects you with pre-screened machine operators, warehouse staff,
+              and skilled tradespeople ready to work.
             </p>
-            <button className="mt-4 rounded-sm bg-black px-4 py-2 text-xs font-medium tracking-wide text-white">
+            <Link
+              href="/services/manpower-hiring"
+              className="mt-4 rounded-sm bg-black px-4 py-2 text-xs font-medium tracking-wide text-white"
+            >
               Register Now
-            </button>
+            </Link>
           </div>
-
-
         </div>
         <div className="rounded-xl become_man2 bg-no-repeat h-[232px]  bg-[50%_25%] p-6 md:p-8 text-white relative overflow-hidden">
           <div>
             <h4 className="text-[24px] font-meduim">Become an Employer</h4>
             <p className="mt-2 text-sm text-white/90 max-w-md">
-              Launch your factory career with top manufacturers in your area. We specialize in production, assembly, and warehouse jobs with competitive pay.
+              Launch your factory career with top manufacturers in your area. We
+              specialize in production, assembly, and warehouse jobs with
+              competitive pay.
             </p>
-            <button className="mt-4 rounded-sm bg-white px-4 py-2 text-xs font-medium tracking-wide text-black">
+            <Link
+              href="/services/job-seeker"
+              className="mt-4 rounded-sm bg-white px-4 py-2 text-xs font-medium tracking-wide text-black"
+            >
               Register Now →
-            </button>
+            </Link>
           </div>
         </div>
       </div>
