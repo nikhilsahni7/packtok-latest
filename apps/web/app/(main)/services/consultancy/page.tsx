@@ -7,8 +7,10 @@ import { MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import image1 from "@/assets/Spare-Part1.png";
+import image1 from "@/assets/spare_part_1.png";
 import image2 from "@/assets/image1.jpeg";
+import Raw_material from "@/assets/Raw material.webp";
+
 
 export default function ConsultancyPage() {
   return (
@@ -349,7 +351,7 @@ function ConsultancyGrid() {
         <ConsultancyCard
           title="Raw Products"
           price="$950"
-          img="/consult-mainpage5.png"
+          img={Raw_material}
         />
       </div>
     </section>
@@ -396,7 +398,7 @@ function ConsultancyCard({
           alt={title}
           width={800}
           height={600}
-          className={cn("h-full w-full object-contain p-6")}
+          className={cn("h-full w-full object-fill p-6")}
         />
       </div>
       <div className={cn("flex flex-1 flex-col p-5")}>

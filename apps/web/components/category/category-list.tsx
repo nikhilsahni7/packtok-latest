@@ -10,8 +10,8 @@ import Ellipse_consumables from "@/assets/Ellipse_consumables.png";
 import Machinery from "@/assets/Machinery_1.jpg";
 import ManPower from "@/assets/man-power2.jpg";
 import man_power_bg from "@/assets/man_power_bg.png";
-import RawMaterial from "@/assets/Raw material on Marketplace.avif";
-import spare from "@/assets/spare.png";
+import RawMaterial from "@/assets/Raw material.webp";
+import spare from "@/assets/spare_part_1.png";
 
 export default function CategoryList() {
   return (
@@ -86,7 +86,7 @@ export default function CategoryList() {
             alt="Spareparts projects"
             width={700}
             height={450}
-            className="w-full object-cover border border-l-0 border-r-0 border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
+            className="w-full object-cover border  border-r-0 border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
           />
 
           <div className="flex items-end col-start-5 row-start-1">

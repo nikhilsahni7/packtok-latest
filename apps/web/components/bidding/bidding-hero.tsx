@@ -102,7 +102,7 @@ export function BiddingHero() {
                 "text-white drop-shadow-lg"
               )}
             >
-              Auction by
+              Auction <span className="block">by</span>
             </h1>
             <h1
               className={cn(

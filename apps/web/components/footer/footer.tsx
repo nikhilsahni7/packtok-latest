@@ -29,7 +29,7 @@ export default function PacktokFooter() {
                   <span className="text-white">Pack</span>
                   <span className="text-orange-500">tok</span>
                 </div>
-                <div className="text-sm text-gray-300  font-normal">
+                <div className="text-[17px] text-gray-300  font-normal">
                   Complete Packaging Solution
                 </div>
               </div>

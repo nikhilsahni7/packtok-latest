@@ -2,19 +2,13 @@ import { CtaBanner as WebCtaBanner } from "@/components";
 import {
   CalendarClock,
   Check,
-  CheckCircle2,
   BadgeCheck,
-  Clock8,
-  FileText,
   PhoneCall,
   ShieldCheck,
   MapPin,
-  Users,
   Wrench,
 } from "lucide-react";
 import Image from "next/image";
-
-
 import installer_bg from "@/assets/installer_bg.png"
 import installer_bg_2 from "@/assets/installer_bg_2.png"
 import export_1 from "@/assets/export_1.png"
@@ -112,14 +106,14 @@ function HeroSection() {
   );
 }
 
-function FeaturePill({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/10">
-      <ShieldCheck className="h-3.5 w-3.5 text-[#0DB0F3]" />
-      <span className="text-white/90">{label}</span>
-    </div>
-  );
-}
+// function FeaturePill({ label }: { label: string }) {
+//   return (
+//     <div className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/10">
+//       <ShieldCheck className="h-3.5 w-3.5 text-[#0DB0F3]" />
+//       <span className="text-white/90">{label}</span>
+//     </div>
+//   );
+// }
 
 function ExpertSection() {
   return (

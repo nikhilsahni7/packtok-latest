@@ -1,13 +1,3 @@
-import {
-  Briefcase,
-  Building2,
-  Search,
-  Send,
-  Sparkles,
-  Upload,
-  UserPlus,
-  Users,
-} from "lucide-react";
 import Image from "next/image";
 import heroimage from "@/assets/hero_manpower.png"
 
@@ -21,8 +11,7 @@ import magnifying from "@/assets/magnifying-glass-plus.png"
 import circle_wavy from "@/assets/circle-wavy-check.png"
 import testi from "@/assets/testti.png"
 import Quote from "@/assets/Quote.png"
-import bg_2 from "@/assets/bg_2.png"
-import become_man from "@/assets/become_man.png"
+
 
 
 

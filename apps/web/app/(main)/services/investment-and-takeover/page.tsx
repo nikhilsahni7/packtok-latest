@@ -9,7 +9,11 @@ import WhoWeAre1 from "@/assets/investment-experts1.png";
 import WhoWeAre2 from "@/assets/investment-experts2.png";
 import WhoWeAre3 from "@/assets/investment-experts3.png";
 // import KolkataImg from "@/assets/kolkata.jpg";
-import Main from "@/assets/main.png";
+import Main from "@/assets/factory-Acquire.jpg";
+import merger from "@/assets/merger and acquisitaion.jpg";
+import Takeover from "@/assets/Takeover.jpeg";
+
+
 // import MumbaiImg from "@/assets/mumbai.jpg";
 // import PunjabImg from "@/assets/punjab.jpg";
 import SocialIcons from "@/assets/social_icons.png";
@@ -79,7 +83,7 @@ export default function InvestmentAndTakeoverPage() {
 
   const handlerbtn1 = () => {
     setDataShow1(true);
-     setDataShow2(false);
+    setDataShow2(false);
     setDataShow3(true);
   }
 
@@ -89,10 +93,10 @@ export default function InvestmentAndTakeoverPage() {
         <div className="min-h-screen text-gray-900 py-8">
           {/* Hero */}
           <section className="p-8 overflow-hidden">
-            <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
-              FACTORY INVESTMENT & <br /> ACQUISITION PLATFORM
+            <h1 className="text-4xl md:text-5xl font-semibold leading-16">
+              FACTORY  ACQUISITION  <br />  TAKEOVER  PLATFORM
             </h1>
-            <p className="mt-4 text-gray-600 max-w-3xl">
+            <p className="mt-4 text-gray-600 text-justify max-w-3xl">
               Connecting factory owners with private investors and buyers —
               unlocking capital, facilitating acquisitions and maximizing
               intrinsic asset value through strategic partnerships.
@@ -177,7 +181,7 @@ export default function InvestmentAndTakeoverPage() {
               <h2 className="text-4xl font-semibold mt-2">
                 Factory Acquisition &amp; <br /> Investment Experts
               </h2>
-              <p className="text-gray-600 mt-4 max-w-xl">
+              <p className="text-gray-600 text-justify mt-4 max-w-xl">
                 Providing end-to-end solutions for factory acquisitions and
                 investments, we match buyers with high-potential manufacturing
                 assets through exclusive listings, thorough due diligence, and
@@ -247,27 +251,61 @@ export default function InvestmentAndTakeoverPage() {
               </h3>
 
               <div className="flex gap-4">
-                <button onClick={handlerbtn} className="px-10 py-5 text-[2.3rem] rounded-full bg-black text-white">
+                <button onClick={handlerbtn} className={`${dataShow3 ? "" : "bg-black text-white"} px-10 py-5 cursor-pointer text-[2.3rem] rounded-full border border-black text-black`}>
                   Acquisition
                 </button>
-                <button onClick={handlerbtn1} className="px-10 py-5 text-[2.3rem] rounded-full border border-black text-black">
+                <button onClick={handlerbtn1} className={`${dataShow3 ? "bg-black text-white" : ""} px-10 py-5 cursor-pointer text-[2.3rem] rounded-full border border-black text-black`}>
                   TakeOver
                 </button>
               </div>
             </div>
 
-            {dataShow1 ? "" : <p className="pl-4 text-gray-600 mt-2">
+            {dataShow1 ? "" : <p className="pl-4 text-justify text-gray-600 mt-2">
               Discover high-value manufacturing plants and
               warehouses—production-ready <br /> with turnkey operations for
               immediate acquisition.
             </p>}
 
+            {/* merger and acquisitaion.jpg */}
 
-            {dataShow2 ? <p className="pl-4 w-1/2 text-gray-600 mt-2">Through acquisitions, corrugated and packaging companies expand their reach and enhance production capacity.
-              It creates opportunities for innovation, efficiency, and stronger customer solutions.</p> : ""}
+            {
+              dataShow2 ? <div className="grid py-20 grid-cols-2 gap-10">
+                <div>
+                  <Image
+                    src={merger}
+                    alt="merger"
+                    className="rounded-[1rem]"
+                  />
+                </div>
+                <div className="pl-4 text-[1.5rem] text-justify text-gray-600 mt-2"> <ul>
+                  <li className="list-disc">At Packtok, acquisition refers to a business transaction where one company purchases a majority or all of another {"company's"} shares or assets, gaining full control.</li>
+                  <li className="py-4 list-disc">The purpose is to integrate the target {"company's"} operations, resources, or market presence into the acquiring company.</li>
+                  <li className="list-disc">This process helps businesses expand market share, improve efficiencies, and explore.</li>
+                </ul></div>
+              </div> : ""
+            }
 
-            {dataShow3 ? <p className="pl-4 w-1/2 text-gray-600 mt-2">Takeovers in the packaging industry bring together strengths of two businesses.
-This drives cost efficiency, wider market presence, and long-term growth.</p> : ""}
+            {
+              dataShow3 ? <div className="grid py-20 grid-cols-2 gap-5">
+                <div>
+                  <Image
+                    src={Takeover}
+                    alt="merger"
+                    className="rounded-[1rem] w-3/4 mx-auto"
+                  />
+                </div>
+                <div className="pl-4 text-[1.5rem] text-justify text-gray-600 mt-2">
+
+                  <ul>
+                    <li className="list-disc">At Packtok, a takeover refers to the process where one company the acquirer gains control or ownership of another company the target by purchasing a significant portion of its shares or assets. </li>
+                    <li className="py-4 list-disc"> This can happen through a friendly agreement with the {"target's"} board and shareholders or through a direct bid to shareholders.</li>
+                    <li className="py-4 list-disc">Takeovers are a common strategy for external growth, helping businesses expand their reach, resources, and market presence.</li>
+                  </ul>
+                </div>
+              </div> : ""
+            }
+
+            {dataShow3 ? <p className="pl-4  text-justify text-gray-600 mt-2"></p> : ""}
 
             <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
               {facilities.map((f) => (

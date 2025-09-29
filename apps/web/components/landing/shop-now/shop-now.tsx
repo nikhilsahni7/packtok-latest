@@ -1,9 +1,9 @@
 import Consumables from "@/assets/Consumables1.png";
-import machinery from "@/assets/machines_1.png";
+import machinery from "@/assets/packtok.png";
 import ManPower from "@/assets/Man Power.png";
 import RawMaterials from "@/assets/Raw Materials.png";
 
-import SparePart from "@/assets/Spare-Part1.png";
+import SparePart from "@/assets/spare_part_1.png";
 
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
