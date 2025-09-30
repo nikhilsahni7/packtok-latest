@@ -18,7 +18,10 @@ import Takeover from "@/assets/Takeover.jpeg";
 // import PunjabImg from "@/assets/punjab.jpg";
 import SocialIcons from "@/assets/social_icons.png";
 import { CtaBanner as WebCtaBanner } from "@/components";
-import { House, SearchIcon } from "lucide-react";
+import { House, SearchIcon, ArrowRight } from "lucide-react";
+
+
+
 import Image from "next/image";
 import { useState } from "react";
 
@@ -251,11 +254,11 @@ export default function InvestmentAndTakeoverPage() {
               </h3>
 
               <div className="flex gap-4">
-                <button onClick={handlerbtn} className={`${dataShow3 ? "" : "bg-black text-white"} px-10 py-5 cursor-pointer text-[2.3rem] rounded-full border border-black text-black`}>
-                  Acquisition
+                <button onClick={handlerbtn} className={`${dataShow3 ? "" : "bg-black text-white"} flex  items-center gap-4 px-10 py-5 cursor-pointer text-[2.3rem] rounded-full border border-black text-black`}>
+                  Acquisition <ArrowRight className="text-xl" />
                 </button>
-                <button onClick={handlerbtn1} className={`${dataShow3 ? "bg-black text-white" : ""} px-10 py-5 cursor-pointer text-[2.3rem] rounded-full border border-black text-black`}>
-                  TakeOver
+                <button onClick={handlerbtn1} className={`${dataShow3 ? "bg-black text-white" : ""} flex  items-center gap-4  px-10 py-5 cursor-pointer text-[2.3rem] rounded-full border border-black text-black`}>
+                  TakeOver <ArrowRight className="text-xl" />
                 </button>
               </div>
             </div>

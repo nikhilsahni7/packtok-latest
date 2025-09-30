@@ -8,6 +8,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 import image1 from "@/assets/spare_part_1.png";
+import Comprehensive from "@/assets/Comprehensive Solutions.png";
+import Support from "@/assets/24:7 Customer Support.png";
+import Trust from "@/assets/Confidentiality & Trust.png";
+
+
+
 import image2 from "@/assets/image1.jpeg";
 import Raw_material from "@/assets/Raw material.webp";
 
@@ -279,17 +285,17 @@ function WhyChooseUs() {
         <FeatureItem
           title="Comprehensive Solutions"
           desc="End-to-end strategic guidance, covering analysis, planning, and implementation for holistic business growth."
-          iconLabel="stack"
+          iconLabel={Comprehensive}
         />
         <FeatureItem
           title="Confidentiality & Trust"
           desc="Your sensitive business information is handled with utmost discretion, building a foundation of trust."
-          iconLabel="lock"
+          iconLabel={Support}
         />
         <FeatureItem
           title="24/7 Customer Support"
           desc="Continuous communication and dedicated support throughout our engagement to keep objectives on track."
-          iconLabel="support"
+          iconLabel={Trust}
         />
       </div>
     </section>
@@ -299,10 +305,11 @@ function WhyChooseUs() {
 function FeatureItem({
   title,
   desc,
+  iconLabel
 }: {
   title: string;
   desc: string;
-  iconLabel?: string;
+  iconLabel?: any;
 }) {
   return (
     <div
@@ -313,7 +320,8 @@ function FeatureItem({
         "border-border"
       )}
     >
-      <div className={cn("h-10 w-10 rounded-sm bg-muted")} />
+      <div />
+      <div className={cn("h-[64px] w-[64px] rounded-sm p-4 bg-[#7A7A7A]")}><Image src={iconLabel} className="w-full h-full object-contain" alt={title} /></div>
       <h4 className={cn("mt-4 text-base font-semibold")}>{title}</h4>
       <p className={cn("mt-2 text-sm text-muted-foreground")}>{desc}</p>
     </div>

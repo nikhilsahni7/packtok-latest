@@ -41,7 +41,7 @@ body:has(main.fluid-bg) {
 }
 
 .newsletter-bg {
-  background-image: url("../assets/Home_bg.webp");
+  background-image: url("../assets/newsletter.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }

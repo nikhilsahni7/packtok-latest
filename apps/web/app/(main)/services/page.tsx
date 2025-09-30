@@ -1,6 +1,8 @@
 import Ellipse_consumables from "@/assets/Ellipse_consumables.png";
 import investment from "@/assets/investment.png";
 import service_bg from "@/assets/service_bg.png";
+import turnkey_2 from "@/assets/turnkey_2.webp";
+
 import { Button } from "@packtok/ui/components/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,7 +36,7 @@ export default function ServicesPage() {
         <div className="w-[95%] mx-auto py-20">
           <section className="grid grid-cols-1 md:grid-cols-5 py-18">
             <Image
-              src="/tunkery.jpg"
+              src={turnkey_2}
               alt="Turnkey projects"
               width={700}
               height={450}
@@ -285,13 +287,10 @@ export default function ServicesPage() {
                 </p>
                 <div className="w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                    PackTok bridges skilled professionals and leading employers
-                    in the packaging industry. For job seekers, we offer
-                    tailored listings and career insights to match your
-                    expertise with ideal roles. For employers, we provide access
-                    to a qualified talent pool, helping you find the right
-                    candidates to drive your business forward. Together, we
-                    build stronger packaging teams for a successful future.
+                    Experienced in installing, aligning, and calibrating corrugated packaging equipment.
+                    Proficient with mechanical, electrical, and pneumatic systems.
+                    Able to read technical blueprints and ensure safety compliance.
+                    Provides training, troubleshooting, and post-installation support.
                   </p>
                   <div className="text-end">
                     <Button

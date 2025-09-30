@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import turnkey_1 from "@/assets/turnkey_1.jpeg"
+
 const checklistLeft = [
   "End to End Project Management",
   "Machinery selection and integration",
@@ -87,11 +89,11 @@ function TrustedChoiceSection() {
           <br /> Industry Installation &amp; Supply
         </h2>
         <p className="mt-4 max-w-[760px] mx-auto text-gray-600 text-justify leading-relaxed">
-          Beyond just repairs, PackTok offers ongoing guidance and proactive
-          support to ensure your assets perform at their best and last longer.
-          We work closely with you to optimize maintenance strategies, reduce
-          downtime, and extend equipment life—delivering long-term value and
-          reliability.
+          Delivering end-to-end turnkey solutions for the corrugated packaging industry — from concept to commissioning.
+We design, build, and optimize fully integrated packaging plants tailored to your production goals.
+Our expertise covers machinery, automation, layout planning, and operational training.
+With a focus on efficiency, scalability, and sustainability, we ensure rapid ROI and seamless execution.
+Partner with us to build the future of packaging — complete, reliable, and ready to run.
         </p>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-[95%] sm:w-[90%] md:w-[85%] mx-auto">
@@ -165,11 +167,11 @@ function ExcellenceSection() {
       <div className="grid md:grid-cols-2 gap-8 items-center bg-gray-50 p-6 md:p-8 rounded-2xl">
         <div className="overflow-hidden rounded-2xl">
           <Image
-            src="/tunkery5.jpg"
+            src={turnkey_1}
             alt="Partnering"
             width={640}
-            height={420}
-            className="object-cover w-full h-[300px] md:h-[360px]"
+            height={500}
+            className="object-contain w-full  md:h-[550px]"
           />
         </div>
         <div>
@@ -203,7 +205,7 @@ function PointsCoveredSection() {
         <br /> Solution:
       </h2>
 
-      <div className="mt-10 w-[95%] sm:w-[90%] md:w-[85%] max-w-[1180px] mx-auto grid md:grid-cols-12 gap-8 items-center">
+      <div className="mt-10 w-[95%] sm:w-[90%]   mx-auto grid md:grid-cols-12 gap-8 items-center">
         <div className="md:col-span-5 flex items-center justify-center md:justify-start">
           <Image
             src="/tunkery6.png"
