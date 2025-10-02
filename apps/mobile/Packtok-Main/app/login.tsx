@@ -4,7 +4,6 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Dimensions,
   Image,
   KeyboardAvoidingView,
@@ -15,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 import { useLogin } from "../hooks/useLogin";
 
 const { width, height } = Dimensions.get("window");
@@ -30,12 +30,24 @@ export default function LoginScreen() {
   const handleLogin = () => {
     // Validation
     if (!email.trim()) {
-      Alert.alert("Error", "Please enter your email or phone number");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please enter your email or phone number",
+        position: "top",
+        visibilityTime: 3000,
+      });
       return;
     }
 
     if (!password.trim()) {
-      Alert.alert("Error", "Please enter your password");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please enter your password",
+        position: "top",
+        visibilityTime: 3000,
+      });
       return;
     }
 
@@ -51,7 +63,8 @@ export default function LoginScreen() {
     <KeyboardAvoidingView
       className="flex-1 bg-white"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      style={{ flex: 1 }}
     >
       {/* Status Bar */}
       <StatusBar style="dark" translucent backgroundColor="transparent" />
@@ -86,9 +99,10 @@ export default function LoginScreen() {
       {/* Main Content with ScrollView */}
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        bounces={false}
       >
         <View className="flex-1 px-8 pt-12">
           {/* Logo Section */}
@@ -102,21 +116,21 @@ export default function LoginScreen() {
 
           {/* Machinery Image */}
           <View
-            className="items-center justify-center mb-8"
-            style={{ height: height * 0.2 }}
+            className="items-center justify-center mb-6"
+            style={{ height: height * 0.18 }}
           >
             <Image
               source={require("@/assets/images/splash-screen-bg.png")}
               style={{
                 width: width * 1,
-                height: height * 0.3,
+                height: height * 0.25,
               }}
               resizeMode="contain"
             />
           </View>
 
           {/* Sign In as User Title */}
-          <Text className="text-3xl font-bold text-gray-900 mb-6">
+          <Text className="text-3xl font-bold text-gray-900 mb-4">
             Sign In as User
           </Text>
 
