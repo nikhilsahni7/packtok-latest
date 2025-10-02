@@ -93,7 +93,7 @@ export default function CategoriesScreen() {
 
   const handleCategoryPress = (categoryId: string, categoryName: string) => {
     console.log(`🔍 Category pressed: ${categoryName} (ID: ${categoryId})`);
-    
+
     // Navigate to appropriate screen based on category
     try {
       switch (categoryName) {
@@ -235,22 +235,22 @@ export default function CategoriesScreen() {
                 {/* Category Circle */}
                 <View className="items-center">
                   <View className="relative">
-                    <View 
+                    <View
                       className={`w-20 h-20 rounded-full items-center justify-center overflow-hidden mb-2 shadow-sm ${
                         category.available ? "bg-gray-200" : "bg-gray-300"
                       }`}
                     >
                       <Image
                         source={category.icon}
-                        style={{ 
-                          width: 80, 
+                        style={{
+                          width: 80,
                           height: 80,
                           opacity: category.available ? 1 : 0.5,
                         }}
                         resizeMode="cover"
                       />
                     </View>
-                    
+
                     {/* Coming Soon Badge */}
                     {!category.available && (
                       <View className="absolute top-0 right-0 bg-yellow-500 rounded-full px-1.5 py-0.5">
