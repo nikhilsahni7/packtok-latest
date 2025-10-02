@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
@@ -15,20 +16,24 @@ const marketplaceCategories = [
     id: "1",
     name: "Machinery",
     image: require("@/assets/images/machinery.png"),
+    route: "/marketplace/machinery",
   },
   {
     id: "2",
     name: "Raw Material",
     image: require("@/assets/images/raw-materails.png"),
+    route: null, // TODO: Add route when screen is created
   },
   {
     id: "3",
     name: "Consumables",
     image: require("@/assets/images/consumables.png"),
+    route: null, // TODO: Add route when screen is created
   },
 ];
 
 export default function MarketplaceScreen() {
+  const router = useRouter();
   return (
     <View className="flex-1 bg-gray-50">
       <StatusBar style="light" />
@@ -103,6 +108,11 @@ export default function MarketplaceScreen() {
                 elevation: 3,
               }}
               activeOpacity={0.8}
+              onPress={() => {
+                if (category.route) {
+                  router.push(category.route as any);
+                }
+              }}
             >
               {/* Category Image - Larger, full width */}
               <View className="bg-gray-50 w-full">

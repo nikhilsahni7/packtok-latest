@@ -141,7 +141,7 @@ export default function HomeScreen() {
             >
               <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/machinery-home.jpg")}
                   style={{ width: 64, height: 64 }}
                   resizeMode="cover"
                 />
@@ -184,7 +184,7 @@ export default function HomeScreen() {
             {/* Category Item 4 */}
             <TouchableOpacity
               className="items-center mr-4"
-              onPress={() => router.push("/categories")}
+              onPress={() => router.push("/services")}
               activeOpacity={0.7}
             >
               <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
@@ -234,7 +234,7 @@ export default function HomeScreen() {
               <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
                 {/* TODO: Replace with actual machinery image */}
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/machinery-home2.jpg")}
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
@@ -280,7 +280,7 @@ export default function HomeScreen() {
               <View className="relative">
                 {/* TODO: Replace with actual turnkey project image */}
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/tunkery.png")}
                   style={{ width: "100%", height: 140 }}
                   resizeMode="cover"
                 />
@@ -301,7 +301,7 @@ export default function HomeScreen() {
               <View className="relative">
                 {/* TODO: Replace with actual consultancy image */}
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/consultancy.png")}
                   style={{ width: "100%", height: 140 }}
                   resizeMode="cover"
                 />
@@ -322,7 +322,7 @@ export default function HomeScreen() {
               <View className="relative">
                 {/* TODO: Replace with actual bidding/gavel image */}
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/bidding1.webp")}
                   style={{ width: "100%", height: 140 }}
                   resizeMode="cover"
                 />
