@@ -152,7 +152,7 @@ export default function HomeScreen() {
             {/* Category Item 2 */}
             <TouchableOpacity
               className="items-center mr-4"
-              onPress={() => router.push("/categories")}
+              onPress={() => router.push("/packaging")}
               activeOpacity={0.7}
             >
               <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
@@ -168,7 +168,7 @@ export default function HomeScreen() {
             {/* Category Item 3 */}
             <TouchableOpacity
               className="items-center mr-4"
-              onPress={() => router.push("/categories")}
+              onPress={() => router.push("/marketplace/spare-parts")}
               activeOpacity={0.7}
             >
               <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
@@ -230,7 +230,11 @@ export default function HomeScreen() {
           {/* Marketplace Grid - 2 Column */}
           <View className="flex-row flex-wrap justify-between">
             {/* Machinery Card */}
-            <View className="w-[48%] mb-4">
+            <TouchableOpacity
+              className="w-[48%] mb-4"
+              onPress={() => router.push("/marketplace/machinery")}
+              activeOpacity={0.7}
+            >
               <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
                 {/* TODO: Replace with actual machinery image */}
                 <Image
@@ -244,10 +248,14 @@ export default function HomeScreen() {
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
 
             {/* Spare Parts Card */}
-            <View className="w-[48%] mb-4">
+            <TouchableOpacity
+              className="w-[48%] mb-4"
+              onPress={() => router.push("/marketplace/spare-parts")}
+              activeOpacity={0.7}
+            >
               <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
                 {/* TODO: Replace with actual spare parts image */}
                 <Image
@@ -261,7 +269,7 @@ export default function HomeScreen() {
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -276,7 +284,11 @@ export default function HomeScreen() {
           {/* Bidding Cards */}
           <View className="mb-4">
             {/* Turnkey Card */}
-            <View className="bg-white rounded-2xl overflow-hidden border border-gray-200 mb-4">
+            <TouchableOpacity
+              className="bg-white rounded-2xl overflow-hidden border border-gray-200 mb-4"
+              onPress={() => router.push("/services/turnkey-projects")}
+              activeOpacity={0.7}
+            >
               <View className="relative">
                 {/* TODO: Replace with actual turnkey project image */}
                 <Image
@@ -294,10 +306,14 @@ export default function HomeScreen() {
                   Turnkey
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             {/* Consultancy Card */}
-            <View className="bg-white rounded-2xl overflow-hidden border border-gray-200 mb-4">
+            <TouchableOpacity
+              className="bg-white rounded-2xl overflow-hidden border border-gray-200 mb-4"
+              onPress={() => router.push("/services/consultancy")}
+              activeOpacity={0.7}
+            >
               <View className="relative">
                 {/* TODO: Replace with actual consultancy image */}
                 <Image
@@ -315,10 +331,14 @@ export default function HomeScreen() {
                   Consultancy
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             {/* Bidding (Gavel) Card */}
-            <View className="bg-white rounded-2xl overflow-hidden border border-gray-200 mb-4">
+            <TouchableOpacity
+              className="bg-white rounded-2xl overflow-hidden border border-gray-200 mb-4"
+              onPress={() => router.push("/bidding")}
+              activeOpacity={0.7}
+            >
               <View className="relative">
                 {/* TODO: Replace with actual bidding/gavel image */}
                 <Image
@@ -332,7 +352,7 @@ export default function HomeScreen() {
                   Bidding
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
