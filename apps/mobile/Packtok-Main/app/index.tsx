@@ -1,21 +1,60 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { Dimensions, Image, View } from "react-native";
+import { useAuthStore } from "../store/auth-store";
 
 const { width, height } = Dimensions.get("window");
 
+const SPLASH_DURATION = 2000; // 2 seconds
+const ONBOARDING_COMPLETE_KEY = "onboarding_completed";
+
 export default function SplashScreen() {
   const router = useRouter();
+  const { isAuthenticated, hasHydrated } = useAuthStore();
 
   useEffect(() => {
-    // Navigate to welcome screen after 3 seconds
-    const timer = setTimeout(() => {
-      router.replace("/welcome");
-    }, 3000);
+    // Wait for auth store to hydrate before navigation
+    if (!hasHydrated) return;
 
-    return () => clearTimeout(timer);
-  }, [router]);
+    const checkOnboardingStatus = async () => {
+      try {
+        // Wait for splash duration
+        await new Promise((resolve) => setTimeout(resolve, SPLASH_DURATION));
+
+        // Check if user has completed onboarding (seen welcome screens)
+        const hasCompletedOnboarding = await AsyncStorage.getItem(
+          ONBOARDING_COMPLETE_KEY
+        );
+
+        console.log("🔍 Navigation Check:", {
+          isAuthenticated,
+          hasCompletedOnboarding: !!hasCompletedOnboarding,
+        });
+
+        if (isAuthenticated) {
+          // User is logged in, go directly to home
+          console.log("✅ Logged in user → Home");
+          router.replace("/(tabs)");
+        } else if (!hasCompletedOnboarding) {
+          // First time user, show welcome screens
+          console.log("👋 New user → Welcome screens");
+          router.replace("/welcome");
+        } else {
+          // Returning user but not logged in, skip to auth
+          console.log("🔄 Returning user → Auth selection");
+          router.replace("/auth-selection");
+        }
+      } catch (error) {
+        console.error("Error checking onboarding:", error);
+        // Fallback to welcome screen for safety
+        router.replace("/welcome");
+      }
+    };
+
+    checkOnboardingStatus();
+  }, [router, isAuthenticated, hasHydrated]);
 
   return (
     <View className="flex-1 bg-white">
@@ -95,7 +134,7 @@ export default function SplashScreen() {
         >
           <Image
             source={require("@/assets/images/logo.png")}
-            style={{ width: "200%", height: undefined, aspectRatio: 3 }}
+            style={{ width: "250%", height: undefined, aspectRatio: 3 }}
             resizeMode="contain"
           />
         </View>

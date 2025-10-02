@@ -1,0 +1,187 @@
+import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useLogin } from "../hooks/useLogin";
+
+const { width, height } = Dimensions.get("window");
+
+export default function LoginScreen() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { mutate: login, isPending } = useLogin();
+
+  const handleLogin = () => {
+    // Validation
+    if (!email.trim()) {
+      Alert.alert("Error", "Please enter your email or phone number");
+      return;
+    }
+
+    if (!password.trim()) {
+      Alert.alert("Error", "Please enter your password");
+      return;
+    }
+
+    // Call login API
+    login({ email: email.trim(), password: password.trim() });
+  };
+
+  const handleCancel = () => {
+    router.back();
+  };
+
+  return (
+    <KeyboardAvoidingView
+      className="flex-1 bg-white"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={0}
+    >
+      {/* Status Bar */}
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
+
+      {/* Background Bubbles */}
+      {/* Orange Bubble - Top Left */}
+      <Image
+        source={require("@/assets/images/bubble 01.png")}
+        className="absolute"
+        style={{
+          top: -width * 0.25,
+          left: -width * 0.25,
+          width: width * 0.6,
+          height: width * 0.6,
+        }}
+        resizeMode="contain"
+      />
+
+      {/* Blue Bubble - Top Right */}
+      <Image
+        source={require("@/assets/images/bubble 02.png")}
+        className="absolute"
+        style={{
+          top: -width * 0.15,
+          right: -width * 0.3,
+          width: width * 0.7,
+          height: width * 0.7,
+        }}
+        resizeMode="contain"
+      />
+
+      {/* Main Content with ScrollView */}
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="flex-1 px-8 pt-12">
+          {/* Logo Section */}
+          <View className="items-center mb-6">
+            <Image
+              source={require("@/assets/images/logo.png")}
+              style={{ width: width * 1.5, height: undefined, aspectRatio: 3 }}
+              resizeMode="contain"
+            />
+          </View>
+
+          {/* Machinery Image */}
+          <View
+            className="items-center justify-center mb-8"
+            style={{ height: height * 0.2 }}
+          >
+            <Image
+              source={require("@/assets/images/splash-screen-bg.png")}
+              style={{
+                width: width * 1,
+                height: height * 0.3,
+              }}
+              resizeMode="contain"
+            />
+          </View>
+
+          {/* Sign In as User Title */}
+          <Text className="text-3xl font-bold text-gray-900 mb-6">
+            Sign In as User
+          </Text>
+
+          {/* Input Fields */}
+          <View className="space-y-4">
+            {/* Email/Phone Input */}
+            <TextInput
+              placeholder="Email or Phone Number"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!isPending}
+              className="w-full bg-gray-50 rounded-2xl px-5 py-4 text-base text-gray-900"
+              placeholderTextColor="#9CA3AF"
+            />
+
+            {/* Password Input */}
+            <View className="flex-row items-center bg-gray-50 rounded-2xl px-5 py-4 mt-4">
+              <TextInput
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                editable={!isPending}
+                className="flex-1 text-base text-gray-900"
+                placeholderTextColor="#9CA3AF"
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Feather
+                  name={showPassword ? "eye" : "eye-off"}
+                  size={20}
+                  color="#9CA3AF"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Next Button */}
+          <TouchableOpacity
+            onPress={handleLogin}
+            disabled={isPending}
+            className={`w-full rounded-2xl py-4 items-center justify-center mt-8 ${
+              isPending ? "bg-gray-400" : "bg-black"
+            }`}
+            activeOpacity={0.8}
+          >
+            {isPending ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="text-white text-lg font-semibold">Next</Text>
+            )}
+          </TouchableOpacity>
+
+          {/* Cancel Button */}
+          <TouchableOpacity
+            onPress={handleCancel}
+            className="w-full items-center justify-center mt-4 mb-8"
+            activeOpacity={0.8}
+          >
+            <Text className="text-gray-600 text-base font-medium">Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
