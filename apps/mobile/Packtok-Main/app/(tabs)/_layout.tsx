@@ -1,38 +1,95 @@
+import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 
-import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
+        tabBarActiveTintColor: "#FF8C42", // Orange color matching design
+        tabBarInactiveTintColor: "#9CA3AF", // Gray color
+        tabBarStyle: {
+          backgroundColor: "#FFFFFF",
+          borderTopWidth: 1,
+          borderTopColor: "#F3F4F6", // Lighter border
+          height: 70,
+          paddingBottom: 12,
+          paddingTop: 8,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: -3 },
+          shadowOpacity: 0.1,
+          shadowRadius: 12,
+          elevation: 15,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+          marginTop: 6,
+          marginBottom: 2,
+        },
+        tabBarIconStyle: {
+          marginTop: 4,
+        },
       }}
     >
+      {/* Home Tab */}
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Feather name="home" size={26} color={color} />
           ),
         }}
       />
+
+      {/* Wishlist Tab */}
       <Tabs.Screen
-        name="explore"
+        name="wishlist"
         options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+          title: "Wishlist",
+          tabBarIcon: ({ color, focused }) => (
+            <Feather name="heart" size={26} color={color} />
           ),
+        }}
+      />
+
+      {/* Cart Tab */}
+      <Tabs.Screen
+        name="cart"
+        options={{
+          title: "Cart",
+          tabBarIcon: ({ color, focused }) => (
+            <Feather name="shopping-cart" size={26} color={color} />
+          ),
+        }}
+      />
+
+      {/* Settings Tab */}
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Setting",
+          tabBarIcon: ({ color, focused }) => (
+            <Feather name="settings" size={26} color={color} />
+          ),
+        }}
+      />
+
+      {/* Marketplace - Hidden from tab bar but accessible */}
+      <Tabs.Screen
+        name="marketplace"
+        options={{
+          href: null, // This removes it from the tab bar
+        }}
+      />
+
+      {/* Categories - Hidden from tab bar but accessible */}
+      <Tabs.Screen
+        name="categories"
+        options={{
+          href: null, // This removes it from the tab bar
         }}
       />
     </Tabs>

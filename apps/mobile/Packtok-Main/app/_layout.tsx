@@ -92,6 +92,13 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="categories"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="modal"
             options={{ presentation: "modal", title: "Modal" }}
           />
