@@ -58,9 +58,9 @@ export default function MaintenanceScreen() {
         </View>
 
         {/* Content Section */}
-        <View className="bg-white rounded-t-3xl -mt-6 px-5 pt-6">
+        <View className="bg-white rounded-t-[70px] -mt-16 px-10 pt-20">
           {/* Title */}
-          <Text className="text-3xl font-bold text-gray-900 mb-4">
+          <Text className="text-[36px] text-center font-bold text-gray-900 mb-4">
             Maintenance
           </Text>
 
@@ -105,12 +105,20 @@ export default function MaintenanceScreen() {
             </View>
 
             {/* Rating */}
-            <View className="flex-row items-center bg-blue-50 px-3 py-1.5 rounded-full">
-              <Feather name="star" size={14} color="#3B82F6" />
-              <Text className="text-blue-600 font-semibold ml-1 text-sm">
-                4.1
-              </Text>
-              <Text className="text-blue-600 text-xs ml-1">45 ratings</Text>
+            <View className="flex-column items-center ">
+              <View className="flex-row  items-center border border-[#0063F7] px-3 py-1.5 rounded-[10px]">
+
+                <Feather name="star" size={14} color="#2563EB" />
+                <Text className="text-blue-600 text-xs ml-1 font-medium">
+                  4.8
+                </Text>
+
+              </View>
+
+              <View className="mt-1">
+                <Text className="text-blue-600 text-xs ml-1">45 ratings</Text>
+
+              </View>
             </View>
           </View>
 

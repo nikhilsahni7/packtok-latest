@@ -36,10 +36,10 @@ export default function WelcomeScreen() {
           source={require("@/assets/images/bubble 01.png")}
           className="absolute"
           style={{
-            top: -width * 0.25,
+            top: -width * 0.10,
             left: -width * 0.25,
-            width: width * 0.6,
-            height: width * 0.6,
+            width: width * 0.9,
+            height: width * 0.9,
           }}
           resizeMode="contain"
         />
@@ -49,10 +49,10 @@ export default function WelcomeScreen() {
           source={require("@/assets/images/bubble 02.png")}
           className="absolute"
           style={{
-            top: -width * 0.15,
-            right: -width * 0.3,
-            width: width * 0.7,
-            height: width * 0.7,
+            top: -width * 0.10,
+            left: -width * 0.20,
+            width: width * 1,
+            height: width * 0.9,
           }}
           resizeMode="contain"
         />

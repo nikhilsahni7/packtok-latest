@@ -2,6 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
+const blue_bg = require("@/assets/images/bubble 05.png");
+
 import {
   ActivityIndicator,
   Dimensions,
@@ -73,12 +75,12 @@ export default function LoginScreen() {
       {/* Orange Bubble - Top Left */}
       <Image
         source={require("@/assets/images/bubble 01.png")}
-        className="absolute"
+        className="absolute z-[3]"
         style={{
-          top: -width * 0.25,
+          top: -width * 0.10,
           left: -width * 0.25,
-          width: width * 0.6,
-          height: width * 0.6,
+          width: width * 0.7,
+          height: width * 0.9,
         }}
         resizeMode="contain"
       />
@@ -88,17 +90,30 @@ export default function LoginScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.15,
-          right: -width * 0.3,
-          width: width * 0.7,
-          height: width * 0.7,
+          top: -width * 0.10,
+          left: -width * 0.25,
+          width: width * 1,
+          height: width * 0.9,
+        }}
+        resizeMode="contain"
+      />
+
+      {/* Orange Bubble - Bottom Right */}
+      <Image
+        source={blue_bg}
+        className="absolute"
+        style={{
+          bottom: -width * 0.25,
+          right: -width * 0.33,
+          width: width * 1.2,
+          height: width * 1.1,
         }}
         resizeMode="contain"
       />
 
       {/* Main Content with ScrollView */}
       <ScrollView
-        className="flex-1"
+        className="flex-1 relative z-20"
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -106,10 +121,10 @@ export default function LoginScreen() {
       >
         <View className="flex-1 px-8 pt-12">
           {/* Logo Section */}
-          <View className="items-center mb-6">
+          <View className="items-center">
             <Image
               source={require("@/assets/images/logo.png")}
-              style={{ width: width * 1.5, height: undefined, aspectRatio: 3 }}
+              style={{ width: width * 1.8, height: undefined, aspectRatio: 3 }}
               resizeMode="contain"
             />
           </View>
@@ -120,17 +135,17 @@ export default function LoginScreen() {
             style={{ height: height * 0.18 }}
           >
             <Image
-              source={require("@/assets/images/splash-screen-bg.png")}
+              source={require("@/assets/images/hero_bg.png")}
               style={{
-                width: width * 1,
-                height: height * 0.25,
+                width: width * 2,
+                height: height * 0.30,
               }}
               resizeMode="contain"
             />
           </View>
 
           {/* Sign In as User Title */}
-          <Text className="text-3xl font-bold text-gray-900 mb-4">
+          <Text className="text-3xl font-bold text-gray-900 my-6">
             Sign In as User
           </Text>
 
@@ -145,12 +160,12 @@ export default function LoginScreen() {
               autoCapitalize="none"
               autoCorrect={false}
               editable={!isPending}
-              className="w-full bg-gray-50 rounded-2xl px-5 py-4 text-base text-gray-900"
+              className="w-full bg-gray-50 rounded-full px-5 py-5 text-base text-gray-900"
               placeholderTextColor="#9CA3AF"
             />
 
             {/* Password Input */}
-            <View className="flex-row items-center bg-gray-50 rounded-2xl px-5 py-4 mt-4">
+            <View className="flex-row items-center bg-gray-50 rounded-full px-5 py-5 mt-4">
               <TextInput
                 placeholder="Password"
                 value={password}
@@ -174,15 +189,14 @@ export default function LoginScreen() {
           <TouchableOpacity
             onPress={handleLogin}
             disabled={isPending}
-            className={`w-full rounded-2xl py-4 items-center justify-center mt-8 ${
-              isPending ? "bg-gray-400" : "bg-black"
-            }`}
+            className={`w-full rounded-2xl py-4 items-center justify-center mt-8 ${isPending ? "bg-gray-400" : "bg-black"
+              }`}
             activeOpacity={0.8}
           >
             {isPending ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text className="text-white text-lg font-semibold">Next</Text>
+              <Text className="text-white text-[22px] font-light">Next</Text>
             )}
           </TouchableOpacity>
 

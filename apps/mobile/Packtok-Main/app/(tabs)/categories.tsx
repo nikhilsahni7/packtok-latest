@@ -142,18 +142,18 @@ export default function CategoriesScreen() {
     <SafeAreaView className="flex-1 bg-white relative" edges={["top"]}>
       <StatusBar style="dark" />
 
+      
+
       {/* Background Bubbles - Blue and Orange Combo */}
       {/* Orange Bubble - Top Left */}
       <Image
         source={require("@/assets/images/bubble 01.png")}
-        className="absolute"
-        style={{
-          top: -width * 0.35,
-          left: -width * 0.35,
-          width: width * 0.75,
-          height: width * 0.75,
-          opacity: 0.6,
-          zIndex: -1,
+        className="absolute z-10"
+         style={{
+          top: -width * 0.10,
+          left: -width * 0.25,
+          width: width * 0.7,
+          height: width * 0.9,
         }}
         resizeMode="contain"
         pointerEvents="none"
@@ -163,20 +163,18 @@ export default function CategoriesScreen() {
       <Image
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
-        style={{
-          top: -width * 0.25,
-          right: -width * 0.4,
-          width: width * 0.85,
-          height: width * 0.85,
-          opacity: 0.5,
-          zIndex: -1,
+       style={{
+          top: -width * 0.10,
+          left: -width * 0.25,
+          width: width * 1,
+          height: width * 0.9,
         }}
         resizeMode="contain"
         pointerEvents="none"
       />
 
       {/* Orange Bubble - Bottom Left */}
-      <Image
+      {/* <Image
         source={require("@/assets/images/bubble 3.png")}
         className="absolute"
         style={{
@@ -189,10 +187,10 @@ export default function CategoriesScreen() {
         }}
         resizeMode="contain"
         pointerEvents="none"
-      />
+      /> */}
 
       {/* Blue Bubble - Bottom Right */}
-      <Image
+      {/* <Image
         source={require("@/assets/images/bubble 4.png")}
         className="absolute"
         style={{
@@ -205,10 +203,10 @@ export default function CategoriesScreen() {
         }}
         resizeMode="contain"
         pointerEvents="none"
-      />
+      /> */}
 
       {/* Header with Title */}
-      <View className="px-5 py-4" style={{ zIndex: 10 }}>
+      <View className="px-5 pt-44" style={{ zIndex: 10 }}>
         <View className="flex-row items-center">
           <Text className="text-2xl font-bold text-gray-900">
             All Categories

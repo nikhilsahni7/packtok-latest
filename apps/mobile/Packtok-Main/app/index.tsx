@@ -64,12 +64,12 @@ export default function SplashScreen() {
       {/* Orange Bubble - Top Left */}
       <Image
         source={require("@/assets/images/bubble 01.png")}
-        className="absolute"
+        className="absolute z-10"
         style={{
-          top: -width * 0.35,
-          left: -width * 0.35,
-          width: width * 0.8,
-          height: width * 0.8,
+          top: -width * 0.10,
+          left: -width * 0.28,
+          width: width * 0.9,
+          height: width * 0.9,
         }}
         resizeMode="contain"
       />
@@ -79,9 +79,9 @@ export default function SplashScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.25,
-          right: -width * 0.4,
-          width: width * 0.9,
+          top: -width * 0.10,
+          left: -width * 0.18,
+          width: width * 1,
           height: width * 0.9,
         }}
         resizeMode="contain"
@@ -92,8 +92,8 @@ export default function SplashScreen() {
         source={require("@/assets/images/bubble 3.png")}
         className="absolute"
         style={{
-          bottom: -width * 0.25,
-          right: -width * 0.25,
+          bottom: -width * 0.15,
+          right: -width * 0.10,
           width: width * 0.7,
           height: width * 0.7,
         }}
@@ -105,20 +105,19 @@ export default function SplashScreen() {
         source={require("@/assets/images/bubble 4.png")}
         className="absolute"
         style={{
-          bottom: -width * 0.2,
-          left: -width * 0.2,
-          width: width * 0.6,
-          height: width * 0.6,
+          bottom: -width * 0.12,
+          right: -width * 0.15,
+          width: width * 0.9,
+          height: width * 0.7,
         }}
         resizeMode="contain"
       />
 
       {/* Main Content Container */}
       <View className="flex-1 items-center justify-center px-10">
-        {/* Machinery Illustration */}
         <View
           className="items-center justify-center mb-8"
-          style={{ width: width * 0.9, height: height * 0.4 }}
+          style={{ width: width * 0.8, height: height * 0.4 }}
         >
           <Image
             source={require("@/assets/images/splash-screen-bg.png")}
@@ -133,8 +132,8 @@ export default function SplashScreen() {
           style={{ width: width * 0.8 }}
         >
           <Image
-            source={require("@/assets/images/logo.png")}
-            style={{ width: "250%", height: undefined, aspectRatio: 3 }}
+            source={require("@/assets/images/logo1.png")}
+            style={{ width: "100%", height: undefined, aspectRatio: 3 }}
             resizeMode="contain"
           />
         </View>

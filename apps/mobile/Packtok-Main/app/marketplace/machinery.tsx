@@ -120,14 +120,14 @@ export default function MachineryScreen() {
       <StatusBar style="dark" />
 
       {/* Header - White with logo */}
-      <View className="bg-white px-4 pt-12 pb-3 border-b border-gray-100">
+      <View className="bg-white px-4 pt-12  ">
         <View className="flex-row items-center justify-between">
           {/* Menu Icon */}
           <TouchableOpacity
-            className="w-10 h-10 items-center justify-center"
+            className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full  justify-center"
             onPress={() => router.back()}
           >
-            <Feather name="menu" size={24} color="#000" />
+            <Feather name="menu" size={24} color="#000"/>
           </TouchableOpacity>
 
           {/* Logo */}
@@ -141,13 +141,13 @@ export default function MachineryScreen() {
           <View className="flex-row items-center">
             {/* Notification Bell */}
             <TouchableOpacity className="relative w-10 h-10 items-center justify-center mr-1">
-              <Feather name="bell" size={22} color="#FF8C42" />
+              <Feather name="bell" size={22} color="black" />
               <View className="absolute top-2 right-2 bg-red-500 rounded-full w-2 h-2" />
             </TouchableOpacity>
 
             {/* Shopping Cart */}
             <TouchableOpacity className="w-10 h-10 items-center justify-center">
-              <Feather name="shopping-cart" size={22} color="#FF8C42" />
+              <Feather name="shopping-cart" size={22} color="black" />
             </TouchableOpacity>
           </View>
         </View>
@@ -186,11 +186,10 @@ export default function MachineryScreen() {
             {categories.map((category, index) => (
               <TouchableOpacity
                 key={index}
-                className={`px-5 py-2 rounded-full mr-3 ${
-                  index === 0
-                    ? "bg-gray-900 border-2 border-gray-900"
-                    : "bg-white border-2 border-gray-200"
-                }`}
+                className={`px-5 py-2 rounded-full mr-3 ${index === 0
+                  ? "bg-gray-900 border-2 border-gray-900"
+                  : "bg-white border-2 border-gray-200"
+                  }`}
                 activeOpacity={0.7}
                 onPress={() => {
                   if (category.route) {
@@ -199,9 +198,8 @@ export default function MachineryScreen() {
                 }}
               >
                 <Text
-                  className={`text-sm font-medium ${
-                    index === 0 ? "text-white" : "text-gray-700"
-                  }`}
+                  className={`text-sm font-medium ${index === 0 ? "text-white" : "text-gray-700"
+                    }`}
                 >
                   {category.name}
                 </Text>
@@ -211,7 +209,7 @@ export default function MachineryScreen() {
         </View>
 
         {/* Filter Options */}
-        <View className="bg-white pt-2 pb-4 border-b border-gray-100">
+        <View className="bg-white pt-2 flex flex-row  justify-between pb-4 border-b border-gray-100">
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -219,52 +217,54 @@ export default function MachineryScreen() {
             contentContainerStyle={{ paddingRight: 16 }}
           >
             {/* Filter Button */}
-            <TouchableOpacity
-              className="flex-row items-center px-4 py-2 rounded-full mr-3 bg-white border border-gray-300"
-              activeOpacity={0.7}
-              onPress={() => setFilterModalVisible(true)}
-            >
-              <Feather name="sliders" size={16} color="#000" />
-              <Text className="text-sm text-gray-700 ml-2">Filter</Text>
-            </TouchableOpacity>
+            <View className=" flex-row   items-center">
 
-            {/* New Button */}
-            <TouchableOpacity
-              className={`px-4 py-2 rounded-full mr-3 ${
-                selectedCondition === "NEW"
-                  ? "bg-gray-900 border-2 border-gray-900"
-                  : "bg-white border border-gray-200"
-              }`}
-              activeOpacity={0.7}
-              onPress={() => handleConditionFilter("NEW")}
-            >
-              <Text
-                className={`text-sm ${
-                  selectedCondition === "NEW" ? "text-white" : "text-gray-700"
-                }`}
+              <TouchableOpacity
+                className="flex-row items-center px-4 py-2 text-[16px] rounded-full mr-3 bg-white "
+                activeOpacity={0.7}
+                onPress={() => setFilterModalVisible(true)}
               >
-                New
-              </Text>
-            </TouchableOpacity>
+                <Feather name="sliders" size={16} color="#000" />
+                <Text className="text-sm text-gray-700 ml-2">Filter</Text>
+              </TouchableOpacity>
 
-            {/* Used Button */}
-            <TouchableOpacity
-              className={`px-4 py-2 rounded-full mr-3 ${
-                selectedCondition === "USED"
-                  ? "bg-gray-900 border-2 border-gray-900"
-                  : "bg-white border border-gray-200"
-              }`}
-              activeOpacity={0.7}
-              onPress={() => handleConditionFilter("USED")}
-            >
-              <Text
-                className={`text-sm ${
-                  selectedCondition === "USED" ? "text-white" : "text-gray-700"
-                }`}
-              >
-                Used
-              </Text>
-            </TouchableOpacity>
+              {/* New Button */}
+              <View className="flex flex-row">
+
+                <TouchableOpacity
+                  className={` px-4 py-2 rounded-full mr-3 ${selectedCondition === "NEW"
+                    ? "bg-gray-900 border-2 border-gray-900"
+                    : "bg-white border border-gray-200"
+                    }`}
+                  activeOpacity={0.7}
+                  onPress={() => handleConditionFilter("NEW")}
+                >
+                  <Text
+                    className={`text-sm ${selectedCondition === "NEW" ? "text-white" : "text-black"
+                      }`}
+                  >
+                    New
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Used Button */}
+                <TouchableOpacity
+                  className={`px-4 py-2 rounded-full mr-3 ${selectedCondition === "USED"
+                    ? "bg-gray-900 border-2 border-gray-900"
+                    : "bg-white border border-gray-200"
+                    }`}
+                  activeOpacity={0.7}
+                  onPress={() => handleConditionFilter("USED")}
+                >
+                  <Text
+                    className={`text-sm ${selectedCondition === "USED" ? "text-white" : "text-black"
+                      }`}
+                  >
+                    Used
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </ScrollView>
         </View>
 
@@ -303,7 +303,7 @@ export default function MachineryScreen() {
               {products.map((product) => (
                 <TouchableOpacity
                   key={product.id}
-                  className="bg-white rounded-2xl overflow-hidden mb-4"
+                  className=" rounded-2xl overflow-hidden mb-4"
                   style={{
                     width: (width - 32) / 3 - 4,
                     shadowColor: "#000",
@@ -318,16 +318,17 @@ export default function MachineryScreen() {
                   }
                 >
                   {/* Product Image */}
-                  <View className="bg-gray-100 w-full aspect-square">
+                  <View className="bg-gray-100 w-full h-[140px]">
                     <Image
                       source={
                         product.imagesThumbnail || product.images?.[0]
                           ? {
-                              uri: product.imagesThumbnail || product.images[0],
-                            }
+                            uri: product.imagesThumbnail || product.images[0],
+                          }
                           : require("@/assets/images/splash-screen-bg.png")
                       }
                       style={{ width: "100%", height: "100%" }}
+                      className="rounded-[27px] h-[140px]"
                       resizeMode="cover"
                     />
                   </View>

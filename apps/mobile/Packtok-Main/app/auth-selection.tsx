@@ -28,12 +28,12 @@ export default function AuthSelectionScreen() {
       {/* Orange Bubble - Top Left */}
       <Image
         source={require("@/assets/images/bubble 01.png")}
-        className="absolute"
+        className="absolute z-10"
         style={{
-          top: -width * 0.3,
-          left: -width * 0.3,
-          width: width * 0.7,
-          height: width * 0.7,
+          top: -width * 0.10,
+          left: -width * 0.25,
+          width: width * 0.8,
+          height: width * 0.9,
         }}
         resizeMode="contain"
       />
@@ -43,10 +43,10 @@ export default function AuthSelectionScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.2,
-          right: -width * 0.35,
-          width: width * 0.8,
-          height: width * 0.8,
+          top: -width * 0.10,
+          left: -width * 0.20,
+          width: width * 1,
+          height: width * 0.9,
         }}
         resizeMode="contain"
       />
@@ -54,10 +54,10 @@ export default function AuthSelectionScreen() {
       {/* Main Content */}
       <View className="flex-1 items-center justify-between py-16">
         {/* Top Section - Image and Logo */}
-        <View className="items-center mt-8">
+        <View className="items-center mt-24">
           {/* Machinery Illustration */}
           <View
-            className="items-center justify-center mb-4"
+            className="items-center justify-center"
             style={{ width: width * 0.7, height: height * 0.3 }}
           >
             <Image
@@ -68,10 +68,13 @@ export default function AuthSelectionScreen() {
           </View>
 
           {/* Logo */}
-          <View className="items-center">
+          <View
+            className="items-center justify-center"
+            style={{ width: width * 0.9 }}
+          >
             <Image
-              source={require("@/assets/images/logo.png")}
-              style={{ width: width * 2, height: undefined, aspectRatio: 3 }}
+              source={require("@/assets/images/logo1.png")}
+              style={{ width: "100%", height: undefined, aspectRatio: 3 }}
               resizeMode="contain"
             />
           </View>
@@ -82,7 +85,7 @@ export default function AuthSelectionScreen() {
           {/* SignUp as User Button */}
           <TouchableOpacity
             onPress={handleUserSignup}
-            className="w-full bg-gray-100 rounded-2xl py-4 items-center justify-center mb-4"
+            className="w-full bg-[#F8F8F8] rounded-full py-5 items-left pl-5 justify-center mb-4"
             activeOpacity={0.8}
           >
             <Text className="text-gray-400 text-base font-medium">
@@ -93,7 +96,7 @@ export default function AuthSelectionScreen() {
           {/* SignUp as Vendor Button */}
           <TouchableOpacity
             onPress={handleVendorSignup}
-            className="w-full bg-gray-100 rounded-2xl py-4 items-center justify-center mb-4"
+            className="w-full bg-[#F8F8F8] rounded-full py-5 items-left pl-5 justify-center mb-4"
             activeOpacity={0.8}
           >
             <Text className="text-gray-400 text-base font-medium">
@@ -107,7 +110,7 @@ export default function AuthSelectionScreen() {
             className="w-full bg-black rounded-2xl py-4 items-center justify-center"
             activeOpacity={0.8}
           >
-            <Text className="text-white text-base font-semibold">
+            <Text className="text-white text-[24px] font-light">
               Let&apos;s get started
             </Text>
           </TouchableOpacity>

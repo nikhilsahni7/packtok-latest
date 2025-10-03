@@ -5,10 +5,14 @@ import {
   Image,
   ScrollView,
   Text,
+  Dimensions,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+
+const { width } = Dimensions.get("window");
+
 
 // Marketplace categories data - matching Figma
 const marketplaceCategories = [
@@ -35,33 +39,59 @@ const marketplaceCategories = [
 export default function MarketplaceScreen() {
   const router = useRouter();
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50 relative">
       <StatusBar style="light" />
 
-      {/* Header - Simple Orange Header matching Figma */}
-      <View className="bg-[#FF8C42] px-4 pt-12 pb-3">
-        <View className="flex-row items-center justify-between">
-          {/* Menu Icon */}
-          <TouchableOpacity className="w-10 h-10 items-center justify-center">
-            <Feather name="menu" size={24} color="white" />
-          </TouchableOpacity>
+      <Image
+        source={require("@/assets/images/bubble 01.png")}
+        className="absolute z-10"
+        style={{
+          top: -width * 0.10,
+          left: -width * 0.27,
+          width: width * 0.7,
+          height: width * 0.9,
+        }}
+        resizeMode="contain"
+      />
 
+      {/* Blue Bubble - Top Right */}
+      <Image
+        source={require("@/assets/images/bubble 02.png")}
+        className="absolute"
+        style={{
+          top: -width * 0.10,
+          left: -width * 0.27,
+          width: width * 1,
+          height: width * 0.9,
+        }}
+        resizeMode="contain"
+      />
+
+      {/* Header - Simple Orange Header matching Figma */}
+      <View className=" px-4 pt-12 relative z-30 pb-3">
+        <View className="flex-row items-center  justify-between">
+          {/* Menu Icon */}
+          <TouchableOpacity className="p-2 relative z-20">
+            <Feather name="menu" size={24} color="black" style={{ backgroundColor: "white" }} className="p-2 rounded-full" />
+          </TouchableOpacity>
           {/* Center - Just a dash/line (matching Figma) */}
-          <View className="flex-1 items-center">
-            <View className="w-8 h-0.5 bg-white/40" />
-          </View>
+          <Image
+            source={require("@/assets/images/logo-removebg.png")}
+            style={{ width: 200, height: 100 }}
+            resizeMode="contain"
+          />
 
           {/* Right Icons */}
           <View className="flex-row items-center">
             {/* Notification Bell */}
             <TouchableOpacity className="relative w-10 h-10 items-center justify-center">
-              <Feather name="bell" size={22} color="white" />
+              <Feather name="bell" size={22} color="black" />
               <View className="absolute top-2 right-2 bg-red-500 rounded-full w-2 h-2" />
             </TouchableOpacity>
 
             {/* Shopping Cart */}
             <TouchableOpacity className="w-10 h-10 items-center justify-center">
-              <Feather name="shopping-cart" size={22} color="white" />
+              <Feather name="shopping-cart" size={22} color="black" />
             </TouchableOpacity>
           </View>
         </View>
@@ -73,8 +103,8 @@ export default function MarketplaceScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         {/* Search Bar */}
-        <View className="px-4 pt-4 pb-3 bg-white">
-          <View className="flex-row items-center bg-gray-100 rounded-lg px-4 py-3">
+        <View className="px-4 pt-4 pb-3 relative z-50 ">
+          <View className="flex-row relative z-40 items-center bg-white rounded-lg px-4 py-3">
             <Feather name="search" size={20} color="#9CA3AF" />
             <TextInput
               placeholder="Search any Product"
@@ -88,25 +118,19 @@ export default function MarketplaceScreen() {
         </View>
 
         {/* All Marketplace Section */}
-        <View className="px-4 pt-4 bg-white">
-          <Text className="text-base font-bold text-gray-900 mb-3">
+        <View className="px-4 pt-12  relative z-50">
+          <Text className="text-[18px] relative z-50 font-medium text-gray-900 mb-3">
             All Marketplace
           </Text>
         </View>
 
         {/* Category Cards - Vertical List matching Figma exactly */}
-        <View className="px-4 bg-white pb-4">
+        <View className="px-4  pb-4">
           {marketplaceCategories.map((category) => (
             <TouchableOpacity
               key={category.id}
-              className="bg-white rounded-xl overflow-hidden mb-3"
-              style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                elevation: 3,
-              }}
+              className=" rounded-xl "
+             
               activeOpacity={0.8}
               onPress={() => {
                 if (category.route) {
@@ -115,17 +139,18 @@ export default function MarketplaceScreen() {
               }}
             >
               {/* Category Image - Larger, full width */}
-              <View className="bg-gray-50 w-full">
+              <View className=" w-full">
                 <Image
                   source={category.image}
                   style={{ width: "100%", height: 180 }}
                   resizeMode="cover"
+                  className="rounded-[25px]"
                 />
               </View>
 
               {/* Category Name */}
-              <View className="px-4 py-3 bg-white">
-                <Text className="text-sm font-semibold text-gray-900">
+              <View className="px-4 py-3 text-center">
+                <Text className="text-sm text-center font-medium text-gray-900">
                   {category.name}
                 </Text>
               </View>

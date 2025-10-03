@@ -2,6 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
+const blue_bg = require("@/assets/images/bubble 05.png");
+
 import {
   Dimensions,
   Image,
@@ -43,12 +45,12 @@ export default function SignupUserScreen() {
       {/* Orange Bubble - Top Left */}
       <Image
         source={require("@/assets/images/bubble 01.png")}
-        className="absolute"
+        className="absolute z-10"
         style={{
-          top: -width * 0.25,
+          top: -width * 0.10,
           left: -width * 0.25,
-          width: width * 0.6,
-          height: width * 0.6,
+          width: width * 0.7,
+          height: width * 0.9,
         }}
         resizeMode="contain"
       />
@@ -58,16 +60,30 @@ export default function SignupUserScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.15,
-          right: -width * 0.3,
-          width: width * 0.7,
-          height: width * 0.7,
+          top: -width * 0.10,
+          left: -width * 0.25,
+          width: width * 1,
+          height: width * 0.9,
         }}
         resizeMode="contain"
       />
 
+      {/* Orange Bubble - Bottom Right */}
+      <Image
+        source={blue_bg}
+        className="absolute"
+        style={{
+          bottom: -width * 0.25,
+          right: -width * 0.33,
+          width: width * 1.2,
+          height: width * 1.1,
+        }}
+        resizeMode="contain"
+      />
+
+
       {/* Main Content */}
-      <View className="flex-1 px-8 pt-16">
+      <View className="flex-1 px-8 pt-36">
         {/* Top Image */}
         <View
           className="items-center justify-center mb-8"
@@ -77,14 +93,14 @@ export default function SignupUserScreen() {
             source={require("@/assets/images/splash-screen-bg.png")}
             style={{
               width: width * 1.2,
-              height: height * 0.3,
+              height: height * 0.29,
             }}
             resizeMode="contain"
           />
         </View>
 
         {/* Sign Up as User Title */}
-        <Text className="text-3xl font-bold text-gray-900 mb-6">
+        <Text className="text-3xl text-center font-bold text-[#202020] my-6">
           Sign Up as User
         </Text>
 
@@ -95,7 +111,7 @@ export default function SignupUserScreen() {
             placeholder="Your Name"
             value={name}
             onChangeText={setName}
-            className="w-full bg-gray-50 rounded-2xl px-5 py-4 text-base text-gray-900"
+            className="w-full bg-gray-50 rounded-2xl px-5 py-5 text-base text-gray-900"
             placeholderTextColor="#9CA3AF"
           />
 
@@ -106,12 +122,12 @@ export default function SignupUserScreen() {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
-            className="w-full bg-gray-50 rounded-2xl px-5 py-4 text-base text-gray-900 mt-4"
+            className="w-full bg-gray-50 rounded-2xl px-5 py-5 text-base text-gray-900 mt-4"
             placeholderTextColor="#9CA3AF"
           />
 
           {/* Phone Number Input with Country Code */}
-          <View className="flex-row items-center bg-gray-50 rounded-2xl px-5 py-4 mt-4">
+          <View className="flex-row items-center bg-gray-50 rounded-2xl px-5 py-5 mt-4">
             <Image
               source={{ uri: "https://flagcdn.com/w40/in.png" }}
               style={{ width: 28, height: 20 }}
@@ -129,7 +145,7 @@ export default function SignupUserScreen() {
           </View>
 
           {/* Password Input */}
-          <View className="flex-row items-center bg-gray-50 rounded-2xl px-5 py-4 mt-4">
+          <View className="flex-row items-center bg-gray-50 rounded-2xl px-5 py-5 mt-4">
             <TextInput
               placeholder="Password"
               value={password}
@@ -154,7 +170,7 @@ export default function SignupUserScreen() {
           className="w-full bg-black rounded-2xl py-4 items-center justify-center mt-8"
           activeOpacity={0.8}
         >
-          <Text className="text-white text-lg font-semibold">Sign Up</Text>
+          <Text className="text-white text-[22px] font-light">Sign Up</Text>
         </TouchableOpacity>
 
         {/* Cancel Button */}
@@ -172,7 +188,7 @@ export default function SignupUserScreen() {
           className="flex-row items-center justify-center mt-4"
           activeOpacity={0.8}
         >
-          <Text className="text-gray-600 text-sm">
+          <Text className="text-gray-600 text-[15px]">
             I already have an account{" "}
           </Text>
           <View className="bg-black rounded-full w-6 h-6 items-center justify-center">

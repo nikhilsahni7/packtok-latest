@@ -25,18 +25,17 @@ export default function HomeScreen() {
       <StatusBar style="light" />
 
       {/* Header with Orange Background and Bubble Effects */}
-      <View className="bg-[#FF8C42] px-5 pt-12 pb-6 relative overflow-hidden">
+      <View className=" px-5 pt-12 pb-6 relative">
         {/* Background Bubbles */}
         {/* Orange Bubble - Top Left */}
         <Image
           source={require("@/assets/images/bubble 01.png")}
-          className="absolute"
+          className="absolute z-10"
           style={{
-            top: -width * 0.15,
-            left: -width * 0.2,
-            width: width * 0.5,
-            height: width * 0.5,
-            opacity: 0.3,
+            top: -width * 0.10,
+            left: -width * 0.25,
+            width: width * 0.7,
+            height: width * 0.9,
           }}
           resizeMode="contain"
         />
@@ -46,39 +45,24 @@ export default function HomeScreen() {
           source={require("@/assets/images/bubble 02.png")}
           className="absolute"
           style={{
-            top: -width * 0.1,
-            right: -width * 0.25,
-            width: width * 0.6,
-            height: width * 0.6,
-            opacity: 0.2,
-          }}
-          resizeMode="contain"
-        />
-
-        {/* Additional Orange Bubble - Bottom */}
-        <Image
-          source={require("@/assets/images/bubble 3.png")}
-          className="absolute"
-          style={{
-            bottom: -width * 0.1,
-            left: width * 0.3,
-            width: width * 0.4,
-            height: width * 0.4,
-            opacity: 0.25,
+            top: -width * 0.10,
+            left: -width * 0.25,
+            width: width * 1,
+            height: width * 0.9,
           }}
           resizeMode="contain"
         />
 
         {/* Top Bar */}
-        <View className="flex-row items-center justify-between mb-4 z-10">
+        <View className="flex-row items-center justify-between mb-4">
           {/* Menu Icon */}
-          <TouchableOpacity className="p-2">
-            <Feather name="menu" size={24} color="white" />
+          <TouchableOpacity className="p-2 relative z-20">
+            <Feather name="menu" size={24} color="black" style={{ backgroundColor: "white" }} className="p-2 rounded-full" />
           </TouchableOpacity>
 
           <Image
             source={require("@/assets/images/logo-removebg.png")}
-            style={{ width: 200, height: 10 }}
+            style={{ width: 200, height: 100 }}
             resizeMode="contain"
           />
 
@@ -86,22 +70,22 @@ export default function HomeScreen() {
           <View className="flex-row items-center space-x-3">
             {/* Notification Bell with Badge */}
             <TouchableOpacity className="relative">
-              <Feather name="bell" size={20} color="white" />
-              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 items-center justify-center">
+              <Feather name="bell" size={20} color="black" />
+              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full text-blac w-4 h-4 items-center justify-center">
                 <Text className="text-white text-xs font-bold">2</Text>
               </View>
             </TouchableOpacity>
 
             {/* Shopping Cart */}
             <TouchableOpacity className="ml-3">
-              <Feather name="shopping-cart" size={20} color="white" />
+              <Feather name="shopping-cart" size={20} color="black" />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Search Bar */}
-        <View className="flex-row items-center bg-white rounded-full px-4 py-3 z-10">
-          <Feather name="search" size={20} color="#9CA3AF" />
+        <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
+          <Feather name="search" size={20} color="#9CA3AF" className="" />
           <TextInput
             placeholder="Search any Product..."
             placeholderTextColor="#9CA3AF"
@@ -113,15 +97,15 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1 relative z-10" showsVerticalScrollIndicator={false}>
         {/* Browse All Categories */}
         <View className="px-5 mt-4">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-base font-semibold text-gray-900">
+          <View className="flex-row items-center justify-between mb-4">
+            <Text className="text-[18px] font-medium mb-2 text-gray-900">
               Browse all categories
             </Text>
             <TouchableOpacity onPress={() => router.push("/categories")}>
-              <Text className="text-sm text-[#FF8C42] font-medium">
+              <Text className="text-sm text-black font-medium">
                 View all
               </Text>
             </TouchableOpacity>
@@ -146,7 +130,7 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs text-gray-700 mt-2">Machinery</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">Machinery</Text>
             </TouchableOpacity>
 
             {/* Category Item 2 */}
@@ -162,7 +146,7 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs text-gray-700 mt-2">Packaging</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">Packaging</Text>
             </TouchableOpacity>
 
             {/* Category Item 3 */}
@@ -178,7 +162,7 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs text-gray-700 mt-2">Spare Parts</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">Spare Parts</Text>
             </TouchableOpacity>
 
             {/* Category Item 4 */}
@@ -194,7 +178,7 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs text-gray-700 mt-2">Services</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">Services</Text>
             </TouchableOpacity>
 
             {/* Category Item 5 - View All */}
@@ -206,7 +190,7 @@ export default function HomeScreen() {
               <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 items-center justify-center">
                 <Feather name="grid" size={24} color="#FF8C42" />
               </View>
-              <Text className="text-xs text-gray-700 mt-2">View All</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">View All</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -214,14 +198,14 @@ export default function HomeScreen() {
         {/* Marketplace on Packtok */}
         <View className="px-5 mt-4">
           <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-base font-semibold text-gray-900">
+            <Text className="text-[18px] font-semibold text-gray-900">
               Marketplace on Packtok
             </Text>
             <TouchableOpacity
               onPress={() => router.push("/(tabs)/marketplace")}
               activeOpacity={0.7}
             >
-              <Text className="text-sm text-[#FF8C42] font-medium">
+              <Text className="text-sm text-black font-medium">
                 View all
               </Text>
             </TouchableOpacity>
@@ -235,19 +219,21 @@ export default function HomeScreen() {
               onPress={() => router.push("/marketplace/machinery")}
               activeOpacity={0.7}
             >
-              <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
+              <View className=" rounded-2xl overflow-hidden">
                 {/* TODO: Replace with actual machinery image */}
                 <Image
-                  source={require("@/assets/images/machinery-home2.jpg")}
+                  source={require("@/assets/images/packtok.png")}
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                <View className="p-3">
+                
+              </View>
+
+              <View className="p-3">
                   <Text className="text-sm font-semibold text-gray-900">
                     Machinery
                   </Text>
                 </View>
-              </View>
             </TouchableOpacity>
 
             {/* Spare Parts Card */}
@@ -256,19 +242,22 @@ export default function HomeScreen() {
               onPress={() => router.push("/marketplace/spare-parts")}
               activeOpacity={0.7}
             >
-              <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
+              <View className=" rounded-2xl overflow-hidden">
                 {/* TODO: Replace with actual spare parts image */}
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/spare_part_1.png")}
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                <View className="p-3">
+                
+              </View>
+
+              <View className="p-3">
                   <Text className="text-sm font-semibold text-gray-900">
-                    Spare parts
+                    Spare Parts
                   </Text>
                 </View>
-              </View>
+              
             </TouchableOpacity>
           </View>
         </View>
@@ -276,7 +265,7 @@ export default function HomeScreen() {
         {/* Bidding on Packtok Section */}
         <View className="px-5 mt-2">
           <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-base font-semibold text-gray-900">
+            <Text className="text-[18px] font-medium text-gray-900">
               Bidding on Packtok
             </Text>
           </View>
@@ -302,7 +291,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               </View>
               <View className="p-3">
-                <Text className="text-sm font-semibold text-gray-900">
+                <Text className="text-[18px] font-medium text-gray-900">
                   Turnkey
                 </Text>
               </View>
@@ -327,7 +316,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               </View>
               <View className="p-3">
-                <Text className="text-sm font-semibold text-gray-900">
+                <Text className="text-[18px] font-medium text-gray-900">
                   Consultancy
                 </Text>
               </View>
@@ -348,7 +337,7 @@ export default function HomeScreen() {
                 />
               </View>
               <View className="p-3">
-                <Text className="text-sm font-semibold text-gray-900">
+                <Text className="text-[18px] font-medium text-gray-900">
                   Bidding
                 </Text>
               </View>
