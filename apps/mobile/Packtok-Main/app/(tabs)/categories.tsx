@@ -142,35 +142,31 @@ export default function CategoriesScreen() {
     <SafeAreaView className="flex-1 bg-white relative" edges={["top"]}>
       <StatusBar style="dark" />
 
-      
-
       {/* Background Bubbles - Blue and Orange Combo */}
       {/* Orange Bubble - Top Left */}
       <Image
         source={require("@/assets/images/bubble 01.png")}
         className="absolute z-10"
-         style={{
-          top: -width * 0.10,
+        style={{
+          top: -width * 0.1,
           left: -width * 0.25,
           width: width * 0.7,
           height: width * 0.9,
         }}
         resizeMode="contain"
-        pointerEvents="none"
       />
 
       {/* Blue Bubble - Top Right */}
       <Image
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
-       style={{
-          top: -width * 0.10,
+        style={{
+          top: -width * 0.1,
           left: -width * 0.25,
           width: width * 1,
           height: width * 0.9,
         }}
         resizeMode="contain"
-        pointerEvents="none"
       />
 
       {/* Orange Bubble - Bottom Left */}

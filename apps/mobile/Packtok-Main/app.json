@@ -33,13 +33,16 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      "expo-router",
-      "expo-video"
-    ],
+    "plugins": ["expo-router", "expo-video"],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "60f0784e-7564-4f60-a24c-3c8af1af98df"
+      }
     }
   }
 }
