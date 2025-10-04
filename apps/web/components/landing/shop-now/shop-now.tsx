@@ -16,7 +16,7 @@ export default function ShopNow() {
     >
       {/* Left Rectangle*/}
       <div className="bg-gray-100  justify-between row-span-2">
-        <div className="p-4 sm:p-7 md:p-10 md:pt-20 md:pl-15">
+        <div className="p-4 sm:p-7 pb-4 md:p-10 md:pt-20 md:pl-15">
           <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-4 font-medium">
             Machinery
           </h2>
@@ -30,7 +30,7 @@ export default function ShopNow() {
         <Image
           src={machinery}
           alt="machinery"
-          className="w-full h-auto object-cover"
+          className="w-full h-[330px] object-cover"
         />
       </div>
 

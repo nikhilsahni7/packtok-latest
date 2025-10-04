@@ -1,4 +1,6 @@
 import { PageHeader } from "@/components";
+import Shipping from "@/assets/Shipping.webp";
+
 
 export default function ShippingPage() {
   return (
@@ -7,168 +9,106 @@ export default function ShippingPage() {
         <PageHeader
           title="Shipping & Delivery"
           subtitle="Learn about our shipping options, delivery times, and what to expect with your order."
-          image="/footer-logo1.png"
+          image={Shipping}
         />
 
         <div className="w-[80%] mx-auto py-12 space-y-8">
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              1. Shipping Coverage
+              Shipping & Delivery Policy
             </h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              We currently ship to the following regions:
+              At Packtok.com, we aim to provide a smooth and reliable experience for the purchase and delivery of corrugated and packaging machinery as well as raw materials. Since our platform connects buyers and sellers, all shipping and delivery processes are managed directly by the respective sellers or logistics partners.
             </p>
+
+          </section>
+
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              1. Shipping Responsibility
+            </h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
-              <li>India - All states and union territories</li>
-              <li>China - Major industrial cities and regions</li>
-              <li>United Arab Emirates - All emirates</li>
-              <li>Australia - Major cities and industrial areas</li>
-              <li>International shipping available upon request</li>
+              <li>Sellers are responsible for arranging shipping and delivery of machinery, spare parts, or raw materials listed on Packtok.com.</li>
+              <li>Buyers must confirm shipping charges, delivery timelines, and transportation mode with the seller before completing the purchase.</li>
+              <li>Packtok.com does not handle shipping directly but facilitates communication between buyers, sellers, and logistics partners.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              2. Delivery Times
+              2. Delivery Timelines
             </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  Standard Items
-                </h3>
-                <ul className="text-gray-700 space-y-2">
-                  <li>Local (Same City): 1-2 business days</li>
-                  <li>Domestic: 3-7 business days</li>
-                  <li>International: 7-14 business days</li>
-                </ul>
-              </div>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  Heavy Machinery
-                </h3>
-                <ul className="text-gray-700 space-y-2">
-                  <li>Local: 3-5 business days</li>
-                  <li>Domestic: 7-14 business days</li>
-                  <li>International: 14-30 business days</li>
-                </ul>
-              </div>
-            </div>
+
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li>Delivery timelines vary depending on product type (machinery or raw materials), order size, and shipping location.</li>
+              <li>Sellers are expected to provide buyers with an estimated delivery schedule before dispatch.</li>
+              <li>Any delays due to transportation, customs clearance, or unforeseen circumstances are beyond Packtok&apos;s control.</li>
+            </ul>
+
           </section>
 
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              3. Shipping Methods
+              3. Packaging & Handling
             </h2>
-            <div className="space-y-4">
-              <div className="border border-gray-200 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Standard Shipping
-                </h3>
-                <p className="text-gray-700">
-                  Economical option for most products. Includes basic tracking
-                  and insurance coverage.
-                </p>
-              </div>
-              <div className="border border-gray-200 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Express Shipping
-                </h3>
-                <p className="text-gray-700">
-                  Faster delivery with priority handling. Available for urgent
-                  orders and standard-sized items.
-                </p>
-              </div>
-              <div className="border border-gray-200 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  White Glove Delivery
-                </h3>
-                <p className="text-gray-700">
-                  Premium service for heavy machinery including installation and
-                  setup assistance.
-                </p>
-              </div>
-            </div>
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li>Sellers must ensure proper packaging of machinery and raw materials to prevent damage during transit.</li>
+              <li>Heavy and large machines should be secured with industrial-grade packing and handling measures.</li>
+              <li>Buyers are advised to inspect packaging upon delivery and report any visible damage immediately.</li>
+            </ul>
           </section>
 
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
               4. Shipping Costs
             </h2>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Shipping costs are calculated based on:
-            </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
-              <li>Product weight and dimensions</li>
-              <li>Destination location and delivery distance</li>
-              <li>Chosen shipping method and urgency</li>
-              <li>Special handling requirements (fragile, hazardous, etc.)</li>
-              <li>Insurance coverage and declared value</li>
-            </ul>
-            <p className="text-gray-700 leading-relaxed mt-4">
-              Free shipping is available for orders over ₹50,000 within India
-              (conditions apply).
-            </p>
-          </section>
 
-          <section>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              5. Order Processing
-            </h2>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Order processing times:
-            </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
-              <li>In-stock items: 1-2 business days</li>
-              <li>Made-to-order products: 5-15 business days</li>
-              <li>Custom machinery: 30-90 days (varies by complexity)</li>
-              <li>Special orders: Confirmed during order placement</li>
+              <li>Shipping charges are borne by the buyer unless otherwise agreed with the seller.</li>
+              <li>Costs depend on product dimensions, weight, distance, and mode of transport (road, sea, or air).</li>
+              <li>Sellers must clearly communicate all applicable charges before finalizing the order.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              6. Tracking Your Order
+              5. Risk & Insurance
             </h2>
-            <p className="text-gray-700 leading-relaxed">
-              Once your order ships, you&apos;ll receive a tracking number via
-              email. Use this to monitor your shipment&apos;s progress through
-              our partner carriers&apos; websites or our order tracking system
-              in your account dashboard.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              7. Delivery Requirements
-            </h2>
-            <p className="text-gray-700 leading-relaxed mb-4">Please ensure:</p>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
-              <li>Someone is available to receive the delivery</li>
-              <li>Delivery address is accurate and accessible</li>
-              <li>Special equipment access for heavy machinery</li>
-              <li>Proper identification is available during delivery</li>
+              <li>Risk of damage or loss during transit lies with the seller until delivery is completed.</li>
+              <li>For high-value machinery, sellers and buyers are encouraged to arrange transit insurance.</li>
+              <li>Packtok.com is not responsible for transit damages, delays, or losses.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              8. International Shipping
+              6. International Shipping
             </h2>
-            <p className="text-gray-700 leading-relaxed">
-              International orders may be subject to customs duties, taxes, and
-              import fees. These charges are the responsibility of the recipient
-              and are not included in the product price or shipping costs.
-            </p>
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li>For exports and imports of corrugated machinery and raw materials, buyers and sellers must comply with applicable customs laws, duties, and documentation.</li>
+              <li>Packtok.com does not handle customs clearance but provides a platform to facilitate global trade.</li>
+            </ul>
           </section>
 
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              9. Delivery Issues
+              7. Delivery Confirmation
+            </h2>
+
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li>   Buyers should verify product details, quantity, and condition at the time of delivery.</li>
+              <li>Once delivery is accepted, future claims regarding damage or shortages may not be considered valid.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              8. Contact Us
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              If you experience any delivery issues, damaged packages, or
-              missing items, please contact us within 48 hours of delivery at
-              +91 81045-43204 or through our contact page.
+              For queries regarding shipping & delivery, please contact us at:
+ <a href="mailto:support@packtok.com" className="font-bold"> 📧 support@packtok.com</a>
             </p>
           </section>
 

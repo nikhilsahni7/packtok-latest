@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import turnkey_1 from "@/assets/turnkey_1.jpeg"
+import turnkey_1 from "@/assets/turnkey_project.webp"
 
 const checklistLeft = [
   "End to End Project Management",
@@ -175,7 +175,7 @@ function ExcellenceSection() {
           />
         </div>
         <div>
-          <h2 className="text-3xl font-semibold">
+          <h2 className="text-3xl pb-5 font-semibold">
             Partnering for Operational Excellence Since 35+ years
           </h2>
           <p className="mt-4 text-gray-700 leading-relaxed text-justify">
@@ -189,7 +189,7 @@ function ExcellenceSection() {
             asChild
             className="mt-6 px-6 py-3 bg-black text-white rounded-sm uppercase text-xs tracking-widest"
           >
-            <Link href="/services/consultancy">Request Consultation</Link>
+            <Link href="/services/turnkey-projects/form">Enquire More</Link>
           </Button>
         </div>
       </div>
@@ -201,8 +201,7 @@ function PointsCoveredSection() {
   return (
     <section className="py-16">
       <h2 className="text-center text-[28px] md:text-[32px] font-semibold leading-snug">
-        Points We Cover in Our Turnkey
-        <br /> Solution:
+        Turnkey Solution : Our Areas of Expertise
       </h2>
 
       <div className="mt-10 w-[95%] sm:w-[90%]   mx-auto grid md:grid-cols-12 gap-8 items-center">
