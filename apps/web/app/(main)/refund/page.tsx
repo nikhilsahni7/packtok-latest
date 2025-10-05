@@ -14,7 +14,7 @@ export default function RefundPage() {
 
         <div className="w-[80%] mx-auto py-12 space-y-8">
           <section>
-            <h2 className="text-3xl font-buld text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
               Refund & Cancellation Policy
             </h2>
             <p className="text-gray-700 leading-relaxed mb-4">
@@ -23,7 +23,7 @@ export default function RefundPage() {
           </section>
 
           <section>
-            <h2 className="text-3xl font-buld text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
               1. Nature of Our Platform
             </h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -34,7 +34,7 @@ export default function RefundPage() {
           </section>
 
           <section>
-            <h2 className="text-3xl font-buld text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
               2. Refund Eligibility
             </h2>
             <p className="text-gray-700 leading-relaxed mb-4">
@@ -48,7 +48,7 @@ export default function RefundPage() {
           </section>
 
           <section>
-            <h2 className="text-3xl font-buld text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
               3. Non-Refundable Cases
             </h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -59,7 +59,7 @@ export default function RefundPage() {
           </section>
 
           <section>
-            <h2 className="text-3xl font-buld text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
               4. Refund Process
             </h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -70,7 +70,7 @@ export default function RefundPage() {
           </section>
 
           <section>
-            <h2 className="text-3xl font-buld text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
               6. Packtok’s Rule in Disputes
             </h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
@@ -80,7 +80,7 @@ export default function RefundPage() {
           </section>
 
           <section>
-            <h2 className="text-3xl font-buld text-gray-900 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
               7. Contact Us
             </h2>
             <p className="text-gray-700 leading-relaxed">

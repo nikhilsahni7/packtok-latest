@@ -28,23 +28,32 @@ export default function Page() {
             Contact Us
           </h1>
 
-          <div className="flex md:flex-row flex-col gap-8">
+          <div className="flex gap-8">
             <ContactCard
               icon={<MapPin />}
-              title="Address"
-              content="234 Hai Trieu, Ho Chi Minh City,
-      Viet Nam"
+              title="Dubai Office"
+              content="PACKTOK F.Z.E, FREE ZONE AJMAN, UNITED ARAB EMIRATES ADDRESS - PER NO. 169423 P. O. BOX : 932"
+            />
+            <ContactCard
+              icon={<MapPin />}
+              title="India Office"
+              content=" GALAXY INTERNATIONAL
+Complete Packaging Solution 43
+HSIIDC, Sector 59"
             />
             <ContactCard
               icon={<Phone />}
               title="Contact Us"
-              content="+84 234 567 890"
+              content="+971 508 973 241"
+              content2="+91 987 364 0291"
             />
             <ContactCard
               icon={<Mail />}
               title="Email"
-              content="hello@3legant.com"
+              content="Packtok01@gmail.com "
             />
+
+
           </div>
         </div>
         <div className="grid lg:grid-cols-2 gap-12 mt-12">

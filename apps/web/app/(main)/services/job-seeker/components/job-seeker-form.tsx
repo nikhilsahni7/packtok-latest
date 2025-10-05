@@ -287,6 +287,10 @@ export function JobSeekerForm() {
                         <SelectItem value="Maintenance Worker">
                           Maintenance Worker
                         </SelectItem>
+                        <SelectItem value="Maintenance Worker">
+                          Management
+                        </SelectItem>
+                        
                         <SelectItem value="Supervisor">Supervisor</SelectItem>
                         <SelectItem value="Quality Control">
                           Quality Control

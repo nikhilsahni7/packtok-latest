@@ -28,6 +28,12 @@ export default function ServicesPage() {
           <h1 className="text-[40px] font-medium text-white text-center">
             Services
           </h1>
+
+          <h2 className="text-shadow-md text-white md:text-base text-sm text-center">
+            Expert Support for Seamless Packaging Operations
+          </h2>
+
+
         </div>
       </section>
 

@@ -16,7 +16,7 @@ export default function ShopNow() {
     >
       {/* Left Rectangle*/}
       <div className="bg-gray-100  justify-between row-span-2">
-        <div className="p-4 sm:p-7 pb-4 md:p-10 md:pt-20 md:pl-15">
+        <div className="p-4 sm:p-7 pb-4 md:p-10 md:pt-20  md:pl-15">
           <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-4 font-medium">
             Machinery
           </h2>
@@ -35,7 +35,7 @@ export default function ShopNow() {
       </div>
 
       {/* Top Right Rectangle */}
-      <div className="bg-gray-100 p-2 sm:p-4 md:p-10 flex flex-col sm:flex-row items-center md:pt-0 sm:pt-0 md:pr-0 sm:pr-0 gap-2 sm:gap-4 md:gap-6">
+      <div className="bg-gray-100 p-4 sm:p-7 pb-4 md:p-10 md:pt-0  md:pl-15 flex flex-col sm:flex-row items-center   md:pr-0 gap-2 sm:gap-4 md:gap-6">
         <div className="flex-1 relative ">
           <h3 className="text-lg sm:text-xl md:text-[2.125rem] mb-4 font-medium">
             Spare Parts

@@ -11,11 +11,13 @@ import image1 from "@/assets/spare_part_1.png";
 import Comprehensive from "@/assets/Comprehensive Solutions.png";
 import Support from "@/assets/24:7 Customer Support.png";
 import Trust from "@/assets/Confidentiality & Trust.png";
-
+import printer from "@/assets/printer slotter.png";
 
 
 import image2 from "@/assets/image1.jpeg";
 import Raw_material from "@/assets/Raw material.webp";
+import { ur } from "zod/v4/locales";
+
 
 
 export default function ConsultancyPage() {
@@ -99,7 +101,7 @@ function HeroSection() {
                 "hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               )}
             >
-              Book Now
+              Book Your Slot
             </Link>
           </div>
         </div>
@@ -352,14 +354,22 @@ function ConsultancyGrid() {
       <div className={cn("mt-10 grid grid-cols-1 gap-8 md:grid-cols-3")}>
         <ConsultancyCard
           title="Machinery"
-          price="$950"
-          img="/consult-mainpage3.png"
+          price=""
+          img={printer}
+          url="/marketplace/machinery"
         />
-        <ConsultancyCard title="Spare Parts" price="$950" img={image1} />
+        <ConsultancyCard title="Spare Parts"
+
+          price=""
+          img={image1}
+          url="/marketplace/spare-parts"
+
+        />
         <ConsultancyCard
           title="Raw Products"
-          price="$950"
+          price=""
           img={Raw_material}
+          url="/marketplace/raw-materials"
         />
       </div>
     </section>
@@ -370,10 +380,12 @@ function ConsultancyCard({
   title,
   price,
   img,
+  url
 }: {
   title: string;
   price: string;
   img: any;
+  url: string;
 }) {
   return (
     <div
@@ -411,16 +423,18 @@ function ConsultancyCard({
       </div>
       <div className={cn("flex flex-1 flex-col p-5")}>
         <div className={cn("flex items-center justify-between")}>
-          <div className={cn("text-base font-semibold")}>
+          <div className={cn("text-base flex items-center font-semibold")}>
             {price}
             <span
               className={cn("ml-1 align-top text-[10px] text-muted-foreground")}
             >
-              /day
+              {title === "Machinery" ? "" : ""}
             </span>
           </div>
         </div>
-        <button
+        <Link
+
+          href={url}
           className={cn(
             // Layout & box model
             "mt-5 inline-flex items-center justify-center rounded-sm px-4 py-2",
@@ -433,8 +447,8 @@ function ConsultancyCard({
           )}
           type="button"
         >
-          Book Now
-        </button>
+          Book Your Slot
+        </Link>
       </div>
     </div>
   );

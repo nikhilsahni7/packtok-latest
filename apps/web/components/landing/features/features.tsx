@@ -40,7 +40,7 @@ const GridSection = () => {
       id: 5,
       heading: "Mechanics",
       image: features5,
-      href: "/marketplace/machinery",
+      href: "/services/machinery-installer",
     },
     {
       id: 6,

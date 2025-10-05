@@ -26,6 +26,10 @@ export default function Page() {
             <h1 className="text-[40px]  font-medium ">
               Marketplace
             </h1>
+
+            <h2 className="text-shadow-md text-white md:text-base text-sm text-center">
+              Connecting Buyers with Quality Packaging Solutions
+            </h2>
           </div>
         </div>
       </div>
