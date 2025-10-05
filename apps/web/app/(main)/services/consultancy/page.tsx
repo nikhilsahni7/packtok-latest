@@ -16,7 +16,7 @@ import printer from "@/assets/printer slotter.png";
 
 import image2 from "@/assets/image1.jpeg";
 import Raw_material from "@/assets/Raw material.webp";
-import { ur } from "zod/v4/locales";
+
 
 
 
