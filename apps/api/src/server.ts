@@ -17,6 +17,7 @@ import categoryRouter from "./routers/category.routes";
 import productRouter from "./routers/product.routes";
 import quoteRouter from "./routers/quote.routes";
 import serviceRouter from "./routers/service.routes";
+import userTrackingRouter from "./routers/user-tracking.routes";
 import vendorProductsRouter from "./routers/vendor.products.routes";
 import vendorRouter from "./routers/vendor.routes";
 import { ApiError } from "./utils/apiError";
@@ -56,6 +57,7 @@ app.use("/api/v1/services", serviceRouter);
 app.use("/api/v1/admins/services", adminServiceRouter);
 app.use("/api/v1/vendors", vendorRouter);
 app.use("/api/v1/admins/vendors", adminVendorsRouter);
+app.use("/api/v1/user-tracking", userTrackingRouter);
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {

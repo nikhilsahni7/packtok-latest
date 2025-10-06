@@ -1,8 +1,15 @@
+import QuoteModal from "@/components/QuoteModal";
 import { useProduct } from "@/hooks/useProducts";
+import {
+  useAddBookmark,
+  useCheckBookmark,
+  useRemoveBookmark,
+  useTrackProductView,
+} from "@/hooks/useUserTracking";
 import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { VideoView, useVideoPlayer } from "expo-video";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -19,7 +26,6 @@ import {
   View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
-import QuoteModal from "@/components/QuoteModal";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -65,10 +71,37 @@ export default function MachineryDetailScreen() {
   const [imageViewerVisible, setImageViewerVisible] = useState(false);
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [quoteModalVisible, setQuoteModalVisible] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
+  const viewStartTime = useRef(Date.now());
 
   const { data: product, isLoading, error } = useProduct(id!);
+
+  // User tracking hooks
+  const { data: bookmarkStatus } = useCheckBookmark(id!);
+  const addBookmark = useAddBookmark();
+  const removeBookmark = useRemoveBookmark();
+  const trackView = useTrackProductView();
+
+  const isBookmarked = bookmarkStatus?.isBookmarked || false;
+
+  // Track product view on mount and duration on unmount
+  useEffect(() => {
+    if (id) {
+      // Track initial view
+      trackView.mutate({ productId: id });
+      viewStartTime.current = Date.now();
+
+      // Track duration on unmount
+      return () => {
+        const durationSeconds = Math.floor(
+          (Date.now() - viewStartTime.current) / 1000
+        );
+        if (durationSeconds > 0) {
+          trackView.mutate({ productId: id, durationSeconds });
+        }
+      };
+    }
+  }, [id]);
 
   // Initialize video player with the product video URL
   const videoPlayer = useVideoPlayer(product?.videoUrl || "", (player) => {
@@ -86,8 +119,10 @@ export default function MachineryDetailScreen() {
     }
   };
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
+  const handleBookmarkToggle = () => {
+    if (!id) return;
+
+    // Animate the button
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 1.3,
@@ -100,6 +135,27 @@ export default function MachineryDetailScreen() {
         useNativeDriver: true,
       }),
     ]).start();
+
+    // Toggle bookmark
+    if (isBookmarked) {
+      removeBookmark.mutate(id, {
+        onSuccess: () => {
+          Alert.alert("Removed", "Product removed from wishlist");
+        },
+        onError: () => {
+          Alert.alert("Error", "Failed to remove bookmark");
+        },
+      });
+    } else {
+      addBookmark.mutate(id, {
+        onSuccess: () => {
+          Alert.alert("Saved", "Product added to wishlist!");
+        },
+        onError: () => {
+          Alert.alert("Error", "Failed to add bookmark");
+        },
+      });
+    }
   };
 
   const handleGetQuote = () => {
@@ -445,14 +501,18 @@ export default function MachineryDetailScreen() {
         <View className="flex-row items-center">
           <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
             <TouchableOpacity
-              onPress={handleLike}
-              className={`w-14 h-14 items-center justify-center rounded-xl mr-3 ${isLiked ? "bg-red-50 border-2 border-red-500" : "bg-gray-100"}`}
+              onPress={handleBookmarkToggle}
+              className={`w-14 h-14 items-center justify-center rounded-xl mr-3 ${
+                isBookmarked
+                  ? "bg-red-50 border-2 border-red-500"
+                  : "bg-gray-100"
+              }`}
               activeOpacity={0.7}
             >
               <MaterialIcons
-                name={isLiked ? "favorite" : "favorite-border"}
+                name={isBookmarked ? "favorite" : "favorite-border"}
                 size={28}
-                color={isLiked ? "#EF4444" : "#6B7280"}
+                color={isBookmarked ? "#EF4444" : "#6B7280"}
               />
             </TouchableOpacity>
           </Animated.View>

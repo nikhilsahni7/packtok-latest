@@ -247,6 +247,11 @@ model User {
   reviewedProducts        MarketplaceProduct[] @relation("ProductsReviewedByUser")
   createdStockMovements   StockMovement[]      @relation("StockMovementsCreatedByUser")
 
+  // User tracking relations
+  bookmarks               ProductBookmark[]
+  searchHistory           SearchHistory[]
+  viewHistory             ProductView[]
+
   @@map("users")
 }
 
@@ -317,6 +322,10 @@ model MarketplaceProduct {
   // Inventory and stock movement back-relations
   inventory      ProductInventory?
   stockMovements StockMovement[]
+
+  // User tracking back-relations
+  bookmarks      ProductBookmark[]
+  views          ProductView[]
 
   @@map("marketplace_products")
   @@index([createdById])
@@ -620,4 +629,63 @@ model VendorApplication {
 
   @@map("vendor_applications")
   @@index([status, createdAt])
+}
+
+// ===== User Tracking Models =====
+
+// Product Bookmarks/Wishlist
+model ProductBookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+
+  @@unique([userId, productId])
+  @@map("product_bookmarks")
+  @@index([userId, createdAt])
+}
+
+// Search History
+model SearchHistory {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  searchTerm String
+  filters    Json?    // Store applied filters (category, price range, etc.)
+
+  // Metadata
+  resultsCount Int?   // Number of results returned
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@map("search_history")
+  @@index([userId, createdAt])
+  @@index([userId, searchTerm])
+}
+
+// Product View History
+model ProductView {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  viewedAt   DateTime @default(now())
+
+  // Engagement metrics
+  durationSeconds Int?  // How long user stayed on product page
+
+  // Relations
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+
+  @@map("product_views")
+  @@index([userId, viewedAt])
+  @@index([productId, viewedAt])
+  @@index([userId, productId])
 }

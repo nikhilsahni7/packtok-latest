@@ -22,7 +22,7 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-white">
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
 
       {/* Header with Orange Background and Bubble Effects */}
       <View className=" px-5 pt-12 pb-6 relative">
@@ -32,7 +32,7 @@ export default function HomeScreen() {
           source={require("@/assets/images/bubble 01.png")}
           className="absolute z-10"
           style={{
-            top: -width * 0.10,
+            top: -width * 0.1,
             left: -width * 0.25,
             width: width * 0.7,
             height: width * 0.9,
@@ -45,7 +45,7 @@ export default function HomeScreen() {
           source={require("@/assets/images/bubble 02.png")}
           className="absolute"
           style={{
-            top: -width * 0.10,
+            top: -width * 0.1,
             left: -width * 0.25,
             width: width * 1,
             height: width * 0.9,
@@ -57,7 +57,13 @@ export default function HomeScreen() {
         <View className="flex-row items-center justify-between mb-4">
           {/* Menu Icon */}
           <TouchableOpacity className="p-2 relative z-20">
-            <Feather name="menu" size={24} color="black" style={{ backgroundColor: "white" }} className="p-2 rounded-full" />
+            <Feather
+              name="menu"
+              size={24}
+              color="black"
+              style={{ backgroundColor: "white" }}
+              className="p-2 rounded-full"
+            />
           </TouchableOpacity>
 
           <Image
@@ -97,7 +103,10 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 relative z-10" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1 relative z-10"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Browse All Categories */}
         <View className="px-5 mt-4">
           <View className="flex-row items-center justify-between mb-4">
@@ -105,9 +114,7 @@ export default function HomeScreen() {
               Browse all categories
             </Text>
             <TouchableOpacity onPress={() => router.push("/categories")}>
-              <Text className="text-sm text-black font-medium">
-                View all
-              </Text>
+              <Text className="text-sm text-black font-medium">View all</Text>
             </TouchableOpacity>
           </View>
 
@@ -130,7 +137,9 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs font-medium text-gray-700 mt-2">Machinery</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">
+                Machinery
+              </Text>
             </TouchableOpacity>
 
             {/* Category Item 2 */}
@@ -146,7 +155,9 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs font-medium text-gray-700 mt-2">Packaging</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">
+                Packaging
+              </Text>
             </TouchableOpacity>
 
             {/* Category Item 3 */}
@@ -162,7 +173,9 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs font-medium text-gray-700 mt-2">Spare Parts</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">
+                Spare Parts
+              </Text>
             </TouchableOpacity>
 
             {/* Category Item 4 */}
@@ -178,7 +191,9 @@ export default function HomeScreen() {
                   resizeMode="cover"
                 />
               </View>
-              <Text className="text-xs font-medium text-gray-700 mt-2">Services</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">
+                Services
+              </Text>
             </TouchableOpacity>
 
             {/* Category Item 5 - View All */}
@@ -190,7 +205,9 @@ export default function HomeScreen() {
               <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 items-center justify-center">
                 <Feather name="grid" size={24} color="#FF8C42" />
               </View>
-              <Text className="text-xs font-medium text-gray-700 mt-2">View All</Text>
+              <Text className="text-xs font-medium text-gray-700 mt-2">
+                View All
+              </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -205,9 +222,7 @@ export default function HomeScreen() {
               onPress={() => router.push("/(tabs)/marketplace")}
               activeOpacity={0.7}
             >
-              <Text className="text-sm text-black font-medium">
-                View all
-              </Text>
+              <Text className="text-sm text-black font-medium">View all</Text>
             </TouchableOpacity>
           </View>
 
@@ -226,14 +241,13 @@ export default function HomeScreen() {
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                
               </View>
 
               <View className="p-3">
-                  <Text className="text-sm font-semibold text-gray-900">
-                    Machinery
-                  </Text>
-                </View>
+                <Text className="text-sm font-semibold text-gray-900">
+                  Machinery
+                </Text>
+              </View>
             </TouchableOpacity>
 
             {/* Spare Parts Card */}
@@ -249,15 +263,13 @@ export default function HomeScreen() {
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                
               </View>
 
               <View className="p-3">
-                  <Text className="text-sm font-semibold text-gray-900">
-                    Spare Parts
-                  </Text>
-                </View>
-              
+                <Text className="text-sm font-semibold text-gray-900">
+                  Spare Parts
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>

@@ -1,9 +1,10 @@
 import FilterModal, { FilterState } from "@/components/FilterModal";
 import { useProducts } from "@/hooks/useProducts";
+import { useTrackSearch } from "@/hooks/useUserTracking";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -38,6 +39,8 @@ export default function MachineryScreen() {
     conditions: [],
     machineTypes: [],
   });
+
+  const trackSearch = useTrackSearch();
 
   const handleConditionFilter = (condition: string) => {
     setSelectedCondition(selectedCondition === condition ? null : condition);
@@ -100,6 +103,22 @@ export default function MachineryScreen() {
   const products = data?.products || [];
   const isError = !!error;
 
+  // Track search when search term changes
+  useEffect(() => {
+    if (searchTerm && searchTerm.length > 2) {
+      const timer = setTimeout(() => {
+        trackSearch.mutate({
+          searchTerm,
+          filters: apiFilters,
+          resultsCount: data?.total,
+        });
+      }, 1000); // Debounce for 1 second
+
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, data?.total]);
+
   const renderStars = (rating: number = 5) => {
     return (
       <View className="flex-row">
@@ -127,7 +146,7 @@ export default function MachineryScreen() {
             className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full  justify-center"
             onPress={() => router.back()}
           >
-            <Feather name="menu" size={24} color="#000"/>
+            <Feather name="menu" size={24} color="#000" />
           </TouchableOpacity>
 
           {/* Logo */}
@@ -186,10 +205,11 @@ export default function MachineryScreen() {
             {categories.map((category, index) => (
               <TouchableOpacity
                 key={index}
-                className={`px-5 py-2 rounded-full mr-3 ${index === 0
-                  ? "bg-gray-900 border-2 border-gray-900"
-                  : "bg-white border-2 border-gray-200"
-                  }`}
+                className={`px-5 py-2 rounded-full mr-3 ${
+                  index === 0
+                    ? "bg-gray-900 border-2 border-gray-900"
+                    : "bg-white border-2 border-gray-200"
+                }`}
                 activeOpacity={0.7}
                 onPress={() => {
                   if (category.route) {
@@ -198,8 +218,9 @@ export default function MachineryScreen() {
                 }}
               >
                 <Text
-                  className={`text-sm font-medium ${index === 0 ? "text-white" : "text-gray-700"
-                    }`}
+                  className={`text-sm font-medium ${
+                    index === 0 ? "text-white" : "text-gray-700"
+                  }`}
                 >
                   {category.name}
                 </Text>
@@ -218,7 +239,6 @@ export default function MachineryScreen() {
           >
             {/* Filter Button */}
             <View className=" flex-row   items-center">
-
               <TouchableOpacity
                 className="flex-row items-center px-4 py-2 text-[16px] rounded-full mr-3 bg-white "
                 activeOpacity={0.7}
@@ -230,18 +250,19 @@ export default function MachineryScreen() {
 
               {/* New Button */}
               <View className="flex flex-row">
-
                 <TouchableOpacity
-                  className={` px-4 py-2 rounded-full mr-3 ${selectedCondition === "NEW"
-                    ? "bg-gray-900 border-2 border-gray-900"
-                    : "bg-white border border-gray-200"
-                    }`}
+                  className={` px-4 py-2 rounded-full mr-3 ${
+                    selectedCondition === "NEW"
+                      ? "bg-gray-900 border-2 border-gray-900"
+                      : "bg-white border border-gray-200"
+                  }`}
                   activeOpacity={0.7}
                   onPress={() => handleConditionFilter("NEW")}
                 >
                   <Text
-                    className={`text-sm ${selectedCondition === "NEW" ? "text-white" : "text-black"
-                      }`}
+                    className={`text-sm ${
+                      selectedCondition === "NEW" ? "text-white" : "text-black"
+                    }`}
                   >
                     New
                   </Text>
@@ -249,16 +270,18 @@ export default function MachineryScreen() {
 
                 {/* Used Button */}
                 <TouchableOpacity
-                  className={`px-4 py-2 rounded-full mr-3 ${selectedCondition === "USED"
-                    ? "bg-gray-900 border-2 border-gray-900"
-                    : "bg-white border border-gray-200"
-                    }`}
+                  className={`px-4 py-2 rounded-full mr-3 ${
+                    selectedCondition === "USED"
+                      ? "bg-gray-900 border-2 border-gray-900"
+                      : "bg-white border border-gray-200"
+                  }`}
                   activeOpacity={0.7}
                   onPress={() => handleConditionFilter("USED")}
                 >
                   <Text
-                    className={`text-sm ${selectedCondition === "USED" ? "text-white" : "text-black"
-                      }`}
+                    className={`text-sm ${
+                      selectedCondition === "USED" ? "text-white" : "text-black"
+                    }`}
                   >
                     Used
                   </Text>
@@ -323,8 +346,8 @@ export default function MachineryScreen() {
                       source={
                         product.imagesThumbnail || product.images?.[0]
                           ? {
-                            uri: product.imagesThumbnail || product.images[0],
-                          }
+                              uri: product.imagesThumbnail || product.images[0],
+                            }
                           : require("@/assets/images/splash-screen-bg.png")
                       }
                       style={{ width: "100%", height: "100%" }}
