@@ -190,7 +190,7 @@ export default function PacktokFooter() {
                   </li>
                   <li>
                     <Link
-                      href="/services/seld-old-items"
+                      href="/services/sell-old-items"
                       className="hover:text-white transition-colors"
                     >
                       Sell Old Items
