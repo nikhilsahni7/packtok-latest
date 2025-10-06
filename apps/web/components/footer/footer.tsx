@@ -189,9 +189,12 @@ export default function PacktokFooter() {
                     </Link>
                   </li>
                   <li>
-                    <span className="text-muted-foreground cursor-not-allowed">
+                    <Link
+                      href="/services/seld-old-items"
+                      className="hover:text-white transition-colors"
+                    >
                       Sell Old Items
-                    </span>
+                    </Link>
                   </li>
                   <li>
                     <Link
