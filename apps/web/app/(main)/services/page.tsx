@@ -202,15 +202,11 @@ export default function ServicesPage() {
                   Buy & Sell Machinery
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
-                  Asset Liquidation & Value Recovery
+                  Buyers and Sellers of Corrugated & Packaging Equipment
                 </p>
                 <div className="w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                    PackTok helps packaging companies recover value from
-                    underutilized machinery and surplus equipment. We conduct
-                    detailed audits and ensure compliance, turning idle
-                    inventory into capital while optimizing operational
-                    efficiency.
+                   PackTok helps packaging companies recover value from underutilized machinery and surplus equipment. We conduct detailed audits, ensure compliance, and help turn idle inventory into working capital while optimizing operational efficiency. In addition, companies can buy verified used equipment directly through our platform, ensuring reliability, transparency, and quality in every purchase.
                   </p>
                   <div className="text-end">
                     <Button
@@ -247,14 +243,14 @@ export default function ServicesPage() {
             <div className="col-span-3 h-[580px]">
               <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-black text-center">
-                  Investment and Takeover
+                  Acquisition and Takeover
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
-                  Investment & Acquisition Solutions
+                  Acquisition & Takeover Solutions
                 </p>
                 <div className="w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                    Strategic investment and acquisition services for packaging
+                    Strategic acquisition and takeover services for packaging
                     companies looking to expand or optimize their operations. We
                     provide comprehensive due diligence, valuation, and
                     transaction support for successful business transformations.
@@ -289,14 +285,11 @@ export default function ServicesPage() {
                   Machinery Installer
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
-                  Asset Liquidation & Value Recovery
+                  Expert in installing packaging machinery
                 </p>
                 <div className="w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                    Experienced in installing, aligning, and calibrating corrugated packaging equipment.
-                    Proficient with mechanical, electrical, and pneumatic systems.
-                    Able to read technical blueprints and ensure safety compliance.
-                    Provides training, troubleshooting, and post-installation support.
+                   At Packtok, we provide expert machinery installation services tailored to the corrugated and packaging industry. Our team of skilled engineers and technicians ensures every piece of equipment is installed, aligned, and commissioned with precision — helping you achieve smooth operations and long-term reliability.
                   </p>
                   <div className="text-end">
                     <Button

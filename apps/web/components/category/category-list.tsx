@@ -278,14 +278,11 @@ export default function CategoryList() {
                 Man Power
               </h2>
               <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
-                Investment & Acquisition Solutions
+                Skilled Workforce for the Corrugated & Packaging Industry
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  Strategic investment and acquisition services for packaging
-                  companies looking to expand or optimize their operations. We
-                  provide comprehensive due diligence, valuation, and
-                  transaction support for successful business transformations.
+                 At Packtok, we not only provide skilled manpower to the corrugated and packaging industry but also create career opportunities for professionals seeking growth in this field. Our platform connects qualified technicians, operators, engineers, and supervisors with companies looking for reliable and experienced talent.
                 </p>
                 <Button
                   asChild
