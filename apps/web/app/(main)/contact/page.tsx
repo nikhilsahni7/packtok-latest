@@ -37,9 +37,8 @@ export default function Page() {
             <ContactCard
               icon={<MapPin />}
               title="India Office"
-              content=" GALAXY INTERNATIONAL
-Complete Packaging Solution 43
-HSIIDC, Sector 59"
+              content=" Packtok Machinery Pvt Ltd 
+Plot No. 43, Sector 59 HSIIDC , FARIDABAD Ballabaghar,   Haryana. 121004"
             />
             <ContactCard
               icon={<Phone />}
