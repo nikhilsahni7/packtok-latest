@@ -20,7 +20,7 @@ export default function Page() {
         <SplitSection
           image={industrial}
           title="About Us"
-          description="We specialize in corrugated and packaging machinery, raw materials, and spare parts—providing high-quality, reliable solutions for manufacturers and businesses. Since 2019, we've been committed to delivering performance, precision, and dependable support to keep your operations running at their best."
+          description="We specialize in corrugated and packaging machinery, raw materials, and spare parts—providing high-quality, reliable solutions for manufacturers and businesses. Since 35 years, we've been committed to delivering performance, precision, and dependable support to keep your operations running at their best."
         />
 
         <div className="md:mt-8 mt-32">

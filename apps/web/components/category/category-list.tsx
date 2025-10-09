@@ -47,19 +47,7 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className=" text-gray-300 mb-10 leading-relaxed text-[12px] text-justify">
-                  Explore our extensive range of high-performance machinery
-                  designed to boost productivity and efficiency. From
-                  industrial-grade heavy equipment to precision tools, we offer
-                  reliable solutions for construction, manufacturing,
-                  agriculture, and more. Our selection includes top brands,
-                  ensuring durability, advanced technology, and exceptional
-                  performance. Whether you need excavators, CNC machines,
-                  tractors, or generators, we provide competitive pricing and
-                  trusted quality. Browse user-friendly listings with detailed
-                  specs, images, and customer reviews to make informed
-                  decisions. Enjoy seamless purchasing, flexible financing, and
-                  expert support. Upgrade your operations today with the best
-                  machinery.
+                  At PackTok, we bring together a wide range of corrugated and packaging machinery designed to meet the evolving needs of modern production lines. From high-speed corrugators and die-cutting machines to folder gluers, flexo printers, and laminators — we connect you with reliable and efficient equipment that enhances productivity and quality.
                 </p>
                 <Button
                   asChild
@@ -110,17 +98,7 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  Upgrade your machinery with our premium spare parts, designed
-                  for durability and peak performance. We stock a wide range of
-                  genuine components for construction, agriculture, industrial,
-                  and automotive equipment—ensuring seamless repairs and minimal
-                  downtime. From engine parts to hydraulic components, filters,
-                  and bearings, we source only high-quality replacements from
-                  trusted manufacturers. Enjoy easy browsing with detailed
-                  descriptions, compatibility guides, and competitive pricing.
-                  Whether for maintenance or urgent repairs, our spare parts
-                  keep your machines running longer and stronger. Shop now for
-                  reliable solutions and expert support
+                  At PackTok, we understand that consistent production depends on the availability of high-quality spare parts. {"That’s"} why we offer a comprehensive range of spare parts and machine components for corrugated and packaging equipment — ensuring smooth operations and reduced downtime.Whether you need replacements for worn-out components or critical parts for emergency repairs, PackTok ensures quick access and reliable delivery — keeping your production line running efficiently.
                 </p>
                 <div className="text-end">
                   <Button
