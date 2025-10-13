@@ -26,8 +26,8 @@ export default function ContactCard({
         <CardHeader>{icon}</CardHeader>
 
           <CardTitle className="text-lg font-medium">{title}</CardTitle>
-          <CardContent className="text-gray-500">{content}</CardContent>
-          <CardContent className="text-gray-500">{content2}</CardContent>
+          <CardContent className="text-gray-500 uppercase">{content}</CardContent>
+          <CardContent className="text-gray-500 uppercase">{content2}</CardContent>
 
         </div>
       </div>

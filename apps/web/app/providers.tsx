@@ -42,8 +42,26 @@ function AuthBootstrap() {
     };
   }, [accessToken, setAccessToken, setUser]);
 
+
+  useEffect(() => {
+    const allowContextMenu = (e:any) => e.stopPropagation();
+    document.addEventListener('contextmenu', allowContextMenu);
+  
+    const allowKeyboard = (e:any) => e.stopPropagation();
+    document.addEventListener('keydown', allowKeyboard);
+  
+    return () => {
+      document.removeEventListener('contextmenu', allowContextMenu);
+      document.removeEventListener('keydown', allowKeyboard);
+    };
+  }, []);
+
   return null;
+
+
 }
+
+
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(

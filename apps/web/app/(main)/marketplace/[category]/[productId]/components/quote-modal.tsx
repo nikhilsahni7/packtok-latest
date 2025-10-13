@@ -17,6 +17,8 @@ interface QuoteFormData {
   address: string;
   message: string;
   additionalInfo: string;
+  PhoneNo: string;
+  Email: string;
 }
 
 export default function QuoteModal({
@@ -30,6 +32,8 @@ export default function QuoteModal({
     address: "",
     message: "",
     additionalInfo: "",
+    PhoneNo: "",
+    Email: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -64,8 +68,11 @@ export default function QuoteModal({
             address: formData.address,
             message: formData.message,
             additionalInfo: formData.additionalInfo,
+            PhoneNo: formData.PhoneNo,
+            Email: formData.Email,
           }),
         }
+
       );
 
       if (!response.ok) {
@@ -81,6 +88,8 @@ export default function QuoteModal({
           address: "",
           message: "",
           additionalInfo: "",
+          PhoneNo: "",
+          Email: "",
         });
       }, 2000);
     } catch (err) {
@@ -147,6 +156,36 @@ export default function QuoteModal({
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Your company name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone No. *
+                </label>
+                <input
+                  type="text"
+                  name="PhoneNo"
+                  value={formData.PhoneNo}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Your Phone No"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
+                </label>
+                <input
+                  type="text"
+                  name="companyName"
+                  value={formData.Email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Your Email "
                 />
               </div>
 

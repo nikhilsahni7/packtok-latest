@@ -6,6 +6,7 @@ import { Poppins } from "next/font/google";
 import React from "react";
 import "../styles/globals.css";
 import Providers from "./providers";
+import ClientEventProvider from "@/components/ClientEventProvider";
 
 const MobileInterstitial = dynamic(
   () => import("@/components/mobile-interstitial"),
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
   title: "Packtok",
   description: "Complete Packaging Solution",
 };
+
 
 export default function RootLayout({
   children,
@@ -39,6 +41,7 @@ export default function RootLayout({
           {/* Desktop/Laptop view: show full site */}
           <div className="hidden lg:block">
             <Navbar />
+            <ClientEventProvider />
             {children}
             <Footer />
           </div>

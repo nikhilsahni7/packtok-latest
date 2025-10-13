@@ -47,17 +47,15 @@ export function TurnkeyProjectForm() {
   });
 
   const industryOptions = [
-    { value: "MANUFACTURING", label: "Manufacturing" },
-    { value: "AUTOMOTIVE", label: "Automotive" },
-    { value: "FOOD_PROCESSING", label: "Food Processing" },
-    { value: "PHARMACEUTICALS", label: "Pharmaceuticals" },
-    { value: "AGRICULTURE", label: "Agriculture" },
-    { value: "CHEMICALS", label: "Chemicals" },
-    { value: "PETROCHEMICALS", label: "Petrochemicals" },
-    { value: "TEXTILE", label: "Textile" },
-    { value: "PLASTICS_PACKAGING", label: "Plastics & Packaging" },
-    { value: "ELECTRONICS", label: "Electronics" },
-    { value: "OTHER", label: "Other" },
+    { value: "Single-Faced Corrugated", label: "Single-Faced Corrugated" },
+    { value: "Single-Wall Corrugated", label: "Single-Wall Corrugated" },
+    { value: "Double-Wall Corrugated", label: "Double-Wall Corrugated" },
+    { value: "Triple-Wall Corrugated", label: "Triple-Wall Corrugated" },
+    { value: "Folding Cartons", label: "Folding Cartons" },
+    { value: "Rigid Boxes", label: "Rigid Boxes" },
+    { value: "Flexible Packaging", label: "Flexible Packaging" },
+    { value: "Corrugated Boxes", label: "Corrugated Boxes" },
+    
   ];
 
   const serviceOptions = [

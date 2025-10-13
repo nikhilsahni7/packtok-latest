@@ -60,20 +60,33 @@ Plot No. 43, Sector 59 HSIIDC , FARIDABAD Ballabaghar,   Haryana. 121004"
           <ContactForm />
 
           {/* Map Placeholder */}
-          <div>
-            <div className="bg-muted rounded-lg h-[400px] flex items-center justify-center">
-              <div className="relative w-full h-full rounded-lg overflow-hidden shadow-lg">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5159512822265!2d106.7023218751902!3d10.7717390893768!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f414519d1f9%3A0xc0bd40da46e38fe0!2zxJAuIEjhuqNpIFRyaeG7gXUsIELhur9uIE5naMOpLCBRdeG6rW4gMSwgSOG7kyBDaMOtIE1pbmgsIFZpZXRuYW0!5e0!3m2!1sen!2sin!4v1751013922992!5m2!1sen!2sin"
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-muted rounded-lg h-[400px] flex gap-4 flex-col items-center justify-center">
+              <div className="relative w-full h-full  rounded-lg overflow-hidden shadow-lg">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d449261.7365287328!2d77.01623168527114!3d28.393377218791766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sPacktok%20Machinery%20Pvt%20Ltd%20Plot%20No.%2043%2C%20Sector%2059%20HSIIDC%20%2C%20FARIDABAD%20Ballabaghar%2C%20Haryana.%20121004!5e0!3m2!1sen!2sin!4v1760340750757!5m2!1sen!2sin" width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="absolute inset-0"></iframe>
+              </div>
+              <p className="pb-4 font-semibold text-[1.2rem]">India</p>
+            </div>
+
+            <div className="bg-muted rounded-lg h-[400px] flex gap-4 flex-col items-center justify-center">
+              <div className="relative w-full h-full   rounded-lg overflow-hidden shadow-lg">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d14415.779737858235!2d55.44319166185102!3d25.40665377010251!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sFREE%20ZONE%20AJMAN%2C%20UNITED%20ARAB%20EMIRATES%20ADDRESS%20-%20PER%20NO.%20169423%20P.%20O.%20BOX%20%3A%20932!5e0!3m2!1sen!2sin!4v1760340912744!5m2!1sen!2sin"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen={false}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="absolute inset-0"
-                ></iframe>
+                  className="absolute inset-0">
+                </iframe>
               </div>
+              <p className="pb-4 font-semibold text-[1.2rem]">Dubai</p>
             </div>
           </div>
         </div>
