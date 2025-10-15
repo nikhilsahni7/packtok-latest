@@ -47,7 +47,8 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className=" text-gray-300 mb-10 leading-relaxed text-[12px] text-justify">
-                  At PackTok, we bring together a wide range of corrugated and packaging machinery designed to meet the evolving needs of modern production lines. From high-speed corrugators and die-cutting machines to folder gluers, flexo printers, and laminators — we connect you with reliable and efficient equipment that enhances productivity and quality.
+                  At PackTok, we deliver Premium machinery, built to last. Engineered for peak performance, Driven by precision and power. Efficiency meets reliability,
+Your production, our priority.
                 </p>
                 <Button
                   asChild
@@ -145,7 +146,7 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  Our platform is a trusted destination for sourcing
+                  At PackTok is a trusted destination for sourcing
                   high-quality raw materials used in corrugated and packaging
                   machinery. We offer a complete range including kraft paper,
                   adhesives, inks, starch, and other essential consumables that
@@ -200,16 +201,9 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  Keep your operations running smoothly with our high-quality
+                 At PackTok keep your operations running smoothly with our high-quality
                   consumables, designed for efficiency and durability. From
-                  industrial lubricants and welding supplies to safety gear and
-                  cutting tools, we stock everything you need to minimize
-                  downtime and maximize productivity. Our competitively priced
-                  products come from trusted brands, ensuring consistent
-                  performance for workshops, factories, and job sites. Whether
-                  you need routine replacements or bulk orders, we deliver fast
-                  and hassle-free. Reduce waste and optimize costs with our
-                  carefully curated selection
+                  industrial lubricants and bopp taps Heavy-duty Woven Cord Strapping rolls bubble  wrap, make ready, Shrink Wrap Stretch Film, Honeycomb Paper Wrap & Sleeves, Food Grade High Transparency Polyolefin Plastic, stitching wire rolls
                 </p>
                 <div className="text-end">
                   <Button

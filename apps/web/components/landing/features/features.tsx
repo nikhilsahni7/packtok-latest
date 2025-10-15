@@ -111,7 +111,7 @@ const GridSection = () => {
         />
 
         <div className="flex flex-col justify-center gap-4 px-16 py-8 bg-[#F3F5F7]">
-          <h1 className="text-[40px] font-medium">Bidding</h1>
+          <h1 className="text-[40px] font-medium">Bidding for Packagers</h1>
           <p className="text-lg text-justify ">
             Welcome to our Bidding Section – your gateway to exclusive deals and
             competitive offers. Participate in live auctions, place your bids

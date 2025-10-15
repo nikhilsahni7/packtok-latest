@@ -18,7 +18,7 @@ export default function ShopNow() {
       <div className="bg-gray-100  justify-between row-span-2">
         <div className="p-4 sm:p-7 pb-4 md:p-10 md:pt-20  md:pl-15">
           <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl mb-4 font-medium">
-            Machinery
+            Maintenance Crew
           </h2>
           <Link
             href={"/marketplace/machinery"}
