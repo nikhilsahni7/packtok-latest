@@ -48,7 +48,7 @@ export default function CategoryList() {
               <div className="w-[521px] mx-auto">
                 <p className=" text-gray-300 mb-10 leading-relaxed text-[12px] text-justify">
                   At PackTok, we deliver Premium machinery, built to last. Engineered for peak performance, Driven by precision and power. Efficiency meets reliability,
-Your production, our priority.
+Your production, our priority. Performance without precision is just noise. At PackTok, we fine-tune every component to ensure seamless, powerful, and accurate output — because even the smallest detail matters when you&apos;re operating at scale.
                 </p>
                 <Button
                   asChild
@@ -254,7 +254,12 @@ Your production, our priority.
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                 At Packtok, we not only provide skilled manpower to the corrugated and packaging industry but also create career opportunities for professionals seeking growth in this field. Our platform connects qualified technicians, operators, engineers, and supervisors with companies looking for reliable and experienced talent.
+                At PackTok, we not only provide skilled manpower to the corrugated and packaging industry,
+but also create meaningful career opportunities for professionals seeking growth in this field.
+Our platform bridges the gap between talent and industry needs, ensuring the right fit every time.
+We connect qualified technicians, machine operators, engineers, and supervisors
+with companies that value experience, reliability, and dedication.
+Empowering both businesses and individuals — that&apos;s the PackTok promise.
                 </p>
                 <Button
                   asChild

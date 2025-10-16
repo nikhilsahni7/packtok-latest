@@ -131,30 +131,53 @@ function StatsSection() {
 }
 
 function PopularVacanciesSection() {
-  const cols = new Array(8).fill(0).map((_, i) => ({
-    id: i,
-    title: "Machine Operators",
-    sub: [
-      "45,304 Open Positions",
-      "50,248 Open Positions",
-      "43,239 Open Positions",
-      "4,339 Open Positions",
-    ][i % 4],
-  }));
+
+  const colsData = [
+    {
+      id: 1,
+      title: "Machine Operators",
+    },
+    {
+      id: 2,
+      title: "Technician",    
+    },
+    {
+      id: 3,
+      title: "Maintenance Worker",    
+    },
+    {
+      id: 4,
+      title: "Management",    
+    },
+    {
+      id: 5,
+      title: "Supervisor",    
+    },
+    {
+      id: 6,
+      title: "Quality Control",    
+    },
+    {
+      id: 7,
+      title: "Production Worker",    
+    }
+  ]
+
+
 
   return (
     <section className="py-30">
       <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto">
         <h3 className="text-[2rem] pb-5 font-medium">Most Popular Vacancies</h3>
         <div className="mt-6 grid gap-x-8 gap-y-8 sm:grid-cols-2 md:grid-cols-4">
-          {cols.map((c) => (
+          {colsData.map((c) => (
             <div key={c.id}>
               <div className="text-[13.5px] font-medium text-[#18191C]">
                 {c.title}
               </div>
-              <div className="mt-1 text-[10.5px] text-[#18191C]">
+              {/* <div className="mt-1 text-[10.5px] text-[#18191C]">
                 <p>{c.sub}</p>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
