@@ -246,14 +246,19 @@ function HowItWorksSection() {
 
 function PopularCategorySection() {
   const cats = [
-    { title: "Production & Assembly", count: 357 },
-    { title: "Welding & Metalwork", count: 312 },
-    { title: "Packaging", count: 287 },
-    { title: "Warehouse & Logistics", count: 204 },
-    { title: "Machine Operation", count: 187 },
-    { title: "Shipping", count: 178 },
-    { title: "Quality Control", count: 197 },
-    { title: "Safety & Maintenance", count: 165 },
+    { title: "Machines operators", count: 357 },
+    { title: "machine maintenance", count: 312 },
+    { title: "Production manager ", count: 287 },
+    { title: "Plant Head", count: 204 },
+    { title: "Operational Management", count: 187 },
+    { title: "Office staff", count: 178 },
+    { title: "Accounting", count: 197 },
+    { title: "CEO", count: 165 },
+    { title: "CFO", count: 165 },
+    { title: "AGM & DGM", count: 165 },
+    { title: "GM", count: 165 },
+
+
   ];
 
   return (
@@ -268,7 +273,7 @@ function PopularCategorySection() {
             return (
               <div
                 key={c.title}
-                className={`flex items-center gap-3  p-4  ${selected ? "" : ""}`}
+                className={`flex items-center gap-3 capitalize p-4  ${selected ? "" : ""}`}
               >
                 <div
                   className={`h-[51px] w-[51px] rounded-md ${selected ? "bg-blue-50 ring-1 ring-blue-100" : "bg-blue-50 ring-1 ring-blue-100"}`}
