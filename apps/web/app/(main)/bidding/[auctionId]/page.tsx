@@ -519,7 +519,7 @@ export default function AuctionDetailPage() {
                     </p>
                     <p>
                       Winners will be notified automatically via email upon the
-                      bid's conclusion.
+                      bid&apos;s conclusion.
                     </p>
                   </div>
                   <Button
