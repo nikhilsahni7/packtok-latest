@@ -1,147 +1,200 @@
 "use client";
 
+import { Auction } from "@/types/auction";
 import { cn } from "@packtok/ui/lib/utils";
+import { useEffect, useMemo, useState } from "react";
 
-export function AuctionCountdown() {
+interface TimeParts {
+  totalMs: number;
+  hours: string;
+  minutes: string;
+  seconds: string;
+}
+
+const formatNumber = (value: number) => value.toString().padStart(2, "0");
+
+const computeTimeParts = (target: string | null | undefined): TimeParts => {
+  if (!target) {
+    return { totalMs: 0, hours: "00", minutes: "00", seconds: "00" };
+  }
+  const targetDate = new Date(target);
+  if (Number.isNaN(targetDate.getTime())) {
+    return { totalMs: 0, hours: "00", minutes: "00", seconds: "00" };
+  }
+  const diff = Math.max(targetDate.getTime() - Date.now(), 0);
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  return {
+    totalMs: diff,
+    hours: formatNumber(hours),
+    minutes: formatNumber(minutes),
+    seconds: formatNumber(seconds),
+  };
+};
+
+const formatDateTime = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+  return date.toLocaleString();
+};
+
+interface AuctionCountdownProps {
+  nextAuction: Auction | null;
+}
+
+export function AuctionCountdown({ nextAuction }: AuctionCountdownProps) {
+  const targetKey = useMemo(() => {
+    if (!nextAuction) {
+      return null;
+    }
+    return nextAuction.status === "LIVE"
+      ? nextAuction.endAt
+      : nextAuction.startAt;
+  }, [nextAuction]);
+
+  const [timeLeft, setTimeLeft] = useState<TimeParts>(() =>
+    computeTimeParts(targetKey)
+  );
+
+  useEffect(() => {
+    setTimeLeft(computeTimeParts(targetKey));
+
+    if (!targetKey) {
+      return undefined;
+    }
+
+    const interval = setInterval(() => {
+      setTimeLeft(computeTimeParts(targetKey));
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [targetKey]);
+
+  const headline = useMemo(() => {
+    if (!nextAuction) {
+      return "No auctions scheduled";
+    }
+    if (nextAuction.status === "LIVE") {
+      return `${nextAuction.product?.title ?? "Live auction"} is live`;
+    }
+    return `${nextAuction.product?.title ?? "Next auction"} begins soon`;
+  }, [nextAuction]);
+
+  const description = useMemo(() => {
+    if (!nextAuction) {
+      return "We are preparing the next round of auctions. Check back later or subscribe for updates.";
+    }
+    if (nextAuction.status === "LIVE") {
+      return `Bidding closes on ${formatDateTime(nextAuction.endAt)}.`;
+    }
+    return `Bidding opens on ${formatDateTime(nextAuction.startAt)}.`;
+  }, [nextAuction]);
 
   return (
     <section
-      className={cn(
-        // Layout & box model
-        "w-full py-16 lg:py-20 bg-gray-50",
-
-        // Typography
-        "text-center relative"
-      )}
+      className={cn("w-full py-16 lg:py-20 bg-gray-50", "text-center relative")}
     >
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-left pb-5">
           <strong className="text-[2rem]">Auction Notice:</strong>
-          <p>Complete project available for auction, including all machinery, raw materials, tools, and related assets.
-            Perfect opportunity for investors or businesses looking for a ready-to-run setup.
-            Assets are in good condition and suitable for immediate use or resale.
-            Detailed inventory and inspection available upon request.
-            {"Don't "} miss this chance to acquire a full operational unit at competitive rates.</p>
+          <p className="mt-2 text-gray-600 text-base lg:text-lg">
+            Stay ahead of upcoming sales and never miss an opportunity to bid on
+            premium industrial assets. Enroll early to secure your slot and
+            receive instant notifications when bidding opens.
+          </p>
         </div>
-        {/* Main content container */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between 
-        ">
-          {/* Left side - Announcement */}
-          <div className="lg:flex-1 mb-12 lg:mb-0 text-left lg:text-left">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+          <div className="lg:flex-1 mb-12 lg:mb-0 text-left">
             <h2
               className={cn(
-                // Typography
                 "text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-4",
-
-                // Colors
                 "text-gray-900"
               )}
             >
-              AUCTION IS COMING SOON
+              {headline}
             </h2>
 
             <p
               className={cn(
-                // Typography
                 "text-lg lg:text-xl text-gray-600 font-medium",
-
-                // Layout
-                "max-w-lg"
+                "max-w-xl"
               )}
             >
-              Our public sale event will be held on August 17, 2025.
+              {description}
             </p>
           </div>
 
-          {/* Right side - Countdown Timer */}
-          {/* <div className="lg:flex-1 lg:text-right">
-
-            <div
-              className={cn(
-
-                "flex items-end justify-center lg:justify-end gap-4 lg:gap-6 xl:gap-8"
-              )}
-            >
-
-              <div className="flex flex-col items-center">
-                <span
-                  className={cn(
-                    "tabular-nums",
-
-                    "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
-
-                    "text-gray-300"
-                  )}
-                >
-                  {formatNumber(timeLeft.hours)}
-                </span>
-                <span
-                  className={cn(
-
-                    "mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider",
-
-                    "text-gray-500"
-                  )}
-                >
-                  Hours
-                </span>
-              </div>
-
-
-              <span
+          <div className="lg:flex-1 lg:text-right">
+            {targetKey ? (
+              <div
                 className={cn(
-                  "hidden sm:block mx-1",
-                  "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
-                  "text-gray-200"
+                  "flex items-end justify-center lg:justify-end gap-4 lg:gap-6 xl:gap-8"
                 )}
               >
-                /
-              </span>
+                <div className="flex flex-col items-center">
+                  <span
+                    className={cn(
+                      "tabular-nums",
+                      "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
+                      "text-gray-900"
+                    )}
+                  >
+                    {timeLeft.hours}
+                  </span>
+                  <span className="mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider text-gray-500">
+                    Hours
+                  </span>
+                </div>
 
+                <span className="hidden sm:block mx-1 text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none text-gray-200">
+                  /
+                </span>
 
-              <div className="flex flex-col items-center">
-                <span
-                  className={cn(
-                    "tabular-nums",
-                    "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
-                    "text-gray-300"
-                  )}
-                >
-                  {formatNumber(timeLeft.minutes)}
+                <div className="flex flex-col items-center">
+                  <span
+                    className={cn(
+                      "tabular-nums",
+                      "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
+                      "text-gray-900"
+                    )}
+                  >
+                    {timeLeft.minutes}
+                  </span>
+                  <span className="mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider text-gray-500">
+                    Minutes
+                  </span>
+                </div>
+
+                <span className="hidden sm:block mx-1 text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none text-gray-200">
+                  /
                 </span>
-                <span className="mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider text-gray-500">
-                  Minutes
-                </span>
+
+                <div className="flex flex-col items-center">
+                  <span
+                    className={cn(
+                      "tabular-nums",
+                      "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
+                      "text-gray-900"
+                    )}
+                  >
+                    {timeLeft.seconds}
+                  </span>
+                  <span className="mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider text-gray-500">
+                    Seconds
+                  </span>
+                </div>
               </div>
-
-
-              <span
-                className={cn(
-                  "hidden sm:block mx-1",
-                  "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
-                  "text-gray-200"
-                )}
-              >
-                /
-              </span>
-
-
-              <div className="flex flex-col items-center">
-                <span
-                  className={cn(
-                    "tabular-nums",
-                    "text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-none",
-                    "text-gray-300"
-                  )}
-                >
-                  {formatNumber(timeLeft.seconds)}
-                </span>
-                <span className="mt-2 text-sm lg:text-base font-semibold uppercase tracking-wider text-gray-500">
-                  Seconds
-                </span>
+            ) : (
+              <div className="text-sm text-gray-500">
+                Countdown will appear once the next auction is scheduled.
               </div>
-            </div>
-          </div> */}
+            )}
+          </div>
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
-import { Button } from "@packtok/ui";
+import { Button } from "@packtok/ui/components/button";
 import { cn } from "@packtok/ui/lib/utils";
 import Image from "next/image";
+import { ReactNode } from "react";
 
 interface MachineCardProps {
   machineName?: string;
@@ -8,14 +9,24 @@ interface MachineCardProps {
   imageUrl?: string;
   onJoinAuction?: () => void;
   className?: string;
+  statusLabel?: string;
+  meta?: ReactNode;
+  ctaLabel?: string;
+  disabled?: boolean;
+  priceLabel?: string;
 }
 
 export function MachineCard({
   machineName = "Machine Name",
-  startingPrice = "$200.000",
+  startingPrice = "$200,000",
   imageUrl,
   onJoinAuction,
   className,
+  statusLabel,
+  meta,
+  ctaLabel = "View auction",
+  disabled = false,
+  priceLabel = "Starting price",
 }: MachineCardProps) {
   return (
     <div
@@ -33,15 +44,12 @@ export function MachineCard({
       )}
     >
       {/* Machine Image */}
-      <div
-        className={cn(
-          // Layout & box model
-          "relative w-full h-64 lg:h-72",
-
-          // Colors
-          "bg-gray-100"
-        )}
-      >
+      <div className={cn("relative w-full h-64 lg:h-72", "bg-gray-100")}>
+        {statusLabel ? (
+          <div className="absolute top-4 left-4 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+            {statusLabel}
+          </div>
+        ) : null}
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -114,7 +122,7 @@ export function MachineCard({
               "text-sm text-gray-600 font-semibold uppercase tracking-wide"
             )}
           >
-            Starting Price
+            {priceLabel}
           </p>
           <p
             className={cn(
@@ -124,11 +132,13 @@ export function MachineCard({
           >
             {startingPrice}
           </p>
+          {meta ? <div className="text-sm text-gray-600">{meta}</div> : null}
         </div>
 
-        {/* Join Auction Button */}
+        {/* Call to action */}
         <Button
           onClick={onJoinAuction}
+          disabled={disabled}
           className={cn(
             // Layout & box model
             "w-full h-12 lg:h-14",
@@ -146,7 +156,7 @@ export function MachineCard({
             "transition-all duration-200 rounded-lg shadow-md hover:shadow-lg"
           )}
         >
-          Join Auction
+          {ctaLabel}
         </Button>
       </div>
     </div>

@@ -42,9 +42,16 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   async (config) => {
-    const token = await TokenStorage.getAccessToken();
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = await TokenStorage.getAccessToken();
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log("🔑 Token added to request:", config.url);
+      } else {
+        console.log("⚠️ No token found for request:", config.url);
+      }
+    } catch (error) {
+      console.error("❌ Error getting token:", error);
     }
     return config;
   },

@@ -8,4 +8,7 @@ export const QK = {
   analytics: ["analytics"] as const,
   currentUser: ["currentUser"] as const,
   services: ["services"] as const,
+  auctions: ["auctions"] as const,
+  auction: ["auction"] as const,
+  auctionEnrollments: ["auctionEnrollments"] as const,
 } as const;

@@ -113,6 +113,13 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="services/turnkey-projects-form"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="services/maintenance"
             options={{
               headerShown: false,
@@ -163,6 +170,20 @@ function RootLayoutNav() {
           />
           <Stack.Screen
             name="packaging"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="podcasts"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="podcasts/[id]"
             options={{
               headerShown: false,
               gestureEnabled: true,

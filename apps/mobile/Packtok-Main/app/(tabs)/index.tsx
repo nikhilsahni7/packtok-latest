@@ -274,6 +274,178 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Podcasts Section */}
+        <View className="px-5 mt-4">
+          <View className="flex-row items-center justify-between mb-3">
+            <Text className="text-[18px] font-semibold text-gray-900">
+              Podcasts
+            </Text>
+            <TouchableOpacity
+              onPress={() => router.push("/podcasts" as any)}
+              activeOpacity={0.7}
+            >
+              <Text className="text-sm text-black font-medium">View all</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Podcasts Horizontal Scroll */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="mb-4"
+          >
+            {/* Podcast Card 1 */}
+            <TouchableOpacity
+              className="mr-4 w-72"
+              onPress={() => router.push("/podcasts/1" as any)}
+              activeOpacity={0.7}
+            >
+              <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
+                <View className="relative">
+                  <Image
+                    source={{
+                      uri: "https://img.youtube.com/vi/VXvblzAs6vM/maxresdefault.jpg",
+                    }}
+                    style={{ width: "100%", height: 160 }}
+                    resizeMode="cover"
+                  />
+                  {/* Play Icon */}
+                  <View className="absolute inset-0 items-center justify-center">
+                    <View className="w-12 h-12 rounded-full bg-white/90 items-center justify-center shadow-lg">
+                      <Feather name="play" size={20} color="#000" />
+                    </View>
+                  </View>
+                  {/* Duration Badge */}
+                  <View className="absolute bottom-2 right-2 bg-black/80 rounded-lg px-2 py-1">
+                    <Text className="text-white text-xs font-semibold">
+                      45:32
+                    </Text>
+                  </View>
+                </View>
+                <View className="p-3">
+                  <Text
+                    className="text-sm font-bold text-gray-900 mb-1"
+                    numberOfLines={2}
+                  >
+                    The Future of Packaging Technology
+                  </Text>
+                  <View className="flex-row items-center">
+                    <Feather name="heart" size={12} color="#EF4444" />
+                    <Text className="text-xs text-gray-600 ml-1">245</Text>
+                    <Feather
+                      name="message-circle"
+                      size={12}
+                      color="#3B82F6"
+                      className="ml-3"
+                    />
+                    <Text className="text-xs text-gray-600 ml-1">32</Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            {/* Podcast Card 2 */}
+            <TouchableOpacity
+              className="mr-4 w-72"
+              onPress={() => router.push("/podcasts/2" as any)}
+              activeOpacity={0.7}
+            >
+              <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
+                <View className="relative">
+                  <Image
+                    source={{
+                      uri: "https://img.youtube.com/vi/c8VcUnz3nVc/maxresdefault.jpg",
+                    }}
+                    style={{ width: "100%", height: 160 }}
+                    resizeMode="cover"
+                  />
+                  {/* Play Icon */}
+                  <View className="absolute inset-0 items-center justify-center">
+                    <View className="w-12 h-12 rounded-full bg-white/90 items-center justify-center shadow-lg">
+                      <Feather name="play" size={20} color="#000" />
+                    </View>
+                  </View>
+                  {/* Duration Badge */}
+                  <View className="absolute bottom-2 right-2 bg-black/80 rounded-lg px-2 py-1">
+                    <Text className="text-white text-xs font-semibold">
+                      38:20
+                    </Text>
+                  </View>
+                </View>
+                <View className="p-3">
+                  <Text
+                    className="text-sm font-bold text-gray-900 mb-1"
+                    numberOfLines={2}
+                  >
+                    Industry Insights: Manufacturing Excellence
+                  </Text>
+                  <View className="flex-row items-center">
+                    <Feather name="heart" size={12} color="#EF4444" />
+                    <Text className="text-xs text-gray-600 ml-1">189</Text>
+                    <Feather
+                      name="message-circle"
+                      size={12}
+                      color="#3B82F6"
+                      className="ml-3"
+                    />
+                    <Text className="text-xs text-gray-600 ml-1">24</Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            {/* Podcast Card 3 */}
+            <TouchableOpacity
+              className="mr-4 w-72"
+              onPress={() => router.push("/podcasts/3" as any)}
+              activeOpacity={0.7}
+            >
+              <View className="bg-white rounded-2xl overflow-hidden border border-gray-200">
+                <View className="relative">
+                  <Image
+                    source={{
+                      uri: "https://img.youtube.com/vi/yVTNge3sXpg/maxresdefault.jpg",
+                    }}
+                    style={{ width: "100%", height: 160 }}
+                    resizeMode="cover"
+                  />
+                  {/* Play Icon */}
+                  <View className="absolute inset-0 items-center justify-center">
+                    <View className="w-12 h-12 rounded-full bg-white/90 items-center justify-center shadow-lg">
+                      <Feather name="play" size={20} color="#000" />
+                    </View>
+                  </View>
+                  {/* Duration Badge */}
+                  <View className="absolute bottom-2 right-2 bg-black/80 rounded-lg px-2 py-1">
+                    <Text className="text-white text-xs font-semibold">
+                      42:15
+                    </Text>
+                  </View>
+                </View>
+                <View className="p-3">
+                  <Text
+                    className="text-sm font-bold text-gray-900 mb-1"
+                    numberOfLines={2}
+                  >
+                    Machinery Maintenance Best Practices
+                  </Text>
+                  <View className="flex-row items-center">
+                    <Feather name="heart" size={12} color="#EF4444" />
+                    <Text className="text-xs text-gray-600 ml-1">312</Text>
+                    <Feather
+                      name="message-circle"
+                      size={12}
+                      color="#3B82F6"
+                      className="ml-3"
+                    />
+                    <Text className="text-xs text-gray-600 ml-1">45</Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+
         {/* Bidding on Packtok Section */}
         <View className="px-5 mt-2">
           <View className="flex-row items-center justify-between mb-3">

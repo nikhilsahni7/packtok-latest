@@ -1,13 +1,5 @@
 "use client";
 
-import { Button } from "@packtok/ui/components/button";
-import { Badge } from "@packtok/ui/components/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@packtok/ui/components/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,13 +11,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
+import { Badge } from "@packtok/ui/components/badge";
+import { Button } from "@packtok/ui/components/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@packtok/ui/components/dropdown-menu";
+import { Activity, Edit, Gavel, MoreHorizontal, Trash2 } from "lucide-react";
+import Image from "next/image";
 import {
   MarketplaceProduct,
   MarketplaceProductStatus,
 } from "../../../../types/product";
-import { Edit, Trash2, MoreHorizontal, Activity } from "lucide-react";
 import { cxBadge, cxTypeBadge } from "../../../../utils/badges";
-import Image from "next/image";
 
 interface ProductGridProps {
   products: MarketplaceProduct[];
@@ -33,6 +33,7 @@ interface ProductGridProps {
   onDelete: (productId: string) => void;
   onStatusChange: (productId: string, status: MarketplaceProductStatus) => void;
   isDeleting: boolean;
+  onCreateAuction: (product: MarketplaceProduct) => void;
 }
 
 export function ProductGrid({
@@ -41,6 +42,7 @@ export function ProductGrid({
   onDelete,
   onStatusChange,
   isDeleting,
+  onCreateAuction,
 }: ProductGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -95,6 +97,10 @@ export function ProductGrid({
                   >
                     <Activity className="w-4 h-4 mr-2" />
                     Mark Out of Stock
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onCreateAuction(product)}>
+                    <Gavel className="w-4 h-4 mr-2" />
+                    Add to Auction
                   </DropdownMenuItem>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -170,6 +176,14 @@ export function ProductGrid({
 
             {/* Actions */}
             <div className="flex items-center space-x-2">
+              <Button
+                size="sm"
+                className="flex-1"
+                onClick={() => onCreateAuction(product)}
+              >
+                <Gavel className="h-3 w-3 mr-1" />
+                Auction
+              </Button>
               <Button
                 variant="outline"
                 size="sm"

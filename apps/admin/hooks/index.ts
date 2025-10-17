@@ -4,12 +4,12 @@ export { useLogin } from "./useLogin";
 
 // Marketplace hooks
 export {
-  useProducts,
-  useGetProduct,
   useCreateProduct,
+  useDeleteProduct,
+  useGetProduct,
+  useProducts,
   useUpdateProduct,
   useUpdateProductStatus,
-  useDeleteProduct,
 } from "./useProducts";
 
 export {
@@ -19,22 +19,31 @@ export {
 } from "./useCategories";
 
 export {
-  useSubmissions,
   useApproveSubmission,
   useRejectSubmission,
+  useSubmissions,
 } from "./useSubmissions";
 
-export { useQuotes, useUpdateQuoteStatus, useQuote } from "./useQuotes";
+export { useQuote, useQuotes, useUpdateQuoteStatus } from "./useQuotes";
 
 // Services hooks
 export {
-  useServices,
-  useService,
-  useServiceStats,
-  useUpdateServiceStatus,
   useAssignService,
   useDeleteService,
+  useService,
+  useServiceStats,
+  useServices,
+  useUpdateServiceStatus,
 } from "./useServices";
+
+export {
+  useAdminAuction,
+  useAdminAuctions,
+  useAuctionSnapshot,
+  useCreateAuction,
+  useFinalizeAuction,
+  useUpdateAuction,
+} from "./useAuctions";
 
 // Re-export types
 export type { Submission } from "./useSubmissions";

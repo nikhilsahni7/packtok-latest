@@ -7,11 +7,15 @@ import express, {
   Response,
 } from "express";
 import helmet from "helmet";
+import http from "http";
 import pinoHttp from "pino-http";
 import config from "./config";
+import { initSocketServer } from "./realtime/socket";
+import adminAuctionsRouter from "./routers/admin.auctions.routes";
 import adminRouter from "./routers/admin.routes";
 import adminServiceRouter from "./routers/admin.services.routes";
 import adminVendorsRouter from "./routers/admin.vendors.routes";
+import auctionRouter from "./routers/auction.routes";
 import authRouter from "./routers/auth.routes";
 import categoryRouter from "./routers/category.routes";
 import productRouter from "./routers/product.routes";
@@ -20,6 +24,7 @@ import serviceRouter from "./routers/service.routes";
 import userTrackingRouter from "./routers/user-tracking.routes";
 import vendorProductsRouter from "./routers/vendor.products.routes";
 import vendorRouter from "./routers/vendor.routes";
+import { auctionStatusUpdater } from "./services/auction-status-updater.service";
 import { ApiError } from "./utils/apiError";
 import logger from "./utils/logger";
 
@@ -53,8 +58,10 @@ app.use("/api/v1/products", productRouter);
 app.use("/api/v1/vendors/products", vendorProductsRouter);
 app.use("/api/v1/quotes", quoteRouter);
 app.use("/api/v1/categories", categoryRouter);
+app.use("/api/v1/auctions", auctionRouter);
 app.use("/api/v1/services", serviceRouter);
 app.use("/api/v1/admins/services", adminServiceRouter);
+app.use("/api/v1/admins/auctions", adminAuctionsRouter);
 app.use("/api/v1/vendors", vendorRouter);
 app.use("/api/v1/admins/vendors", adminVendorsRouter);
 app.use("/api/v1/user-tracking", userTrackingRouter);
@@ -78,11 +85,41 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 
 app.use(errorHandler);
 
+export const createHttpServer = () => {
+  const server = http.createServer(app);
+  initSocketServer(server);
+  return server;
+};
+
 // Start the HTTP server only when this file is executed directly (e.g. pnpm dev)
 if (require.main === module) {
   const port = Number(config.port);
-  app.listen(port, () => {
+  const server = createHttpServer();
+  server.listen(port, () => {
     logger.info(`API server listening on port ${port}`);
+
+    // Start the auction status updater
+    auctionStatusUpdater.start();
+    logger.info("Auction status updater started");
+  });
+
+  // Graceful shutdown
+  process.on("SIGTERM", () => {
+    logger.info("SIGTERM signal received: closing HTTP server");
+    auctionStatusUpdater.stop();
+    server.close(() => {
+      logger.info("HTTP server closed");
+      process.exit(0);
+    });
+  });
+
+  process.on("SIGINT", () => {
+    logger.info("SIGINT signal received: closing HTTP server");
+    auctionStatusUpdater.stop();
+    server.close(() => {
+      logger.info("HTTP server closed");
+      process.exit(0);
+    });
   });
 }
 

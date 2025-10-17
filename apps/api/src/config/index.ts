@@ -24,6 +24,10 @@ const config = {
   },
   corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
   nodeEnv: process.env.NODE_ENV || "development",
+  razorpay: {
+    keyId: process.env.RAZORPAY_KEY_ID || "",
+    keySecret: process.env.RAZORPAY_KEY_SECRET || "",
+  },
   // Domain to scope the refresh cookie to (e.g., .nikhilsahni.xyz)
   cookieDomain: process.env.COOKIE_DOMAIN,
 };

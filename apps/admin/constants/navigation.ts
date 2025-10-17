@@ -4,6 +4,7 @@ import {
   Calendar,
   ClipboardList,
   FileText,
+  Gavel,
   LayoutDashboard,
   LucideIcon,
   MessageSquare,
@@ -40,6 +41,12 @@ export const navigation: NavigationItem[] = [
     name: "Products",
     href: "/dashboard/products",
     icon: Package,
+    current: false,
+  },
+  {
+    name: "Auctions",
+    href: "/dashboard/auctions",
+    icon: Gavel,
     current: false,
   },
   {

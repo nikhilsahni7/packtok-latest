@@ -29,6 +29,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.58.1",
     "react-hot-toast": "^2.5.2",
+    "socket.io-client": "^4.7.5",
     "react-image-gallery": "^1.4.0",
     "react-phone-input-2": "^2.15.1",
     "react-select": "^5.10.1",

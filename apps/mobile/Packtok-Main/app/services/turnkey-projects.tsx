@@ -5,11 +5,11 @@ import React from "react";
 import {
   Dimensions,
   Image,
+  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  Linking,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -107,21 +107,16 @@ export default function TurnkeyProjectsScreen() {
             {/* Rating */}
             <View className="flex-column items-center ">
               <View className="flex-row  items-center border border-[#0063F7] px-3 py-1.5 rounded-[10px]">
-
                 <Feather name="star" size={14} color="#2563EB" />
                 <Text className="text-blue-600 text-xs ml-1 font-medium">
                   4.8
                 </Text>
-
               </View>
 
               <View className="mt-1">
                 <Text className="text-blue-600 text-xs ml-1">45 ratings</Text>
-
               </View>
             </View>
-
-
           </View>
 
           {/* Description */}
@@ -138,6 +133,9 @@ export default function TurnkeyProjectsScreen() {
 
           {/* Fill the Form Button */}
           <TouchableOpacity
+            onPress={() =>
+              router.push("/services/turnkey-projects-form" as any)
+            }
             className="bg-black rounded-full py-4 items-center shadow-lg mb-4"
             activeOpacity={0.8}
           >

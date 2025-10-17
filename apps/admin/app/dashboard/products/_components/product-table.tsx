@@ -1,7 +1,13 @@
 "use client";
 
-import { Button } from "@packtok/ui/components/button";
 import { Badge } from "@packtok/ui/components/badge";
+import { Button } from "@packtok/ui/components/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@packtok/ui/components/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -11,25 +17,20 @@ import {
   TableRow,
 } from "@packtok/ui/components/table";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@packtok/ui/components/dropdown-menu";
+  Activity,
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
+  Edit,
+  Gavel,
+  MoreHorizontal,
+  Package,
+  Trash2,
+} from "lucide-react";
 import {
   MarketplaceProduct,
   MarketplaceProductStatus,
 } from "../../../../types/product";
-import {
-  Package,
-  Edit,
-  Trash2,
-  MoreHorizontal,
-  Activity,
-  ArrowUpDown,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
 import { cxBadge, cxTypeBadge } from "../../../../utils/badges";
 
 type SortField = "title" | "price" | "quantity" | "productType" | "status";
@@ -40,6 +41,7 @@ interface ProductTableProps {
   onEdit: (product: MarketplaceProduct) => void;
   onDelete: (productId: string) => void;
   onStatusChange: (productId: string, status: MarketplaceProductStatus) => void;
+  onCreateAuction: (product: MarketplaceProduct) => void;
   sortField: SortField;
   sortDirection: SortDirection;
   onSort: (field: SortField) => void;
@@ -50,6 +52,7 @@ export function ProductTable({
   onEdit,
   onDelete,
   onStatusChange,
+  onCreateAuction,
   sortField,
   sortDirection,
   onSort,
@@ -161,44 +164,58 @@ export function ProductTable({
                 </Badge>
               </TableCell>
               <TableCell className="py-4 px-6">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="z-50">
-                    <DropdownMenuItem onClick={() => onEdit(product)}>
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => onStatusChange(product.id, "AVAILABLE")}
-                    >
-                      <Activity className="w-4 h-4 mr-2" />
-                      Mark Available
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => onStatusChange(product.id, "SOLD")}
-                    >
-                      <Activity className="w-4 h-4 mr-2" />
-                      Mark Sold
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => onStatusChange(product.id, "OUT_OF_STOCK")}
-                    >
-                      <Activity className="w-4 h-4 mr-2" />
-                      Mark Out of Stock
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => onDelete(product.id)}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" onClick={() => onCreateAuction(product)}>
+                    <Gavel className="h-4 w-4 mr-1" />
+                    Auction
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="z-50">
+                      <DropdownMenuItem onClick={() => onEdit(product)}>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onStatusChange(product.id, "AVAILABLE")}
+                      >
+                        <Activity className="w-4 h-4 mr-2" />
+                        Mark Available
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onStatusChange(product.id, "SOLD")}
+                      >
+                        <Activity className="w-4 h-4 mr-2" />
+                        Mark Sold
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          onStatusChange(product.id, "OUT_OF_STOCK")
+                        }
+                      >
+                        <Activity className="w-4 h-4 mr-2" />
+                        Mark Out of Stock
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onCreateAuction(product)}
+                      >
+                        <Gavel className="w-4 h-4 mr-2" />
+                        Add to Auction
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onDelete(product.id)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </TableCell>
             </TableRow>
           ))}

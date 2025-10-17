@@ -130,7 +130,7 @@ export default function MarketplaceScreen() {
             <TouchableOpacity
               key={category.id}
               className=" rounded-xl "
-             
+
               activeOpacity={0.8}
               onPress={() => {
                 if (category.route) {

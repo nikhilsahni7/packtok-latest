@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
 import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
 import { Loading } from "@packtok/ui/components/loading";
@@ -11,20 +10,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@packtok/ui/components/select";
+import { Filter, Grid3X3, List, Package, Plus, Search } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 import { productTabs } from "../../../../constants/navigation";
+import {
+  useDeleteProduct,
+  useProducts,
+  useUpdateProductStatus,
+} from "../../../../hooks";
 import {
   MarketplaceProduct,
   MarketplaceProductStatus,
 } from "../../../../types/product";
-import { Plus, Search, Filter, Grid3X3, List, Package } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
-import {
-  useProducts,
-  useUpdateProductStatus,
-  useDeleteProduct,
-} from "../../../../hooks";
+import { CreateAuctionDialog } from "./create-auction-dialog";
 import { ProductGrid } from "./product-grid";
 import { ProductTable } from "./product-table";
 
@@ -43,6 +44,9 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortField, setSortField] = useState<SortField>("title");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [isAuctionDialogOpen, setAuctionDialogOpen] = useState(false);
+  const [auctionProduct, setAuctionProduct] =
+    useState<MarketplaceProduct | null>(null);
 
   const router = useRouter();
   const { data: products = initialProducts, isLoading, error } = useProducts();
@@ -77,9 +81,14 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
     }
   };
 
+  const handleCreateAuction = (product: MarketplaceProduct) => {
+    setAuctionProduct(product);
+    setAuctionDialogOpen(true);
+  };
+
   const handleStatusChange = async (
     productId: string,
-    newStatus: MarketplaceProductStatus,
+    newStatus: MarketplaceProductStatus
   ) => {
     try {
       await updateStatusMutation.mutateAsync({ productId, status: newStatus });
@@ -217,6 +226,7 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
           onDelete={handleDelete}
           onStatusChange={handleStatusChange}
           isDeleting={deleteProductMutation.isPending}
+          onCreateAuction={handleCreateAuction}
         />
       ) : (
         <ProductTable
@@ -224,6 +234,7 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
           onEdit={handleEdit}
           onDelete={handleDelete}
           onStatusChange={handleStatusChange}
+          onCreateAuction={handleCreateAuction}
           sortField={sortField}
           sortDirection={sortDirection}
           onSort={handleSort}
@@ -242,6 +253,17 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
           </p>
         </div>
       )}
+
+      <CreateAuctionDialog
+        product={auctionProduct}
+        open={isAuctionDialogOpen}
+        onOpenChange={(open) => {
+          setAuctionDialogOpen(open);
+          if (!open) {
+            setAuctionProduct(null);
+          }
+        }}
+      />
     </div>
   );
 }

@@ -17,3 +17,7 @@ export * from "./useVendorProducts";
 
 // Service hooks
 export * from "./useServiceSubmission";
+
+// Auction hooks
+export * from "./useAuctionRealtime";
+export * from "./useAuctions";
