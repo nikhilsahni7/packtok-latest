@@ -6,7 +6,7 @@ export function BiddingHero() {
     <section
       className={cn(
         // Layout & box model
-        "relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden",
+        "relative w-full min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh] flex items-center justify-center overflow-hidden",
 
         // Typography
         "text-white",
@@ -19,8 +19,8 @@ export function BiddingHero() {
       )}
     >
       {/* Background decorative 3D blob */}
-      <div className="absolute top-1/2 right-8 lg:right-16 -translate-y-1/2">
-        <div className="relative w-80 h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem]">
+      <div className="absolute top-1/2 right-4 md:right-8 lg:right-12 -translate-y-1/2">
+        <div className="relative w-64 h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96">
           <Image
             src="/bidding-header.png"
             alt="3D Abstract Blob Shape"
@@ -47,7 +47,7 @@ export function BiddingHero() {
           <div
             className={cn(
               // Layout & box model
-              "w-24 h-24 rounded-full border-2 border-white/20 flex items-center justify-center relative",
+              "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-2 border-white/20 flex items-center justify-center relative",
 
               // Typography
               "text-xs font-light tracking-wider",
@@ -95,8 +95,8 @@ export function BiddingHero() {
           <div className="space-y-2">
             <h1
               className={cn(
-                // Typography - Made larger and bolder to match Figma
-                "text-6xl md:text-5xl lg:text-7xl xl:text-8xl uppercase font-black leading-[0.85] tracking-tight",
+                // Typography - Made more responsive
+                "text-4xl sm:text-5xl md:text-6xl lg:text-7xl uppercase font-black leading-[0.85] tracking-tight",
 
                 // Colors
                 "text-white drop-shadow-lg"
@@ -106,8 +106,8 @@ export function BiddingHero() {
             </h1>
             <h1
               className={cn(
-                // Typography
-                "text-6xl md:text-7xl lg:text-7xl xl:text-8xl font-black uppercase leading-[0.85] tracking-tight",
+                // Typography - Made more responsive
+                "text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-[0.85] tracking-tight",
 
                 // Colors
                 "text-white drop-shadow-lg"
@@ -116,7 +116,12 @@ export function BiddingHero() {
               Packtok
             </h1>
 
-            <p className="pt-5">Auction of complete project including machinery, raw materials, finish goods and other assets. Ideal opportunity for turnkey takeover or asset liquidation</p>
+            <p className="pt-4 text-sm sm:text-base md:text-lg max-w-xl text-white/90">
+              Auction of complete project including machinery, raw materials,
+              finish goods and other assets. Ideal opportunity for businesses
+              looking to expand or enter new markets with established
+              operations.
+            </p>
           </div>
         </div>
       </div>

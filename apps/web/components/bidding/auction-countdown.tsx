@@ -97,12 +97,17 @@ export function AuctionCountdown({ nextAuction }: AuctionCountdownProps) {
 
   return (
     <section
-      className={cn("w-full py-16 lg:py-20 bg-gray-50", "text-center relative")}
+      className={cn(
+        "w-full py-10 md:py-12 lg:py-16 bg-gray-50",
+        "text-center relative"
+      )}
     >
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-left pb-5">
-          <strong className="text-[2rem]">Auction Notice:</strong>
-          <p className="mt-2 text-gray-600 text-base lg:text-lg">
+        <div className="text-left pb-4 md:pb-6">
+          <strong className="text-xl md:text-2xl lg:text-3xl font-bold">
+            Auction Notice:
+          </strong>
+          <p className="mt-2 text-gray-600 text-sm md:text-base lg:text-lg">
             Stay ahead of upcoming sales and never miss an opportunity to bid on
             premium industrial assets. Enroll early to secure your slot and
             receive instant notifications when bidding opens.
