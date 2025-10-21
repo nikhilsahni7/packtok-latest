@@ -240,7 +240,7 @@ export default function ProductGrid({
                     alt={product.title}
                     width={400}
                     height={300}
-                    className="h-48 lg:h-56 w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="h-48 lg:h-56 w-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-md"
                   />
                 </div>
                 <div className="p-4">

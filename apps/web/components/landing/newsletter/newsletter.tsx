@@ -24,7 +24,7 @@ export default function Newsletter() {
             />
             <Button
               type="submit"
-              className="ml-2 sm:ml-4 px-3 sm:px-4 md:px-6 py-2 bg-gray-900 text-white text-xs sm:text-sm font-medium  uppercase hover:bg-gray-800 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 rounded-none"
+              className="ml-2 sm:ml-4 px-3 sm:px-4 md:px-6 py-2 bg-gray-900 text-white text-xs cusror  sm:text-sm font-medium rounded-md uppercase hover:bg-gray-800 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 "
             >
               Signup
             </Button>

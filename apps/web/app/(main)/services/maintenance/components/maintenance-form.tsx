@@ -122,7 +122,7 @@ export function MaintenanceForm() {
                   <Label htmlFor="companyName" className="text-[15.5px] pb-3">Company Name</Label>
                   <Input
                     id="companyName"
-                    placeholder="Alpha Packaging"
+                    placeholder="Packtok Machinery Pvt Ltd"
                     {...register("companyName")}
                     className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.companyName && "border-red-500")}
                   />

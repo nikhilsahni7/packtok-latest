@@ -106,13 +106,13 @@ export default function CategorySidebar({
       <div className="mb-6">
         <h4 className="font-medium mb-3 text-sm lg:text-base">SEARCH</h4>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute  left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             type="text"
             placeholder="Search products..."
             value={searchInput}
             onChange={handleSearchChange}
-            className="pl-10 pr-10 text-sm"
+            className="pl-10 pr-10 text-sm rounded-md"
           />
           {searchInput && (
             <Button

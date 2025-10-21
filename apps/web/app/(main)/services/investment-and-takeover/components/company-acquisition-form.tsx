@@ -137,7 +137,7 @@ export function CompanyAcquisitionForm() {
                     <Label htmlFor="companyName">Company Name</Label>
                     <Input
                       id="companyName"
-                      placeholder="Alpha Industries"
+                      placeholder="Packtok Machinery Pvt Ltd"
                       {...register("companyName")}
                       className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.companyName && "border-red-500")}
                     />

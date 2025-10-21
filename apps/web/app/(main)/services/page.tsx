@@ -78,7 +78,7 @@ export default function ServicesPage() {
                   </p>
                   <Button
                     asChild
-                    className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                    className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                   >
                     <Link href="/services/turnkey-projects">Request</Link>
                   </Button>
@@ -127,7 +127,7 @@ export default function ServicesPage() {
                   <div className="text-end">
                     <Button
                       asChild
-                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                     >
                       <Link href="/services/maintenance">Request</Link>
                     </Button>
@@ -176,7 +176,7 @@ export default function ServicesPage() {
                   </p>
                   <Button
                     asChild
-                    className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                    className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                   >
                     <Link href="/services/consultancy">Request</Link>
                   </Button>
@@ -211,7 +211,7 @@ export default function ServicesPage() {
                   <div className="text-end">
                     <Button
                       asChild
-                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                     >
                       <Link href="/services/sell-old-items">Request</Link>
                     </Button>
@@ -257,7 +257,7 @@ export default function ServicesPage() {
                   </p>
                   <Button
                     asChild
-                    className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                    className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                   >
                     <Link href="/services/investment-and-takeover">
                       Request
@@ -294,7 +294,7 @@ export default function ServicesPage() {
                   <div className="text-end">
                     <Button
                       asChild
-                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                      className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                     >
                       <Link href="/services/machinery-installer">Request</Link>
                     </Button>

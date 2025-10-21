@@ -52,7 +52,7 @@ Your production, our priority. Performance without precision is just noise. At P
                 </p>
                 <Button
                   asChild
-                  className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                  className="bg-white text-black hover:bg-gray-100 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                 >
                   <Link href="/marketplace/machinery">Shop Now</Link>
                 </Button>
@@ -104,7 +104,7 @@ Your production, our priority. Performance without precision is just noise. At P
                 <div className="text-end">
                   <Button
                     asChild
-                    className="bg-black text-white text-end hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                    className="bg-black text-white text-end hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                   >
                     <Link href="/marketplace/spare-parts">Shop Now</Link>
                   </Button>
@@ -161,7 +161,7 @@ Your production, our priority. Performance without precision is just noise. At P
                 </p>
                 <Button
                   asChild
-                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                 >
                   <Link href="/marketplace/raw-materials">Shop Now</Link>
                 </Button>
@@ -208,7 +208,7 @@ Your production, our priority. Performance without precision is just noise. At P
                 <div className="text-end">
                   <Button
                     asChild
-                    className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                    className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                   >
                     <Link href="/marketplace/consumables">Shop Now</Link>
                   </Button>
@@ -263,7 +263,7 @@ Empowering both businesses and individuals — that&apos;s the PackTok promise.
                 </p>
                 <Button
                   asChild
-                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-none font-bold w-fit text-lg shadow-lg"
+                  className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                 >
                   <Link href="/marketplace/manpower">Shop Now</Link>
                 </Button>
