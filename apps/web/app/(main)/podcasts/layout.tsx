@@ -1,19 +1,11 @@
-import { PageHeader } from "@/components";
 import React from "react";
 
 export default function PodcastsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <section className="bg-white">
-      <div className="w-full">
-        <PageHeader
-          title="Podcasts"
-          subtitle="Industry insights, packaging trends, and expert conversations."
-          image="/podcast.jpg"
-        />
-      </div>
-      <div className="w-[85%] mx-auto py-4">{children}</div>
+    <section className="bg-gradient-to-b from-gray-50 via-white to-gray-50 min-h-screen">
+      {children}
     </section>
   );
 }

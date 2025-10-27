@@ -14,13 +14,25 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ui-avatars.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   // Enable experimental features if needed
   experimental: {
     // serverComponentsExternalPackages: ['@supabase/supabase-js'],
   },
-  output: 'standalone',
+  output: "standalone",
 };
 
 module.exports = nextConfig;

@@ -1,14 +1,14 @@
 import {
+  Articles,
   Features,
   Hero,
   NewArrivals,
   Newsletter,
   ShopNow,
-  Articles
 } from "@/components";
+import PodcastsSection from "@/components/landing/podcasts/podcasts-section";
 
 import "/styles/globals.css";
-
 
 export default function Home() {
   return (
@@ -17,6 +17,7 @@ export default function Home() {
       <ShopNow />
       <NewArrivals />
       <Features />
+      <PodcastsSection />
       <Articles />
       <Newsletter />
     </main>

@@ -10,6 +10,7 @@ import Footer from "./footer/footer";
 import Articles from "./landing/articles/articles";
 import NewArrivals from "./landing/new-arrivals/new-arrivals";
 import Newsletter from "./landing/newsletter/newsletter";
+import PodcastsSection from "./landing/podcasts/podcasts-section";
 import ShopNow from "./landing/shop-now/shop-now";
 import PageHeader from "./page/page-header";
 import ServiceCard from "./services/service-card";
@@ -30,6 +31,7 @@ export {
   NewArrivals,
   Newsletter,
   PageHeader,
+  PodcastsSection,
   ServiceCard,
   ShopNow,
   SplitSection,
