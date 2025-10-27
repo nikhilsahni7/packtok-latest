@@ -17,6 +17,7 @@ export const listProducts = asyncHandler(
   async (req: Request, res: Response) => {
     const {
       categoryId,
+      subCategory,
       condition,
       machineType,
       productType,
@@ -39,6 +40,7 @@ export const listProducts = asyncHandler(
 
     const result = await getPublicProducts({
       categoryId: parseArrayParam(categoryId),
+      subCategory: parseArrayParam(subCategory),
       condition: parseArrayParam(condition),
       machineType: parseArrayParam(machineType),
       productType: parseArrayParam(productType),

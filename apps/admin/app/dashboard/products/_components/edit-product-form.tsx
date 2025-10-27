@@ -1,24 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
-import { Label } from "@packtok/ui/components/label";
-import { Textarea } from "@packtok/ui/components/textarea";
-import { Loading } from "@packtok/ui/components/loading";
 import {
-  CustomCombobox,
   ComboboxOption,
+  CustomCombobox,
 } from "@packtok/ui/components/custom-combobox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@packtok/ui/components/select";
 import {
   Form,
   FormControl,
@@ -27,21 +14,35 @@ import {
   FormLabel,
   FormMessage,
 } from "@packtok/ui/components/form";
+import { Input } from "@packtok/ui/components/input";
+import { Label } from "@packtok/ui/components/label";
+import { Loading } from "@packtok/ui/components/loading";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@packtok/ui/components/select";
+import { Textarea } from "@packtok/ui/components/textarea";
+import {
+  FileText,
+  FileVideo,
+  Minus,
+  Plus,
+  Save,
   Upload,
   X,
-  Save,
-  FileVideo,
-  FileText,
-  Plus,
-  Minus,
 } from "lucide-react";
-import { toast } from "react-hot-toast";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import {
   useCategories,
-  useUpdateProduct,
   useCreateCategory,
+  useUpdateProduct,
 } from "../../../../hooks";
 import {
   updateProductSchema,
@@ -49,7 +50,6 @@ import {
 } from "../../../../schemas/product-schema";
 import { MarketplaceProduct } from "../../../../types/product";
 import MediaPreviewModal from "./media-preview-modal";
-import Image from "next/image";
 
 interface EditProductFormProps {
   product: MarketplaceProduct;
@@ -58,15 +58,15 @@ interface EditProductFormProps {
 export default function EditProductForm({ product }: EditProductFormProps) {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>(
-    product.images || [],
+    product.images || []
   );
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [existingThumbnail, setExistingThumbnail] = useState<string | null>(
-    product.imagesThumbnail || null,
+    product.imagesThumbnail || null
   );
   const [video, setVideo] = useState<File | null>(null);
   const [existingVideo, setExistingVideo] = useState<string | null>(
-    product.videoUrl || null,
+    product.videoUrl || null
   );
   const [videoThumbnail, setVideoThumbnail] = useState<File | null>(null);
   const [existingVideoThumbnail, setExistingVideoThumbnail] = useState<
@@ -74,7 +74,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   >(product.videoThumbnail || null);
   const [pdf, setPdf] = useState<File | null>(null);
   const [existingPdf, setExistingPdf] = useState<string | null>(
-    product.pdfUrl || null,
+    product.pdfUrl || null
   );
   const [specifications, setSpecifications] = useState<
     { key: string; value: string }[]
@@ -109,7 +109,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   const openMediaModal = (
     fileOrUrl: File | string,
     type: "image" | "video",
-    name: string,
+    name: string
   ) => {
     const url =
       typeof fileOrUrl === "string" ? fileOrUrl : createPreviewUrl(fileOrUrl);
@@ -165,6 +165,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       model: product.model || "",
       year: product.year,
       category: product.category?.name || "",
+      subCategory: product.subCategory || "",
       specifications: "",
       additionalInfo: product.additionalInfo || "",
     },
@@ -181,7 +182,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       });
 
       const validSpecs = specifications.filter(
-        (spec) => spec.key.trim() && spec.value.trim(),
+        (spec) => spec.key.trim() && spec.value.trim()
       );
       if (validSpecs.length > 0) {
         const specsObj = validSpecs.reduce(
@@ -189,7 +190,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
             acc[spec.key] = spec.value;
             return acc;
           },
-          {} as Record<string, string>,
+          {} as Record<string, string>
         );
         formData.append("specifications", JSON.stringify(specsObj));
       }
@@ -239,7 +240,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   };
 
   const handleThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -257,7 +258,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   };
 
   const handleVideoThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -295,7 +296,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   const updateSpecification = (
     index: number,
     field: "key" | "value",
-    value: string,
+    value: string
   ) => {
     const updated = [...specifications];
     updated[index][field] = value;
@@ -303,11 +304,18 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   };
 
   const watchedProductType = form.watch("productType");
+  const watchedCategory = form.watch("category");
 
   const categoryOptions: ComboboxOption[] = categories.map((category) => ({
     value: category.name,
     label: category.name,
   }));
+
+  // Get subcategories for the selected category
+  const selectedCategoryData = categories.find(
+    (cat) => cat.name === watchedCategory
+  );
+  const availableSubcategories = selectedCategoryData?.subcategories || [];
 
   const handleCreateCategory = async (category: string) => {
     try {
@@ -396,7 +404,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                             openMediaModal(
                               thumbnail || existingThumbnail!,
                               "image",
-                              thumbnail ? thumbnail.name : "Current thumbnail",
+                              thumbnail ? thumbnail.name : "Current thumbnail"
                             )
                           }
                         />
@@ -431,7 +439,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                           openMediaModal(
                             thumbnail || existingThumbnail!,
                             "image",
-                            thumbnail ? thumbnail.name : "Current thumbnail",
+                            thumbnail ? thumbnail.name : "Current thumbnail"
                           )
                         }
                         className="text-xs w-fit"
@@ -478,7 +486,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                         openMediaModal(
                           imageUrl,
                           "image",
-                          `Gallery image ${index + 1}`,
+                          `Gallery image ${index + 1}`
                         )
                       }
                     />
@@ -555,7 +563,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                             openMediaModal(
                               video || existingVideo!,
                               "video",
-                              video ? video.name : "Current video",
+                              video ? video.name : "Current video"
                             )
                           }
                         />
@@ -621,7 +629,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               "image",
                               videoThumbnail
                                 ? videoThumbnail.name
-                                : "Current video thumbnail",
+                                : "Current video thumbnail"
                             )
                           }
                         />
@@ -913,6 +921,40 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       </FormItem>
                     )}
                   />
+
+                  {/* Subcategory field - show only if category is selected and has subcategories */}
+                  {watchedCategory && availableSubcategories.length > 0 && (
+                    <FormField
+                      control={form.control}
+                      name="subCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subcategory (Optional)</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select subcategory..." />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {availableSubcategories.map((subcategory) => (
+                                <SelectItem
+                                  key={subcategory}
+                                  value={subcategory}
+                                >
+                                  {subcategory}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -991,7 +1033,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               {...field}
                               onChange={(e) =>
                                 field.onChange(
-                                  parseInt(e.target.value) || undefined,
+                                  parseInt(e.target.value) || undefined
                                 )
                               }
                             />
@@ -1024,7 +1066,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               updateSpecification(
                                 index,
                                 "value",
-                                e.target.value,
+                                e.target.value
                               )
                             }
                             className="flex-1"

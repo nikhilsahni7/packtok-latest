@@ -1,24 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
-import { Label } from "@packtok/ui/components/label";
-import { Textarea } from "@packtok/ui/components/textarea";
-import { Loading } from "@packtok/ui/components/loading";
 import {
-  CustomCombobox,
   ComboboxOption,
+  CustomCombobox,
 } from "@packtok/ui/components/custom-combobox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@packtok/ui/components/select";
 import {
   Form,
   FormControl,
@@ -27,28 +14,41 @@ import {
   FormLabel,
   FormMessage,
 } from "@packtok/ui/components/form";
+import { Input } from "@packtok/ui/components/input";
+import { Label } from "@packtok/ui/components/label";
+import { Loading } from "@packtok/ui/components/loading";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@packtok/ui/components/select";
+import { Textarea } from "@packtok/ui/components/textarea";
+import {
+  FileText,
+  FileVideo,
+  Minus,
+  Plus,
+  Save,
   Upload,
   X,
-  Save,
-  FileVideo,
-  FileText,
-  Plus,
-  Minus,
 } from "lucide-react";
-import { toast } from "react-hot-toast";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import {
   useCategories,
-  useCreateProduct,
   useCreateCategory,
+  useCreateProduct,
 } from "../../../../hooks";
 import {
   productSchema,
   type ProductFormData,
 } from "../../../../schemas/product-schema";
 import MediaPreviewModal from "./media-preview-modal";
-import Image from "next/image";
 
 export default function AddProductForm() {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
@@ -129,6 +129,7 @@ export default function AddProductForm() {
       manufacturer: "",
       model: "",
       category: "",
+      subCategory: "",
       specifications: "",
     },
   });
@@ -144,7 +145,7 @@ export default function AddProductForm() {
       });
 
       const validSpecs = specifications.filter(
-        (spec) => spec.key.trim() && spec.value.trim(),
+        (spec) => spec.key.trim() && spec.value.trim()
       );
       if (validSpecs.length > 0) {
         const specsObj = validSpecs.reduce(
@@ -152,7 +153,7 @@ export default function AddProductForm() {
             acc[spec.key] = spec.value;
             return acc;
           },
-          {} as Record<string, string>,
+          {} as Record<string, string>
         );
         formData.append("specifications", JSON.stringify(specsObj));
       }
@@ -206,7 +207,7 @@ export default function AddProductForm() {
   };
 
   const handleThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -222,7 +223,7 @@ export default function AddProductForm() {
   };
 
   const handleVideoThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -254,7 +255,7 @@ export default function AddProductForm() {
   const updateSpecification = (
     index: number,
     field: "key" | "value",
-    value: string,
+    value: string
   ) => {
     const updated = [...specifications];
     updated[index][field] = value;
@@ -262,11 +263,18 @@ export default function AddProductForm() {
   };
 
   const watchedProductType = form.watch("productType");
+  const watchedCategory = form.watch("category");
 
   const categoryOptions: ComboboxOption[] = categories.map((category) => ({
     value: category.name,
     label: category.name,
   }));
+
+  // Get subcategories for the selected category
+  const selectedCategoryData = categories.find(
+    (cat) => cat.name === watchedCategory
+  );
+  const availableSubcategories = selectedCategoryData?.subcategories || [];
 
   const handleCreateCategory = async (categoryName: string) => {
     try {
@@ -839,6 +847,40 @@ export default function AddProductForm() {
                       </FormItem>
                     )}
                   />
+
+                  {/* Subcategory field - show only if category is selected and has subcategories */}
+                  {watchedCategory && availableSubcategories.length > 0 && (
+                    <FormField
+                      control={form.control}
+                      name="subCategory"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subcategory (Optional)</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select subcategory..." />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {availableSubcategories.map((subcategory) => (
+                                <SelectItem
+                                  key={subcategory}
+                                  value={subcategory}
+                                >
+                                  {subcategory}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -917,7 +959,7 @@ export default function AddProductForm() {
                               {...field}
                               onChange={(e) =>
                                 field.onChange(
-                                  parseInt(e.target.value) || undefined,
+                                  parseInt(e.target.value) || undefined
                                 )
                               }
                             />
@@ -950,7 +992,7 @@ export default function AddProductForm() {
                               updateSpecification(
                                 index,
                                 "value",
-                                e.target.value,
+                                e.target.value
                               )
                             }
                             className="flex-1"

@@ -320,10 +320,11 @@ model Otp {
   @@map("otps")
 }
 model Category {
-  id        String               @id @default(cuid())
-  name      String               @unique
-  createdAt DateTime             @default(now())
-  products  MarketplaceProduct[]
+  id            String               @id @default(cuid())
+  name          String               @unique
+  subcategories String[]             @default([])
+  createdAt     DateTime             @default(now())
+  products      MarketplaceProduct[]
 
   @@map("categories")
 }
@@ -352,8 +353,9 @@ model MarketplaceProduct {
   year            Int?
 
   // --- Relations ---
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  String
+  category      Category @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  subCategory   String?
   createdByUser User     @relation("ProductsCreatedByUser", fields: [createdById], references: [id])
   createdById String
   submissionStatus UserSubmissionStatus?

@@ -1,13 +1,13 @@
 "use client";
 
-import { CategoryItem } from "@/types";
-import { Checkbox } from "@packtok/ui/components/checkbox";
-import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
-import { MarketplaceFilters } from "@/hooks/useMarketplaceFilters";
 import { useCategories } from "@/hooks";
+import { MarketplaceFilters } from "@/hooks/useMarketplaceFilters";
+import { CategoryItem } from "@/types";
+import { Button } from "@packtok/ui/components/button";
+import { Checkbox } from "@packtok/ui/components/checkbox";
+import { Input } from "@packtok/ui/components/input";
 import { Search, X } from "lucide-react";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface CategorySidebarProps {
   category: CategoryItem;
@@ -161,6 +161,51 @@ export default function CategorySidebar({
           </div>
         )}
       </div>
+
+      {/* Subcategories - Show only if categories are selected */}
+      {filters.categories.length > 0 && categories && (
+        <div>
+          <h4 className="font-medium mb-3 text-sm lg:text-base">
+            SUBCATEGORIES
+          </h4>
+          <div className="space-y-2">
+            {categories
+              .filter((cat) => filters.categories.includes(cat.id))
+              .flatMap((cat) => cat.subcategories || [])
+              .filter((sub, idx, arr) => arr.indexOf(sub) === idx) // Remove duplicates
+              .map((subcategory) => (
+                <div key={subcategory} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={subcategory}
+                    checked={filters.subcategories.includes(subcategory)}
+                    onCheckedChange={(checked) =>
+                      onFilterChange(
+                        "subcategories",
+                        subcategory,
+                        checked as boolean
+                      )
+                    }
+                  />
+                  <label
+                    htmlFor={subcategory}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                  >
+                    {subcategory}
+                  </label>
+                </div>
+              ))}
+            {categories
+              .filter((cat) => filters.categories.includes(cat.id))
+              .every(
+                (cat) => !cat.subcategories || cat.subcategories.length === 0
+              ) && (
+              <p className="text-sm text-gray-400">
+                No subcategories available
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Machine Type Filter - only show for Machinery */}
       {category.title === "Machinery" && (

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import {
   MachineType,
   ProductCondition,
   ProductType,
 } from "@/types/marketplace";
+import { useCallback, useState } from "react";
 
 export interface PriceRange {
   min: string;
@@ -15,6 +15,7 @@ export interface PriceRange {
 
 export interface MarketplaceFilters {
   categories: string[];
+  subcategories: string[];
   machineType: MachineType[];
   conditions: ProductCondition[];
   productTypes: ProductType[];
@@ -25,6 +26,7 @@ export interface MarketplaceFilters {
 
 const initialFilters: MarketplaceFilters = {
   categories: [],
+  subcategories: [],
   machineType: [],
   conditions: [],
   productTypes: [],

@@ -35,6 +35,7 @@ export interface Product {
 export interface Category {
   id: string;
   name: string;
+  subcategories: string[];
   createdAt: string;
 }
 
@@ -86,6 +87,7 @@ export interface ProductFilters {
   page?: number;
   limit?: number;
   categoryId?: string | string[]; // Support multiple categories
+  subCategory?: string | string[]; // Support multiple subcategories
   productType?: ProductType | ProductType[]; // Support multiple product types
   machineType?: MachineType | MachineType[]; // Support multiple machine types
   condition?: ProductCondition | ProductCondition[]; // Support multiple conditions

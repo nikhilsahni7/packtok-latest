@@ -15,7 +15,7 @@ export const productSchema = z.object({
     ["MACHINERY", "SPARE_PARTS", "CONSUMABLES", "RAW_MATERIALS"],
     {
       errorMap: () => ({ message: "Please select a valid product type" }),
-    },
+    }
   ),
   machineType: z
     .enum(["MONO_CARTON", "MASTER_CARTON", "BOTH", "OTHER"])
@@ -38,6 +38,7 @@ export const productSchema = z.object({
     .max(new Date().getFullYear(), "Year cannot be in the future")
     .optional(),
   category: z.string().min(1, "Category is required"),
+  subCategory: z.string().optional(),
   specifications: z.string().optional(),
   additionalInfo: z
     .string()

@@ -209,6 +209,7 @@ export const rejectSubmission = async (
 
 export type PublicProductQueryOptions = {
   categoryId?: string | string[]; // Support multiple categories
+  subCategory?: string | string[]; // Support multiple subcategories
   condition?: string | string[]; // Support multiple conditions
   machineType?: string | string[]; // Support multiple machine types
   productType?: string | string[]; // Support multiple product types
@@ -234,6 +235,15 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
       where.categoryId = { in: options.categoryId };
     } else {
       where.categoryId = options.categoryId;
+    }
+  }
+
+  // Handle multiple subcategories
+  if (options.subCategory) {
+    if (Array.isArray(options.subCategory)) {
+      where.subCategory = { in: options.subCategory };
+    } else {
+      where.subCategory = options.subCategory;
     }
   }
 
@@ -282,6 +292,7 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
       { description: { contains: options.searchTerm, mode: "insensitive" } },
       { manufacturer: { contains: options.searchTerm, mode: "insensitive" } },
       { model: { contains: options.searchTerm, mode: "insensitive" } },
+      { subCategory: { contains: options.searchTerm, mode: "insensitive" } },
     ];
   }
 

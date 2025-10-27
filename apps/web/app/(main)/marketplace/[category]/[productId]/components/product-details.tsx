@@ -34,6 +34,7 @@ interface ProductDetailsProps {
     category: {
       name: string;
     };
+    subCategory?: string;
     productType: string;
     machineType?: string;
     quantity: number;
@@ -203,6 +204,16 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                   "Ice Cream Equipment, Food Processing Machinery"}
               </span>
             </div>
+            {product.subCategory && (
+              <div className="flex justify-between items-start sm:items-center">
+                <span className="text-gray-600 text-xs sm:text-sm font-normal">
+                  SUBCATEGORY
+                </span>
+                <span className="text-xs sm:text-sm font-normal text-right sm:text-left max-w-[60%] sm:max-w-none">
+                  {product.subCategory}
+                </span>
+              </div>
+            )}
           </div>
           {/* Additional Info */}
           <div className="border-t pt-6">

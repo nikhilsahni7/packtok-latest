@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import Pagination from "@/components/pagination/pagination";
+import { MarketplaceFilters, useProducts } from "@/hooks";
 import {
   CategoryItem,
+  ProductCondition,
   ProductFilters,
   ProductType,
-  ProductCondition,
 } from "@/types";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import { Card, CardContent } from "@packtok/ui/components/card";
 import { Filter } from "lucide-react";
 import Image from "next/image";
-import { useProducts, MarketplaceFilters } from "@/hooks";
-import Pagination from "@/components/pagination/pagination";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 interface ProductGridProps {
   category: CategoryItem;
@@ -74,6 +74,8 @@ export default function ProductGrid({
       productType,
       categoryId:
         filters.categories.length > 0 ? filters.categories : undefined,
+      subCategory:
+        filters.subcategories.length > 0 ? filters.subcategories : undefined,
       condition:
         [
           ...(selectedCondition !== "ALL" ? [selectedCondition] : []),

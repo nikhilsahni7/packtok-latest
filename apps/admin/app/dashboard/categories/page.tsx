@@ -1,28 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash2, Search, Edit } from "lucide-react";
-import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
-import { Loading } from "@packtok/ui/components/loading";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@packtok/ui/components/table";
-import { Label } from "@packtok/ui/components/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@packtok/ui/components/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,26 +11,60 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
+import { Button } from "@packtok/ui/components/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@packtok/ui/components/dialog";
+import { Input } from "@packtok/ui/components/input";
+import { Label } from "@packtok/ui/components/label";
+import { Loading } from "@packtok/ui/components/loading";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@packtok/ui/components/table";
+import { Edit, Plus, Search, Tag, Trash2, X } from "lucide-react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   useCategories,
   useCreateCategory,
   useDeleteCategory,
+  useUpdateCategory,
+  useUpdateSubcategories,
 } from "../../../hooks";
+import { Category } from "../../../types/product";
 
 export default function CategoriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editCategoryName, setEditCategoryName] = useState("");
+  const [editSubcategories, setEditSubcategories] = useState<string[]>([]);
+  const [newSubcategory, setNewSubcategory] = useState("");
 
   // Use hooks for data fetching and mutations
   const { data: categories = [], isLoading, error } = useCategories();
   const createCategoryMutation = useCreateCategory();
   const deleteCategoryMutation = useDeleteCategory();
+  const updateCategoryMutation = useUpdateCategory();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const updateSubcategoriesMutation = useUpdateSubcategories();
 
   // Handle error state
   if (error) {
-    toast.error("Failed to fetch categories");
+    toast.error("Failed to fetch categories");updateSubcategoriesMutation;
   }
 
   const handleCreateCategory = async () => {
@@ -81,8 +92,49 @@ export default function CategoriesPage() {
     }
   };
 
+  const handleEditCategory = (category: Category) => {
+    setEditingCategory(category);
+    setEditCategoryName(category.name);
+    setEditSubcategories(category.subcategories || []);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleAddSubcategory = () => {
+    if (
+      newSubcategory.trim() &&
+      !editSubcategories.includes(newSubcategory.trim())
+    ) {
+      setEditSubcategories([...editSubcategories, newSubcategory.trim()]);
+      setNewSubcategory("");
+    }
+  };
+
+  const handleRemoveSubcategory = (subcategory: string) => {
+    setEditSubcategories(editSubcategories.filter((s) => s !== subcategory));
+  };
+
+  const handleUpdateCategory = async () => {
+    if (!editingCategory || !editCategoryName.trim()) return;
+
+    try {
+      await updateCategoryMutation.mutateAsync({
+        id: editingCategory.id,
+        name: editCategoryName.trim(),
+        subcategories: editSubcategories,
+      });
+
+      setIsEditDialogOpen(false);
+      setEditingCategory(null);
+      setEditCategoryName("");
+      setEditSubcategories([]);
+      toast.success("Category updated successfully");
+    } catch (error) {
+      toast.error("Failed to update category");
+    }
+  };
+
   const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -95,7 +147,9 @@ export default function CategoriesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
-          <p className="text-gray-600">Manage product categories</p>
+          <p className="text-gray-600">
+            Manage product categories and subcategories
+          </p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
@@ -138,6 +192,112 @@ export default function CategoriesPage() {
         </Dialog>
       </div>
 
+      {/* Edit Category Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Category</DialogTitle>
+            <DialogDescription>
+              Update the category name and manage subcategories.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="edit-category-name">Category Name</Label>
+              <Input
+                id="edit-category-name"
+                value={editCategoryName}
+                onChange={(e) => setEditCategoryName(e.target.value)}
+                placeholder="e.g., Cartoning, Shrink Sleeves"
+              />
+            </div>
+
+            {/* Subcategories Management */}
+            <div className="space-y-3">
+              <Label>Subcategories</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={newSubcategory}
+                  onChange={(e) => setNewSubcategory(e.target.value)}
+                  placeholder="Add a subcategory..."
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddSubcategory();
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  onClick={handleAddSubcategory}
+                  disabled={!newSubcategory.trim()}
+                  size="sm"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Subcategories List */}
+              {editSubcategories.length > 0 && (
+                <div className="border rounded-lg p-3 space-y-2 max-h-60 overflow-y-auto">
+                  {editSubcategories.map((subcategory, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-md"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm font-medium">
+                          {subcategory}
+                        </span>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveSubcategory(subcategory)}
+                        className="h-6 w-6 p-0 text-red-600 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {editSubcategories.length === 0 && (
+                <p className="text-sm text-gray-500 text-center py-4 border rounded-lg bg-gray-50">
+                  No subcategories added yet
+                </p>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsEditDialogOpen(false);
+                setEditingCategory(null);
+                setEditCategoryName("");
+                setEditSubcategories([]);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleUpdateCategory}
+              disabled={
+                updateCategoryMutation.isPending || !editCategoryName.trim()
+              }
+            >
+              {updateCategoryMutation.isPending
+                ? "Updating..."
+                : "Update Category"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Categories Table */}
       <div className="bg-white rounded-lg shadow-sm">
         {/* Search and Filters */}
@@ -158,6 +318,7 @@ export default function CategoriesPage() {
           <TableHeader>
             <TableRow>
               <TableHead className="py-4 px-6">Category Name</TableHead>
+              <TableHead className="py-4 px-6">Subcategories</TableHead>
               <TableHead className="py-4 px-6">Created Date</TableHead>
               <TableHead className="py-4 px-6 w-[100px]">Actions</TableHead>
             </TableRow>
@@ -168,12 +329,42 @@ export default function CategoriesPage() {
                 <TableCell className="py-4 px-6 font-medium">
                   {category.name}
                 </TableCell>
+                <TableCell className="py-4 px-6">
+                  {category.subcategories &&
+                  category.subcategories.length > 0 ? (
+                    <div className="flex flex-wrap gap-1">
+                      {category.subcategories.slice(0, 3).map((sub, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium"
+                        >
+                          <Tag className="h-3 w-3 mr-1" />
+                          {sub}
+                        </span>
+                      ))}
+                      {category.subcategories.length > 3 && (
+                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-medium">
+                          +{category.subcategories.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-gray-400 text-sm">
+                      No subcategories
+                    </span>
+                  )}
+                </TableCell>
                 <TableCell className="py-4 px-6 text-gray-600">
                   {new Date(category.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell className="py-4 px-6">
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => handleEditCategory(category)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <AlertDialog>

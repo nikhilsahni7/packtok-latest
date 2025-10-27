@@ -13,9 +13,13 @@ export {
 } from "./useProducts";
 
 export {
+  useAddSubcategory,
   useCategories,
   useCreateCategory,
   useDeleteCategory,
+  useRemoveSubcategory,
+  useUpdateCategory,
+  useUpdateSubcategories,
 } from "./useCategories";
 
 export {

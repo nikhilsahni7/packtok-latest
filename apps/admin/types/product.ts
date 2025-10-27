@@ -40,6 +40,7 @@ export interface MarketplaceProduct {
   year?: number;
   categoryId: string;
   category?: Category;
+  subCategory?: string;
   createdById: string;
   createdByUser?: User;
   submissionStatus?: UserSubmissionStatus;
@@ -62,6 +63,7 @@ export interface User {
 export interface Category {
   id: string;
   name: string;
+  subcategories: string[];
   createdAt: string;
   products?: MarketplaceProduct[];
 }
