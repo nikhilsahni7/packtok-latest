@@ -265,7 +265,7 @@ Empowering both businesses and individuals — that&apos;s the PackTok promise.
                   asChild
                   className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                 >
-                  <Link href="/marketplace/manpower">Shop Now</Link>
+                  <Link href="/marketplace/manpower">Book Now</Link>
                 </Button>
               </div>
             </div>
