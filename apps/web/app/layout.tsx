@@ -41,7 +41,7 @@ export default function RootLayout({
           {/* Desktop/Laptop view: show full site */}
           <div className="hidden lg:block">
             <Navbar />
-            <ClientEventProvider />
+            {/* <ClientEventProvider /> */}
             {children}
             <Footer />
           </div>

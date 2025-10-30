@@ -106,7 +106,7 @@ export default function WishlistScreen() {
           >
             {/* Remove Bookmark Button */}
             <TouchableOpacity
-              className="absolute top-2 right-2 z-10 bg-white rounded-full p-1.5"
+              className="absolute top-2 right-2 z-10 bg-white rounded-[15px] p-1.5"
               onPress={(e) => {
                 e.stopPropagation();
                 handleRemoveBookmark(bookmark.productId);

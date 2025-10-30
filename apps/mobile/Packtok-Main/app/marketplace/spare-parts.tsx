@@ -159,20 +159,17 @@ export default function SparePartsScreen() {
       >
         {/* Search Bar */}
         <View className="px-4 pt-4 pb-3 bg-white">
-          <View className="flex-row items-center bg-gray-100 rounded-lg px-4 py-3">
-            <Feather name="search" size={20} color="#9CA3AF" />
-            <TextInput
-              placeholder="Search any Product..."
-              placeholderTextColor="#9CA3AF"
-              className="flex-1 ml-3 text-sm text-gray-900"
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-              returnKeyType="search"
-            />
-            <TouchableOpacity>
-              <Feather name="mic" size={20} color="#9CA3AF" />
-            </TouchableOpacity>
-          </View>
+          <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
+          <Feather name="search" size={20} color="#9CA3AF" className="" />
+          <TextInput
+            placeholder="Search any Product..."
+            placeholderTextColor="#9CA3AF"
+            className="flex-1 ml-3 text-base text-gray-900"
+          />
+          <TouchableOpacity>
+            <Feather name="mic" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+        </View>
         </View>
 
         {/* Category Tabs - Horizontal Scroll */}
@@ -186,7 +183,7 @@ export default function SparePartsScreen() {
             {categories.map((category, index) => (
               <TouchableOpacity
                 key={index}
-                className={`px-5 py-2 rounded-full mr-3 ${
+                className={`px-5 py-2 rounded-[15px] mr-3 ${
                   index === 1
                     ? "bg-gray-900 border-2 border-gray-900"
                     : "bg-white border-2 border-gray-200"
@@ -220,7 +217,7 @@ export default function SparePartsScreen() {
           >
             {/* Filter Button */}
             <TouchableOpacity
-              className="flex-row items-center px-4 py-2 rounded-full mr-3 bg-white border border-gray-300"
+              className="flex-row items-center px-4 py-2 rounded-[15px] mr-3 bg-white border border-gray-300"
               activeOpacity={0.7}
               onPress={() => setFilterModalVisible(true)}
             >
@@ -230,7 +227,7 @@ export default function SparePartsScreen() {
 
             {/* New Button */}
             <TouchableOpacity
-              className={`px-4 py-2 rounded-full mr-3 ${
+              className={`px-4 py-2 rounded-[15px] mr-3 ${
                 selectedCondition === "NEW"
                   ? "bg-gray-900 border-2 border-gray-900"
                   : "bg-white border border-gray-200"
@@ -249,7 +246,7 @@ export default function SparePartsScreen() {
 
             {/* Used Button */}
             <TouchableOpacity
-              className={`px-4 py-2 rounded-full mr-3 ${
+              className={`px-4 py-2 rounded-[15px] mr-3 ${
                 selectedCondition === "USED"
                   ? "bg-gray-900 border-2 border-gray-900"
                   : "bg-white border border-gray-200"
@@ -303,7 +300,7 @@ export default function SparePartsScreen() {
               {products.map((product) => (
                 <TouchableOpacity
                   key={product.id}
-                  className="bg-white rounded-2xl overflow-hidden mb-4"
+                  className="bg-white rounded-[15px] overflow-hidden mb-4"
                   style={{
                     width: (width - 32) / 3 - 4,
                     shadowColor: "#000",
@@ -318,7 +315,7 @@ export default function SparePartsScreen() {
                   }
                 >
                   {/* Product Image */}
-                  <View className="bg-gray-100 w-full aspect-square">
+                  <View className="bg-gray-100 w-full rounded-[15px] aspect-square">
                     <Image
                       source={
                         product.imagesThumbnail || product.images?.[0]

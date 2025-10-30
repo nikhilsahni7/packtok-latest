@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -16,22 +17,55 @@ const { width } = Dimensions.get("window");
 const servicesData = [
   {
     id: 1,
-    title: "Turnkey Projects",
-    image: require("@/assets/images/tunkery.png"),
+    title: "Consultancy",
+    image: require("@/assets/images/Consultancy1.png"),
     route: "/services/turnkey-projects",
+    bgColor: "#AE52EE",
+    icon: require("@/assets/images/arrow.png"),
   },
   {
     id: 2,
     title: "Maintenance",
-    image: require("@/assets/images/maintainance.png"),
+    image: require("@/assets/images/Maintenance.png"),
     route: "/services/maintenance",
+    bgColor: "#E58510",
+    icon: require("@/assets/images/arrow.png"),
   },
   {
     id: 3,
-    title: "Consultancy",
-    image: require("@/assets/images/consultancy.png"),
+    title: "Machine Installer",
+    image: require("@/assets/images/MachineInstaller.png"),
     route: "/services/consultancy",
+    bgColor: "#D4C522",
+    icon: require("@/assets/images/arrow.png"),
   },
+  {
+    id: 4,
+    title: "Turnkey",
+    image: require("@/assets/images/Turnkey1.png"),
+    route: "/services/consultancy",
+    bgColor: "#15A41D",
+    icon: require("@/assets/images/arrow.png"),
+  },
+
+  {
+    id: 5,
+    title: "Sell",
+    image: require("@/assets/images/Sell.png"),
+    route: "/services/consultancy",
+    bgColor: "#1B96C6",
+    icon: require("@/assets/images/arrow.png"),
+  },
+
+  {
+    id: 6,
+    title: "Investment/ Takeover",
+    image: require("@/assets/images/InvestmentTakeover.png"),
+    route: "/services/consultancy",
+    bgColor: "#C61B6E",
+    icon: require("@/assets/images/arrow.png"),
+  },
+
 ];
 
 export default function ServicesScreen() {
@@ -42,86 +76,90 @@ export default function ServicesScreen() {
       <StatusBar style="dark" />
 
       {/* Header with Logo and Bubbles */}
-      <View className="bg-white relative overflow-hidden">
+      <View className="px-5 pt-12 pb-6 relative">
         {/* Background Bubbles */}
         {/* Orange Bubble - Top Left */}
         <Image
           source={require("@/assets/images/bubble 01.png")}
-          className="absolute"
+          className="absolute z-10"
           style={{
-            top: -width * 0.2,
-            left: -width * 0.3,
-            width: width * 0.6,
-            height: width * 0.6,
-            opacity: 0.5,
+            top: -width * 0.1,
+            left: -width * 0.25,
+            width: width * 0.7,
+            height: width * 0.9,
           }}
           resizeMode="contain"
         />
 
-        {/* Blue Bubble - Below Orange on Left */}
+        {/* Blue Bubble - Top Right */}
         <Image
           source={require("@/assets/images/bubble 02.png")}
           className="absolute"
           style={{
-            top: width * 0.15,
+            top: -width * 0.1,
             left: -width * 0.25,
-            width: width * 0.55,
-            height: width * 0.55,
-            opacity: 0.4,
+            width: width * 1,
+            height: width * 0.9,
           }}
           resizeMode="contain"
         />
 
-        {/* Header Content */}
-        <View className="px-5 pt-12 pb-4 z-10">
-          {/* Top Bar with Back Button */}
-          <View className="flex-row items-center justify-between mb-4">
-            <TouchableOpacity
-              onPress={() => router.back()}
-              className="w-10 h-10 items-center justify-center bg-white/80 rounded-full shadow-sm"
-              activeOpacity={0.7}
-            >
-              <Feather name="arrow-left" size={20} color="#000" />
+
+        {/* Top Bar */}
+        <View className="flex-row items-center justify-between mb-4">
+          {/* Menu Icon */}
+          <TouchableOpacity className="p-2 relative z-20">
+            <Feather
+              name="menu"
+              size={24}
+              color="black"
+              style={{ backgroundColor: "white" }}
+              className="p-2 rounded-full"
+            />
+          </TouchableOpacity>
+
+          <Image
+            source={require("@/assets/images/logo-removebg.png")}
+            style={{ width: 200, height: 100 }}
+            resizeMode="contain"
+          />
+
+          {/* Right Icons */}
+          <View className="flex-row items-center space-x-3">
+            {/* Notification Bell with Badge */}
+            <TouchableOpacity className="relative">
+              <Feather name="bell" size={20} color="black" />
+              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full text-blac w-4 h-4 items-center justify-center">
+                <Text className="text-white text-xs font-bold">2</Text>
+              </View>
             </TouchableOpacity>
 
-            <View className="flex-row items-center space-x-3">
-              {/* Notification Bell */}
-              <TouchableOpacity className="relative">
-                <Feather name="bell" size={22} color="#000" />
-                <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 items-center justify-center">
-                  <Text className="text-white text-[10px] font-bold">2</Text>
-                </View>
-              </TouchableOpacity>
+            {/* Shopping Cart */}
+            <TouchableOpacity className="ml-3">
+              <Feather name="shopping-cart" size={20} color="black" />
+            </TouchableOpacity>
 
-              {/* Shopping Cart */}
-              <TouchableOpacity className="ml-3">
-                <Feather name="shopping-cart" size={22} color="#000" />
-              </TouchableOpacity>
-            </View>
+
           </View>
 
-          {/* Logo */}
-          <View className="items-center mb-3">
-            <Image
-              source={require("@/assets/images/logo.png")}
-              style={{ width: width * 0.8, height: 150 }}
-              resizeMode="contain"
-            />
-          </View>
+        </View>
 
-          {/* Search Bar */}
-          <View className="bg-white rounded-full px-4 py-3 flex-row items-center shadow-sm">
-            <Feather name="search" size={18} color="#9CA3AF" />
-            <Text className="ml-3 text-gray-400 flex-1">
-              Search any Product..
-            </Text>
-            <Feather name="mic" size={18} color="#9CA3AF" />
-          </View>
+        {/* Search Bar */}
+        <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
+          <Feather name="search" size={20} color="#9CA3AF" className="" />
+          <TextInput
+            placeholder="Search any Product..."
+            placeholderTextColor="#9CA3AF"
+            className="flex-1 ml-3 text-base text-gray-900"
+          />
+          <TouchableOpacity>
+            <Feather name="mic" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
         </View>
       </View>
 
       {/* All Services Title */}
-      <View className="px-5 py-4">
+      <View className="px-5 relative z-10 py-4">
         <Text className="text-2xl font-bold text-gray-900">All Services</Text>
       </View>
 
@@ -138,16 +176,28 @@ export default function ServicesScreen() {
             activeOpacity={0.9}
             className="mb-5"
           >
-            <View className="bg-white rounded-3xl overflow-hidden shadow-md">
-              <Image
-                source={service.image}
-                style={{ width: "100%", height: 180 }}
-                resizeMode="cover"
-              />
-              <View className="absolute bottom-0 left-0 right-0 bg-black/40 py-4 px-5">
-                <Text className="text-white text-lg font-semibold">
-                  {service.title}
-                </Text>
+            <View className={`  rounded-xl `}>
+              <View style={{ backgroundColor: service.bgColor }} className={` h-[160px] p-5 rounded-xl w-full flex-row col-gap-4   justify-between`} >
+                {/* Left Side - Category Name */}
+                <View className="w-[65%]">
+                  < Text className="text-[30px] mt-4 mb-2 text-white font-medium">{service.title}</Text>
+                  <Image
+                    source={service.icon}
+                    style={{ width: 30, height: 30 }}
+                    resizeMode="cover"
+                    className="rounded-[20px]"
+                  />
+                </View>
+
+                {/* Right Side - Image */}
+               <View className="w-[35%]">
+                 <Image
+                  source={service.image}
+                  style={{ width: 100, height: 100 }}
+                  resizeMode="contain"
+                  className="rounded-[20px]"
+                />
+               </View>
               </View>
             </View>
           </TouchableOpacity>

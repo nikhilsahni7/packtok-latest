@@ -178,20 +178,18 @@ export default function MachineryScreen() {
       >
         {/* Search Bar */}
         <View className="px-4 pt-4 pb-3 bg-white">
-          <View className="flex-row items-center bg-gray-100 rounded-lg px-4 py-3">
-            <Feather name="search" size={20} color="#9CA3AF" />
-            <TextInput
-              placeholder="Search any Product..."
-              placeholderTextColor="#9CA3AF"
-              className="flex-1 ml-3 text-sm text-gray-900"
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-              returnKeyType="search"
-            />
-            <TouchableOpacity>
-              <Feather name="mic" size={20} color="#9CA3AF" />
-            </TouchableOpacity>
-          </View>
+       
+        <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
+          <Feather name="search" size={20} color="#9CA3AF" className="" />
+          <TextInput
+            placeholder="Search any Product..."
+            placeholderTextColor="#9CA3AF"
+            className="flex-1 ml-3 text-base text-gray-900"
+          />
+          <TouchableOpacity>
+            <Feather name="mic" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+        </View>
         </View>
 
         {/* Category Tabs - Horizontal Scroll */}
@@ -205,7 +203,7 @@ export default function MachineryScreen() {
             {categories.map((category, index) => (
               <TouchableOpacity
                 key={index}
-                className={`px-5 py-2 rounded-full mr-3 ${
+                className={`px-5 py-2 rounded-[15px] mr-3 ${
                   index === 0
                     ? "bg-gray-900 border-2 border-gray-900"
                     : "bg-white border-2 border-gray-200"
@@ -251,7 +249,7 @@ export default function MachineryScreen() {
               {/* New Button */}
               <View className="flex flex-row">
                 <TouchableOpacity
-                  className={` px-4 py-2 rounded-full mr-3 ${
+                  className={` px-4 py-2 rounded-[15px] mr-3 ${
                     selectedCondition === "NEW"
                       ? "bg-gray-900 border-2 border-gray-900"
                       : "bg-white border border-gray-200"
@@ -270,7 +268,7 @@ export default function MachineryScreen() {
 
                 {/* Used Button */}
                 <TouchableOpacity
-                  className={`px-4 py-2 rounded-full mr-3 ${
+                  className={`px-4 py-2 rounded-[15px] mr-3 ${
                     selectedCondition === "USED"
                       ? "bg-gray-900 border-2 border-gray-900"
                       : "bg-white border border-gray-200"
@@ -306,7 +304,7 @@ export default function MachineryScreen() {
               </Text>
               <TouchableOpacity
                 onPress={() => refetch()}
-                className="mt-4 px-6 py-3 bg-[#FF8C42] rounded-lg"
+                className="mt-4 px-6 py-3 bg-[#FF8C42] rounded-[15px]"
               >
                 <Text className="text-white font-semibold">Retry</Text>
               </TouchableOpacity>
@@ -326,7 +324,7 @@ export default function MachineryScreen() {
               {products.map((product) => (
                 <TouchableOpacity
                   key={product.id}
-                  className=" rounded-2xl overflow-hidden mb-4"
+                  className=" rounded-[15px] overflow-hidden mb-4"
                   style={{
                     width: (width - 32) / 3 - 4,
                     shadowColor: "#000",
@@ -351,7 +349,7 @@ export default function MachineryScreen() {
                           : require("@/assets/images/splash-screen-bg.png")
                       }
                       style={{ width: "100%", height: "100%" }}
-                      className="rounded-[27px] h-[140px]"
+                      className="rounded-[15px] h-[140px]"
                       resizeMode="cover"
                     />
                   </View>

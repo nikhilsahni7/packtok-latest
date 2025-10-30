@@ -130,7 +130,7 @@ export default function HomeScreen() {
               onPress={() => router.push("/categories")}
               activeOpacity={0.7}
             >
-              <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+              <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
                 <Image
                   source={require("@/assets/images/machinery-home.jpg")}
                   style={{ width: 64, height: 64 }}
@@ -148,7 +148,7 @@ export default function HomeScreen() {
               onPress={() => router.push("/packaging")}
               activeOpacity={0.7}
             >
-              <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+              <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
                 <Image
                   source={require("@/assets/images/splash-screen-bg.png")}
                   style={{ width: 64, height: 64 }}
@@ -166,7 +166,7 @@ export default function HomeScreen() {
               onPress={() => router.push("/marketplace/spare-parts")}
               activeOpacity={0.7}
             >
-              <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+              <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
                 <Image
                   source={require("@/assets/images/splash-screen-bg.png")}
                   style={{ width: 64, height: 64 }}
@@ -184,7 +184,7 @@ export default function HomeScreen() {
               onPress={() => router.push("/services")}
               activeOpacity={0.7}
             >
-              <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+              <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
                 <Image
                   source={require("@/assets/images/splash-screen-bg.png")}
                   style={{ width: 64, height: 64 }}
@@ -202,7 +202,7 @@ export default function HomeScreen() {
               onPress={() => router.push("/categories")}
               activeOpacity={0.7}
             >
-              <View className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 items-center justify-center">
+              <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200 items-center justify-center">
                 <Feather name="grid" size={24} color="#FF8C42" />
               </View>
               <Text className="text-xs font-medium text-gray-700 mt-2">

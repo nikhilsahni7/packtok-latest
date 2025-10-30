@@ -20,19 +20,27 @@ const marketplaceCategories = [
     id: "1",
     name: "Machinery",
     image: require("@/assets/images/machinery.png"),
+    icon: require("@/assets/images/arrow.png"),
     route: "/marketplace/machinery",
+    bgColor: "#AE52EE"
   },
   {
     id: "2",
     name: "Raw Material",
-    image: require("@/assets/images/raw-materails.png"),
+    image: require("@/assets/images/rawmaterial.png"),
+    icon: require("@/assets/images/arrow.png"),
+
     route: null, // TODO: Add route when screen is created
+    bgColor: "#E58510"
   },
   {
     id: "3",
     name: "Consumables",
     image: require("@/assets/images/consumables.png"),
+    icon: require("@/assets/images/arrow.png"),
+
     route: null, // TODO: Add route when screen is created
+    bgColor: "#D4C522"
   },
 ];
 
@@ -41,18 +49,6 @@ export default function MarketplaceScreen() {
   return (
     <View className="flex-1 bg-gray-50 relative">
       <StatusBar style="light" />
-
-      <Image
-        source={require("@/assets/images/bubble 01.png")}
-        className="absolute z-10"
-        style={{
-          top: -width * 0.10,
-          left: -width * 0.27,
-          width: width * 0.7,
-          height: width * 0.9,
-        }}
-        resizeMode="contain"
-      />
 
       {/* Blue Bubble - Top Right */}
       <Image
@@ -67,9 +63,23 @@ export default function MarketplaceScreen() {
         resizeMode="contain"
       />
 
+      <Image
+        source={require("@/assets/images/bubble 01.png")}
+        className="absolute"
+        style={{
+          top: -width * 0.10,
+          left: -width * 0.27,
+          width: width * 0.7,
+          height: width * 0.9,
+        }}
+        resizeMode="contain"
+      />
+
+      
+
       {/* Header - Simple Orange Header matching Figma */}
-      <View className=" px-4 pt-12 relative z-30 pb-3">
-        <View className="flex-row items-center  justify-between">
+      <View className=" px-4 pt-12 relative z-50 pb-3">
+        <View className="flex-row items-center   justify-between">
           {/* Menu Icon */}
           <TouchableOpacity className="p-2 relative z-20">
             <Feather name="menu" size={24} color="black" style={{ backgroundColor: "white" }} className="p-2 rounded-full" />
@@ -103,13 +113,13 @@ export default function MarketplaceScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         {/* Search Bar */}
-        <View className="px-4 pt-4 pb-3 relative z-50 ">
-          <View className="flex-row relative z-40 items-center bg-white rounded-lg px-4 py-3">
+        <View className="px-4 pt-4 pb-3 ">
+          <View className="flex-row  items-center bg-white rounded-lg px-4 py-3">
             <Feather name="search" size={20} color="#9CA3AF" />
             <TextInput
               placeholder="Search any Product"
               placeholderTextColor="#9CA3AF"
-              className="flex-1 ml-3 text-sm text-gray-900"
+              className="flex-1 ml-3 text-sm  text-gray-900"
             />
             <TouchableOpacity>
               <Feather name="sliders" size={20} color="#9CA3AF" />
@@ -125,11 +135,11 @@ export default function MarketplaceScreen() {
         </View>
 
         {/* Category Cards - Vertical List matching Figma exactly */}
-        <View className="px-4  pb-4">
+        <View className="px-4 pb-4">
           {marketplaceCategories.map((category) => (
             <TouchableOpacity
               key={category.id}
-              className=" rounded-xl "
+              className={` mb-8 rounded-xl `}
 
               activeOpacity={0.8}
               onPress={() => {
@@ -139,25 +149,35 @@ export default function MarketplaceScreen() {
               }}
             >
               {/* Category Image - Larger, full width */}
-              <View className=" w-full">
-                <Image
-                  source={category.image}
-                  style={{ width: "100%", height: 180 }}
-                  resizeMode="cover"
-                  className="rounded-[25px]"
-                />
+              <View className={`  rounded-xl `}>
+                <View style={{ backgroundColor: category.bgColor }} className={` p-5 rounded-xl w-full flex-row col-gap-4   justify-between`} >
+                  {/* Left Side - Category Name */}
+                  <View>
+                    < Text className="text-[30px] mt-4 mb-2 text-white font-medium">{category.name}</Text>
+                    <Image
+                      source={category.icon}
+                      style={{ width: 30, height: 30 }}
+                      resizeMode="cover"
+                      className="rounded-[20px]"
+                    />
+                  </View>
+
+                  {/* Right Side - Image */}
+                  <Image
+                    source={category.image}
+                    style={{ width: 120, height: 120 }}
+                    resizeMode="cover"
+                    className="rounded-[20px]"
+                  />
+                </View>
               </View>
 
-              {/* Category Name */}
-              <View className="px-4 py-3 text-center">
-                <Text className="text-sm text-center font-medium text-gray-900">
-                  {category.name}
-                </Text>
-              </View>
+
+
             </TouchableOpacity>
           ))}
         </View>
-      </ScrollView>
-    </View>
+      </ScrollView >
+    </View >
   );
 }

@@ -230,7 +230,7 @@ export default function CategoriesScreen() {
                 <View className="items-center">
                   <View className="relative">
                     <View
-                      className={`w-20 h-20 rounded-full items-center justify-center overflow-hidden mb-2 shadow-sm ${
+                      className={`w-20 h-20 rounded-[15px] items-center justify-center overflow-hidden mb-2 shadow-sm ${
                         category.available ? "bg-gray-200" : "bg-gray-300"
                       }`}
                     >

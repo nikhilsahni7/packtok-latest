@@ -282,7 +282,7 @@ export default function TurnkeyProjectFormScreen() {
       </View>
 
       <ScrollView
-        className="flex-1"
+        className="flex-1 "
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
       >

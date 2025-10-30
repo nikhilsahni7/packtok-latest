@@ -16,7 +16,8 @@ interface MachineCardProps {
   priceLabel?: string;
 }
 
-export function MachineCard({
+export function 
+MachineCard({
   machineName = "Machine Name",
   startingPrice = "$200,000",
   imageUrl,
