@@ -42,7 +42,7 @@ const categories = [
     id: "5",
     name: "Man Power",
     icon: require("@/assets/images/splash-screen-bg.png"),
-    available: false,
+    available: true,
   },
   {
     id: "6",
@@ -53,8 +53,8 @@ const categories = [
   {
     id: "7",
     name: "Machinery Installer",
-    icon: require("@/assets/images/splash-screen-bg.png"),
-    available: false,
+    icon: require("@/assets/images/machinery-installer.png"),
+    available: true,
   },
   {
     id: "8",
@@ -71,8 +71,8 @@ const categories = [
   {
     id: "10",
     name: "Sell Old Machine",
-    icon: require("@/assets/images/machinery.png"),
-    available: false,
+    icon: require("@/assets/images/sell-old-machine.png"),
+    available: true,
   },
   {
     id: "11",
@@ -83,8 +83,8 @@ const categories = [
   {
     id: "12",
     name: "Investment/Takeover",
-    icon: require("@/assets/images/splash-screen-bg.png"),
-    available: false,
+    icon: require("@/assets/images/investment.png"),
+    available: true,
   },
 ];
 
@@ -129,12 +129,21 @@ export default function CategoriesScreen() {
           console.log("→ Navigating to Turnkey Projects");
           router.push("/services/turnkey-projects");
           break;
-        case "Man Power":
         case "Machinery Installer":
+          console.log("→ Navigating to Machinery Installer");
+          router.push("/services/machinery-installer");
+          break;
         case "Sell Old Machine":
+          console.log("→ Navigating to Sell Old Machine");
+          router.push("/services/sell-old-machine");
+          break;
         case "Investment/Takeover":
-          // These are coming soon - show a toast or alert
-          console.log(`⏳ ${categoryName} - Coming Soon`);
+          console.log("→ Navigating to Investment/Takeover");
+          router.push("/services/investment-takeover");
+          break;
+        case "Man Power":
+          console.log("→ Navigating to Man Power");
+          router.push("/services/manpower");
           break;
         default:
           console.log(`❌ Unknown category: ${categoryName}`);

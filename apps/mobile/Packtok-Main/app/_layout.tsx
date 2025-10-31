@@ -134,6 +134,27 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="services/investment-takeover"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="services/sell-old-machine"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="services/machinery-installer"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="marketplace/machinery"
             options={{
               headerShown: false,
@@ -212,6 +233,13 @@ function RootLayoutNav() {
           />
           <Stack.Screen
             name="podcasts/[id]"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="services/manpower"
             options={{
               headerShown: false,
               gestureEnabled: true,

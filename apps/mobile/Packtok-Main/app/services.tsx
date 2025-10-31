@@ -19,7 +19,7 @@ const servicesData = [
     id: 1,
     title: "Consultancy",
     image: require("@/assets/images/Consultancy1.png"),
-    route: "/services/turnkey-projects",
+    route: "/services/consultancy",
     bgColor: "#AE52EE",
     icon: require("@/assets/images/arrow.png"),
   },
@@ -33,20 +33,37 @@ const servicesData = [
   },
   {
     id: 3,
-    title: "Machine Installer",
-    
+    title: "Tunkery Projects",
+    image: require("@/assets/images/Turnkey.png"),
+    route: "/services/turnkey-projects",
+    bgColor: "#3B82F6",
     icon: require("@/assets/images/arrow.png"),
   },
 
   {
-    id: 6,
+    id: 4,
     title: "Investment/ Takeover",
     image: require("@/assets/images/InvestmentTakeover.png"),
-    route: "/services/consultancy",
+    route: "/services/investment-takeover",
     bgColor: "#C61B6E",
     icon: require("@/assets/images/arrow.png"),
   },
-
+  {
+    id: 5,
+    title: "Sell Old Machine",
+    image: require("@/assets/images/Sell.png"),
+    route: "/services/sell-old-machine",
+    bgColor: "#F59E0B",
+    icon: require("@/assets/images/arrow.png"),
+  },
+  {
+    id: 6,
+    title: "Machinery Installer",
+    image: require("@/assets/images/MachineInstaller.png"),
+    route: "/services/machinery-installer",
+    bgColor: "#10B981",
+    icon: require("@/assets/images/arrow.png"),
+  },
 ];
 
 export default function ServicesScreen() {
@@ -85,18 +102,14 @@ export default function ServicesScreen() {
           resizeMode="contain"
         />
 
-
         {/* Top Bar */}
         <View className="flex-row items-center justify-between mb-4">
           {/* Menu Icon */}
-          <TouchableOpacity className="p-2 relative z-20">
-            <Feather
-              name="menu"
-              size={24}
-              color="black"
-              style={{ backgroundColor: "white" }}
-              className="p-2 rounded-full"
-            />
+          <TouchableOpacity
+            className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full justify-center relative z-20"
+            onPress={() => router.back()}
+          >
+            <Feather name="menu" size={24} color="black" />
           </TouchableOpacity>
 
           <Image
@@ -119,10 +132,7 @@ export default function ServicesScreen() {
             <TouchableOpacity className="ml-3">
               <Feather name="shopping-cart" size={20} color="black" />
             </TouchableOpacity>
-
-
           </View>
-
         </View>
 
         {/* Search Bar */}
@@ -158,10 +168,15 @@ export default function ServicesScreen() {
             className="mb-5"
           >
             <View className={`  rounded-xl `}>
-              <View style={{ backgroundColor: service.bgColor }} className={` h-[160px] p-5 rounded-xl w-full flex-row col-gap-4   justify-between`} >
+              <View
+                style={{ backgroundColor: service.bgColor }}
+                className={` h-[160px] p-5 rounded-xl w-full flex-row col-gap-4   justify-between`}
+              >
                 {/* Left Side - Category Name */}
                 <View className="w-[65%]">
-                  < Text className="text-[30px] mt-4 mb-2 text-white font-medium">{service.title}</Text>
+                  <Text className="text-[30px] mt-4 mb-2 text-white font-medium">
+                    {service.title}
+                  </Text>
                   <Image
                     source={service.icon}
                     style={{ width: 30, height: 30 }}
@@ -171,14 +186,14 @@ export default function ServicesScreen() {
                 </View>
 
                 {/* Right Side - Image */}
-               <View className="w-[35%]">
-                 <Image
-                  source={service.image}
-                  style={{ width: 100, height: 100 }}
-                  resizeMode="contain"
-                  className="rounded-[20px]"
-                />
-               </View>
+                <View className="w-[35%]">
+                  <Image
+                    source={service.image}
+                    style={{ width: 100, height: 100 }}
+                    resizeMode="contain"
+                    className="rounded-[20px]"
+                  />
+                </View>
               </View>
             </View>
           </TouchableOpacity>
