@@ -3,10 +3,10 @@ import { useProducts } from "@/hooks/useProducts";
 import { Loading } from "@packtok/ui/components/loading";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import ProductCard from "./product-card";
 
-export default function NewArrivals() {
+function NewArrivals() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -111,3 +111,5 @@ export default function NewArrivals() {
     </section>
   );
 }
+
+export default memo(NewArrivals);

@@ -4,21 +4,18 @@ import { CtaBanner as WebCtaBanner } from "@/components";
 import { Checkbox } from "@packtok/ui/components/checkbox";
 import { cn } from "@packtok/ui/lib/utils";
 import { MessageCircleMore } from "lucide-react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
-import image1 from "@/assets/spare_part_1.png";
-import Comprehensive from "@/assets/Comprehensive Solutions.png";
 import Support from "@/assets/24:7 Customer Support.png";
+import Comprehensive from "@/assets/Comprehensive Solutions.png";
 import Trust from "@/assets/Confidentiality & Trust.png";
 import printer from "@/assets/printer slotter.png";
-
+import image1 from "@/assets/spare_part_1.png";
 
 import image2 from "@/assets/image1.jpeg";
 import Raw_material from "@/assets/Raw material.webp";
-
-
-
 
 export default function ConsultancyPage() {
   return (
@@ -152,8 +149,8 @@ function StatBox({
   style,
 }: {
   label: string;
-  value: any;
-  style?: any;
+  value: string | number | ReactNode;
+  style?: string;
 }) {
   return (
     <div className={cn("flex flex-col items-start gap-2")}>
@@ -307,11 +304,11 @@ function WhyChooseUs() {
 function FeatureItem({
   title,
   desc,
-  iconLabel
+  iconLabel,
 }: {
   title: string;
   desc: string;
-  iconLabel?: any;
+  iconLabel?: StaticImageData;
 }) {
   return (
     <div
@@ -323,7 +320,13 @@ function FeatureItem({
       )}
     >
       <div />
-      <div className={cn("h-[64px] w-[64px] rounded-sm p-4 bg-[#7A7A7A]")}><Image src={iconLabel} className="w-full h-full object-contain" alt={title} /></div>
+      <div className={cn("h-[64px] w-[64px] rounded-sm p-4 bg-[#7A7A7A]")}>
+        <Image
+          src={iconLabel!}
+          className="w-full h-full object-contain"
+          alt={title}
+        />
+      </div>
       <h4 className={cn("mt-4 text-base font-semibold")}>{title}</h4>
       <p className={cn("mt-2 text-sm text-muted-foreground")}>{desc}</p>
     </div>
@@ -358,12 +361,11 @@ function ConsultancyGrid() {
           img={printer}
           url="/marketplace/machinery"
         />
-        <ConsultancyCard title="Spare Parts"
-
+        <ConsultancyCard
+          title="Spare Parts"
           price=""
           img={image1}
           url="/marketplace/spare-parts"
-
         />
         <ConsultancyCard
           title="Raw Products"
@@ -380,11 +382,11 @@ function ConsultancyCard({
   title,
   price,
   img,
-  url
+  url,
 }: {
   title: string;
   price: string;
-  img: any;
+  img: StaticImageData;
   url: string;
 }) {
   return (
@@ -433,7 +435,6 @@ function ConsultancyCard({
           </div>
         </div>
         <Link
-
           href={url}
           className={cn(
             // Layout & box model

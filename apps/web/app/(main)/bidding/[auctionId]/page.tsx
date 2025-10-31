@@ -34,6 +34,7 @@ import {
 } from "@packtok/ui/components/dialog";
 import { Input } from "@packtok/ui/components/input";
 import { Loading } from "@packtok/ui/components/loading";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -403,12 +404,14 @@ export default function AuctionDetailPage() {
                 product.images.slice(0, 4).map((image: string, idx: number) => (
                   <div
                     key={idx}
-                    className="aspect-square bg-gray-100 rounded-lg overflow-hidden"
+                    className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative"
                   >
-                    <img
+                    <Image
                       src={image}
                       alt={`${product.title} - ${idx + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
                     />
                   </div>
                 ))

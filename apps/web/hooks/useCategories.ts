@@ -1,8 +1,8 @@
 "use client";
 
 import api from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
 import { Category } from "@/types/marketplace";
+import { useQuery } from "@tanstack/react-query";
 
 export function useCategories() {
   return useQuery<Category[], Error>({
@@ -12,6 +12,8 @@ export function useCategories() {
       return data.data as Category[];
     },
     staleTime: 60 * 60 * 1000, // 1 hour (categories don't change often)
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours cache
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }

@@ -27,12 +27,24 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    formats: ["image/avif", "image/webp"],
   },
   // Enable experimental features if needed
   experimental: {
     // serverComponentsExternalPackages: ['@supabase/supabase-js'],
   },
   output: "standalone",
+  // Optimize compilation
+  swcMinify: true,
+  // Reduce bundle size
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production"
+        ? {
+            exclude: ["error", "warn"],
+          }
+        : false,
+  },
 };
 
 module.exports = nextConfig;

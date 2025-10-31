@@ -138,9 +138,19 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(401, "Refresh token missing");
   }
 
-  const accessToken = await refreshAccessToken(incomingRefreshToken);
+  const { accessToken, refreshToken } =
+    await refreshAccessToken(incomingRefreshToken);
+
+  const options = {
+    httpOnly: true,
+    secure: config.nodeEnv === "production",
+    sameSite: "lax" as const,
+    ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
+  };
+
   res
     .status(200)
+    .cookie("refreshToken", refreshToken, options)
     .json(new ApiResponse(200, { accessToken }, "Access token refreshed"));
 });
 

@@ -80,9 +80,17 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const userInfo = await fetchUserAndToken(req);
+  // PERFORMANCE: Only check auth for vendor routes
+  // All other routes are public and don't need middleware checks
   const isVendorPath = pathname.startsWith(VENDOR_PREFIX);
   const isVendorAuthPath = pathname.startsWith(VENDOR_AUTH_PREFIX);
+
+  // If not a vendor-related path, skip middleware entirely
+  if (!isVendorPath && !isVendorAuthPath) {
+    return NextResponse.next();
+  }
+
+  const userInfo = await fetchUserAndToken(req);
 
   // Unauthenticated
   if (!userInfo?.role) {
@@ -118,8 +126,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Run on all routes except next internals and static assets; fine-tuned again in code
-  matcher: [
-    "/((?!_next|.*\\.(?:css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|map)$).*)",
-  ],
+  // Only run middleware on vendor routes for better performance
+  matcher: ["/vendor/:path*", "/auth/vendor/:path*"],
 };

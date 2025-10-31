@@ -12,12 +12,19 @@ function AuthBootstrap() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setUser = useAuthStore((s) => s.setUser);
+  const [hasBootstrapped, setHasBootstrapped] = useState(false);
 
   useEffect(() => {
+    // Only bootstrap once per session
+    if (hasBootstrapped) return;
+
     let cancelled = false;
 
     async function bootstrap() {
-      if (accessToken) return;
+      if (accessToken) {
+        setHasBootstrapped(true);
+        return;
+      }
       try {
         const { data } = await api.post("/api/v1/auth/refresh");
         const newToken = data?.data?.accessToken as string | undefined;
@@ -33,6 +40,8 @@ function AuthBootstrap() {
         }
       } catch (_) {
         // No valid refresh cookie; do nothing
+      } finally {
+        if (!cancelled) setHasBootstrapped(true);
       }
     }
 
@@ -40,28 +49,23 @@ function AuthBootstrap() {
     return () => {
       cancelled = true;
     };
-  }, [accessToken, setAccessToken, setUser]);
-
+  }, [accessToken, setAccessToken, setUser, hasBootstrapped]);
 
   useEffect(() => {
-    const allowContextMenu = (e:any) => e.stopPropagation();
-    document.addEventListener('contextmenu', allowContextMenu);
-  
-    const allowKeyboard = (e:any) => e.stopPropagation();
-    document.addEventListener('keydown', allowKeyboard);
-  
+    const allowContextMenu = (e: Event) => e.stopPropagation();
+    document.addEventListener("contextmenu", allowContextMenu);
+
+    const allowKeyboard = (e: KeyboardEvent) => e.stopPropagation();
+    document.addEventListener("keydown", allowKeyboard);
+
     return () => {
-      document.removeEventListener('contextmenu', allowContextMenu);
-      document.removeEventListener('keydown', allowKeyboard);
+      document.removeEventListener("contextmenu", allowContextMenu);
+      document.removeEventListener("keydown", allowKeyboard);
     };
   }, []);
 
   return null;
-
-
 }
-
-
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -69,7 +73,11 @@ export default function Providers({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            retry: false,
+            retry: 1,
+            staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
+            gcTime: 10 * 60 * 1000, // 10 minutes - cache cleanup time
+            refetchOnWindowFocus: false, // Don't refetch when user returns to tab
+            refetchOnReconnect: false, // Don't refetch on reconnect
           },
         },
       })

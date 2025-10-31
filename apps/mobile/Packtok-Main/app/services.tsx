@@ -34,26 +34,7 @@ const servicesData = [
   {
     id: 3,
     title: "Machine Installer",
-    image: require("@/assets/images/MachineInstaller.png"),
-    route: "/services/consultancy",
-    bgColor: "#D4C522",
-    icon: require("@/assets/images/arrow.png"),
-  },
-  {
-    id: 4,
-    title: "Turnkey",
-    image: require("@/assets/images/Turnkey1.png"),
-    route: "/services/consultancy",
-    bgColor: "#15A41D",
-    icon: require("@/assets/images/arrow.png"),
-  },
-
-  {
-    id: 5,
-    title: "Sell",
-    image: require("@/assets/images/Sell.png"),
-    route: "/services/consultancy",
-    bgColor: "#1B96C6",
+    
     icon: require("@/assets/images/arrow.png"),
   },
 

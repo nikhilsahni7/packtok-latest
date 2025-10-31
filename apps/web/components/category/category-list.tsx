@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 // import CategoryItem from "./category-item";
 // import { CategoryItem as CategoryItemType } from "@/types";
 import { Button } from "@packtok/ui";
 import Link from "next/link";
+import { memo } from "react";
 
 import Consumables from "@/assets/consumables2.jpg";
 import Ellipse from "@/assets/Ellipse.png";
@@ -13,7 +16,7 @@ import man_power_bg from "@/assets/man_power_bg.png";
 import RawMaterial from "@/assets/Raw material.webp";
 import spare from "@/assets/spare_part_1.png";
 
-export default function CategoryList() {
+function CategoryList() {
   return (
     <div className="relative z-0 marketplace-bg overflow-hidden ">
       <div className="w-[95%]  mx-auto px-4 py-20 ">
@@ -23,6 +26,8 @@ export default function CategoryList() {
             alt="Machinery Image"
             width={700}
             height={450}
+            loading="lazy"
+            placeholder="blur"
             className="w-full border border-[#000] object-cover col-span-2 -translate-y-12  col-start-1 row-start-1"
           />
 
@@ -47,8 +52,13 @@ export default function CategoryList() {
               </p>
               <div className="w-[521px] mx-auto">
                 <p className=" text-gray-300 mb-10 leading-relaxed text-[12px] text-justify">
-                  At PackTok, we deliver Premium machinery, built to last. Engineered for peak performance, Driven by precision and power. Efficiency meets reliability,
-Your production, our priority. Performance without precision is just noise. At PackTok, we fine-tune every component to ensure seamless, powerful, and accurate output — because even the smallest detail matters when you&apos;re operating at scale.
+                  At PackTok, we deliver Premium machinery, built to last.
+                  Engineered for peak performance, Driven by precision and
+                  power. Efficiency meets reliability, Your production, our
+                  priority. Performance without precision is just noise. At
+                  PackTok, we fine-tune every component to ensure seamless,
+                  powerful, and accurate output — because even the smallest
+                  detail matters when you&apos;re operating at scale.
                 </p>
                 <Button
                   asChild
@@ -75,6 +85,8 @@ Your production, our priority. Performance without precision is just noise. At P
             alt="Spareparts projects"
             width={700}
             height={450}
+            loading="lazy"
+            placeholder="blur"
             className="w-full object-cover border  border-r-0 border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
           />
 
@@ -99,7 +111,14 @@ Your production, our priority. Performance without precision is just noise. At P
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  At PackTok, we understand that consistent production depends on the availability of high-quality spare parts. {"That’s"} why we offer a comprehensive range of spare parts and machine components for corrugated and packaging equipment — ensuring smooth operations and reduced downtime.Whether you need replacements for worn-out components or critical parts for emergency repairs, PackTok ensures quick access and reliable delivery — keeping your production line running efficiently.
+                  At PackTok, we understand that consistent production depends
+                  on the availability of high-quality spare parts. {"That’s"}{" "}
+                  why we offer a comprehensive range of spare parts and machine
+                  components for corrugated and packaging equipment — ensuring
+                  smooth operations and reduced downtime.Whether you need
+                  replacements for worn-out components or critical parts for
+                  emergency repairs, PackTok ensures quick access and reliable
+                  delivery — keeping your production line running efficiently.
                 </p>
                 <div className="text-end">
                   <Button
@@ -121,6 +140,8 @@ Your production, our priority. Performance without precision is just noise. At P
             alt="RawMaterial Image"
             width={700}
             height={450}
+            loading="lazy"
+            placeholder="blur"
             className="w-full object-cover border border-black col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
           />
 
@@ -146,18 +167,17 @@ Your production, our priority. Performance without precision is just noise. At P
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                  At PackTok is a trusted destination for sourcing
-                  high-quality raw materials used in corrugated and packaging
-                  machinery. We offer a complete range including kraft paper,
-                  adhesives, inks, starch, and other essential consumables that
-                  form the backbone of efficient packaging production. By
-                  bringing sellers and buyers together, we make it easier to
-                  access reliable materials at competitive prices, ensuring
-                  consistency, durability, and cost-effectiveness. Whether
-                  you’re a manufacturer looking to streamline supply or a
-                  supplier aiming to reach new customers, our platform provides
-                  the right space to trade raw materials with ease and
-                  confidence.
+                  At PackTok is a trusted destination for sourcing high-quality
+                  raw materials used in corrugated and packaging machinery. We
+                  offer a complete range including kraft paper, adhesives, inks,
+                  starch, and other essential consumables that form the backbone
+                  of efficient packaging production. By bringing sellers and
+                  buyers together, we make it easier to access reliable
+                  materials at competitive prices, ensuring consistency,
+                  durability, and cost-effectiveness. Whether you’re a
+                  manufacturer looking to streamline supply or a supplier aiming
+                  to reach new customers, our platform provides the right space
+                  to trade raw materials with ease and confidence.
                 </p>
                 <Button
                   asChild
@@ -177,6 +197,8 @@ Your production, our priority. Performance without precision is just noise. At P
             alt="Consumables Image"
             width={700}
             height={450}
+            loading="lazy"
+            placeholder="blur"
             className="w-full object-cover col-span-2 border border-[#000] -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
           />
 
@@ -201,9 +223,13 @@ Your production, our priority. Performance without precision is just noise. At P
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                 At PackTok keep your operations running smoothly with our high-quality
-                  consumables, designed for efficiency and durability. From
-                  industrial lubricants and bopp taps Heavy-duty Woven Cord Strapping rolls bubble  wrap, make ready, Shrink Wrap Stretch Film, Honeycomb Paper Wrap & Sleeves, Food Grade High Transparency Polyolefin Plastic, stitching wire rolls
+                  At PackTok keep your operations running smoothly with our
+                  high-quality consumables, designed for efficiency and
+                  durability. From industrial lubricants and bopp taps
+                  Heavy-duty Woven Cord Strapping rolls bubble wrap, make ready,
+                  Shrink Wrap Stretch Film, Honeycomb Paper Wrap & Sleeves, Food
+                  Grade High Transparency Polyolefin Plastic, stitching wire
+                  rolls
                 </p>
                 <div className="text-end">
                   <Button
@@ -233,6 +259,8 @@ Your production, our priority. Performance without precision is just noise. At P
             alt="Man Power Image"
             width={700}
             height={450}
+            loading="lazy"
+            placeholder="blur"
             className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
           />
 
@@ -254,12 +282,15 @@ Your production, our priority. Performance without precision is just noise. At P
               </p>
               <div className="w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
-                At PackTok, we not only provide skilled manpower to the corrugated and packaging industry,
-but also create meaningful career opportunities for professionals seeking growth in this field.
-Our platform bridges the gap between talent and industry needs, ensuring the right fit every time.
-We connect qualified technicians, machine operators, engineers, and supervisors
-with companies that value experience, reliability, and dedication.
-Empowering both businesses and individuals — that&apos;s the PackTok promise.
+                  At PackTok, we not only provide skilled manpower to the
+                  corrugated and packaging industry, but also create meaningful
+                  career opportunities for professionals seeking growth in this
+                  field. Our platform bridges the gap between talent and
+                  industry needs, ensuring the right fit every time. We connect
+                  qualified technicians, machine operators, engineers, and
+                  supervisors with companies that value experience, reliability,
+                  and dedication. Empowering both businesses and individuals —
+                  that&apos;s the PackTok promise.
                 </p>
                 <Button
                   asChild
@@ -275,3 +306,5 @@ Empowering both businesses and individuals — that&apos;s the PackTok promise.
     </div>
   );
 }
+
+export default memo(CategoryList);

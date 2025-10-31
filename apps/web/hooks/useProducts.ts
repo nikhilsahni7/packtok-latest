@@ -1,8 +1,8 @@
 "use client";
 
 import api from "@/lib/axios";
+import { ProductFilters, ProductsResponse } from "@/types/marketplace";
 import { useQuery } from "@tanstack/react-query";
-import { ProductsResponse, ProductFilters } from "@/types/marketplace";
 
 export function useProducts(filters: ProductFilters = {}) {
   const queryKey = ["products", filters];
@@ -65,7 +65,9 @@ export function useProducts(filters: ProductFilters = {}) {
       const { data } = await api.get(`/api/v1/products?${params.toString()}`);
       return data.data as ProductsResponse;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - products don't change frequently
+    gcTime: 15 * 60 * 1000, // 15 minutes cache time
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch if data is already fresh
   });
 }

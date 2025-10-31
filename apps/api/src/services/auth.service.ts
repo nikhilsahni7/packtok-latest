@@ -133,14 +133,28 @@ export const loginUser = async (
   };
 };
 
-export const refreshAccessToken = async (refreshToken: string) => {
+export const refreshAccessToken = async (
+  refreshToken: string
+): Promise<{ accessToken: string; refreshToken: string }> => {
   const { data, error } = await supabase.auth.refreshSession({
     refresh_token: refreshToken,
   });
+
   if (error || !data.session) {
     throw new ApiError(401, "Unable to refresh session");
   }
-  return data.session.access_token;
+
+  const { access_token: accessToken, refresh_token: nextRefreshToken } =
+    data.session;
+
+  if (!accessToken) {
+    throw new ApiError(401, "Unable to refresh session");
+  }
+
+  return {
+    accessToken,
+    refreshToken: nextRefreshToken || refreshToken,
+  };
 };
 
 export const logoutUser = async (userId: string) => {

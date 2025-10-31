@@ -68,7 +68,7 @@ export default function ForgotPasswordForm() {
       requestForm.setValue("email", presetEmail);
       confirmForm.setValue("email", presetEmail);
     }
-  }, [presetEmail]);
+  }, [presetEmail, requestForm, confirmForm]);
 
   const requestMutation = useMutation({
     mutationFn: async (payload: RequestForm) => {
@@ -80,7 +80,7 @@ export default function ForgotPasswordForm() {
       confirmForm.setValue("email", requestForm.getValues("email"));
     },
     onError: (err: Error) => {
-      const axiosError = err as any;
+      const axiosError = err as { response?: { data?: { message?: string } } };
       const message = axiosError?.response?.data?.message || "Request failed";
       toast.error(message);
     },
@@ -99,7 +99,7 @@ export default function ForgotPasswordForm() {
       router.push("/auth/signin");
     },
     onError: (err: Error) => {
-      const axiosError = err as any;
+      const axiosError = err as { response?: { data?: { message?: string } } };
       const message =
         axiosError?.response?.data?.message || "Password reset failed";
       toast.error(message);
