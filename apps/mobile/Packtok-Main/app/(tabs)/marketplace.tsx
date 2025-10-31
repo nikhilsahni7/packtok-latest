@@ -2,17 +2,16 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
+  Dimensions,
   Image,
   ScrollView,
   Text,
-  Dimensions,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
-
 
 // Marketplace categories data - matching Figma
 const marketplaceCategories = [
@@ -22,25 +21,31 @@ const marketplaceCategories = [
     image: require("@/assets/images/machinery.png"),
     icon: require("@/assets/images/arrow.png"),
     route: "/marketplace/machinery",
-    bgColor: "#AE52EE"
+    bgColor: "#AE52EE",
   },
   {
     id: "2",
-    name: "Raw Material",
+    name: "Spare Parts",
     image: require("@/assets/images/rawmaterial.png"),
     icon: require("@/assets/images/arrow.png"),
-
-    route: null, // TODO: Add route when screen is created
-    bgColor: "#E58510"
+    route: "/marketplace/spare-parts",
+    bgColor: "#3B82F6",
   },
   {
     id: "3",
+    name: "Raw Material",
+    image: require("@/assets/images/rawmaterial.png"),
+    icon: require("@/assets/images/arrow.png"),
+    route: "/marketplace/raw-material",
+    bgColor: "#E58510",
+  },
+  {
+    id: "4",
     name: "Consumables",
     image: require("@/assets/images/consumables.png"),
     icon: require("@/assets/images/arrow.png"),
-
-    route: null, // TODO: Add route when screen is created
-    bgColor: "#D4C522"
+    route: "/marketplace/consumables",
+    bgColor: "#D4C522",
   },
 ];
 
@@ -55,7 +60,7 @@ export default function MarketplaceScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.10,
+          top: -width * 0.1,
           left: -width * 0.27,
           width: width * 1,
           height: width * 0.9,
@@ -67,7 +72,7 @@ export default function MarketplaceScreen() {
         source={require("@/assets/images/bubble 01.png")}
         className="absolute"
         style={{
-          top: -width * 0.10,
+          top: -width * 0.1,
           left: -width * 0.27,
           width: width * 0.7,
           height: width * 0.9,
@@ -75,14 +80,15 @@ export default function MarketplaceScreen() {
         resizeMode="contain"
       />
 
-      
-
       {/* Header - Simple Orange Header matching Figma */}
       <View className=" px-4 pt-12 relative z-50 pb-3">
         <View className="flex-row items-center   justify-between">
           {/* Menu Icon */}
-          <TouchableOpacity className="p-2 relative z-20">
-            <Feather name="menu" size={24} color="black" style={{ backgroundColor: "white" }} className="p-2 rounded-full" />
+          <TouchableOpacity
+            className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full justify-center relative z-20"
+            onPress={() => router.back()}
+          >
+            <Feather name="menu" size={24} color="black" />
           </TouchableOpacity>
           {/* Center - Just a dash/line (matching Figma) */}
           <Image
@@ -114,15 +120,15 @@ export default function MarketplaceScreen() {
       >
         {/* Search Bar */}
         <View className="px-4 pt-4 pb-3 ">
-          <View className="flex-row  items-center bg-white rounded-lg px-4 py-3">
+          <View className="flex-row  items-center bg-white border rounded-full px-4 py-3">
             <Feather name="search" size={20} color="#9CA3AF" />
             <TextInput
-              placeholder="Search any Product"
+              placeholder="Search any Product..."
               placeholderTextColor="#9CA3AF"
-              className="flex-1 ml-3 text-sm  text-gray-900"
+              className="flex-1 ml-3 text-base text-gray-900"
             />
             <TouchableOpacity>
-              <Feather name="sliders" size={20} color="#9CA3AF" />
+              <Feather name="mic" size={20} color="#9CA3AF" />
             </TouchableOpacity>
           </View>
         </View>
@@ -140,7 +146,6 @@ export default function MarketplaceScreen() {
             <TouchableOpacity
               key={category.id}
               className={` mb-8 rounded-xl `}
-
               activeOpacity={0.8}
               onPress={() => {
                 if (category.route) {
@@ -150,10 +155,15 @@ export default function MarketplaceScreen() {
             >
               {/* Category Image - Larger, full width */}
               <View className={`  rounded-xl `}>
-                <View style={{ backgroundColor: category.bgColor }} className={` p-5 rounded-xl w-full flex-row col-gap-4   justify-between`} >
+                <View
+                  style={{ backgroundColor: category.bgColor }}
+                  className={` p-5 rounded-xl w-full flex-row col-gap-4   justify-between`}
+                >
                   {/* Left Side - Category Name */}
                   <View>
-                    < Text className="text-[30px] mt-4 mb-2 text-white font-medium">{category.name}</Text>
+                    <Text className="text-[30px] mt-4 mb-2 text-white font-medium">
+                      {category.name}
+                    </Text>
                     <Image
                       source={category.icon}
                       style={{ width: 30, height: 30 }}
@@ -171,13 +181,10 @@ export default function MarketplaceScreen() {
                   />
                 </View>
               </View>
-
-
-
             </TouchableOpacity>
           ))}
         </View>
-      </ScrollView >
-    </View >
+      </ScrollView>
+    </View>
   );
 }

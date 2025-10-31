@@ -178,18 +178,19 @@ export default function MachineryScreen() {
       >
         {/* Search Bar */}
         <View className="px-4 pt-4 pb-3 bg-white">
-       
-        <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
-          <Feather name="search" size={20} color="#9CA3AF" className="" />
-          <TextInput
-            placeholder="Search any Product..."
-            placeholderTextColor="#9CA3AF"
-            className="flex-1 ml-3 text-base text-gray-900"
-          />
-          <TouchableOpacity>
-            <Feather name="mic" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
-        </View>
+          <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
+            <Feather name="search" size={20} color="#9CA3AF" className="" />
+            <TextInput
+              placeholder="Search any Product..."
+              placeholderTextColor="#9CA3AF"
+              className="flex-1 ml-3 text-base text-gray-900"
+              value={searchTerm}
+              onChangeText={setSearchTerm}
+            />
+            <TouchableOpacity>
+              <Feather name="mic" size={20} color="#9CA3AF" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Category Tabs - Horizontal Scroll */}

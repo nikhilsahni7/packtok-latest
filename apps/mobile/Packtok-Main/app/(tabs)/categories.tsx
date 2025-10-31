@@ -23,20 +23,20 @@ const categories = [
   {
     id: "2",
     name: "Spare Parts",
-    icon: require("@/assets/images/splash-screen-bg.png"),
+    icon: require("@/assets/images/spare_part_1.png"),
     available: true,
   },
   {
     id: "3",
     name: "Raw Materials",
-    icon: require("@/assets/images/splash-screen-bg.png"),
-    available: false,
+    icon: require("@/assets/images/rawmaterial.png"),
+    available: true,
   },
   {
     id: "4",
     name: "Consumables",
     icon: require("@/assets/images/consumables.png"),
-    available: false,
+    available: true,
   },
   {
     id: "5",
@@ -65,7 +65,7 @@ const categories = [
   {
     id: "9",
     name: "Maintenance",
-    icon: require("@/assets/images/splash-screen-bg.png"),
+    icon: require("@/assets/images/maintainance.png"),
     available: true,
   },
   {
@@ -105,6 +105,14 @@ export default function CategoriesScreen() {
           console.log("→ Navigating to Spare Parts");
           router.push("/marketplace/spare-parts");
           break;
+        case "Raw Materials":
+          console.log("→ Navigating to Raw Materials");
+          router.push("/marketplace/raw-material");
+          break;
+        case "Consumables":
+          console.log("→ Navigating to Consumables");
+          router.push("/marketplace/consumables");
+          break;
         case "Bidding":
           console.log("→ Navigating to Bidding");
           router.push("/bidding");
@@ -121,8 +129,6 @@ export default function CategoriesScreen() {
           console.log("→ Navigating to Turnkey Projects");
           router.push("/services/turnkey-projects");
           break;
-        case "Raw Materials":
-        case "Consumables":
         case "Man Power":
         case "Machinery Installer":
         case "Sell Old Machine":

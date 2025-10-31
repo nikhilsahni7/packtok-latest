@@ -122,7 +122,16 @@ api.interceptors.response.use(
         const refreshToken = await TokenStorage.getRefreshToken();
 
         if (!refreshToken) {
-          throw new Error("No refresh token available");
+          console.warn(
+            "⚠️ No refresh token available - clearing tokens and redirecting to login"
+          );
+          await TokenStorage.clearTokens();
+          processQueue(new Error("Session expired. Please login again."), null);
+          isRefreshing = false;
+          // Don't throw error, just reject the request
+          return Promise.reject(
+            new Error("Session expired. Please login again.")
+          );
         }
 
         const response = await axios.post(

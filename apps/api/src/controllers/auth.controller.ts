@@ -102,7 +102,13 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   res
     .status(200)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, { accessToken, user }, "Login successful"));
+    .json(
+      new ApiResponse(
+        200,
+        { accessToken, refreshToken, user },
+        "Login successful"
+      )
+    );
 });
 
 export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
@@ -128,7 +134,11 @@ export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .cookie("refreshToken", refreshToken, options)
     .json(
-      new ApiResponse(200, { accessToken, user }, "Vendor login successful")
+      new ApiResponse(
+        200,
+        { accessToken, refreshToken, user },
+        "Vendor login successful"
+      )
     );
 });
 
@@ -151,7 +161,9 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
   res
     .status(200)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, { accessToken }, "Access token refreshed"));
+    .json(
+      new ApiResponse(200, { accessToken, refreshToken }, "Token refreshed")
+    );
 });
 
 export const logout = asyncHandler(async (req: Request, res: Response) => {

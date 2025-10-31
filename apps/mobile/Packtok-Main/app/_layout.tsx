@@ -162,6 +162,34 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="marketplace/consumables"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="marketplace/consumables/[id]"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="marketplace/raw-material"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="marketplace/raw-material/[id]"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="bidding"
             options={{
               headerShown: false,

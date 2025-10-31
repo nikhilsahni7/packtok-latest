@@ -143,22 +143,6 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             {/* Category Item 2 */}
-            <TouchableOpacity
-              className="items-center mr-4"
-              onPress={() => router.push("/packaging")}
-              activeOpacity={0.7}
-            >
-              <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
-                <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
-                  style={{ width: 64, height: 64 }}
-                  resizeMode="cover"
-                />
-              </View>
-              <Text className="text-xs font-medium text-gray-700 mt-2">
-                Packaging
-              </Text>
-            </TouchableOpacity>
 
             {/* Category Item 3 */}
             <TouchableOpacity
@@ -168,7 +152,7 @@ export default function HomeScreen() {
             >
               <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/spare_part_1.png")}
                   style={{ width: 64, height: 64 }}
                   resizeMode="cover"
                 />
@@ -186,7 +170,7 @@ export default function HomeScreen() {
             >
               <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
                 <Image
-                  source={require("@/assets/images/splash-screen-bg.png")}
+                  source={require("@/assets/images/consultancy.png")}
                   style={{ width: 64, height: 64 }}
                   resizeMode="cover"
                 />
@@ -257,7 +241,6 @@ export default function HomeScreen() {
               activeOpacity={0.7}
             >
               <View className=" rounded-2xl overflow-hidden">
-                {/* TODO: Replace with actual spare parts image */}
                 <Image
                   source={require("@/assets/images/spare_part_1.png")}
                   style={{ width: "100%", height: 120 }}
