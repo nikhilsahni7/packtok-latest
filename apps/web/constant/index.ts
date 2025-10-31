@@ -28,6 +28,11 @@ export const navbarLinks: {
     href: "/podcasts",
   },
   {
+    title: "Bidding",
+    href: "/bidding",
+  },
+
+  {
     title: "Contact Us",
     href: "/contact",
   },
