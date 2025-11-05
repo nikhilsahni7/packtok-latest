@@ -1,10 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
+  Modal,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -17,19 +18,15 @@ export default function SettingsScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const { mutate: logout, isPending } = useLogout();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: () => logout(),
-      },
-    ]);
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
+    logout();
   };
 
   return (
@@ -121,6 +118,21 @@ export default function SettingsScreen() {
             <Feather name="chevron-right" size={20} color="#9CA3AF" />
           </TouchableOpacity>
 
+          {/* Quote Requests */}
+          <TouchableOpacity
+            onPress={() => router.push("/quote-history")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="file-text" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Quote Requests
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
           {/* Address */}
           <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
             <View className="flex-row items-center">
@@ -133,7 +145,11 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           {/* Help & Support */}
-          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+          <TouchableOpacity
+            onPress={() => router.push("/help-support")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
             <View className="flex-row items-center">
               <Feather name="help-circle" size={20} color="#374151" />
               <Text className="text-base text-gray-900 ml-3">
@@ -144,7 +160,11 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           {/* About */}
-          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+          <TouchableOpacity
+            onPress={() => router.push("/about")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
             <View className="flex-row items-center">
               <Feather name="info" size={20} color="#374151" />
               <Text className="text-base text-gray-900 ml-3">About</Text>
@@ -172,6 +192,57 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showLogoutModal}
+        onRequestClose={() => setShowLogoutModal(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50 px-6">
+          <View className="bg-white rounded-3xl w-full max-w-sm overflow-hidden">
+            {/* Modal Content */}
+            <View className="p-6 items-center">
+              {/* Icon */}
+              <View className="w-20 h-20 rounded-full bg-red-100 items-center justify-center mb-4">
+                <Feather name="log-out" size={36} color="#EF4444" />
+              </View>
+
+              {/* Text */}
+              <Text className="text-xl font-bold text-gray-900 mb-2 text-center">
+                You are going to Log Out
+              </Text>
+              <Text className="text-sm text-gray-600 text-center mb-6">
+                your account
+              </Text>
+
+              {/* Buttons */}
+              <View className="flex-row gap-3 w-full">
+                <TouchableOpacity
+                  onPress={() => setShowLogoutModal(false)}
+                  className="flex-1 py-3 bg-black rounded-xl"
+                  activeOpacity={0.8}
+                >
+                  <Text className="text-white font-semibold text-center">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={confirmLogout}
+                  className="flex-1 py-3 bg-[#EF4444] rounded-xl"
+                  activeOpacity={0.8}
+                >
+                  <Text className="text-white font-semibold text-center">
+                    Logout
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

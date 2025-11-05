@@ -16,6 +16,54 @@ export const createQuoteRequest = async (
   });
 };
 
+export const getMyQuoteRequests = async (userId: string) => {
+  return prisma.quoteRequest.findMany({
+    where: { userId },
+    include: {
+      product: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          images: true,
+          price: true,
+          manufacturer: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+export const getQuoteRequestById = async (quoteId: string, userId: string) => {
+  const quote = await prisma.quoteRequest.findUnique({
+    where: { id: quoteId },
+    include: {
+      product: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          images: true,
+          price: true,
+          manufacturer: true,
+        },
+      },
+    },
+  });
+
+  if (!quote) {
+    throw new ApiError(404, "Quote request not found");
+  }
+
+  // Verify the quote belongs to the user
+  if (quote.userId !== userId) {
+    throw new ApiError(403, "You don't have permission to view this quote");
+  }
+
+  return quote;
+};
+
 export const getAllQuoteRequests = async () => {
   return prisma.quoteRequest.findMany({
     include: {

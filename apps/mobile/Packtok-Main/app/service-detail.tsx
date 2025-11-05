@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Image,
   RefreshControl,
   ScrollView,
   Text,
@@ -16,9 +17,11 @@ import {
   ServiceType,
   useServiceRequestDetails,
 } from "../hooks/useServiceRequests";
+import { useAuthStore } from "../store/auth-store";
 
 export default function ServiceDetailScreen() {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const { id } = useLocalSearchParams<{ id: string }>();
   const {
     data: service,
@@ -193,9 +196,18 @@ export default function ServiceDetailScreen() {
         >
           <Feather name="arrow-left" size={24} color="#000" />
         </TouchableOpacity>
-        <View className="w-12 h-12 rounded-full bg-orange-500 items-center justify-center mr-3">
-          <Feather name="clipboard" size={24} color="#fff" />
-        </View>
+        {user?.profile_image ? (
+          <Image
+            source={{ uri: user.profile_image }}
+            className="w-12 h-12 rounded-full mr-3"
+          />
+        ) : (
+          <View className="w-12 h-12 rounded-full bg-[#FF8C42] items-center justify-center mr-3">
+            <Text className="text-white text-xl font-bold">
+              {user?.name?.charAt(0).toUpperCase() || "U"}
+            </Text>
+          </View>
+        )}
         <Text className="text-xl font-bold text-gray-900">
           Service Form History
         </Text>
