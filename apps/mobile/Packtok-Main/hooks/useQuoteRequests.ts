@@ -42,6 +42,7 @@ export function useMyQuoteRequests() {
         throw error;
       }
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes - data stays fresh longer since we use socket updates
   });
 }
 
@@ -58,5 +59,6 @@ export function useQuoteRequestDetails(quoteId: string) {
       }
     },
     enabled: !!quoteId,
+    staleTime: 1000 * 60 * 5, // 5 minutes - data stays fresh longer since we use socket updates
   });
 }

@@ -17,6 +17,7 @@ import {
   QuoteStatus,
   useMyQuoteRequests,
 } from "../hooks/useQuoteRequests";
+import { useQuoteSocket } from "../hooks/useQuoteSocket";
 import { useAuthStore } from "../store/auth-store";
 
 export default function QuoteHistoryScreen() {
@@ -27,6 +28,9 @@ export default function QuoteHistoryScreen() {
   const [activeTab, setActiveTab] = useState<"pending" | "completed">(
     "pending"
   );
+
+  // Connect to socket for real-time updates
+  useQuoteSocket(user?.id);
 
   const onRefresh = async () => {
     setRefreshing(true);

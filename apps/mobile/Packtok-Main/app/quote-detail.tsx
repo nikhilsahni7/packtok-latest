@@ -1,10 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Image,
   Linking,
+  RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -12,11 +14,24 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { QuoteStatus, useQuoteRequestDetails } from "../hooks/useQuoteRequests";
+import { useQuoteSocket } from "../hooks/useQuoteSocket";
+import { useAuthStore } from "../store/auth-store";
 
 export default function QuoteDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: quote, isLoading } = useQuoteRequestDetails(id || "");
+  const user = useAuthStore((state) => state.user);
+  const { data: quote, isLoading, refetch } = useQuoteRequestDetails(id || "");
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Connect to socket for real-time updates
+  useQuoteSocket(user?.id);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const getStatusBadgeStyle = (status: QuoteStatus) => {
     const statusStyles: Record<
@@ -140,7 +155,17 @@ export default function QuoteDetailScreen() {
         <Text className="text-xl font-bold text-gray-900">Quote Details</Text>
       </View>
 
-      <ScrollView className="flex-1">
+      <ScrollView
+        className="flex-1"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#FF8C42"
+            colors={["#FF8C42"]}
+          />
+        }
+      >
         {/* Status Section */}
         <View className="px-5 py-6 bg-gray-50 border-b border-gray-200">
           <View className="flex-row items-center justify-between mb-3">

@@ -1,5 +1,6 @@
 import { QuoteStatus } from "@packtok/db";
 import { Request, Response } from "express";
+import { tryGetSocketServer } from "../realtime/socket";
 import {
   getAllQuoteRequests,
   updateQuoteStatus,
@@ -24,6 +25,18 @@ export const adminUpdateQuote = asyncHandler(
       return res.status(400).json({ message: "Invalid status value" });
     }
     const updated = await updateQuoteStatus(id, status);
+
+    // Emit socket event for real-time updates
+    const io = tryGetSocketServer();
+    if (io && updated) {
+      io.emit("quote:updated", {
+        quoteId: updated.id,
+        userId: updated.userId,
+        status: updated.status,
+        updatedAt: updated.updatedAt,
+      });
+    }
+
     res.status(200).json(new ApiResponse(200, updated, "Quote status updated"));
   }
 );
