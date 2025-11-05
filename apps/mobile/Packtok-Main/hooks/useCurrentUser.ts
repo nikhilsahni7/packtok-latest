@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Alert } from "react-native";
 import api from "../lib/api";
 import { useAuthStore } from "../store/auth-store";
@@ -41,10 +42,12 @@ export function useCurrentUser() {
     refetchOnWindowFocus: false,
   });
 
-  // Sync with auth store when data changes
-  if (query.data && query.data !== user) {
-    setUser(query.data);
-  }
+  // Sync with auth store when data changes - using useEffect to avoid render-time updates
+  useEffect(() => {
+    if (query.data && query.data !== user) {
+      setUser(query.data);
+    }
+  }, [query.data, user, setUser]);
 
   return query;
 }
