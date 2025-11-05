@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getMyServiceRequestDetails,
   listMyServiceRequests,
   submitAcquisition,
   submitConsultancy,
@@ -22,5 +23,6 @@ router.post("/manpower-hiring", authMiddleware, submitManpower);
 router.post("/jobseeker", authMiddleware, cvUpload, submitJobSeeker);
 
 router.get("/my", authMiddleware, listMyServiceRequests);
+router.get("/:id", authMiddleware, getMyServiceRequestDetails);
 
 export default router;

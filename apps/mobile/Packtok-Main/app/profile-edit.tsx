@@ -35,6 +35,7 @@ export default function ProfileEditScreen() {
     type: string;
     name: string;
   } | null>(null);
+  const [hasImageChanged, setHasImageChanged] = useState(false);
 
   const {
     control,
@@ -85,6 +86,7 @@ export default function ProfileEditScreen() {
     if (!result.canceled) {
       const uri = result.assets[0].uri;
       setProfileImage(uri);
+      setHasImageChanged(true);
 
       // Prepare file for upload
       const filename = uri.split("/").pop() || "profile.jpg";
@@ -140,7 +142,7 @@ export default function ProfileEditScreen() {
             >
               <Feather name="arrow-left" size={24} color="#1f2937" />
             </TouchableOpacity>
-            <Text className="text-xl font-bold text-gray-900">Settings</Text>
+            <Text className="text-xl font-bold text-gray-900">Profile</Text>
             <View className="w-10" />
           </View>
         </View>
@@ -263,9 +265,11 @@ export default function ProfileEditScreen() {
         <View className="px-5 pb-6 pt-4 border-t border-gray-100">
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
-            disabled={isPending || !isDirty}
+            disabled={isPending || (!isDirty && !hasImageChanged)}
             className={`rounded-xl py-4 shadow-md ${
-              isPending || !isDirty ? "bg-gray-400" : "bg-black"
+              isPending || (!isDirty && !hasImageChanged)
+                ? "bg-gray-400"
+                : "bg-black"
             }`}
             activeOpacity={0.8}
           >

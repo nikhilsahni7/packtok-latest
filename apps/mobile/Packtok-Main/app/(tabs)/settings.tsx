@@ -106,6 +106,21 @@ export default function SettingsScreen() {
             <Feather name="chevron-right" size={20} color="#9CA3AF" />
           </TouchableOpacity>
 
+          {/* Service Form History */}
+          <TouchableOpacity
+            onPress={() => router.push("/service-history")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="clipboard" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Service Form History
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
           {/* Address */}
           <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
             <View className="flex-row items-center">

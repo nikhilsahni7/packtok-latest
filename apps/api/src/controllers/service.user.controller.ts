@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { getRequestById } from "../services/admin/serviceRequests.service";
 import {
   createCompanyAcquisitionInquiry,
   createConsultancyRequest,
@@ -80,15 +81,20 @@ export const submitJobSeeker = asyncHandler(
       const file = (req as any).file as any;
       cvUrl = await uploadDocumentToSupabase(file.buffer, file.mimetype, "cvs");
     }
-    
+
     // Convert string boolean to actual boolean for multipart form data
     const jobSeekerData = {
       ...rest,
       cvUrl,
-      hasPreviouslyWorkedWithUs: rest.hasPreviouslyWorkedWithUs === "true" || rest.hasPreviouslyWorkedWithUs === true
+      hasPreviouslyWorkedWithUs:
+        rest.hasPreviouslyWorkedWithUs === "true" ||
+        rest.hasPreviouslyWorkedWithUs === true,
     };
-    
-    const request = await createJobSeekerProfile(req.user!.id, jobSeekerData as any);
+
+    const request = await createJobSeekerProfile(
+      req.user!.id,
+      jobSeekerData as any
+    );
     res
       .status(201)
       .json(new ApiResponse(201, request, "Job seeker profile submitted"));
@@ -101,5 +107,21 @@ export const listMyServiceRequests = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, requests, "Service requests fetched"));
+  }
+);
+
+export const getMyServiceRequestDetails = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const request = await getRequestById(id);
+
+    // Verify the request belongs to the user
+    if (request.userId !== req.user!.id) {
+      return res.status(403).json(new ApiResponse(403, null, "Unauthorized"));
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, request, "Service request details fetched"));
   }
 );
