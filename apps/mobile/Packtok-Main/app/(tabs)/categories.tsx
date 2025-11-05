@@ -41,7 +41,7 @@ const categories = [
   {
     id: "5",
     name: "Man Power",
-    icon: require("@/assets/images/splash-screen-bg.png"),
+    icon: require("@/assets/images/manpower.jpg"),
     available: true,
   },
   {
@@ -218,7 +218,8 @@ export default function CategoriesScreen() {
 
       {/* Header with Title */}
       <View className="px-5 pt-44" style={{ zIndex: 10 }}>
-        <View className="flex-row items-center">
+        {/* // heading will be from top and ceneter of page  */}
+        <View className="flex-row items-center *:justify-center mb-4 font-semibold: ">
           <Text className="text-2xl font-bold text-gray-900">
             All Categories
           </Text>

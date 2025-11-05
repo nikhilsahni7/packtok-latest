@@ -281,6 +281,30 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="services/manpower-hiring-form"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="services/job-seeker-form"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="profile-edit"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
             name="modal"
             options={{ presentation: "modal", title: "Modal" }}
           />

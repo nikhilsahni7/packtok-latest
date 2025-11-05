@@ -13,6 +13,7 @@ import { applyForVendor } from "../services/vendor.service";
 import { ApiError } from "../utils/apiError";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
+import { uploadImageToSupabase } from "../utils/storage.service";
 
 export const signup = asyncHandler(async (req: Request, res: Response) => {
   const {
@@ -190,6 +191,48 @@ export const getCurrentUser = asyncHandler(
       .json(
         new ApiResponse(200, req.user, "Current user data fetched successfully")
       );
+  }
+);
+
+export const updateUserProfile = asyncHandler(
+  async (req: Request, res: Response) => {
+    if (!req.user?.id) {
+      throw new ApiError(401, "Unauthorized");
+    }
+
+    const { name, phone_number, country } = req.body;
+    const updateData: {
+      name?: string;
+      phone_number?: string;
+      country?: string;
+      profile_image?: string;
+    } = {};
+
+    // Only update fields that are provided
+    if (name !== undefined) updateData.name = name;
+    if (phone_number !== undefined) updateData.phone_number = phone_number;
+    if (country !== undefined) updateData.country = country;
+
+    // Handle profile image upload
+    if (req.file) {
+      const profileImageUrl = await uploadImageToSupabase(
+        req.file.buffer,
+        req.file.mimetype,
+        "profile_images",
+        800
+      );
+      updateData.profile_image = profileImageUrl;
+    }
+
+    // Update user in database
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.id },
+      data: updateData,
+    });
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
   }
 );
 

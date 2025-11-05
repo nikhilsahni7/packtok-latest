@@ -275,6 +275,7 @@ model User {
   phone_number            String?                  @unique
   country                 String?                  @default("IN")
   role                    Role                     @default(NORMAL_USER)
+  profile_image           String?                  // Profile/avatar image URL
   otp                     Otp?
   adminPermissions        AdminPermission[]
 

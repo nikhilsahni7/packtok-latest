@@ -10,6 +10,7 @@ export interface User {
   role: string;
   phone_number?: string;
   country?: string;
+  profile_image?: string;
 }
 
 interface AuthState {

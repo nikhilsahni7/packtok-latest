@@ -31,12 +31,12 @@ export default function ManpowerScreen() {
 
   const handleHiringPartnerForm = () => {
     // Navigate to hiring partner form
-    console.log("Navigate to Hiring Partner form");
+    router.push("/services/manpower-hiring-form");
   };
 
   const handleEmployerForm = () => {
-    // Navigate to employer form
-    console.log("Navigate to Employer form");
+    // Navigate to job seeker form
+    router.push("/services/job-seeker-form");
   };
 
   return (

@@ -47,6 +47,14 @@ const marketplaceCategories = [
     route: "/marketplace/consumables",
     bgColor: "#D4C522",
   },
+  {
+    id: "5",
+    name: "Man Power",
+    image: require("@/assets/images/manpower.png"),
+    icon: require("@/assets/images/arrow.png"),
+    route: "/services/manpower",
+    bgColor: "#10B981",
+  },
 ];
 
 export default function MarketplaceScreen() {

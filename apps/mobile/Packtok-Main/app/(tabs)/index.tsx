@@ -180,6 +180,23 @@ export default function HomeScreen() {
               </Text>
             </TouchableOpacity>
 
+            <TouchableOpacity
+              className="items-center mr-4"
+              onPress={() => router.push("/marketplace")}
+              activeOpacity={0.7}
+            >
+              <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">
+                <Image
+                  source={require("@/assets/images/marketplace.png")}
+                  style={{ width: 64, height: 64 }}
+                  resizeMode="cover"
+                />
+              </View>
+              <Text className="text-xs font-medium text-gray-700 mt-2">
+                Marketplace
+              </Text>
+            </TouchableOpacity>
+
             {/* Category Item 5 - View All */}
             <TouchableOpacity
               className="items-center mr-4"

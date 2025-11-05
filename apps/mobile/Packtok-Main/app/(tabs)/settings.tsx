@@ -1,8 +1,10 @@
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -12,6 +14,7 @@ import { useLogout } from "../../hooks/useLogout";
 import { useAuthStore } from "../../store/auth-store";
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const { mutate: logout, isPending } = useLogout();
 
@@ -43,11 +46,18 @@ export default function SettingsScreen() {
         {user && (
           <View className="px-5 py-6 border-b border-gray-200">
             <View className="flex-row items-center">
-              <View className="w-16 h-16 rounded-full bg-[#FF8C42] items-center justify-center">
-                <Text className="text-white text-2xl font-bold">
-                  {user.name.charAt(0).toUpperCase()}
-                </Text>
-              </View>
+              {user.profile_image ? (
+                <Image
+                  source={{ uri: user.profile_image }}
+                  className="w-16 h-16 rounded-full"
+                />
+              ) : (
+                <View className="w-16 h-16 rounded-full bg-[#FF8C42] items-center justify-center">
+                  <Text className="text-white text-2xl font-bold">
+                    {user.name.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+              )}
               <View className="ml-4 flex-1">
                 <Text className="text-lg font-semibold text-gray-900">
                   {user.name}
@@ -63,13 +73,15 @@ export default function SettingsScreen() {
 
         {/* Settings Options */}
         <View className="px-5 py-4">
-          {/* Account Settings */}
-          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+          {/* Profile */}
+          <TouchableOpacity
+            onPress={() => router.push("/profile-edit")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
             <View className="flex-row items-center">
               <Feather name="user" size={20} color="#374151" />
-              <Text className="text-base text-gray-900 ml-3">
-                Account Settings
-              </Text>
+              <Text className="text-base text-gray-900 ml-3">Profile</Text>
             </View>
             <Feather name="chevron-right" size={20} color="#9CA3AF" />
           </TouchableOpacity>

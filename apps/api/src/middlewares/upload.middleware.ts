@@ -18,6 +18,18 @@ export const cvUpload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB CV size limit
 }).single("cv");
 
+export const profileImageUpload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB profile image limit
+  fileFilter: (req, file, cb) => {
+    // Accept images only
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed!"));
+    }
+    cb(null, true);
+  },
+}).single("profile_image");
+
 declare global {
   namespace Express {
     interface Request {

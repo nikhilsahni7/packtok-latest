@@ -9,9 +9,11 @@ import {
   resetPassword,
   signup,
   signupVendor,
+  updateUserProfile,
   verifyUserOtp,
 } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
+import { profileImageUpload } from "../middlewares/upload.middleware";
 
 const router = Router();
 
@@ -26,5 +28,6 @@ router.post("/forgot-password/request", requestPasswordReset);
 router.post("/forgot-password/confirm", resetPassword);
 
 router.get("/me", authMiddleware, getCurrentUser);
+router.patch("/me", authMiddleware, profileImageUpload, updateUserProfile);
 
 export default router;
