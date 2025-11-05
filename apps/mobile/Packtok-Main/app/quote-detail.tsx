@@ -59,8 +59,18 @@ export default function QuoteDetailScreen() {
   };
 
   const handleViewProduct = () => {
-    if (quote?.productId) {
-      router.push(`/(marketplace)/product/${quote.productId}` as any);
+    if (quote?.productId && quote?.product?.productType) {
+      // Map ProductType to route format
+      const productTypeMap: Record<string, string> = {
+        MACHINERY: "machinery",
+        SPARE_PARTS: "spare-parts",
+        CONSUMABLES: "consumables",
+        RAW_MATERIALS: "raw-material",
+      };
+      const category = productTypeMap[quote.product.productType];
+      if (category) {
+        router.push(`/marketplace/${category}/${quote.productId}` as any);
+      }
     }
   };
 

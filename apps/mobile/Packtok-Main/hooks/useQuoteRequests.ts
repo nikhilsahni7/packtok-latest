@@ -2,6 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../lib/api";
 
 export type QuoteStatus = "PENDING" | "REVIEWED" | "COMPLETED" | "CANCELLED";
+export type ProductType =
+  | "MACHINERY"
+  | "SPARE_PARTS"
+  | "CONSUMABLES"
+  | "RAW_MATERIALS";
 
 export interface QuoteRequest {
   id: string;
@@ -21,6 +26,7 @@ export interface QuoteRequest {
     images?: string[];
     price?: number;
     manufacturer?: string;
+    productType?: ProductType;
   };
 }
 
