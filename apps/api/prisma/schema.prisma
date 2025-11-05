@@ -298,6 +298,7 @@ model User {
   bookmarks               ProductBookmark[]
   searchHistory           SearchHistory[]
   viewHistory             ProductView[]
+  addresses               Address[]
 
   @@map("users")
 }
@@ -886,4 +887,37 @@ model ProductView {
   @@index([userId, viewedAt])
   @@index([productId, viewedAt])
   @@index([userId, productId])
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Address type and label
+  label       String   // e.g., "Home", "Office", "Warehouse"
+  isDefault   Boolean  @default(false)
+
+  // Contact information
+  fullName    String
+  phoneNumber String
+
+  // Address details
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  postalCode   String
+  country      String  @default("IN")
+
+  // Optional notes
+  landmark     String?
+
+  // Relations
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+
+  @@map("addresses")
+  @@index([userId])
+  @@index([userId, isDefault])
 }

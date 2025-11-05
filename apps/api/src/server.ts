@@ -15,6 +15,7 @@ import adminAuctionsRouter from "./routers/admin.auctions.routes";
 import adminRouter from "./routers/admin.routes";
 import adminServiceRouter from "./routers/admin.services.routes";
 import adminVendorsRouter from "./routers/admin.vendors.routes";
+import addressRouter from "./routers/address.routes";
 import auctionRouter from "./routers/auction.routes";
 import authRouter from "./routers/auth.routes";
 import categoryRouter from "./routers/category.routes";
@@ -65,6 +66,7 @@ app.use("/api/v1/admins/auctions", adminAuctionsRouter);
 app.use("/api/v1/vendors", vendorRouter);
 app.use("/api/v1/admins/vendors", adminVendorsRouter);
 app.use("/api/v1/user-tracking", userTrackingRouter);
+app.use("/api/v1/addresses", addressRouter);
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
