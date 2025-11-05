@@ -84,7 +84,11 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           {/* Notifications */}
-          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+          <TouchableOpacity
+            onPress={() => router.push("/notifications")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
             <View className="flex-row items-center">
               <Feather name="bell" size={20} color="#374151" />
               <Text className="text-base text-gray-900 ml-3">
@@ -95,7 +99,11 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           {/* Orders */}
-          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+          <TouchableOpacity
+            onPress={() => router.push("/orders")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
             <View className="flex-row items-center">
               <Feather name="package" size={20} color="#374151" />
               <Text className="text-base text-gray-900 ml-3">My Orders</Text>

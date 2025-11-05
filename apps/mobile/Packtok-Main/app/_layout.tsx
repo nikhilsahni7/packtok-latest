@@ -369,6 +369,22 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="orders"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="notifications"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
             name="modal"
             options={{ presentation: "modal", title: "Modal" }}
           />
