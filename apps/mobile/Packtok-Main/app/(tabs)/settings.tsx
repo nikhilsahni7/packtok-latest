@@ -134,7 +134,11 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           {/* Address */}
-          <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-100">
+          <TouchableOpacity
+            onPress={() => router.push("/addresses")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
             <View className="flex-row items-center">
               <Feather name="map-pin" size={20} color="#374151" />
               <Text className="text-base text-gray-900 ml-3">
