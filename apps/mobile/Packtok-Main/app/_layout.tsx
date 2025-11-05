@@ -127,6 +127,13 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="services/maintenance-form"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="services/consultancy"
             options={{
               headerShown: false,
@@ -134,7 +141,28 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="services/consultancy-form"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="services/sell-machine-form"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="services/investment-takeover"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="services/investment-takeover-form"
             options={{
               headerShown: false,
               gestureEnabled: true,
@@ -212,6 +240,13 @@ function RootLayoutNav() {
           />
           <Stack.Screen
             name="bidding"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="bidding/[id]"
             options={{
               headerShown: false,
               gestureEnabled: true,

@@ -1,106 +1,248 @@
+import {
+  CountdownTimer,
+  LiveBiddingSection,
+  RegularBiddingSection,
+  ReverseBiddingSection,
+} from "@/components/bidding";
+import { usePublicAuctions } from "@/hooks/useAuctions";
+import { Auction } from "@/types/auction";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useMemo } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+const { width } = Dimensions.get("window");
+
+const asDate = (value: string | null | undefined) => {
+  if (!value) {
+    return null;
+  }
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
 
 export default function BiddingScreen() {
   const router = useRouter();
+  const {
+    data: auctions = [],
+    isLoading,
+    isError,
+    refetch,
+  } = usePublicAuctions();
+
+  const liveAuctions = useMemo(
+    () => auctions.filter((auction) => auction.status === "LIVE"),
+    [auctions]
+  );
+
+  const upcomingAuctions = useMemo(
+    () =>
+      auctions.filter((auction) =>
+        ["SCHEDULED", "DRAFT"].includes(auction.status)
+      ),
+    [auctions]
+  );
+
+  const reverseAuctions = useMemo(
+    () =>
+      auctions.filter(
+        (auction) =>
+          auction.mode === "REVERSE" &&
+          ["SCHEDULED", "DRAFT", "LIVE"].includes(auction.status)
+      ),
+    [auctions]
+  );
+
+  const handleSelectAuction = (auctionId: string) => {
+    if (!auctionId) {
+      return;
+    }
+    router.push(`/bidding/${auctionId}` as any);
+  };
+
+  const pickNextAuction = (
+    candidates: Auction[],
+    extractor: (auction: Auction) => string
+  ) => {
+    if (candidates.length === 0) {
+      return null;
+    }
+    const sorted = [...candidates].sort((a, b) => {
+      const aDate = asDate(extractor(a));
+      const bDate = asDate(extractor(b));
+      const aTime = aDate ? aDate.getTime() : Number.POSITIVE_INFINITY;
+      const bTime = bDate ? bDate.getTime() : Number.POSITIVE_INFINITY;
+      return aTime - bTime;
+    });
+    return sorted[0] ?? null;
+  };
+
+  const nextAuction = useMemo(() => {
+    const active = pickNextAuction(liveAuctions, (auction) => auction.endAt);
+    if (active) {
+      return active;
+    }
+    return pickNextAuction(upcomingAuctions, (auction) => auction.startAt);
+  }, [liveAuctions, upcomingAuctions]);
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
-      <StatusBar style="dark" />
+    <View className="flex-1 bg-gray-50 relative">
+      <StatusBar style="light" />
 
-      {/* Header */}
-      <View className="bg-white px-5 py-4 border-b border-gray-200">
-        <View className="flex-row items-center">
+      {/* Blue Bubble - Top Right */}
+      <Image
+        source={require("@/assets/images/bubble 02.png")}
+        className="absolute"
+        style={{
+          top: -width * 0.1,
+          left: -width * 0.27,
+          width: width * 1,
+          height: width * 0.9,
+        }}
+        resizeMode="contain"
+      />
+
+      <Image
+        source={require("@/assets/images/bubble 01.png")}
+        className="absolute"
+        style={{
+          top: -width * 0.1,
+          left: -width * 0.27,
+          width: width * 0.7,
+          height: width * 0.9,
+        }}
+        resizeMode="contain"
+      />
+
+      {/* Header - Matching Marketplace */}
+      <View className="px-4 pt-12 relative z-50 pb-3">
+        <View className="flex-row items-center justify-between">
+          {/* Menu Icon */}
           <TouchableOpacity
+            className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full justify-center relative z-20"
             onPress={() => router.back()}
-            className="mr-4 p-2 -ml-2"
-            activeOpacity={0.7}
           >
-            <Feather name="arrow-left" size={24} color="#000" />
+            <Feather name="menu" size={24} color="black" />
           </TouchableOpacity>
-          <Text className="text-xl font-bold text-gray-900">Bidding</Text>
+
+          {/* Center - Logo */}
+          <Image
+            source={require("@/assets/images/logo-removebg.png")}
+            style={{ width: 200, height: 100 }}
+            resizeMode="contain"
+          />
+
+          {/* Right Icons */}
+          <View className="flex-row items-center">
+            {/* Notification Bell */}
+            <TouchableOpacity className="relative w-10 h-10 items-center justify-center">
+              <Feather name="bell" size={22} color="black" />
+              <View className="absolute top-2 right-2 bg-red-500 rounded-full w-2 h-2" />
+            </TouchableOpacity>
+
+            {/* Shopping Cart */}
+            <TouchableOpacity className="w-10 h-10 items-center justify-center">
+              <Feather name="shopping-cart" size={22} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
-      {/* Coming Soon Content - Scrollable */}
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="px-8 py-12"
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Main Content */}
-        <View className="items-center relative">
-          {/* Bidding Icon */}
-          <View className="w-32 h-32 rounded-full bg-[#FF8C42]/10 items-center justify-center mb-6">
-            <Feather name="briefcase" size={64} color="#FF8C42" />
-          </View>
-
-          {/* Coming Soon Badge */}
-          <View className="bg-[#FF8C42] px-6 py-2 rounded-full mb-4">
-            <Text className="text-white font-bold text-sm">COMING SOON</Text>
-          </View>
-
-          {/* Title */}
-          <Text className="text-2xl font-bold text-gray-900 mb-3 text-center">
-            Bidding Platform
+      {/* Main Content */}
+      {isLoading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+          <Text className="text-gray-500 mt-4">Loading auctions...</Text>
+        </View>
+      ) : isError ? (
+        <View className="flex-1 items-center justify-center px-8">
+          <Feather name="alert-circle" size={64} color="#EF4444" />
+          <Text className="text-xl font-bold text-gray-900 mt-4 mb-2">
+            Failed to Load Auctions
           </Text>
-
-          {/* Description */}
-          <Text className="text-base text-gray-600 text-center leading-6 mb-8">
-            We&apos;re working hard to bring you an exciting bidding experience.
-            Stay tuned for updates!
+          <Text className="text-gray-500 text-center mb-6">
+            Unable to fetch auction data. Please try again.
           </Text>
-
-          {/* Features Preview */}
-          <View className="w-full bg-gray-50 rounded-2xl p-6 mb-6">
-            <Text className="text-lg font-semibold text-gray-900 mb-4">
-              What to expect:
-            </Text>
-
-            <View>
-              <View className="flex-row items-start mb-3">
-                <View className="w-6 h-6 rounded-full bg-[#FF8C42] items-center justify-center mr-3 mt-0.5">
-                  <Feather name="check" size={14} color="white" />
-                </View>
-                <Text className="flex-1 text-gray-700">
-                  Real-time bidding on machinery and equipment
-                </Text>
-              </View>
-
-              <View className="flex-row items-start mb-3">
-                <View className="w-6 h-6 rounded-full bg-[#FF8C42] items-center justify-center mr-3 mt-0.5">
-                  <Feather name="check" size={14} color="white" />
-                </View>
-                <Text className="flex-1 text-gray-700">
-                  Competitive pricing and transparent process
-                </Text>
-              </View>
-
-              <View className="flex-row items-start">
-                <View className="w-6 h-6 rounded-full bg-[#FF8C42] items-center justify-center mr-3 mt-0.5">
-                  <Feather name="check" size={14} color="white" />
-                </View>
-                <Text className="flex-1 text-gray-700">
-                  Secure transactions and verified sellers
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Notify Me Button */}
           <TouchableOpacity
-            className="w-full bg-[#FF8C42] py-4 rounded-full items-center mb-6"
-            activeOpacity={0.8}
+            onPress={() => refetch()}
+            className="bg-black px-8 py-3 rounded-lg"
+            activeOpacity={0.7}
           >
-            <Text className="text-white font-semibold text-base">
-              Notify Me When Available
-            </Text>
+            <Text className="text-white font-semibold">Retry</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      ) : (
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          {/* Countdown Timer */}
+          <CountdownTimer nextAuction={nextAuction} />
+
+          {/* Live Bidding Header */}
+          <View className="px-4 flex-row items-center justify-between mb-4">
+            <View className="flex-row items-center">
+              <View className="w-3 h-3 rounded-full bg-green-500 mr-2" />
+              <Text className="text-[18px] font-semibold text-gray-900">
+                Live Bidding
+              </Text>
+            </View>
+            <TouchableOpacity>
+              <Text className="text-sm font-medium text-gray-600">
+                View all <Text className="text-lg">›</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Live Bidding Section */}
+          <LiveBiddingSection
+            auctions={liveAuctions}
+            onSelectAuction={handleSelectAuction}
+          />
+
+          {/* Regular Bidding Header */}
+          <View className="px-4 flex-row items-center justify-between mb-4 mt-6">
+            <Text className="text-[18px] font-semibold text-gray-900">
+              Regular Bidding
+            </Text>
+            <TouchableOpacity>
+              <Text className="text-sm font-medium text-gray-600">
+                View all <Text className="text-lg">›</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Regular Bidding Section */}
+          <RegularBiddingSection
+            auctions={upcomingAuctions}
+            onSelectAuction={handleSelectAuction}
+          />
+
+          {/* Reverse Bidding Header */}
+          <View className="px-4 flex-row items-center justify-between mb-4 mt-6">
+            <Text className="text-[18px] font-semibold text-gray-900">
+              Reverse Bidding
+            </Text>
+            <TouchableOpacity>
+              <Text className="text-sm font-medium text-gray-600">
+                View all <Text className="text-lg">›</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Reverse Bidding Section */}
+          <ReverseBiddingSection
+            auctions={reverseAuctions}
+            onSelectAuction={handleSelectAuction}
+          />
+        </ScrollView>
+      )}
+    </View>
   );
 }

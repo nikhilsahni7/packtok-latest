@@ -5,11 +5,11 @@ import React from "react";
 import {
   Dimensions,
   Image,
+  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  Linking,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -107,17 +107,14 @@ export default function MaintenanceScreen() {
             {/* Rating */}
             <View className="flex-column items-center ">
               <View className="flex-row  items-center border border-[#0063F7] px-3 py-1.5 rounded-[10px]">
-
                 <Feather name="star" size={14} color="#2563EB" />
                 <Text className="text-blue-600 text-xs ml-1 font-medium">
                   4.8
                 </Text>
-
               </View>
 
               <View className="mt-1">
                 <Text className="text-blue-600 text-xs ml-1">45 ratings</Text>
-
               </View>
             </View>
           </View>
@@ -125,17 +122,16 @@ export default function MaintenanceScreen() {
           {/* Description */}
           <View className="mb-6">
             <Text className="text-gray-700 leading-6 text-base">
-              A turnkey project is a contract-based solution where the
-              contractor manages everything from design and procurement to
-              construction, installation, and final commissioning. For your
-              project, Packtok will ensure client involvement is day-to-day
-              management and ensures efficiency, quality, and timely completion
-              of project.
+              Professional maintenance services for your machinery and
+              equipment. We offer preventive, corrective, predictive, and
+              emergency maintenance to ensure your operations run smoothly and
+              efficiently.
             </Text>
           </View>
 
           {/* Fill the Form Button */}
           <TouchableOpacity
+            onPress={() => router.push("/services/maintenance-form" as any)}
             className="bg-black rounded-full py-4 items-center shadow-lg mb-4"
             activeOpacity={0.8}
           >

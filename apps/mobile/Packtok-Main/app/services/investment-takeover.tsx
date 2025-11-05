@@ -132,6 +132,9 @@ export default function InvestmentTakeoverScreen() {
 
           {/* Fill the Form Button */}
           <TouchableOpacity
+            onPress={() =>
+              router.push("/services/investment-takeover-form" as any)
+            }
             className="bg-black rounded-full py-4 items-center shadow-lg mb-4"
             activeOpacity={0.8}
           >
