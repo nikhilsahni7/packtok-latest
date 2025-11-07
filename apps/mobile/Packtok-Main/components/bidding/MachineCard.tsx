@@ -30,7 +30,7 @@ export function MachineCard({
 }: MachineCardProps) {
   return (
     <View
-      className="w-80 bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 mr-4"
+      className="w-[320px] bg-[#F0F0F0] rounded-2xl overflow-hidden shadow-lg border border-gray-100 mr-4"
       style={style}
     >
       {/* Machine Image */}
@@ -66,29 +66,34 @@ export function MachineCard({
       </View>
 
       {/* Card Content */}
-      <View className="p-5 space-y-6">
+      <View className="p-5 space-y-6 w-full">
         {/* Starting Price */}
-        <View className="space-y-2">
-          <Text className="text-sm text-gray-600 font-semibold uppercase tracking-wide">
-            {priceLabel}
-          </Text>
-          <Text className="text-3xl font-black text-gray-900">
-            {startingPrice}
-          </Text>
-          {meta && <Text className="text-sm text-gray-600">{meta}</Text>}
+        <View className="flex-row  items-center justify-between space-y-2">
+          <View>
+
+            <Text className="text-sm text-black font-semibold uppercase tracking-wide">
+              {priceLabel}
+            </Text>
+            <Text className="text-[14px] font-medium  text-black">
+              {startingPrice}
+            </Text>
+            {meta && <Text className="text-[10px] mt-2 text-black">{meta}</Text>}
+
+          </View>
+
+          {/* Call to action */}
+          <TouchableOpacity
+            onPress={onPress}
+            disabled={disabled}
+            className={` h-12 px-6 rounded-full items-center justify-center  ${disabled ? "bg-gray-400" : "bg-black active:bg-gray-800"
+              }`}
+            activeOpacity={0.7}
+          >
+            <Text className="text-white text-[12px] font-semibold">{ctaLabel}</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Call to action */}
-        <TouchableOpacity
-          onPress={onPress}
-          disabled={disabled}
-          className={`w-full h-14 rounded-lg items-center justify-center shadow-md ${
-            disabled ? "bg-gray-400" : "bg-black active:bg-gray-800"
-          }`}
-          activeOpacity={0.7}
-        >
-          <Text className="text-white text-lg font-semibold">{ctaLabel}</Text>
-        </TouchableOpacity>
+
       </View>
     </View>
   );

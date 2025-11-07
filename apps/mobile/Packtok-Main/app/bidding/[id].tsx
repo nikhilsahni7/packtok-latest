@@ -216,13 +216,12 @@ export default function AuctionDetailScreen() {
           {/* Status Badge */}
           <View className="absolute top-4 left-4">
             <View
-              className={`px-3 py-1.5 rounded-full ${
-                isLive
-                  ? "bg-red-500"
-                  : auction.status === "SCHEDULED"
-                    ? "bg-blue-500"
-                    : "bg-gray-500"
-              }`}
+              className={`px-3 py-1.5 rounded-full ${isLive
+                ? "bg-red-500"
+                : auction.status === "SCHEDULED"
+                  ? "bg-blue-500"
+                  : "bg-gray-500"
+                }`}
             >
               <Text className="text-white text-xs font-bold uppercase">
                 {auction.status}
@@ -232,7 +231,7 @@ export default function AuctionDetailScreen() {
 
           {/* Image Thumbnails */}
           {auction.product?.images && auction.product.images.length > 1 && (
-            <View className="absolute bottom-4 left-0 right-0 px-4">
+            <View className="my-4 px-4">
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -241,7 +240,7 @@ export default function AuctionDetailScreen() {
                 {auction.product.images.slice(0, 4).map((img, idx) => (
                   <View
                     key={idx}
-                    className="w-16 h-16 rounded-lg overflow-hidden border-2 border-white"
+                    className="w-20 h-20 mr-4 rounded-lg overflow-hidden border border-black"
                   >
                     <Image
                       source={{ uri: img }}
@@ -256,59 +255,63 @@ export default function AuctionDetailScreen() {
         </View>
 
         {/* Product Title */}
-        <View className="px-4 py-6 border-b border-gray-200">
-          <Text className="text-2xl font-bold text-gray-900">
+        <View className="mt-24 px-4 py-6">
+          <Text className="text-[20px] font-bold text-gray-900">
             {auction.product?.title || "Corrugated Machinery"}
           </Text>
         </View>
 
         {/* Timer Section */}
         {isLive && (
-          <View className="px-4 py-6 bg-gray-50 border-b border-gray-200">
-            <Text className="text-center text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">
-              Auction Ends In
-            </Text>
-            <View className="flex-row justify-center items-center space-x-3">
-              {/* Hours */}
-              <View className="items-center">
-                <View className="bg-black rounded-xl px-4 py-3 min-w-[70px]">
-                  <Text className="text-white text-3xl font-bold text-center">
-                    {timeRemaining.hours}
+          <View className="px-4 py-4 ">
+            <View className="flex-row  items-center justify-between ">
+              <Text className="text-center text-[1rem] font-semibold text-black capitalize  mb-4">
+                Auction Ends In
+              </Text>
+
+              <View className="flex-row justify-center items-center space-x-3">
+                {/* Hours */}
+                <View className="items-center">
+                  <View className="bg-black rounded-xl px-2 py-3 min-w-[70px]">
+                    <Text className="text-white text-[16px] font-bold text-center">
+                      {timeRemaining.hours}
+                    </Text>
+                  </View>
+                  <Text className="text-black text-xs mt-2 uppercase">
+                    Hours
                   </Text>
                 </View>
-                <Text className="text-gray-600 text-xs mt-2 uppercase">
-                  Hours
-                </Text>
-              </View>
 
-              <Text className="text-2xl font-bold text-gray-400">:</Text>
+                <Text className="text-2xl font-bold text-gray-400">:</Text>
 
-              {/* Minutes */}
-              <View className="items-center">
-                <View className="bg-black rounded-xl px-4 py-3 min-w-[70px]">
-                  <Text className="text-white text-3xl font-bold text-center">
-                    {timeRemaining.minutes}
+                {/* Minutes */}
+                <View className="items-center">
+                  <View className="bg-black rounded-xl px-2 py-3 min-w-[70px]">
+                    <Text className="text-white text-[16px] font-bold text-center">
+                      {timeRemaining.minutes}
+                    </Text>
+                  </View>
+                  <Text className="text-black text-xs mt-2 uppercase">
+                    Minutes
                   </Text>
                 </View>
-                <Text className="text-gray-600 text-xs mt-2 uppercase">
-                  Minutes
-                </Text>
-              </View>
 
-              <Text className="text-2xl font-bold text-gray-400">:</Text>
+                <Text className="text-2xl font-bold text-gray-400">:</Text>
 
-              {/* Seconds */}
-              <View className="items-center">
-                <View className="bg-black rounded-xl px-4 py-3 min-w-[70px]">
-                  <Text className="text-white text-3xl font-bold text-center">
-                    {timeRemaining.seconds}
+                {/* Seconds */}
+                <View className="items-center">
+                  <View className="bg-black rounded-xl px-2 py-3 min-w-[70px]">
+                    <Text className="text-white text-[16px] font-bold text-center">
+                      {timeRemaining.seconds}
+                    </Text>
+                  </View>
+                  <Text className="text-black text-xs mt-2 uppercase">
+                    Seconds
                   </Text>
                 </View>
-                <Text className="text-gray-600 text-xs mt-2 uppercase">
-                  Seconds
-                </Text>
               </View>
             </View>
+
           </View>
         )}
 
@@ -382,9 +385,8 @@ export default function AuctionDetailScreen() {
               <TouchableOpacity
                 onPress={handlePlaceBid}
                 disabled={isPlacingBid || !bidAmount}
-                className={`h-14 px-6 rounded-lg items-center justify-center ${
-                  isPlacingBid || !bidAmount ? "bg-gray-400" : "bg-black"
-                }`}
+                className={`h-14 px-6 rounded-lg items-center justify-center ${isPlacingBid || !bidAmount ? "bg-gray-400" : "bg-black"
+                  }`}
               >
                 {isPlacingBid ? (
                   <ActivityIndicator color="#fff" />
@@ -429,15 +431,14 @@ export default function AuctionDetailScreen() {
                 >
                   <View className="flex-row items-center flex-1">
                     <View
-                      className={`w-8 h-8 rounded-full items-center justify-center ${
-                        index === 0
-                          ? "bg-yellow-400"
-                          : index === 1
-                            ? "bg-gray-300"
-                            : index === 2
-                              ? "bg-orange-400"
-                              : "bg-gray-200"
-                      }`}
+                      className={`w-8 h-8 rounded-full items-center justify-center ${index === 0
+                        ? "bg-yellow-400"
+                        : index === 1
+                          ? "bg-gray-300"
+                          : index === 2
+                            ? "bg-orange-400"
+                            : "bg-gray-200"
+                        }`}
                     >
                       <Text className="text-xs font-bold text-gray-900">
                         {index + 1}
@@ -469,9 +470,8 @@ export default function AuctionDetailScreen() {
           <TouchableOpacity
             onPress={handleEnroll}
             disabled={isEnrolling}
-            className={`h-14 rounded-lg items-center justify-center shadow-lg ${
-              isEnrolling ? "bg-gray-400" : "bg-black"
-            }`}
+            className={`h-14 rounded-lg items-center justify-center shadow-lg ${isEnrolling ? "bg-gray-400" : "bg-black"
+              }`}
           >
             {isEnrolling ? (
               <ActivityIndicator color="#fff" />
@@ -516,9 +516,8 @@ export default function AuctionDetailScreen() {
               <TouchableOpacity
                 onPress={confirmDeposit}
                 disabled={isEnrolling}
-                className={`flex-1 h-12 rounded-lg items-center justify-center ${
-                  isEnrolling ? "bg-gray-400" : "bg-black"
-                }`}
+                className={`flex-1 h-12 rounded-lg items-center justify-center ${isEnrolling ? "bg-gray-400" : "bg-black"
+                  }`}
               >
                 {isEnrolling ? (
                   <ActivityIndicator color="#fff" size="small" />
