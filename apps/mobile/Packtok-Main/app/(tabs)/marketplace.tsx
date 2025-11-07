@@ -96,7 +96,7 @@ export default function MarketplaceScreen() {
             className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full justify-center relative z-20"
             onPress={() => router.back()}
           >
-            <Feather name="menu" size={24} color="black" />
+            <Feather name="arrow-left" size={24} color="black" />
           </TouchableOpacity>
           {/* Center - Just a dash/line (matching Figma) */}
           <Image

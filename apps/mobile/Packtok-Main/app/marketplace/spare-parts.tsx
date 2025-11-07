@@ -124,10 +124,10 @@ export default function SparePartsScreen() {
         <View className="flex-row items-center justify-between">
           {/* Menu Icon */}
           <TouchableOpacity
-            className="w-10 h-10 items-center justify-center"
+            className="w-10 h-10 bg-[#F2F2F2] rounded-full items-center justify-center"
             onPress={() => router.back()}
           >
-            <Feather name="menu" size={24} color="#000" />
+            <Feather name="arrow-left" size={24} color="#000" />
           </TouchableOpacity>
 
           {/* Logo */}
@@ -302,14 +302,10 @@ export default function SparePartsScreen() {
               {products.map((product) => (
                 <TouchableOpacity
                   key={product.id}
-                  className="bg-white rounded-[15px] overflow-hidden mb-4"
+                  className="bg-white rounded-[8px] overflow-hidden mb-4"
                   style={{
                     width: (width - 32) / 3 - 4,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    elevation: 2,
+                   
                   }}
                   activeOpacity={0.8}
                   onPress={() =>
@@ -317,7 +313,7 @@ export default function SparePartsScreen() {
                   }
                 >
                   {/* Product Image */}
-                  <View className="bg-gray-100 w-full rounded-[15px] aspect-square">
+                  <View className="bg-gray-100 w-full rounded-[8px] aspect-square">
                     <Image
                       source={
                         product.imagesThumbnail || product.images?.[0]

@@ -146,7 +146,7 @@ export default function ConsumablesScreen() {
             className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full  justify-center"
             onPress={() => router.back()}
           >
-            <Feather name="menu" size={24} color="#000" />
+            <Feather name="arrow-left" size={24} color="#000" />
           </TouchableOpacity>
 
           {/* Logo */}
@@ -325,14 +325,9 @@ export default function ConsumablesScreen() {
               {products.map((product) => (
                 <TouchableOpacity
                   key={product.id}
-                  className=" rounded-[15px] overflow-hidden mb-4"
+                  className=" rounded-[8px] overflow-hidden mb-4"
                   style={{
                     width: (width - 32) / 3 - 4,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    elevation: 2,
                   }}
                   activeOpacity={0.8}
                   onPress={() =>
@@ -350,7 +345,7 @@ export default function ConsumablesScreen() {
                           : require("@/assets/images/splash-screen-bg.png")
                       }
                       style={{ width: "100%", height: "100%" }}
-                      className="rounded-[15px] h-[140px]"
+                      className="rounded-[8px] h-[140px]"
                       resizeMode="cover"
                     />
                   </View>
