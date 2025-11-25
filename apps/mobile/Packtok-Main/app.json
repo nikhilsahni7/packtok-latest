@@ -4,20 +4,20 @@
     "slug": "Packtok-Main",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/mobile-logo.png",
     "scheme": "packtokmain",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.packtok.app",
-      "icon": "./assets/images/logo.png"
+      "icon": "./assets/images/mobile-logo.png"
     },
     "android": {
-      "icon": "./assets/images/logo.png",
+      "icon": "./assets/images/mobile-logo.png",
       "adaptiveIcon": {
-        "backgroundColor": "#FFFFFF",
-        "foregroundImage": "./assets/images/logo.png"
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/images/mobile-logo.png"
       },
       "softwareKeyboardLayoutMode": "pan",
       "edgeToEdgeEnabled": true,
@@ -33,11 +33,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      "expo-router",
-      "expo-video",
-      "expo-font"
-    ],
+    "plugins": ["expo-router", "expo-video", "expo-font"],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
