@@ -1,7 +1,7 @@
 "use client";
 
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { useAuthStore } from "@/store/auth-store";
+import { useAuthStore, useHasHydrated } from "@/store/auth-store";
 import { Loader2 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ReactNode, useEffect } from "react";
@@ -17,10 +17,13 @@ export default function Protected({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const token = useAuthStore((s) => s.accessToken);
+  const hasHydrated = useHasHydrated();
   const { isLoading } = useCurrentUser();
 
   useEffect(() => {
-    if (!token && !isLoading) {
+    // Only redirect after Zustand has hydrated from localStorage
+    // to prevent premature redirects before auth state is restored
+    if (hasHydrated && !token && !isLoading) {
       const current =
         pathname +
         (searchParams?.toString() ? `?${searchParams.toString()}` : "");
@@ -36,9 +39,18 @@ export default function Protected({
       }
       router.replace(url.pathname + (url.search ? url.search : ""));
     }
-  }, [token, isLoading, router, redirectTo, pathname, searchParams]);
+  }, [
+    hasHydrated,
+    token,
+    isLoading,
+    router,
+    redirectTo,
+    pathname,
+    searchParams,
+  ]);
 
-  if (!token || isLoading)
+  // Wait for hydration before making any auth decisions
+  if (!hasHydrated || !token || isLoading)
     return (
       <div className="flex justify-center items-center py-20 h-screen">
         <Loader2 className="h-6 w-6 animate-spin" />
