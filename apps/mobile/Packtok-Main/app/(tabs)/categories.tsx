@@ -41,7 +41,7 @@ const categories = [
   {
     id: "5",
     name: "Man Power",
-    icon: require("@/assets/images/manpower.jpg"),
+    icon: require("@/assets/images/manpower2.jpg"),
     available: true,
   },
   {

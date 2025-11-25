@@ -51,7 +51,7 @@ export default function ManpowerScreen() {
         {/* Hero Image */}
         <View className="relative">
           <Image
-            source={require("@/assets/images/manpower.jpg")}
+            source={require("@/assets/images/manpower2.jpg")}
             style={{ width: width, height: width * 0.75 }}
             resizeMode="cover"
           />

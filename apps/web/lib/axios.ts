@@ -43,6 +43,9 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfigWithRetry;
 
+    // Endpoints that should NOT trigger token refresh on 401/403
+    // IMPORTANT: /api/v1/auth/refresh MUST be here to prevent infinite loop
+    // when the refresh token itself is expired
     const unauthenticatedEndpoints = [
       "/api/v1/auth/login",
       "/api/v1/auth/signup",
@@ -51,6 +54,8 @@ api.interceptors.response.use(
       "/api/v1/auth/signup-vendor",
       "/api/v1/auth/forgot-password/request",
       "/api/v1/auth/forgot-password/confirm",
+      "/api/v1/auth/refresh",
+      "/api/v1/auth/logout",
     ];
 
     const isUnauthEndpoint = unauthenticatedEndpoints.some((ep) =>
