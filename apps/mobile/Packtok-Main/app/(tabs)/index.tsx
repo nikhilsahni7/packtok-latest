@@ -127,7 +127,7 @@ export default function HomeScreen() {
             {/* Category Item 1 */}
             <TouchableOpacity
               className="items-center mr-4"
-              onPress={() => router.push("/categories")}
+              onPress={() => router.push("/marketplace/machinery")}
               activeOpacity={0.7}
             >
               <View className="w-16 h-16 rounded-[15px] overflow-hidden bg-gray-200">

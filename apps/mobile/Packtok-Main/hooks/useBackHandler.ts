@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback } from "react";
 import { BackHandler, Platform } from "react-native";
 import { useAuthStore } from "../store/auth-store";
 
@@ -11,12 +11,11 @@ export function useBackHandler(screen: string) {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
 
-  useEffect(() => {
-    if (Platform.OS !== "android") return;
+  useFocusEffect(
+    useCallback(() => {
+      if (Platform.OS !== "android") return;
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
+      const onBackPress = () => {
         // If on home screen and logged in, exit app instead of going back
         if (screen === "home" && isAuthenticated) {
           BackHandler.exitApp();
@@ -32,9 +31,14 @@ export function useBackHandler(screen: string) {
 
         // Default behavior
         return false;
-      }
-    );
+      };
 
-    return () => backHandler.remove();
-  }, [screen, isAuthenticated, router]);
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+
+      return () => backHandler.remove();
+    }, [screen, isAuthenticated, router])
+  );
 }

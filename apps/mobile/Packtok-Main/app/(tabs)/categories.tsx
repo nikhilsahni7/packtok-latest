@@ -159,8 +159,7 @@ export default function CategoriesScreen() {
 
       {/* Background Bubbles - Blue and Orange Combo */}
       {/* Orange Bubble - Top Left */}
-      <Image
-        source={require("@/assets/images/bubble 01.png")}
+      <View
         className="absolute z-10"
         style={{
           top: -width * 0.1,
@@ -168,12 +167,17 @@ export default function CategoriesScreen() {
           width: width * 0.7,
           height: width * 0.9,
         }}
-        resizeMode="contain"
-      />
+        pointerEvents="none"
+      >
+        <Image
+          source={require("@/assets/images/bubble 01.png")}
+          style={{ width: "100%", height: "100%" }}
+          resizeMode="contain"
+        />
+      </View>
 
       {/* Blue Bubble - Top Right */}
-      <Image
-        source={require("@/assets/images/bubble 02.png")}
+      <View
         className="absolute"
         style={{
           top: -width * 0.1,
@@ -181,8 +185,14 @@ export default function CategoriesScreen() {
           width: width * 1,
           height: width * 0.9,
         }}
-        resizeMode="contain"
-      />
+        pointerEvents="none"
+      >
+        <Image
+          source={require("@/assets/images/bubble 02.png")}
+          style={{ width: "100%", height: "100%" }}
+          resizeMode="contain"
+        />
+      </View>
 
       {/* Orange Bubble - Bottom Left */}
       {/* <Image
