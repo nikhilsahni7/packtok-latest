@@ -8,7 +8,8 @@ import { useEffect } from "react";
 
 export function useCurrentUser() {
   const setUser = useAuthStore((s) => s.setUser);
-  const accessToken = useAuthStore.getState().accessToken;
+  // Use reactive selector instead of getState() to properly re-enable query after hydration
+  const accessToken = useAuthStore((s) => s.accessToken);
 
   const query = useQuery<User, Error>({
     queryKey: ["me"],
