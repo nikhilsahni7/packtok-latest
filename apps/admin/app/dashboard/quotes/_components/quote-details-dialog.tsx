@@ -1,16 +1,16 @@
 "use client";
 
-import React from "react";
 import { Button } from "@packtok/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from "@packtok/ui/dialog";
-import { QuoteRequest, QuoteStatus } from "../../../../types/product";
 import Image from "next/image";
+import React from "react";
+import { QuoteRequest, QuoteStatus } from "../../../../types/product";
 
 interface QuoteDetailsDialogProps {
   quote: QuoteRequest | null;
@@ -68,10 +68,10 @@ export function QuoteDetailsDialog({
               <div>
                 <p className="text-sm font-medium">{quote.user?.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {quote.user?.email}
+                  Email: {quote.email}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {quote.user?.phone_number}
+                  Phone: {quote.phone}
                 </p>
               </div>
               <div>

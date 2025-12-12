@@ -99,6 +99,8 @@ export interface ProductFilters {
 export interface CreateQuotePayload {
   productId: string;
   companyName: string;
+  PhoneNo: string;
+  Email: string;
   address: string;
   message: string;
   additionalInfo?: string;

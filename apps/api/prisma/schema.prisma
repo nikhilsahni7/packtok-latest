@@ -431,6 +431,8 @@ model QuoteRequest {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   companyName    String
+  phone          String
+  email          String
   address        String
   message        String      @db.Text
   additionalInfo String?     @db.Text

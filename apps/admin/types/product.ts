@@ -73,6 +73,8 @@ export interface QuoteRequest {
   createdAt: string;
   updatedAt: string;
   companyName: string;
+  phone: string;
+  email: string;
   address: string;
   message: string;
   additionalInfo?: string;

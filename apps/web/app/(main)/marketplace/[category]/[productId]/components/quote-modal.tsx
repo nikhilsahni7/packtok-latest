@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import React from "react";
-import { X, Check } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
+import { Check, X } from "lucide-react";
+import React, { useState } from "react";
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -179,13 +178,13 @@ export default function QuoteModal({
                   Email *
                 </label>
                 <input
-                  type="text"
-                  name="companyName"
+                  type="email"
+                  name="Email"
                   value={formData.Email}
                   onChange={handleInputChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Your Email "
+                  placeholder="Your Email"
                 />
               </div>
 

@@ -1,17 +1,19 @@
 import { Request, Response } from "express";
 import {
-  createQuoteRequest,
-  getMyQuoteRequests,
-  getQuoteRequestById,
+    createQuoteRequest,
+    getMyQuoteRequests,
+    getQuoteRequestById,
 } from "../services/quote.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export const createQuote = asyncHandler(async (req: Request, res: Response) => {
-  const { productId, companyName, address, message, additionalInfo } = req.body;
+  const { productId, companyName, PhoneNo, Email, address, message, additionalInfo } = req.body;
   const quote = await createQuoteRequest(req.user!.id, {
     productId,
     companyName,
+    phone: PhoneNo,
+    email: Email,
     address,
     message,
     additionalInfo,
