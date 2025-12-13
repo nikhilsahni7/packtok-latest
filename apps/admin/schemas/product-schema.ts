@@ -44,6 +44,10 @@ export const productSchema = z.object({
     .string()
     .max(5000, "Additional info must be less than 5000 characters")
     .optional(),
+  // Cart & Purchase Settings
+  cartEnabled: z.boolean().optional(),
+  currency: z.string().optional(),
+  displayPrice: z.boolean().optional(),
 });
 
 export const updateProductSchema = productSchema.partial();

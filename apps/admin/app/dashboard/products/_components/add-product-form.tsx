@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@packtok/ui/components/select";
+import { Switch } from "@packtok/ui/components/switch";
 import { Textarea } from "@packtok/ui/components/textarea";
 import {
   FileText,
@@ -131,6 +132,9 @@ export default function AddProductForm() {
       category: "",
       subCategory: "",
       specifications: "",
+      cartEnabled: false,
+      currency: "INR",
+      displayPrice: true,
     },
   });
 
@@ -753,6 +757,91 @@ export default function AddProductForm() {
                   </div>
                 </div>
               </div>
+
+              {/* Cart & Purchase Settings - Only for non-machinery */}
+              {watchedProductType !== "MACHINERY" && (
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-6 rounded-lg shadow-sm border border-emerald-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    🛒 Cart & Purchase Settings
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Configure how customers can purchase this product
+                  </p>
+
+                  <div className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="cartEnabled"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center justify-between rounded-lg border bg-white p-4">
+                          <div>
+                            <FormLabel className="text-base font-medium">Enable Add to Cart</FormLabel>
+                            <p className="text-sm text-gray-500">
+                              When enabled, customers can add this product to cart and checkout with Razorpay.
+                              When disabled, customers will request a quote instead.
+                            </p>
+                          </div>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="currency"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Currency</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select currency" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
+                                <SelectItem value="USD">🇺🇸 USD - US Dollar</SelectItem>
+                                <SelectItem value="AED">🇦🇪 AED - UAE Dirham</SelectItem>
+                                <SelectItem value="EUR">🇪🇺 EUR - Euro</SelectItem>
+                                <SelectItem value="GBP">🇬🇧 GBP - British Pound</SelectItem>
+                                <SelectItem value="CNY">🇨🇳 CNY - Chinese Yuan</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="displayPrice"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col justify-end">
+                            <div className="flex items-center justify-between rounded-lg border bg-white p-3">
+                              <FormLabel className="text-sm font-medium">Show Price to Customers</FormLabel>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="bg-white p-6 rounded-lg shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">

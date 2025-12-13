@@ -13,12 +13,15 @@ import config from "./config";
 import { initSocketServer } from "./realtime/socket";
 import addressRouter from "./routers/address.routes";
 import adminAuctionsRouter from "./routers/admin.auctions.routes";
+import adminOrderRouter from "./routers/admin.order.routes";
 import adminRouter from "./routers/admin.routes";
 import adminServiceRouter from "./routers/admin.services.routes";
 import adminVendorsRouter from "./routers/admin.vendors.routes";
 import auctionRouter from "./routers/auction.routes";
 import authRouter from "./routers/auth.routes";
+import cartRouter from "./routers/cart.routes";
 import categoryRouter from "./routers/category.routes";
+import orderRouter from "./routers/order.routes";
 import productRouter from "./routers/product.routes";
 import quoteRouter from "./routers/quote.routes";
 import serviceRouter from "./routers/service.routes";
@@ -63,10 +66,13 @@ app.use("/api/v1/auctions", auctionRouter);
 app.use("/api/v1/services", serviceRouter);
 app.use("/api/v1/admins/services", adminServiceRouter);
 app.use("/api/v1/admins/auctions", adminAuctionsRouter);
+app.use("/api/v1/admins/orders", adminOrderRouter);
 app.use("/api/v1/vendors", vendorRouter);
 app.use("/api/v1/admins/vendors", adminVendorsRouter);
 app.use("/api/v1/user-tracking", userTrackingRouter);
 app.use("/api/v1/addresses", addressRouter);
+app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/orders", orderRouter);
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
