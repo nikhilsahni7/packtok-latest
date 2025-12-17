@@ -104,6 +104,11 @@ export default function ProductGrid({
     router.push(`/marketplace/${category.slug}/${productId}`);
   };
 
+  const handleProductHover = (productId: string) => {
+    // Prefetch product page on hover for instant navigation
+    router.prefetch(`/marketplace/${category.slug}/${productId}`);
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -230,6 +235,7 @@ export default function ProductGrid({
               key={product.id}
               className="overflow-hidden cursor-pointer group border-none shadow-none"
               onClick={() => handleProductClick(product.id)}
+              onMouseEnter={() => handleProductHover(product.id)}
             >
               <CardContent className="p-0">
                 <div className="relative bg-[#F3F5F7]">
@@ -242,6 +248,7 @@ export default function ProductGrid({
                     alt={product.title}
                     width={400}
                     height={300}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     className="h-48 lg:h-56 w-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-md"
                   />
                 </div>

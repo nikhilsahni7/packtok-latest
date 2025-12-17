@@ -1,12 +1,5 @@
 "use client";
 
-import Image from "next/image";
-// import CategoryItem from "./category-item";
-// import { CategoryItem as CategoryItemType } from "@/types";
-import { Button } from "@packtok/ui";
-import Link from "next/link";
-import { memo } from "react";
-
 import Consumables from "@/assets/consumables2.jpg";
 import Ellipse from "@/assets/Ellipse.png";
 import Ellipse_consumables from "@/assets/Ellipse_consumables.png";
@@ -15,6 +8,9 @@ import ManPower from "@/assets/man-power2.jpg";
 import man_power_bg from "@/assets/man_power_bg.png";
 import RawMaterial from "@/assets/Raw material.webp";
 import spare from "@/assets/spare_part_1.png";
+import { Button } from "@packtok/ui";
+import Image from "next/image";
+import Link from "next/link";
 
 function CategoryList() {
   return (
@@ -28,6 +24,7 @@ function CategoryList() {
             height={450}
             loading="lazy"
             placeholder="blur"
+            sizes="(max-width: 768px) 100vw, 40vw"
             className="w-full border border-[#000] object-cover col-span-2 -translate-y-12  col-start-1 row-start-1"
           />
 
@@ -307,4 +304,4 @@ function CategoryList() {
   );
 }
 
-export default memo(CategoryList);
+export default CategoryList;

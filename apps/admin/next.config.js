@@ -15,8 +15,15 @@ const nextConfig = {
       },
     ],
     unoptimized: false,
+    formats: ["image/avif", "image/webp"],
   },
   output: 'standalone',
+  // Reduce bundle size in production
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production"
+      ? { exclude: ["error", "warn"] }
+      : false,
+  },
 };
 
 module.exports = nextConfig;

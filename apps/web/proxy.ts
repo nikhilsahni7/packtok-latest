@@ -72,7 +72,7 @@ async function fetchUserAndToken(
   }
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Skip static assets and internal paths

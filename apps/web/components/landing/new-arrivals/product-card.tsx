@@ -21,6 +21,14 @@ export default function ProductCard({ product }: ProductCardProps) {
     router.push(`/marketplace/${categorySlug}/${product.id}`);
   };
 
+  const handleMouseEnter = () => {
+    // Prefetch product page on hover for instant navigation
+    const categorySlug = product.category.name
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    router.prefetch(`/marketplace/${categorySlug}/${product.id}`);
+  };
+
   // Determine the image source - use thumbnail if available, otherwise first image
   const imageSrc =
     product.imagesThumbnail || product.images[0] || "/placeholder-image.png";
@@ -29,6 +37,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <div
       className="flex-shrink-0 w-60 sm:w-72 md:w-80 group cursor-pointer"
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
     >
       <Card className="overflow-hidden rounded-none border-none bg-white relative">
         <CardContent className="p-0">
