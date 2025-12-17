@@ -1,10 +1,12 @@
 "use client";
 
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { useAuthStore } from "@/store/auth-store";
 import {
   ChevronDown,
   ChevronUp,
   FileText,
+  MessageSquare,
   Minus,
   Plus,
   Star,
@@ -38,6 +40,10 @@ interface ProductDetailsProps {
     productType: string;
     machineType?: string;
     quantity: number;
+    // Cart settings from admin
+    cartEnabled?: boolean;
+    currency?: string;
+    displayPrice?: boolean;
   };
 }
 
@@ -51,6 +57,11 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
   const images = product.images || [];
   const hasPdf = product.pdfUrl;
+
+  // Cart settings - machinery is always quote-only
+  const isCartEnabled = product.cartEnabled && product.productType !== "MACHINERY";
+  const shouldShowPrice = product.displayPrice !== false;
+  const currency = product.currency || "INR";
 
   const handleQuantityChange = (increment: boolean) => {
     setQuantity((prev) => {
@@ -105,6 +116,18 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             {product.title}
           </h1>
 
+          {/* Price Display - only if displayPrice is true and cart is enabled */}
+          {shouldShowPrice && isCartEnabled && (
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-orange-600">
+                {currency} {Number(product.price).toLocaleString()}
+              </span>
+              {product.quantity > 0 && (
+                <span className="text-sm text-green-600 font-medium">In Stock</span>
+              )}
+            </div>
+          )}
+
           {/* Product Description */}
           <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-normal">
             {product.description}
@@ -129,34 +152,36 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
           {/* Quantity Selector and Download Specification */}
           <div className="space-y-4 sm:space-y-4">
-            {/* Quantity Selector */}
-            <div className="flex items-center justify-start">
-              <div className="flex items-center gap-0">
-                <button
-                  onClick={() => handleQuantityChange(false)}
-                  className={`w-10 h-10 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center ${
-                    quantity <= 1 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  disabled={quantity <= 1}
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="text-xl font-semibold min-w-[3rem] text-center">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => handleQuantityChange(true)}
-                  className={`w-10 h-10 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center ${
-                    quantity >= product.quantity
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  disabled={quantity >= product.quantity}
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
+            {/* Quantity Selector - only show for cart-enabled products */}
+            {isCartEnabled && (
+              <div className="flex items-center justify-start">
+                <div className="flex items-center gap-0">
+                  <button
+                    onClick={() => handleQuantityChange(false)}
+                    className={`w-10 h-10 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center ${
+                      quantity <= 1 ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    disabled={quantity <= 1}
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="text-xl font-semibold min-w-[3rem] text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => handleQuantityChange(true)}
+                    className={`w-10 h-10 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center ${
+                      quantity >= product.quantity
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                    disabled={quantity >= product.quantity}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Download Specifications Button */}
             {hasPdf && (
@@ -175,14 +200,24 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             )}
           </div>
 
-          {/* Send Quote Button */}
+          {/* Dynamic Button: Add to Cart OR Send Quote */}
           <div>
-            <button
-              onClick={handleQuoteClick}
-              className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm sm:text-base"
-            >
-              Send Quote
-            </button>
+            {isCartEnabled ? (
+              <AddToCartButton
+                productId={product.id}
+                productTitle={product.title}
+                disabled={product.quantity <= 0}
+                className="w-full"
+              />
+            ) : (
+              <button
+                onClick={handleQuoteClick}
+                className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm sm:text-base flex items-center justify-center gap-2"
+              >
+                <MessageSquare className="w-5 h-5" />
+                Request Quote
+              </button>
+            )}
           </div>
 
           {/* SKU and Category */}

@@ -8,8 +8,6 @@ import {
 } from "@/components";
 import PodcastsSection from "@/components/landing/podcasts/podcasts-section";
 
-import "/styles/globals.css";
-
 export default function Home() {
   return (
     <main className="fluid-bg">

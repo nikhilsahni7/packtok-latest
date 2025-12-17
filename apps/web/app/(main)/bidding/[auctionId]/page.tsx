@@ -2,38 +2,37 @@
 
 import { useAuctionRealtime } from "@/hooks/useAuctionRealtime";
 import {
-  useAuction,
-  useConfirmEnrollmentPayment,
-  useEnrollInAuction,
-  useMyAuctionEnrollments,
-  usePlaceBid,
+    useAuction,
+    useConfirmEnrollmentPayment,
+    useEnrollInAuction,
+    useMyAuctionEnrollments,
+    usePlaceBid,
 } from "@/hooks/useAuctions";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { loadRazorpayCheckout } from "@/lib/razorpay";
 import { useAuthStore } from "@/store/auth-store";
 import {
-  Auction,
-  AuctionLeaderboardSnapshot,
-  AuctionStatus,
+    Auction,
+    AuctionLeaderboardSnapshot,
+    AuctionStatus,
 } from "@/types/auction";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
 } from "@packtok/ui/components/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@packtok/ui/components/dialog";
 import { Input } from "@packtok/ui/components/input";
-import { Loading } from "@packtok/ui/components/loading";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -339,9 +338,58 @@ export default function AuctionDetailPage() {
 
   if (isLoading || loadingEnrollments) {
     return (
-      <main className="min-h-screen bg-white">
-        <div className="relative h-64">
-          <Loading variant="jimu" />
+      <main className="min-h-screen bg-gray-50">
+        <div className="bg-white">
+          <div className="container mx-auto px-4 lg:px-8 py-6">
+            <div className="h-4 w-24 rounded bg-gray-200 animate-pulse" />
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              {/* Product Images Skeleton */}
+              <div className="grid grid-cols-2 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="aspect-square bg-gray-200 rounded-lg animate-pulse" />
+                ))}
+              </div>
+              {/* Auction Info Skeleton */}
+              <div className="space-y-4">
+                <div className="bg-gray-800 rounded-lg p-6 animate-pulse">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-gray-600 rounded-full" />
+                    <div className="space-y-2">
+                      <div className="h-5 w-32 rounded bg-gray-600" />
+                      <div className="h-3 w-24 rounded bg-gray-700" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="space-y-2">
+                      <div className="h-3 w-20 rounded bg-gray-700" />
+                      <div className="h-5 w-24 rounded bg-gray-600" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 w-20 rounded bg-gray-700" />
+                      <div className="h-5 w-24 rounded bg-gray-600" />
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg border p-6 animate-pulse">
+                  <div className="h-5 w-32 rounded bg-gray-200 mb-4" />
+                  <div className="space-y-3">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="flex items-center justify-between py-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-gray-200" />
+                          <div className="space-y-1">
+                            <div className="h-4 w-24 rounded bg-gray-200" />
+                            <div className="h-3 w-16 rounded bg-gray-200" />
+                          </div>
+                        </div>
+                        <div className="h-4 w-16 rounded bg-gray-200" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     );

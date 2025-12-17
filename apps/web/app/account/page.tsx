@@ -1,22 +1,27 @@
 "use client";
 
-import Protected from "@/components/auth/protected";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { useMyServiceRequests } from "@/hooks/useServiceSubmission";
-import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
+import { ServiceRequest, useMyServiceRequests } from "@/hooks/useServiceSubmission";
 import { Badge } from "@packtok/ui/components/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@packtok/ui/components/card";
+import { Input } from "@packtok/ui/components/input";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { ServiceRequest } from "@/hooks/useServiceSubmission";
 
 export default function AccountPage() {
   const { data: user, isLoading } = useCurrentUser();
   const { data: services, isLoading: servicesLoading } = useMyServiceRequests();
 
-  if (isLoading || !user) return null;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+      </div>
+    );
+  }
 
-  // Helper function to get service type display name
+  if (!user) return null;
+
   const getServiceTypeDisplay = (serviceType: ServiceRequest['serviceType']) => {
     const serviceTypeMap = {
       MAINTENANCE: "Maintenance",
@@ -29,7 +34,6 @@ export default function AccountPage() {
     return serviceTypeMap[serviceType] || serviceType;
   };
 
-  // Helper function to get status color
   const getStatusColor = (status: ServiceRequest['status']) => {
     const statusColors = {
       SUBMITTED: "bg-blue-100 text-blue-800",
@@ -47,137 +51,92 @@ export default function AccountPage() {
   };
 
   return (
-    <Protected>
-      <div className="max-w-5xl mx-auto pb-20 pt-24 px-4">
-        <h1 className="text-3xl font-bold mb-10 text-center">My Account</h1>
-        <div className="grid md:grid-cols-3 gap-10">
-          {/* Sidebar */}
-          <aside className="bg-gray-100 rounded-lg p-6 space-y-6">
-            <div className="flex flex-col items-center text-center space-y-2">
-              <div className="h-24 w-24 rounded-full bg-gray-300 flex items-center justify-center text-3xl font-semibold text-white">
-                {user.name?.[0] ?? user.email[0]}
-              </div>
-              <h2 className="font-semibold">{user.name}</h2>
-            </div>
-            <nav className="space-y-4 text-sm">
-              <span className="block font-medium text-primary">Account</span>
-              <span className="block text-muted-foreground">Address</span>
-              <span className="block text-muted-foreground">Orders</span>
-              <span className="block text-muted-foreground">Wishlist</span>
-              <span className="block font-medium text-primary">Services</span>
-              <Button variant="link" className="px-0" asChild>
-                <Link href="/">Log Out</Link>
-              </Button>
-            </nav>
-          </aside>
-
-          {/* Details */}
-          <section className="md:col-span-2 space-y-10">
+    <div className="space-y-8">
+      {/* Account Details */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Account Details</h2>
+        <div className="bg-white border rounded-xl p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h3 className="text-lg font-semibold mb-4">Account Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input
-                  placeholder="First name"
-                  value={user.name?.split(" ")[0] || ""}
-                  readOnly
-                />
-                <Input
-                  placeholder="Last name"
-                  value={user.name?.split(" ").slice(1).join(" ") || ""}
-                  readOnly
-                />
-                <Input
-                  placeholder="Display name"
-                  value={user.name || user.email}
-                  readOnly
-                  className="md:col-span-2"
-                />
-                <Input
-                  placeholder="Email"
-                  value={user.email}
-                  readOnly
-                  className="md:col-span-2"
-                />
-                <Input
-                  placeholder="Phone number"
-                  value={user.phone_number ?? "-"}
-                  readOnly
-                  className="md:col-span-2"
-                />
-                <Input
-                  placeholder="Country"
-                  value={user.country ?? "-"}
-                  readOnly
-                  className="md:col-span-2"
-                />
-              </div>
+              <label className="block text-sm font-medium text-gray-500 mb-1">First Name</label>
+              <Input value={user.name?.split(" ")[0] || ""} readOnly className="bg-gray-50" />
             </div>
-
-            {/* Services Section */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">My Service Requests</h3>
-              {servicesLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                </div>
-              ) : services && services.length > 0 ? (
-                <div className="space-y-4">
-                  {services.map((service) => (
-                    <Card key={service.id} className="hover:shadow-md transition-shadow">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-1">
-                            <CardTitle className="text-base">
-                              {getServiceTypeDisplay(service.serviceType)}
-                            </CardTitle>
-                            <p className="text-sm text-muted-foreground">
-                              Submitted on {new Date(service.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <Badge className={getStatusColor(service.status)}>
-                            {service.status.replace(/_/g, ' ')}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="font-medium">Service ID:</span>
-                            <p className="text-muted-foreground">{service.id}</p>
-                          </div>
-                          <div>
-                            <span className="font-medium">Last Updated:</span>
-                            <p className="text-muted-foreground">
-                              {new Date(service.updatedAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                          {service.assignedToId && (
-                            <div>
-                              <span className="font-medium">Assigned:</span>
-                              <p className="text-muted-foreground">Yes</p>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <Card className="text-center py-8">
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">
-                      You haven&apos;t submitted any service requests yet.
-                    </p>
-                    <Button asChild>
-                      <Link href="/services">Browse Services</Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              )}
+              <label className="block text-sm font-medium text-gray-500 mb-1">Last Name</label>
+              <Input value={user.name?.split(" ").slice(1).join(" ") || ""} readOnly className="bg-gray-50" />
             </div>
-          </section>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
+              <Input value={user.email} readOnly className="bg-gray-50" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-500 mb-1">Phone Number</label>
+              <Input value={user.phone_number ?? "-"} readOnly className="bg-gray-50" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-500 mb-1">Country</label>
+              <Input value={user.country ?? "-"} readOnly className="bg-gray-50" />
+            </div>
+          </div>
         </div>
       </div>
-    </Protected>
+
+      {/* Services Section */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">My Service Requests</h2>
+        {servicesLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+          </div>
+        ) : services && services.length > 0 ? (
+          <div className="space-y-4">
+            {services.map((service) => (
+              <Card key={service.id} className="hover:shadow-md transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1">
+                      <CardTitle className="text-base">
+                        {getServiceTypeDisplay(service.serviceType)}
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        Submitted on {new Date(service.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Badge className={getStatusColor(service.status)}>
+                      {service.status.replace(/_/g, ' ')}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="font-medium">Service ID:</span>
+                      <p className="text-muted-foreground font-mono text-xs">{service.id}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Last Updated:</span>
+                      <p className="text-muted-foreground">
+                        {new Date(service.updatedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Card className="text-center py-8">
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                You haven&apos;t submitted any service requests yet.
+              </p>
+              <Link href="/services" className="inline-block px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                Browse Services
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
   );
 }

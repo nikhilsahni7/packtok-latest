@@ -254,7 +254,7 @@ export default function ProductGrid({
                   </h3>
                   {product.productType !== "MACHINERY" && (
                     <p className="text-lg font-bold text-gray-900">
-                      ${product.price || "39.99"}
+                      ₹{parseFloat(product.price || "0").toLocaleString("en-IN")}
                     </p>
                   )}
                 </div>

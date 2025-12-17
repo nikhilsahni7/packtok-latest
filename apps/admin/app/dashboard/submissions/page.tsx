@@ -1,19 +1,8 @@
-import { fetchJson } from "../../../lib/fetcher";
-import { Submission } from "../../../hooks";
+"use client";
+
 import { SubmissionsTable } from "./_components/submissions-table";
 
-async function getSubmissions(): Promise<Submission[]> {
-  try {
-    return await fetchJson<Submission[]>("/api/v1/admins/submissions");
-  } catch (error) {
-    console.error("Failed to fetch submissions:", error);
-    return [];
-  }
-}
-
-export default async function SubmissionsPage() {
-  const submissions = await getSubmissions();
-
+export default function SubmissionsPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -28,7 +17,7 @@ export default async function SubmissionsPage() {
         </div>
       </div>
 
-      <SubmissionsTable initialSubmissions={submissions} />
+      <SubmissionsTable />
     </div>
   );
 }

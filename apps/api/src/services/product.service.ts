@@ -60,8 +60,26 @@ const ensureCategory = async (
   throw new ApiError(400, "Category id or name is required");
 };
 
+/**
+ * Parse product data from form submission.
+ * Form data sends booleans as strings, so we need to convert them.
+ */
+const parseProductData = (data: any) => {
+  const parsed = { ...data };
+
+  // Parse boolean fields (form data sends "true"/"false" as strings)
+  if (typeof parsed.cartEnabled === "string") {
+    parsed.cartEnabled = parsed.cartEnabled === "true";
+  }
+  if (typeof parsed.displayPrice === "string") {
+    parsed.displayPrice = parsed.displayPrice === "true";
+  }
+
+  return parsed;
+};
+
 export const createProductAsAdmin = async (adminId: string, data: any) => {
-  const { categoryId, categoryName, category, ...rest } = data;
+  const { categoryId, categoryName, category, ...rest } = parseProductData(data);
   const resolvedCategoryId = await ensureCategory(
     categoryId,
     categoryName ?? category
@@ -77,7 +95,7 @@ export const createProductAsAdmin = async (adminId: string, data: any) => {
 };
 
 export const createProductSubmission = async (userId: string, data: any) => {
-  const { categoryId, categoryName, category, ...rest } = data;
+  const { categoryId, categoryName, category, ...rest } = parseProductData(data);
   const resolvedCategoryId = await ensureCategory(
     categoryId,
     categoryName ?? category
@@ -104,7 +122,8 @@ export const updateProduct = async (
     throw new ApiError(404, "Product not found");
   }
 
-  const { categoryId, categoryName, category, ...rest } = data as any;
+  const parsedData = parseProductData(data);
+  const { categoryId, categoryName, category, ...rest } = parsedData as any;
   let updatedCategoryId: string | undefined = undefined;
 
   const possibleCategoryName = categoryName ?? category;

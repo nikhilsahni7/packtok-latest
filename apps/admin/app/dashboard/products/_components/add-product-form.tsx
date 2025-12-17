@@ -3,37 +3,36 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-  ComboboxOption,
-  CustomCombobox,
+    ComboboxOption,
+    CustomCombobox,
 } from "@packtok/ui/components/custom-combobox";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
-import { Loading } from "@packtok/ui/components/loading";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@packtok/ui/components/select";
 import { Switch } from "@packtok/ui/components/switch";
 import { Textarea } from "@packtok/ui/components/textarea";
 import {
-  FileText,
-  FileVideo,
-  Minus,
-  Plus,
-  Save,
-  Upload,
-  X,
+    FileText,
+    FileVideo,
+    Minus,
+    Plus,
+    Save,
+    Upload,
+    X,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -41,13 +40,13 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import {
-  useCategories,
-  useCreateCategory,
-  useCreateProduct,
+    useCategories,
+    useCreateCategory,
+    useCreateProduct,
 } from "../../../../hooks";
 import {
-  productSchema,
-  type ProductFormData,
+    productSchema,
+    type ProductFormData,
 } from "../../../../schemas/product-schema";
 import MediaPreviewModal from "./media-preview-modal";
 
@@ -307,7 +306,12 @@ export default function AddProductForm() {
   return (
     <div className="relative w-full">
       {createProductMutation.isPending && (
-        <Loading variant="jimu" className="z-10" />
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 shadow-xl flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
+            <p className="text-gray-700 font-medium">Creating product...</p>
+          </div>
+        </div>
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

@@ -23,7 +23,6 @@ import {
 } from "@packtok/ui/components/dialog";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
-import { Loading } from "@packtok/ui/components/loading";
 import {
   Table,
   TableBody,
@@ -33,7 +32,7 @@ import {
   TableRow,
 } from "@packtok/ui/components/table";
 import { Edit, Plus, Search, Tag, Trash2, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   useCategories,
@@ -62,10 +61,12 @@ export default function CategoriesPage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const updateSubcategoriesMutation = useUpdateSubcategories();
 
-  // Handle error state
-  if (error) {
-    toast.error("Failed to fetch categories");updateSubcategoriesMutation;
-  }
+  // Handle error state with useEffect to avoid infinite re-renders
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to fetch categories");
+    }
+  }, [error]);
 
   const handleCreateCategory = async () => {
     if (!newCategoryName.trim()) return;
@@ -138,7 +139,34 @@ export default function CategoriesPage() {
   );
 
   if (isLoading) {
-    return <Loading variant="jimu" className="min-h-screen" />;
+    return (
+      <div className="p-6 space-y-6 animate-pulse">
+        {/* Header skeleton */}
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="h-8 w-32 rounded bg-gray-200" />
+            <div className="h-4 w-64 rounded bg-gray-200" />
+          </div>
+          <div className="h-10 w-36 rounded-md bg-gray-200" />
+        </div>
+        {/* Table skeleton */}
+        <div className="bg-white rounded-lg shadow-sm">
+          <div className="p-6 border-b">
+            <div className="h-10 w-64 rounded-md bg-gray-200" />
+          </div>
+          <div className="divide-y">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-6 p-4">
+                <div className="h-5 w-40 rounded bg-gray-200" />
+                <div className="h-5 w-48 rounded bg-gray-200" />
+                <div className="h-5 w-24 rounded bg-gray-200" />
+                <div className="h-8 w-20 rounded bg-gray-200" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

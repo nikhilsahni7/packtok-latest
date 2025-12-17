@@ -1,51 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, Filter, Eye, UserPlus, Edit, Trash2 } from "lucide-react";
-import { Button } from "@packtok/ui/button";
-import { Input } from "@packtok/ui/input";
-import { Loading } from "@packtok/ui/loading";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@packtok/ui/table";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@packtok/ui/card";
 import { Badge } from "@packtok/ui/badge";
+import { Button } from "@packtok/ui/button";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@packtok/ui/card";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
+import { Input } from "@packtok/ui/input";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@packtok/ui/table";
+import { Edit, Eye, Filter, Search, Trash2, UserPlus } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
-  useServices,
-  useUpdateServiceStatus,
-  useAssignService,
-  useDeleteService,
+    useAssignService,
+    useDeleteService,
+    useServices,
+    useUpdateServiceStatus,
 } from "../../../../hooks/useServices";
 import {
-  ServiceRequest,
-  ServiceStatus,
-  ServiceType,
+    ServiceRequest,
+    ServiceStatus,
+    ServiceType,
 } from "../../../../types/service";
-import { ServiceDetailsDialog } from "./service-details-dialog";
 import { AssignServiceDialog } from "./assign-service-dialog";
+import { ServiceDetailsDialog } from "./service-details-dialog";
 import { UpdateStatusDialog } from "./update-status-dialog";
 
 interface ServicesTableProps {
@@ -189,7 +188,36 @@ export function ServicesTable({ initialServices = [] }: ServicesTableProps) {
   };
 
   if (isLoading) {
-    return <Loading variant="jimu" className="min-h-64" />;
+    return (
+      <Card className="animate-pulse">
+        <CardHeader>
+          <div className="h-6 w-40 rounded bg-gray-200" />
+          <div className="h-4 w-72 rounded bg-gray-200 mt-2" />
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 flex flex-col sm:flex-row gap-4">
+            <div className="h-10 flex-1 rounded-md bg-gray-200" />
+            <div className="flex items-center gap-2">
+              <div className="h-10 w-40 rounded-md bg-gray-200" />
+              <div className="h-10 w-36 rounded-md bg-gray-200" />
+            </div>
+          </div>
+          <div className="space-y-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 p-3 border-b">
+                <div className="h-4 w-36 rounded bg-gray-200" />
+                <div className="h-6 w-20 rounded-full bg-gray-200" />
+                <div className="h-6 w-24 rounded-full bg-gray-200" />
+                <div className="h-8 w-32 rounded bg-gray-200" />
+                <div className="h-4 w-24 rounded bg-gray-200" />
+                <div className="h-4 w-20 rounded bg-gray-200" />
+                <div className="h-8 w-32 rounded bg-gray-200" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

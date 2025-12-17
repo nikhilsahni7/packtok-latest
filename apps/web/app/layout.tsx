@@ -1,16 +1,11 @@
 import { Footer, Navbar } from "@/components";
+import { ClientMobileInterstitial } from "@/components/client-mobile-interstitial";
 import "@packtok/ui/globals.css";
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
 import React from "react";
 import "../styles/globals.css";
 import Providers from "./providers";
-
-const MobileInterstitial = dynamic(
-  () => import("@/components/mobile-interstitial"),
-  { ssr: false }
-);
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,12 +23,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={poppins.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={poppins.className} suppressHydrationWarning>
         <Providers>
           {/* Mobile/Tablet view: show interstitial only */}
           <div className="block lg:hidden">
-            <MobileInterstitial />
+            <ClientMobileInterstitial />
           </div>
 
           {/* Desktop/Laptop view: show full site */}

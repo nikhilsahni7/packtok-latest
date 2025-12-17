@@ -28,14 +28,13 @@ const nextConfig = {
       },
     ],
     formats: ["image/avif", "image/webp"],
+    qualities: [75, 95],
   },
   // Enable experimental features if needed
   experimental: {
     // serverComponentsExternalPackages: ['@supabase/supabase-js'],
   },
   output: "standalone",
-  // Optimize compilation
-  swcMinify: true,
   // Reduce bundle size
   compiler: {
     removeConsole:

@@ -1,12 +1,12 @@
-import { notFound } from "next/navigation";
 import { Newsletter } from "@/components";
+import { notFound } from "next/navigation";
 import ProductDetails from "./components/product-details";
 
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     category: string;
     productId: string;
-  };
+  }>;
 }
 
 async function getProduct(productId: string) {
@@ -31,7 +31,9 @@ async function getProduct(productId: string) {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = await getProduct(params.productId);
+  // Next.js 16: params is now a Promise and must be awaited
+  const resolvedParams = await params;
+  const product = await getProduct(resolvedParams.productId);
   console.log("Product data:", product);
   if (!product) {
     notFound();

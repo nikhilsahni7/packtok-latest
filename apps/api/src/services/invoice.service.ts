@@ -1,7 +1,7 @@
 import { Prisma } from "@packtok/db";
-import { createClient } from "@supabase/supabase-js";
 import PDFDocument from "pdfkit";
 import config from "../config";
+import supabase from "../utils/supabaseClient";
 
 // ===== Types =====
 
@@ -149,29 +149,38 @@ export const generateInvoicePdf = async (order: OrderData): Promise<Buffer> => {
 
 /**
  * Upload invoice PDF to Supabase storage
+ * Uses the shared supabase client like other document uploads
  */
 export const uploadInvoiceToSupabase = async (
   orderNumber: string,
   pdfBuffer: Buffer
 ): Promise<string> => {
-  const supabase = createClient(config.supabase.url, config.supabase.serviceRoleKey);
-
-  const fileName = `invoices/${orderNumber}.pdf`;
+  const DOC_BUCKET = config.supabase.doc_bucket;
+  const fileName = `invoices/invoice-${orderNumber}.pdf`;
 
   const { error } = await supabase.storage
-    .from(config.supabase.doc_bucket)
+    .from(DOC_BUCKET)
     .upload(fileName, pdfBuffer, {
       contentType: "application/pdf",
       upsert: true,
     });
 
   if (error) {
+    console.error("Supabase invoice upload error:", error);
     throw new Error(`Failed to upload invoice: ${error.message}`);
   }
 
-  // Get public URL
+  // Get the URL based on bucket privacy setting
+  if (config.supabase.privateBuckets) {
+    const { data, error: signError } = await supabase.storage
+      .from(DOC_BUCKET)
+      .createSignedUrl(fileName, 60 * 60 * 24 * 365); // 1 year
+    if (signError) throw new Error(signError.message);
+    return data.signedUrl;
+  }
+
   const { data: publicUrl } = supabase.storage
-    .from(config.supabase.doc_bucket)
+    .from(DOC_BUCKET)
     .getPublicUrl(fileName);
 
   return publicUrl.publicUrl;

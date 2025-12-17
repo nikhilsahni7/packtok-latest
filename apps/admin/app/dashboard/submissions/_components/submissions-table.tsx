@@ -1,36 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Check, X, Eye, Search } from "lucide-react";
-import { Button } from "@packtok/ui/button";
-import { Input } from "@packtok/ui/input";
-import { Loading } from "@packtok/ui/loading";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@packtok/ui/table";
 import { Badge } from "@packtok/ui/badge";
+import { Button } from "@packtok/ui/button";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
+import { Input } from "@packtok/ui/input";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@packtok/ui/table";
+import { Check, Eye, Search, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
-  useSubmissions,
-  useApproveSubmission,
-  useRejectSubmission,
-  Submission,
+    Submission,
+    useApproveSubmission,
+    useRejectSubmission,
+    useSubmissions,
 } from "../../../../hooks";
 import { SubmissionDetailsDialog } from "./submission-details-dialog";
 
@@ -110,7 +109,30 @@ export function SubmissionsTable({
   };
 
   if (isLoading) {
-    return <Loading variant="jimu" className="min-h-64" />;
+    return (
+      <div className="bg-white rounded-lg shadow-sm animate-pulse">
+        <div className="p-6 border-b">
+          <div className="flex items-center space-x-4">
+            <div className="h-10 w-64 rounded-md bg-gray-200" />
+            <div className="h-10 w-36 rounded-md bg-gray-200" />
+          </div>
+        </div>
+        <div className="divide-y">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4 p-4">
+              <div className="h-4 w-40 rounded bg-gray-200" />
+              <div className="h-4 w-24 rounded bg-gray-200" />
+              <div className="h-6 w-16 rounded-full bg-gray-200" />
+              <div className="h-4 w-20 rounded bg-gray-200" />
+              <div className="h-6 w-20 rounded-full bg-gray-200" />
+              <div className="h-4 w-28 rounded bg-gray-200" />
+              <div className="h-4 w-24 rounded bg-gray-200" />
+              <div className="h-8 w-24 rounded bg-gray-200" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -3,19 +3,18 @@
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
 } from "@packtok/ui/components/card";
-import { Loading } from "@packtok/ui/components/loading";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@packtok/ui/components/table";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -23,8 +22,8 @@ import { toast } from "react-hot-toast";
 import { useAdminAuction, useFinalizeAuction } from "../../../../hooks";
 import { useAuctionRealtime } from "../../../../hooks/useAuctionRealtime";
 import {
-  AuctionLeaderboardSnapshot,
-  AuctionStatus,
+    AuctionLeaderboardSnapshot,
+    AuctionStatus,
 } from "../../../../types/auction";
 
 const statusVariant: Record<AuctionStatus, string> = {
@@ -110,7 +109,57 @@ export default function AuctionDetailPage() {
   };
 
   if (isLoading) {
-    return <Loading variant="jimu" className="min-h-screen" />;
+    return (
+      <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto animate-pulse">
+        {/* Header skeleton */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="space-y-2">
+            <div className="h-7 w-56 rounded bg-gray-200" />
+            <div className="flex gap-2">
+              <div className="h-4 w-20 rounded bg-gray-200" />
+              <div className="h-4 w-32 rounded bg-gray-200" />
+              <div className="h-4 w-32 rounded bg-gray-200" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <div className="h-8 w-16 rounded-full bg-gray-200" />
+            <div className="h-9 w-20 rounded-md bg-gray-200" />
+            <div className="h-9 w-24 rounded-md bg-gray-200" />
+          </div>
+        </div>
+        {/* Cards skeleton */}
+        <div className="grid gap-4 md:grid-cols-2">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-lg border p-6 space-y-4">
+              <div className="h-5 w-24 rounded bg-gray-200" />
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <div key={j} className="flex justify-between">
+                    <div className="h-4 w-28 rounded bg-gray-200" />
+                    <div className="h-4 w-20 rounded bg-gray-200" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* Table skeleton */}
+        <div className="bg-white rounded-lg border p-6 space-y-4">
+          <div className="h-5 w-32 rounded bg-gray-200" />
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex gap-4 py-3 border-b">
+                <div className="h-4 w-8 rounded bg-gray-200" />
+                <div className="h-4 flex-1 rounded bg-gray-200" />
+                <div className="h-4 w-24 rounded bg-gray-200" />
+                <div className="h-4 w-16 rounded bg-gray-200" />
+                <div className="h-4 w-32 rounded bg-gray-200" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (isError || !auction) {

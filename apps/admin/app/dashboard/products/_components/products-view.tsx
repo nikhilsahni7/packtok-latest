@@ -2,13 +2,12 @@
 
 import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
-import { Loading } from "@packtok/ui/components/loading";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@packtok/ui/components/select";
 import { Filter, Grid3X3, List, Package, Plus, Search } from "lucide-react";
 import Link from "next/link";
@@ -17,13 +16,13 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { productTabs } from "../../../../constants/navigation";
 import {
-  useDeleteProduct,
-  useProducts,
-  useUpdateProductStatus,
+    useDeleteProduct,
+    useProducts,
+    useUpdateProductStatus,
 } from "../../../../hooks";
 import {
-  MarketplaceProduct,
-  MarketplaceProductStatus,
+    MarketplaceProduct,
+    MarketplaceProductStatus,
 } from "../../../../types/product";
 import { CreateAuctionDialog } from "./create-auction-dialog";
 import { ProductGrid } from "./product-grid";
@@ -132,7 +131,50 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
   }, [searchTerm, selectedType, sortField, sortDirection, viewMode, products]);
 
   if (isLoading) {
-    return <Loading variant="jimu" className="min-h-screen" />;
+    return (
+      <div className="space-y-6">
+        {/* Header skeleton */}
+        <div className="flex items-center justify-between">
+          <div className="h-8 w-32 rounded bg-gray-200 animate-pulse" />
+          <div className="h-10 w-32 rounded-md bg-gray-200 animate-pulse" />
+        </div>
+        {/* Tabs skeleton */}
+        <div className="flex space-x-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-10 w-24 rounded-md bg-gray-200 animate-pulse" />
+          ))}
+        </div>
+        {/* Filter bar skeleton */}
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="h-10 w-64 rounded-md bg-gray-200 animate-pulse" />
+              <div className="h-10 w-48 rounded-md bg-gray-200 animate-pulse" />
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="h-9 w-24 rounded-md bg-gray-200 animate-pulse" />
+              <div className="h-9 w-20 rounded-md bg-gray-200 animate-pulse" />
+            </div>
+          </div>
+        </div>
+        {/* Product grid skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-lg shadow-sm p-4 animate-pulse">
+              <div className="aspect-square w-full rounded-lg bg-gray-200" />
+              <div className="mt-4 space-y-2">
+                <div className="h-4 w-3/4 rounded bg-gray-200" />
+                <div className="h-3 w-1/2 rounded bg-gray-200" />
+                <div className="flex justify-between items-center mt-3">
+                  <div className="h-5 w-20 rounded bg-gray-200" />
+                  <div className="h-6 w-16 rounded-full bg-gray-200" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

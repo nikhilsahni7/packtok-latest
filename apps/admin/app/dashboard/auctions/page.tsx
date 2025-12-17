@@ -3,12 +3,11 @@
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
 } from "@packtok/ui/components/card";
-import { Loading } from "@packtok/ui/components/loading";
 import Link from "next/link";
 import { useMemo } from "react";
 import { toast } from "react-hot-toast";
@@ -87,7 +86,52 @@ export default function AuctionsPage() {
   };
 
   if (isLoading) {
-    return <Loading variant="jimu" className="min-h-screen" />;
+    return (
+      <div className="p-6 space-y-8">
+        {/* Header skeleton */}
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="h-8 w-32 rounded bg-gray-200 animate-pulse" />
+            <div className="h-4 w-64 rounded bg-gray-200 animate-pulse" />
+          </div>
+          <div className="h-10 w-36 rounded-md bg-gray-200 animate-pulse" />
+        </div>
+        {/* Sections skeleton */}
+        {Array.from({ length: 3 }).map((_, sectionIdx) => (
+          <div key={sectionIdx} className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="h-6 w-40 rounded bg-gray-200 animate-pulse" />
+              <div className="h-4 w-20 rounded bg-gray-200 animate-pulse" />
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-lg border p-4 shadow-sm animate-pulse">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="space-y-2">
+                      <div className="h-5 w-40 rounded bg-gray-200" />
+                      <div className="h-3 w-24 rounded bg-gray-200" />
+                    </div>
+                    <div className="h-6 w-16 rounded-full bg-gray-200" />
+                  </div>
+                  <div className="space-y-3">
+                    {Array.from({ length: 4 }).map((_, j) => (
+                      <div key={j} className="flex justify-between">
+                        <div className="h-4 w-20 rounded bg-gray-200" />
+                        <div className="h-4 w-24 rounded bg-gray-200" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-4 pt-4 mt-4 border-t">
+                    <div className="h-9 w-24 rounded-md bg-gray-200" />
+                    <div className="h-9 w-20 rounded-md bg-gray-200" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   if (error) {

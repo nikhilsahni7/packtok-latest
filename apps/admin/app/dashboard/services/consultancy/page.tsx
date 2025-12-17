@@ -1,25 +1,9 @@
-import { fetchJson } from "../../../../lib/fetcher";
-import { ServiceRequest, ServiceType } from "../../../../types/service";
-import { ServicesTable } from "../_components/services-table";
+"use client";
+
 import { ServicesStats } from "../_components/services-stats";
+import { ServicesTable } from "../_components/services-table";
 
-async function getConsultancyServices(): Promise<ServiceRequest[]> {
-  try {
-    const response = await fetchJson<{ data: ServiceRequest[] }>(
-      "/api/v1/admins/services",
-    );
-    return response.data.filter(
-      (service) => service.serviceType === ServiceType.CONSULTANCY,
-    );
-  } catch (error) {
-    console.error("Failed to fetch consultancy services:", error);
-    return [];
-  }
-}
-
-export default async function ConsultancyServicesPage() {
-  const services = await getConsultancyServices();
-
+export default function ConsultancyServicesPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -28,13 +12,13 @@ export default async function ConsultancyServicesPage() {
             Consultancy Services
           </h1>
           <p className="text-muted-foreground">
-            Manage expert consultancy requests
+            Manage consultancy service requests
           </p>
         </div>
       </div>
 
       <ServicesStats />
-      <ServicesTable initialServices={services} />
+      <ServicesTable />
     </div>
   );
 }

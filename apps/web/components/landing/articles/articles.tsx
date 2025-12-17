@@ -1,6 +1,6 @@
 
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 import article1 from "@/assets/article1.png";
 import article2 from "@/assets/article2.png";
@@ -13,19 +13,19 @@ const Articles = () => {
             title: "5 Ways to Maximize Factory Efficiency",
             link: "/test",
             image:  article1,
-            id: "Test1"
+            id: "article-1"
         },
         {
             title: "Prevent Problems Before They Start",
             link: "/test",
             image:  article2,
-            id: "Test1"
+            id: "article-2"
         },
         {
             title: "Choosing the Right Spare Parts for Your Machines",
             link: "/test",
             image:  article3,
-            id: "Test1"
+            id: "article-3"
         }
     ];
 

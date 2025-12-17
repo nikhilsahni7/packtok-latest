@@ -1,10 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, Filter, Eye } from "lucide-react";
+import { Badge } from "@packtok/ui/badge";
 import { Button } from "@packtok/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@packtok/ui/card";
 import { Input } from "@packtok/ui/input";
-import { Loading } from "@packtok/ui/loading";
 import {
   Table,
   TableBody,
@@ -13,14 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from "@packtok/ui/table";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@packtok/ui/card";
-import { Badge } from "@packtok/ui/badge";
+import { Eye, Filter, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useQuotes, useUpdateQuoteStatus } from "../../../../hooks";
 import { QuoteRequest, QuoteStatus } from "../../../../types/product";
@@ -82,7 +81,32 @@ export function QuotesTable({ initialQuotes = [] }: QuotesTableProps) {
   };
 
   if (isLoading) {
-    return <Loading variant="jimu" className="min-h-64" />;
+    return (
+      <Card className="animate-pulse">
+        <CardHeader>
+          <div className="h-6 w-40 rounded bg-gray-200" />
+          <div className="h-4 w-64 rounded bg-gray-200 mt-2" />
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 flex gap-4">
+            <div className="h-10 flex-1 rounded-md bg-gray-200" />
+            <div className="h-10 w-32 rounded-md bg-gray-200" />
+          </div>
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 p-3 border-b">
+                <div className="h-4 w-32 rounded bg-gray-200" />
+                <div className="h-4 w-40 rounded bg-gray-200" />
+                <div className="h-6 w-20 rounded-full bg-gray-200" />
+                <div className="h-4 w-24 rounded bg-gray-200" />
+                <div className="h-4 w-28 rounded bg-gray-200" />
+                <div className="h-8 w-10 rounded bg-gray-200" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

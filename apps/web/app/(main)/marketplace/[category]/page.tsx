@@ -1,23 +1,27 @@
-import { notFound } from "next/navigation";
-import { PageHeader, Newsletter } from "@/components";
+import { Newsletter, PageHeader } from "@/components";
 import { marketplaceCategories } from "@/constant";
+import { notFound } from "next/navigation";
 import CategoryContent from "./components/category-content";
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     searchTerm?: string;
     [key: string]: string | string[] | undefined;
-  };
+  }>;
 }
 
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
   searchParams,
 }: CategoryPageProps) {
-  const categorySlug = params.category;
+  // Next.js 16: params and searchParams are now Promises and must be awaited
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+
+  const categorySlug = resolvedParams.category;
   const category = marketplaceCategories.find(
     (cat) => cat.slug === categorySlug
   );
@@ -40,7 +44,7 @@ export default function CategoryPage({
       <div className="container mx-auto  px-4">
         <CategoryContent
           category={category}
-          initialSearchTerm={searchParams.searchTerm}
+          initialSearchTerm={resolvedSearchParams.searchTerm}
         />
       </div>
       <Newsletter />

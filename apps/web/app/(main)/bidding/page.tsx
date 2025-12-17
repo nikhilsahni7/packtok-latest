@@ -1,14 +1,13 @@
 "use client";
 
 import {
-  AuctionCountdown,
-  BiddingHero,
-  LiveBiddingSection,
-  RegularBiddingSection,
+    AuctionCountdown,
+    BiddingHero,
+    LiveBiddingSection,
+    RegularBiddingSection,
 } from "@/components/bidding";
 import { usePublicAuctions } from "@/hooks/useAuctions";
 import { Auction } from "@/types/auction";
-import { Loading } from "@packtok/ui/components/loading";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { toast } from "react-hot-toast";
@@ -86,8 +85,22 @@ export default function BiddingPage() {
     return (
       <main className="min-h-screen bg-white">
         <BiddingHero />
-        <div className="relative h-64">
-          <Loading variant="jimu" />
+        <div className="container mx-auto px-4 lg:px-8 py-12">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-lg border bg-white p-4 shadow-sm animate-pulse">
+                <div className="aspect-video w-full rounded-lg bg-gray-200" />
+                <div className="mt-4 space-y-3">
+                  <div className="h-5 w-3/4 rounded bg-gray-200" />
+                  <div className="h-4 w-1/2 rounded bg-gray-200" />
+                  <div className="flex justify-between items-center pt-2">
+                    <div className="h-6 w-24 rounded bg-gray-200" />
+                    <div className="h-8 w-20 rounded-md bg-gray-200" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     );

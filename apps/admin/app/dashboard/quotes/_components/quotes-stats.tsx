@@ -1,14 +1,12 @@
 "use client";
 
-import { Calendar, DollarSign } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@packtok/ui/card";
-import { QuoteRequest } from "../../../../types/product";
+import { Calendar, DollarSign } from "lucide-react";
+import { useQuotes } from "../../../../hooks";
 
-interface QuotesStatsProps {
-  quotes: QuoteRequest[];
-}
+export function QuotesStats() {
+  const { data: quotes = [] } = useQuotes();
 
-export function QuotesStats({ quotes }: QuotesStatsProps) {
   const pendingQuotes = quotes.filter((q) => q.status === "PENDING").length;
   const completedQuotes = quotes.filter((q) => q.status === "COMPLETED").length;
   const thisMonthQuotes = quotes.filter((q) => {

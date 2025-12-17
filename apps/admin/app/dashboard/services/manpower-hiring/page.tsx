@@ -1,25 +1,9 @@
-import { fetchJson } from "../../../../lib/fetcher";
-import { ServiceRequest, ServiceType } from "../../../../types/service";
-import { ServicesTable } from "../_components/services-table";
+"use client";
+
 import { ServicesStats } from "../_components/services-stats";
+import { ServicesTable } from "../_components/services-table";
 
-async function getManpowerServices(): Promise<ServiceRequest[]> {
-  try {
-    const response = await fetchJson<{ data: ServiceRequest[] }>(
-      "/api/v1/admins/services",
-    );
-    return response.data.filter(
-      (service) => service.serviceType === ServiceType.MANPOWER_HIRING,
-    );
-  } catch (error) {
-    console.error("Failed to fetch manpower services:", error);
-    return [];
-  }
-}
-
-export default async function ManpowerHiringServicesPage() {
-  const services = await getManpowerServices();
-
+export default function ManpowerHiringServicesPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -34,7 +18,7 @@ export default async function ManpowerHiringServicesPage() {
       </div>
 
       <ServicesStats />
-      <ServicesTable initialServices={services} />
+      <ServicesTable />
     </div>
   );
 }

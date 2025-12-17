@@ -1,6 +1,5 @@
 "use client";
 import { useProducts } from "@/hooks/useProducts";
-import { Loading } from "@packtok/ui/components/loading";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { memo, useEffect, useRef, useState } from "react";
@@ -63,10 +62,29 @@ function NewArrivals() {
           </Link>
         </div>
 
-        {/* Show loading state */}
+        {/* Show loading state with skeleton cards */}
         {isLoading && (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <Loading variant="jimu" />
+          <div className="relative w-[97.5%] sm:w-[95%] md:w-[91%] ml-auto">
+            <div className="flex gap-4 sm:gap-6 md:gap-8 overflow-hidden pb-6 sm:pb-8 px-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 w-[260px] sm:w-[280px] md:w-[300px] rounded-lg border bg-white p-4 shadow-sm"
+                >
+                  <div className="animate-pulse">
+                    <div className="aspect-square w-full rounded-lg bg-gray-200" />
+                    <div className="mt-4 space-y-2">
+                      <div className="h-4 w-3/4 rounded bg-gray-200" />
+                      <div className="h-3 w-1/2 rounded bg-gray-200" />
+                      <div className="flex justify-between items-center mt-3">
+                        <div className="h-5 w-20 rounded bg-gray-200" />
+                        <div className="h-8 w-24 rounded-md bg-gray-200" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

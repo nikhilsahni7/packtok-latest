@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 // @ts-ignore - only imported in dev
+import { CartSidebar } from "@/components/cart/cart-sidebar";
+import { FloatingCartBar } from "@/components/cart/floating-cart-bar";
+import { CartProvider } from "@/contexts/cart-context";
 import api from "@/lib/axios";
 import { useAuthStore } from "@/store/auth-store";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -85,12 +88,16 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthBootstrap />
-      {children}
-      <Toaster position="top-right" />
-      {process.env.NODE_ENV === "development" && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
+      <CartProvider>
+        <AuthBootstrap />
+        {children}
+        <CartSidebar />
+        <FloatingCartBar />
+        <Toaster position="top-right" />
+        {process.env.NODE_ENV === "development" && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </CartProvider>
     </QueryClientProvider>
   );
 }

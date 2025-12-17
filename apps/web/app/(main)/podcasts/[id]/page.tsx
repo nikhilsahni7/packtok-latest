@@ -2,29 +2,31 @@
 
 import { MOCK_COMMENTS, MOCK_PODCASTS } from "@/lib/podcast-data";
 import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Heart,
-  MessageCircle,
-  Play,
-  Send,
-  Share2,
-  ThumbsUp,
+    ArrowLeft,
+    Calendar,
+    Clock,
+    Heart,
+    MessageCircle,
+    Play,
+    Send,
+    Share2,
+    ThumbsUp,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useState } from "react";
 
 interface PodcastDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
   const router = useRouter();
-  const podcast = MOCK_PODCASTS.find((p) => p.id === params.id);
+  // Next.js 16: params is a Promise in client components, use React.use() to unwrap
+  const resolvedParams = use(params);
+  const podcast = MOCK_PODCASTS.find((p) => p.id === resolvedParams.id);
 
   const [isLiked, setIsLiked] = useState(false);
   const [localLikes, setLocalLikes] = useState(podcast?.likes || 0);

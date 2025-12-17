@@ -1,10 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   transpilePackages: ["@packtok/ui"],
   images: {
-    domains: ["localhost", "rcppgcrtnawltqbdpwsz.supabase.co"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "rcppgcrtnawltqbdpwsz.supabase.co",
+        pathname: "/storage/v1/object/**",
+      },
+    ],
     unoptimized: false,
   },
   output: 'standalone',
