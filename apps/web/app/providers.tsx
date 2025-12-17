@@ -77,14 +77,24 @@ export default function Providers({ children }: { children: ReactNode }) {
         defaultOptions: {
           queries: {
             retry: 1,
-            staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
-            gcTime: 10 * 60 * 1000, // 10 minutes - cache cleanup time
-            refetchOnWindowFocus: false, // Don't refetch when user returns to tab
-            refetchOnReconnect: false, // Don't refetch on reconnect
+            staleTime: 5 * 60 * 1000,
+            gcTime: 10 * 60 * 1000,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
           },
         },
       })
   );
+
+  // Optional: Add specific staleTime for auction queries after hydration
+  useEffect(() => {
+    queryClient.setQueryDefaults(["auction"], {
+      staleTime: 5000, // 5 seconds for auctions
+    });
+    queryClient.setQueryDefaults(["auctions"], {
+      staleTime: 20000, // 20 seconds for lists
+    });
+  }, [queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,3 +1,5 @@
+"use client";
+
 import { User } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { create } from "zustand";

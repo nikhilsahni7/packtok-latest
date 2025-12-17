@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 // Fetch current user on the server using the refreshToken cookie directly
 export async function getCurrentUserServer(): Promise<User | null> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const refresh = cookieStore.get("refreshToken");
   if (!refresh) return null;
 

@@ -1,4 +1,5 @@
-import { CtaBanner as WebCtaBanner } from "@/components";
+import WebCtaBanner from "@/components/web/cta-banner";
+import { Button } from "@packtok/ui/components/button";
 import {
   ArrowRight,
   Check,
@@ -9,7 +10,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@packtok/ui";
 
 export default function MaintenancePage() {
   return (
@@ -147,7 +147,7 @@ function About() {
             performance.
           </p>
 
-         
+
         </div>
       </div>
     </section>

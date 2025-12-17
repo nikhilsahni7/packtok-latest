@@ -82,33 +82,52 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const toggleCart = () => setIsOpen((prev) => !prev);
 
   const addToCart = async (productId: string, quantity = 1) => {
+    // Optimistic update would require product details which we don't have here
+    // but we can at least open the cart immediately
+    setIsOpen(true);
     setIsLoading(true);
     try {
       await api.post("/api/v1/cart/items", { productId, quantity });
       await refreshCart();
-      setIsOpen(true); // Open cart drawer on add
     } finally {
       setIsLoading(false);
     }
   };
 
   const updateQuantity = async (productId: string, quantity: number) => {
-    setIsLoading(true);
+    const previousCart = cart;
+    if (cart) {
+      setCart({
+        ...cart,
+        items: cart.items.map((item) =>
+          item.product.id === productId ? { ...item, quantity } : item
+        ),
+      });
+    }
+
     try {
       await api.patch(`/api/v1/cart/items/${productId}`, { quantity });
+      // No need to refresh immediately if we are confident, but better to be safe
       await refreshCart();
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      setCart(previousCart); // Rollback
     }
   };
 
   const removeFromCart = async (productId: string) => {
-    setIsLoading(true);
+    const previousCart = cart;
+    if (cart) {
+      setCart({
+        ...cart,
+        items: cart.items.filter((item) => item.product.id !== productId),
+      });
+    }
+
     try {
       await api.delete(`/api/v1/cart/items/${productId}`);
       await refreshCart();
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      setCart(previousCart); // Rollback
     }
   };
 

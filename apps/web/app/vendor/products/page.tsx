@@ -2,6 +2,7 @@
 
 import { useVendorProducts } from "@/hooks";
 import { Button, Card } from "@packtok/ui";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function VendorProductsPage() {
@@ -27,11 +28,12 @@ export default function VendorProductsPage() {
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 bg-gray-100 rounded overflow-hidden">
                 {p.imagesThumbnail ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={p.imagesThumbnail}
                     alt={p.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="56px"
                   />
                 ) : (
                   <div className="w-full h-full" />

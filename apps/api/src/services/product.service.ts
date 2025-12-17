@@ -23,9 +23,7 @@ const publicVisibilityWhere: Prisma.MarketplaceProductWhereInput = {
 /**
  * Removes the price field for products that are of type MACHINERY (Price Secrecy Rule)
  */
-const sanitizePriceForPublic = (
-  product: Prisma.MarketplaceProductGetPayload<{ include: { category: true } }>
-) => {
+const sanitizePriceForPublic = (product: any) => {
   const copy: any = { ...product };
   if (copy.productType === ProductType.MACHINERY) {
     delete copy.price;
@@ -157,18 +155,29 @@ export const changeProductStatus = async (
 
 export const listAllProductsForAdmin = async () => {
   return prisma.marketplaceProduct.findMany({
-    include: {
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      status: true,
+      submissionStatus: true,
+      productType: true,
+      createdAt: true,
+      imagesThumbnail: true,
       createdByUser: {
         select: {
           id: true,
           name: true,
           email: true,
           role: true,
-          phone_number: true,
-          country: true,
         },
       },
-      category: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -318,7 +327,27 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
   const [items, total] = await Promise.all([
     prisma.marketplaceProduct.findMany({
       where,
-      include: { category: true },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        price: true,
+        displayPrice: true,
+        productType: true,
+        status: true,
+        submissionStatus: true,
+        imagesThumbnail: true,
+        categoryId: true,
+        subCategory: true,
+        condition: true,
+        machineType: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
       skip,
       take: limit,
       orderBy: { createdAt: "desc" },
@@ -333,7 +362,27 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
 export const getPublicProductById = async (id: string) => {
   const product = await prisma.marketplaceProduct.findFirst({
     where: { id, ...publicVisibilityWhere },
-    include: { category: true },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      price: true,
+      displayPrice: true,
+      productType: true,
+      status: true,
+      submissionStatus: true,
+      imagesThumbnail: true,
+      categoryId: true,
+      subCategory: true,
+      condition: true,
+      machineType: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
   if (!product) {
     throw new ApiError(404, "Product not found");

@@ -1,5 +1,6 @@
 import { Newsletter, PageHeader } from "@/components";
 import { marketplaceCategories } from "@/constant";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import CategoryContent from "./components/category-content";
 
@@ -11,6 +12,31 @@ interface CategoryPageProps {
     searchTerm?: string;
     [key: string]: string | string[] | undefined;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: CategoryPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const category = marketplaceCategories.find(
+    (cat) => cat.slug === resolvedParams.category
+  );
+
+  if (!category) {
+    return {
+      title: "Category Not Found | Packtok",
+    };
+  }
+
+  return {
+    title: `${category.title} | Packtok Marketplace`,
+    description: category.subtitle || `Browse our collection of ${category.title} products.`,
+    openGraph: {
+      title: `${category.title} | Packtok Marketplace`,
+      description: category.subtitle,
+      images: category.image ? [{ url: category.image.src }] : [],
+    },
+  };
 }
 
 export default async function CategoryPage({
