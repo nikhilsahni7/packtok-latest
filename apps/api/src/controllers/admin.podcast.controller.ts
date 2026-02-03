@@ -1,16 +1,16 @@
 import { PodcastStatus } from "@packtok/db";
 import { Request, Response } from "express";
 import {
-  createPodcastWithBackgroundUpload,
-  createSeries,
-  deletePodcast,
-  deleteSeries,
-  getPodcastByIdForAdmin,
-  listPodcastsForAdmin,
-  listSeries,
-  retryFailedUpload,
-  updatePodcastWithBackgroundUpload,
-  updateSeries,
+    createPodcastWithBackgroundUpload,
+    createSeries,
+    deletePodcast,
+    deleteSeries,
+    getPodcastByIdForAdmin,
+    listPodcastsForAdmin,
+    listSeries,
+    retryFailedUpload,
+    updatePodcastWithBackgroundUpload,
+    updateSeries,
 } from "../services/podcast.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -60,7 +60,7 @@ const parsePodcastBody = (body: Record<string, unknown>) => {
   if (data.releaseDate) data.releaseDate = new Date(data.releaseDate as string);
 
   // Ensure status is valid
-  if (data.status && !Object.values(PodcastStatus).includes(data.status)) {
+  if (data.status && !Object.values(PodcastStatus).includes(data.status as any)) {
     delete data.status;
   }
 
