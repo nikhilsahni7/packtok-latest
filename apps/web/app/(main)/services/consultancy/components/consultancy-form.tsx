@@ -1,28 +1,29 @@
 "use client";
 
+import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
 import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useConsultancySubmission } from "@/hooks";
 import {
-  ConsultancyFormData,
-  consultancySchema,
+    ConsultancyFormData,
+    consultancySchema,
 } from "@/schemas/consultancy-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
 } from "@packtok/ui/components/card";
 import { Checkbox } from "@packtok/ui/components/checkbox";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@packtok/ui/components/select";
 import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
@@ -38,15 +39,20 @@ export function ConsultancyForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string>("");
 
+  const form = useForm<ConsultancyFormData>({
+    resolver: zodResolver(consultancySchema),
+    defaultValues: {
+      agreeToTerms: false,
+    },
+  });
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
     reset,
-  } = useForm<ConsultancyFormData>({
-    resolver: zodResolver(consultancySchema),
-  });
+  } = form;
 
   const serviceOptions = [
     { value: "MACHINE_OPTIMIZATION", label: "Machine Optimization" },
@@ -582,11 +588,23 @@ export function ConsultancyForm() {
                   </div>
                 </div>
 
-                <div className="flex my-6 mr-10  justify-end">
+                <div className="px-10 pb-6">
+                  <TermsAndConditionsCheckbox
+                    checked={form.watch("agreeToTerms")}
+                    onCheckedChange={(checked: boolean) =>
+                      form.setValue("agreeToTerms", checked, {
+                        shouldValidate: true,
+                      })
+                    }
+                    error={form.formState.errors.agreeToTerms?.message}
+                  />
+                </div>
+
+                <div className="flex my-6 mr-10 justify-end">
                   <Button
                     type="submit"
                     disabled={consultancySubmission.isPending}
-                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer"
+                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {consultancySubmission.isPending
                       ? "Submitting..."

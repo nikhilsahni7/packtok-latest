@@ -1,5 +1,6 @@
 "use client";
 
+import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
 import { useCategories } from "@/hooks/useCategories";
 import { useSubmitProduct } from "@/hooks/useSubmitProduct";
 import {
@@ -28,11 +29,10 @@ import { cn } from "@packtok/ui/lib/utils";
 import {
   FileText,
   FileVideo,
-  MapPin,
   Minus,
   Plus,
   Upload,
-  X,
+  X
 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -54,9 +54,7 @@ export function ProductSubmissionForm() {
   const [specifications, setSpecifications] = useState<
     { key: string; value: string }[]
   >([{ key: "", value: "" }]);
-  const [currentStep, setCurrentStep] = useState<"details" | "address">(
-    "details"
-  );
+
   const [selectedProductType, setSelectedProductType] =
     useState<string>("MACHINERY");
 
@@ -74,20 +72,22 @@ export function ProductSubmissionForm() {
     };
   }, [imagePreviews, thumbnailPreview, videoPreview, videoThumbnailPreview]);
 
+  const form = useForm<ProductSubmissionFormData>({
+    resolver: zodResolver(productSubmissionSchema),
+    defaultValues: {
+      productType: "MACHINERY",
+      condition: "USED",
+      agreeToTerms: false,
+    },
+  });
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<ProductSubmissionFormData>({
-    resolver: zodResolver(productSubmissionSchema),
-    defaultValues: {
-      productType: "MACHINERY",
-      condition: "USED",
-      country: "United States",
-      state: "New York",
-    },
-  });
+  } = form;
+
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -263,23 +263,13 @@ export function ProductSubmissionForm() {
       setVideoThumbnailPreview(null);
       setPdf(null);
       setSpecifications([{ key: "", value: "" }]);
-      setCurrentStep("details");
+
     } catch (error) {
       console.error("Error submitting product:", error);
     }
   };
 
-  const handleNext = () => {
-    if (currentStep === "details") {
-      setCurrentStep("address");
-    }
-  };
 
-  const handleBack = () => {
-    if (currentStep === "address") {
-      setCurrentStep("details");
-    }
-  };
 
   return (
     <div className="form-bg">
@@ -287,14 +277,14 @@ export function ProductSubmissionForm() {
         <CardHeader>
           <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
             <CardTitle className="text-2xl capitalize font-bold">
-              {currentStep === "details" ? "Product Details for corrugated and packaging industry" : "Address"}
+              Product Details for corrugated and packaging industry
             </CardTitle>
           </div>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] ">
-            {currentStep === "details" && (
+            {(
               <>
                 <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
                   <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 1 Information</h3>
@@ -311,37 +301,6 @@ export function ProductSubmissionForm() {
                       {errors.title && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.title.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="contact@gmail.com"
-                        {...register("email")}
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.email && "border-red-500")}
-                      />
-                      {errors.email && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.email.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="phoneNumber">Phone Number</Label>
-                      <Input
-                        id="phoneNumber"
-                        placeholder="(575) 336-4330"
-                        {...register("phoneNumber")}
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.phoneNumber && "border-red-500")}
-                      />
-                      {errors.phoneNumber && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.phoneNumber.message}
                         </p>
                       )}
                     </div>
@@ -710,7 +669,7 @@ export function ProductSubmissionForm() {
                     </div>
                   </div>
 
-                  
+
 
                   {/* Video Upload */}
                   <div className="px-10 py-5">
@@ -902,177 +861,31 @@ export function ProductSubmissionForm() {
                   </div>
                 </div>
 
+                <div className="px-10 pb-6">
+                  <TermsAndConditionsCheckbox
+                    checked={form.watch("agreeToTerms")}
+                    onCheckedChange={(checked: boolean) =>
+                      form.setValue("agreeToTerms", checked, {
+                        shouldValidate: true,
+                      })
+                    }
+                    error={form.formState.errors.agreeToTerms?.message}
+                  />
+                </div>
+
                 <div className="flex my-6 mr-10 justify-end">
-                  <Button type="button" onClick={handleNext} className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer">
-                    Next
-                  </Button>
-                </div>
-              </>
-            )}
-
-            {currentStep === "address" && (
-              <>
-                <div className="p-5">
-                  <div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Label htmlFor="legalBusinessName">
-                        Legal Business Name
-                      </Label>
-                      <Input
-                        id="legalBusinessName"
-                        placeholder="Tesla, Inc."
-                        {...register("legalBusinessName")}
-                        className={cn(
-                          errors.legalBusinessName && "border-red-500"
-                        )}
-                      />
-                      {errors.legalBusinessName && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.legalBusinessName.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="addressLine1">Address Line 1</Label>
-                      <Input
-                        id="addressLine1"
-                        placeholder="1028 New Mexico 48"
-                        {...register("addressLine1")}
-                        className={cn(errors.addressLine1 && "border-red-500")}
-                      />
-                      {errors.addressLine1 && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.addressLine1.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="addressLine2">
-                        Address Line 2 (Optional)
-                      </Label>
-                      <Input
-                        id="addressLine2"
-                        placeholder="Apt, suite, etc."
-                        {...register("addressLine2")}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        placeholder="Alto"
-                        {...register("city")}
-                        className={cn(errors.city && "border-red-500")}
-                      />
-                      {errors.city && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.city.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="postcodeZip">Postcode / ZIP</Label>
-                      <Input
-                        id="postcodeZip"
-                        placeholder="88312"
-                        {...register("postcodeZip")}
-                        className={cn(errors.postcodeZip && "border-red-500")}
-                      />
-                      {errors.postcodeZip && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.postcodeZip.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="country">Country</Label>
-                      <Select
-                        onValueChange={(value) => setValue("country", value)}
-                        defaultValue="United States"
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select country" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="United States">
-                            United States
-                          </SelectItem>
-                          <SelectItem value="Canada">Canada</SelectItem>
-                          <SelectItem value="Mexico">Mexico</SelectItem>
-                          <SelectItem value="India">India</SelectItem>
-                          <SelectItem value="United Kingdom">
-                            United Kingdom
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {errors.country && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.country.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                      <Label htmlFor="state">State</Label>
-                      <Select
-                        onValueChange={(value) => setValue("state", value)}
-                        defaultValue="New York"
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select state" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="New York">New York</SelectItem>
-                          <SelectItem value="California">California</SelectItem>
-                          <SelectItem value="Texas">Texas</SelectItem>
-                          <SelectItem value="Florida">Florida</SelectItem>
-                          <SelectItem value="Illinois">Illinois</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {errors.state && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {errors.state.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                    <Label>Locate on Maps</Label>
-                    <div className="w-full h-64 bg-gray-100 rounded-lg border flex items-center justify-center">
-                      <div className="text-center">
-                        <MapPin
-                          size={48}
-                          className="text-gray-400 mx-auto mb-2"
-                        />
-                        <p className="text-gray-500">
-                          Alto, New York, United States
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex px-4 mb-4 justify-between">
                   <Button
-                    type="button"
-                    onClick={handleBack}
-                    variant="outline"
-                    className="px-8"
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-linear-to-t from-[#4A3AFF] to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Back
-                  </Button>
-                  <Button type="submit" disabled={isSubmitting} className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer">
                     {isSubmitting ? "Submitting..." : "Submit"}
                   </Button>
                 </div>
               </>
             )}
+
+
           </form>
         </CardContent>
       </Card>

@@ -3,35 +3,50 @@
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
 } from "@packtok/ui/components/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@packtok/ui/components/table";
+import { cn } from "@packtok/ui/lib/utils";
+import {
+  Activity,
+  ArrowUpRight,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Gavel,
+  History as HistoryIcon,
+  Package,
+  RefreshCw,
+  Search,
+  TrendingUp,
+  Trophy as TrophyIcon
+} from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useAdminAuction, useFinalizeAuction } from "../../../../hooks";
 import { useAuctionRealtime } from "../../../../hooks/useAuctionRealtime";
 import {
-    AuctionLeaderboardSnapshot,
-    AuctionStatus,
+  AuctionLeaderboardSnapshot,
+  AuctionStatus,
 } from "../../../../types/auction";
 
-const statusVariant: Record<AuctionStatus, string> = {
-  DRAFT: "bg-gray-200 text-gray-700",
-  SCHEDULED: "bg-blue-100 text-blue-700",
-  LIVE: "bg-green-100 text-green-700",
-  CLOSED: "bg-purple-100 text-purple-700",
-  CANCELLED: "bg-red-100 text-red-700",
+const statusVariant: Record<AuctionStatus, { class: string; label: string; icon?: any }> = {
+  DRAFT: { class: "bg-slate-100 text-slate-700", label: "Draft" },
+  SCHEDULED: { class: "bg-blue-50 text-blue-700", label: "Scheduled", icon: Calendar },
+  LIVE: { class: "bg-emerald-50 text-emerald-700 animate-pulse-subtle", label: "Live", icon: Activity },
+  CLOSED: { class: "bg-slate-100 text-slate-600", label: "Closed", icon: CheckCircle2 },
+  CANCELLED: { class: "bg-red-50 text-red-700", label: "Cancelled" },
 };
 
 const formatCurrency = (value: string, currency: string) => {
@@ -177,190 +192,210 @@ export default function AuctionDetailPage() {
     );
   }
 
-  const statusBadge = statusVariant[auction.status];
+  const status = statusVariant[auction.status] || statusVariant.DRAFT;
+  const StatusIcon = status.icon;
   const snapshot = leaderboard ?? auction.leaderboard?.snapshot ?? null;
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="min-w-0">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900 truncate">
-            {auction.product?.title ?? "Auction"}
-          </h1>
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs md:text-sm text-gray-600">
-            <span className="whitespace-nowrap">Mode: {auction.mode}</span>
-            <span>•</span>
-            <span className="whitespace-nowrap">
-              Starts {formatTimestamp(auction.startAt)}
-            </span>
-            <span>•</span>
-            <span className="whitespace-nowrap">
-              Ends {formatTimestamp(auction.endAt)}
-            </span>
+    <div className="p-8 space-y-8 bg-slate-50/30 min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-sm text-slate-600">
+              <Gavel className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black tracking-tight text-slate-900 leading-tight">
+                {auction.product?.title ?? "Auction"}
+              </h1>
+              <div className="flex items-center gap-2 mt-1.5 font-bold text-slate-400 text-xs uppercase tracking-widest">
+                <Package className="w-3.5 h-3.5" />
+                {auction.product?.productType?.replaceAll("_", " ") ?? "General"}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 bg-white/50 p-2 rounded-xl backdrop-blur-sm border border-slate-100">
+            <div className="flex items-center gap-2 px-3 py-1.5 border-r border-slate-200 last:border-0">
+               <TrendingUp className="w-4 h-4 text-slate-400" />
+               <span className="text-sm font-bold text-slate-700">Mode: {auction.mode}</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 border-r border-slate-200 last:border-0 text-slate-500">
+               <Calendar className="w-4 h-4" />
+               <span className="text-xs font-medium">{formatTimestamp(auction.startAt)}</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 text-slate-500">
+               <Clock className="w-4 h-4" />
+               <span className="text-xs font-medium">{formatTimestamp(auction.endAt)}</span>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-          <Badge className={statusBadge}>{auction.status}</Badge>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            disabled={finalizeAuction.isPending}
-          >
+
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className={cn("px-4 py-1.5 font-bold rounded-lg flex items-center gap-2", status.class)}>
+            {StatusIcon && <StatusIcon className="w-3.5 h-3.5" />}
+            {status.label}
+          </Badge>
+          <Button variant="outline" onClick={() => refetch()} className="bg-white hover:bg-slate-50 shadow-sm h-11 px-4 gap-2 font-bold text-slate-700">
+            <RefreshCw className={cn("w-4 h-4", finalizeAuction.isPending && "animate-spin")} />
             Refresh
           </Button>
-          <Button
-            size="sm"
-            onClick={handleFinalize}
-            disabled={finalizeAuction.isPending || auction.status !== "LIVE"}
-          >
+          <Button onClick={handleFinalize} disabled={finalizeAuction.isPending || auction.status !== "LIVE"} className="h-11 px-6 font-bold shadow-lg shadow-primary-200 gap-2">
+            <Gavel className="w-4 h-4" />
             {finalizeAuction.isPending ? "Finalizing..." : "Finalize"}
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Financials</CardTitle>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/30">
+            <div className="flex items-center gap-2">
+               <TrendingUp className="w-4 h-4 text-primary-500" />
+               <CardTitle className="text-base font-bold text-slate-800">Financials</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600">Starting amount</span>
-              <span className="font-medium">
-                {formatCurrency(auction.startingAmount, auction.currency)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600">Earnest money</span>
-              <span className="font-medium">
-                {formatCurrency(auction.earnestAmount, auction.currency)}
-              </span>
-            </div>
-            {auction.minBidIncrement && (
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Min increment</span>
-                <span className="font-medium">
-                  {formatCurrency(auction.minBidIncrement, auction.currency)}
+          <CardContent className="p-6 space-y-4 text-sm">
+            {[
+              { label: "Starting amount", value: formatCurrency(auction.startingAmount, auction.currency), icon: ArrowUpRight },
+              { label: "Earnest money", value: formatCurrency(auction.earnestAmount, auction.currency), icon: HistoryIcon },
+              { label: "Min increment", value: auction.minBidIncrement ? formatCurrency(auction.minBidIncrement, auction.currency) : null, icon: TrendingUp },
+              { label: "Min decrement", value: auction.minBidDecrement ? formatCurrency(auction.minBidDecrement, auction.currency) : null, icon: TrendingUp },
+              { label: "Reserve price", value: auction.reservePrice ? formatCurrency(auction.reservePrice, auction.currency) : null, icon: TrophyIcon },
+              { label: "Max winners", value: auction.maxWinners, icon: TrophyIcon },
+            ].map((item, i) => {
+              if (!item.value) return null;
+              const Icon = item.icon;
+              return (
+              <div key={i} className="flex items-center justify-between group">
+                <div className="flex items-center gap-2.5 text-slate-500">
+                  <Icon className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-400 transition-colors" />
+                  <span className="font-medium">{item.label}</span>
+                </div>
+                <span className="font-bold text-slate-900 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100/50">
+                  {item.value}
                 </span>
               </div>
-            )}
-            {auction.minBidDecrement && (
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Min decrement</span>
-                <span className="font-medium">
-                  {formatCurrency(auction.minBidDecrement, auction.currency)}
-                </span>
-              </div>
-            )}
-            {auction.reservePrice && (
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Reserve price</span>
-                <span className="font-medium">
-                  {formatCurrency(auction.reservePrice, auction.currency)}
-                </span>
-              </div>
-            )}
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600">Max winners</span>
-              <span className="font-medium">{auction.maxWinners}</span>
-            </div>
+            )})}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Product</CardTitle>
+        <Card className="border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/30">
+            <div className="flex items-center gap-2">
+               <Package className="w-4 h-4 text-primary-500" />
+               <CardTitle className="text-base font-bold text-slate-800">Product Details</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600">Category</span>
-              <span className="font-medium">
-                {auction.product?.productType?.replaceAll("_", " ") ?? "-"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600">Status</span>
-              <span className="font-medium">
-                {auction.product?.status?.replaceAll("_", " ") ?? "-"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600">Inventory</span>
-              <span className="font-medium">
-                {auction.product?.quantity ?? "-"}
-              </span>
-            </div>
+          <CardContent className="p-6 space-y-4 text-sm">
+            {[
+              { label: "Category", value: auction.product?.productType?.replaceAll("_", " "), icon: Package },
+              { label: "Status", value: auction.product?.status?.replaceAll("_", " "), icon: Activity },
+              { label: "Inventory", value: auction.product?.quantity, icon: HistoryIcon },
+            ].map((item, i) => {
+              const Icon = item.icon;
+              return (
+              <div key={i} className="flex items-center justify-between group">
+                <div className="flex items-center gap-2.5 text-slate-500">
+                  <Icon className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-400 transition-colors" />
+                  <span className="font-medium">{item.label}</span>
+                </div>
+                <span className="font-bold text-slate-700 capitalize">
+                  {item.value ?? "-"}
+                </span>
+              </div>
+            )})}
             {auction.notes && (
-              <div>
-                <span className="text-gray-600">Notes</span>
-                <p className="mt-1 text-gray-700">{auction.notes}</p>
+              <div className="pt-2 border-t border-slate-50">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Notes</span>
+                <p className="mt-1.5 text-slate-600 bg-slate-50/50 p-2.5 rounded-lg border border-slate-100 text-xs italic">
+                  "{auction.notes}"
+                </p>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader className="flex flex-col gap-2">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <div>
-              <CardTitle>Leaderboard</CardTitle>
-              <p className="text-xs md:text-sm text-gray-500 mt-1">
-                Last updated{" "}
-                {snapshot?.updatedAt
-                  ? formatTimestamp(snapshot.updatedAt)
-                  : "-"}
-              </p>
+      <Card className="border-slate-100 shadow-sm overflow-hidden">
+        <CardHeader className="border-b border-slate-50 bg-white">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-primary-50 text-primary-600">
+                <HistoryIcon className="w-5 h-5" />
+              </div>
+              <div>
+                <CardTitle className="text-lg font-bold text-slate-900">Live Leaderboard</CardTitle>
+                <p className="text-xs text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
+                  <Clock className="w-3 h-3" />
+                  Last updated {snapshot?.updatedAt ? formatTimestamp(snapshot.updatedAt) : "-"}
+                </p>
+              </div>
             </div>
             {snapshot && (
-              <div className="text-xs md:text-sm text-gray-600 font-medium">
-                Current amount:{" "}
-                <span className="font-semibold text-green-600">
+              <div className="bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Current Amount</span>
+                <span className="text-xl font-black text-emerald-700">
                   {snapshot.currentAmount}
                 </span>
               </div>
             )}
           </div>
         </CardHeader>
-        <CardContent className="overflow-x-auto">
+        <CardContent className="p-0">
           {bidders.length === 0 ? (
-            <div className="py-8 text-center text-sm text-gray-500">
-              No bids recorded yet.
+            <div className="py-20 text-center space-y-3">
+              <div className="mx-auto w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
+                 <Search className="w-6 h-6 text-slate-200" />
+              </div>
+              <p className="text-sm font-medium text-slate-400">No bids recorded yet.</p>
             </div>
           ) : (
-            <div className="min-w-[600px]">
+            <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12">#</TableHead>
-                    <TableHead className="min-w-[200px]">Bidder</TableHead>
-                    <TableHead className="min-w-[120px]">Amount</TableHead>
-                    <TableHead className="w-24">Sequence</TableHead>
-                    <TableHead className="min-w-[180px]">Placed at</TableHead>
+                <TableHeader className="bg-slate-50/50">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-16 text-center font-bold text-slate-500 uppercase text-[10px] tracking-wider">Rank</TableHead>
+                    <TableHead className="font-bold text-slate-500 uppercase text-[10px] tracking-wider">Bidder</TableHead>
+                    <TableHead className="font-bold text-slate-500 uppercase text-[10px] tracking-wider">Amount</TableHead>
+                    <TableHead className="w-24 text-center font-bold text-slate-500 uppercase text-[10px] tracking-wider">Sequence</TableHead>
+                    <TableHead className="text-right font-bold text-slate-500 uppercase text-[10px] tracking-wider pr-6">Placed at</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {bidders.map((bid, index) => (
-                    <TableRow key={bid.bidId}>
-                      <TableCell className="font-medium">{index + 1}</TableCell>
+                    <TableRow key={bid.bidId} className="group transition-colors hover:bg-slate-50/50 border-slate-50">
+                      <TableCell className="text-center">
+                        <span className={cn(
+                          "inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-black",
+                          index === 0 ? "bg-amber-100 text-amber-700 shadow-sm shadow-amber-100" :
+                          index === 1 ? "bg-slate-200 text-slate-700" :
+                          index === 2 ? "bg-orange-50 text-orange-700" :
+                          "bg-slate-50 text-slate-400"
+                        )}>
+                          {index + 1}
+                        </span>
+                      </TableCell>
                       <TableCell>
                         <div className="flex flex-col">
-                          <span className="font-medium text-sm">
+                          <span className="font-bold text-slate-900 group-hover:text-primary-600 transition-colors">
                             {bid.name ?? "Anonymous"}
                           </span>
-                          <span className="text-xs text-gray-500 truncate max-w-[200px]">
+                          <span className="text-[11px] font-medium text-slate-400">
                             {bid.email}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="font-semibold text-green-600">
-                        {bid.amount}
+                      <TableCell>
+                        <span className="font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100/50">
+                          {bid.amount}
+                        </span>
                       </TableCell>
-                      <TableCell className="text-gray-600">
-                        {bid.sequence}
+                      <TableCell className="text-center font-bold text-slate-400 text-xs">
+                        #{bid.sequence}
                       </TableCell>
-                      <TableCell className="text-sm text-gray-600">
+                      <TableCell className="text-right text-xs font-semibold text-slate-500 pr-6">
                         {formatTimestamp(bid.createdAt)}
                       </TableCell>
                     </TableRow>
@@ -373,16 +408,27 @@ export default function AuctionDetailPage() {
       </Card>
 
       {auction.result && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Results</CardTitle>
-            <p className="text-sm text-gray-500 mt-1">
-              Auction finalized - Top {auction.maxWinners} winner(s) selected
-            </p>
+        <Card className="border-slate-100 shadow-sm overflow-hidden bg-slate-900 text-white mt-12">
+          <CardHeader className="border-b border-white/5 bg-white/5 p-6">
+            <div className="flex items-center gap-4">
+               <div className="p-3 rounded-2xl bg-primary-500 text-white shadow-lg shadow-primary-500/20">
+                  <TrophyIcon className="w-6 h-6" />
+               </div>
+               <div>
+                  <CardTitle className="text-xl font-bold text-white">Auction Results</CardTitle>
+                  <p className="text-sm text-slate-400 font-medium mt-1">
+                    Auction finalized - Top {auction.maxWinners} winner(s) successfully selected
+                  </p>
+               </div>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="rounded-md bg-gray-50 border border-gray-200 p-4">
-              <pre className="text-xs text-gray-800 overflow-auto max-h-96">
+          <CardContent className="p-8">
+            <div className="rounded-2xl bg-black/40 border border-white/10 p-6 backdrop-blur-md">
+              <div className="flex items-center gap-2.5 mb-5 text-primary-400 font-black text-[10px] uppercase tracking-[0.2em]">
+                 <HistoryIcon className="w-4 h-4" />
+                 Official Winner Data
+              </div>
+              <pre className="text-xs font-mono text-slate-300 overflow-auto max-h-[400px] custom-scrollbar leading-relaxed">
                 {JSON.stringify(auction.result.winners, null, 2)}
               </pre>
             </div>

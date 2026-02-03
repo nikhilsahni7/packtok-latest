@@ -5,12 +5,6 @@ export const productSubmissionSchema = z.object({
   title: z.string().min(2, {
     message: "Item name must be at least 2 characters.",
   }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  phoneNumber: z.string().min(10, {
-    message: "Please enter a valid phone number.",
-  }),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
@@ -40,33 +34,15 @@ export const productSubmissionSchema = z.object({
   specifications: z.string().optional(),
   additionalInfo: z.string().optional(),
 
-  // Address information
-  legalBusinessName: z.string().min(2, {
-    message: "Legal business name must be at least 2 characters.",
-  }),
-  addressLine1: z.string().min(5, {
-    message: "Address line 1 must be at least 5 characters.",
-  }),
-  addressLine2: z.string().optional(),
-  city: z.string().min(2, {
-    message: "City must be at least 2 characters.",
-  }),
-  postcodeZip: z.string().min(3, {
-    message: "Postcode/ZIP must be at least 3 characters.",
-  }),
-  country: z.string().min(2, {
-    message: "Country is required.",
-  }),
-  state: z.string().min(2, {
-    message: "State is required.",
-  }),
-
   // Files - will be handled separately in state
   images: z.array(z.instanceof(File)).optional(),
   thumbnail: z.instanceof(File).optional(),
   video: z.instanceof(File).optional(),
   videoThumbnail: z.instanceof(File).optional(),
   pdf: z.instanceof(File).optional(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 export type ProductSubmissionFormData = z.infer<typeof productSubmissionSchema>;

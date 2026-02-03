@@ -3,35 +3,37 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-    ComboboxOption,
-    CustomCombobox,
+  ComboboxOption,
+  CustomCombobox,
 } from "@packtok/ui/components/custom-combobox";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@packtok/ui/components/select";
+import { Switch } from "@packtok/ui/components/switch";
 import { Textarea } from "@packtok/ui/components/textarea";
 import {
-    FileText,
-    FileVideo,
-    Minus,
-    Plus,
-    Save,
-    Upload,
-    X,
+  FileText,
+  FileVideo,
+  HelpCircle,
+  Minus,
+  Plus,
+  Save,
+  Upload,
+  X
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -39,13 +41,13 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import {
-    useCategories,
-    useCreateCategory,
-    useUpdateProduct,
+  useCategories,
+  useCreateCategory,
+  useUpdateProduct,
 } from "../../../../hooks";
 import {
-    updateProductSchema,
-    type UpdateProductFormData,
+  updateProductSchema,
+  type UpdateProductFormData,
 } from "../../../../schemas/product-schema";
 import { MarketplaceProduct } from "../../../../types/product";
 import MediaPreviewModal from "./media-preview-modal";
@@ -85,6 +87,12 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       }));
     }
     return [{ key: "", value: "" }];
+  });
+  const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>(() => {
+    if (product.faqs && Array.isArray(product.faqs)) {
+      return product.faqs.length > 0 ? product.faqs : [{ question: "", answer: "" }];
+    }
+    return [{ question: "", answer: "" }];
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMedia, setModalMedia] = useState<{
@@ -155,20 +163,34 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     defaultValues: {
       title: product.title,
       description: product.description,
-      price: product.price,
-      quantity: product.quantity,
+      price: product.price ? Number(product.price) : 0,
+      quantity: product.quantity ? Number(product.quantity) : 1,
       productType: product.productType,
-      machineType: product.machineType,
-      condition: product.condition,
+      machineType: product.machineType || undefined,
+      condition: product.condition || "NEW",
       manufacturer: product.manufacturer || "",
       model: product.model || "",
-      year: product.year,
+      year: product.year ? (Number(product.year) || undefined) : undefined,
       category: product.category?.name || "",
       subCategory: product.subCategory || "",
       specifications: "",
       additionalInfo: product.additionalInfo || "",
+      cartEnabled: product.cartEnabled || false,
+      currency: product.currency || "INR",
+      displayPrice: product.displayPrice !== undefined ? product.displayPrice : true,
     },
   });
+
+  // Debugging: Log form errors and product data
+  useEffect(() => {
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.log("Form Errors:", form.formState.errors);
+    }
+  }, [form.formState.errors]);
+
+  useEffect(() => {
+    console.log("Product Data fetched:", product);
+  }, [product]);
 
   const onSubmit = async (data: UpdateProductFormData) => {
     try {
@@ -193,6 +215,12 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         );
         formData.append("specifications", JSON.stringify(specsObj));
       }
+
+      // Add FAQs
+      const validFaqs = faqs.filter(
+        (faq) => faq.question.trim() && faq.answer.trim()
+      );
+      formData.append("faqs", JSON.stringify(validFaqs));
 
       if (thumbnail) {
         formData.append("thumbnail", thumbnail);
@@ -300,6 +328,26 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     const updated = [...specifications];
     updated[index][field] = value;
     setSpecifications(updated);
+  };
+
+  const addFaq = () => {
+    setFaqs([...faqs, { question: "", answer: "" }]);
+  };
+
+  const removeFaq = (index: number) => {
+    if (faqs.length > 1) {
+      setFaqs(faqs.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateFaq = (
+    index: number,
+    field: "question" | "answer",
+    value: string
+  ) => {
+    const updated = [...faqs];
+    updated[index][field] = value;
+    setFaqs(updated);
   };
 
   const watchedProductType = form.watch("productType");
@@ -780,9 +828,10 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               type="number"
                               placeholder="Enter quantity"
                               {...field}
-                              onChange={(e) =>
-                                field.onChange(parseInt(e.target.value) || 0)
-                              }
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                field.onChange(val === "" ? "" : parseInt(val) || 0);
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -801,9 +850,10 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               type="number"
                               placeholder="Enter price"
                               {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value) || 0)
-                              }
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                field.onChange(val === "" ? "" : parseFloat(val) || 0);
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -811,26 +861,95 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       )}
                     />
                   </div>
-
-                  <FormField
-                    control={form.control}
-                    name="additionalInfo"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Additional Information</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Enter additional information"
-                            rows={3}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
               </div>
+
+              {/* Cart & Purchase Settings - Only for non-machinery */}
+              {watchedProductType !== "MACHINERY" && (
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-6 rounded-lg shadow-sm border border-emerald-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    🛒 Cart & Purchase Settings
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Configure how customers can purchase this product
+                  </p>
+
+                  <div className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="cartEnabled"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center justify-between rounded-lg border bg-white p-4">
+                          <div>
+                            <FormLabel className="text-base font-medium text-black">Enable Add to Cart</FormLabel>
+                            <p className="text-sm text-gray-500">
+                              When enabled, customers can add this product to cart and checkout with Razorpay.
+                              When disabled, customers will request a quote instead.
+                            </p>
+                          </div>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="currency"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-black">Currency</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select currency" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
+                                <SelectItem value="USD">🇺🇸 USD - US Dollar</SelectItem>
+                                <SelectItem value="AED">🇦🇪 AED - UAE Dirham</SelectItem>
+                                <SelectItem value="EUR">🇪🇺 EUR - Euro</SelectItem>
+                                <SelectItem value="GBP">🇬🇧 GBP - British Pound</SelectItem>
+                                <SelectItem value="CNY">🇨🇳 CNY - Chinese Yuan</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="displayPrice"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col justify-end">
+                            <div className="flex items-center justify-between rounded-lg border bg-white p-3">
+                              <FormLabel className="text-sm font-medium text-black">Show Price to Customers</FormLabel>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+
 
               <div className="bg-white p-6 rounded-lg shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -1035,11 +1154,10 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               type="number"
                               placeholder="Enter year"
                               {...field}
-                              onChange={(e) =>
-                                field.onChange(
-                                  parseInt(e.target.value) || undefined
-                                )
-                              }
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                field.onChange(val === "" ? undefined : parseInt(val) || undefined);
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -1098,10 +1216,103 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       </Button>
                     </div>
                   </div>
+
+                  <FormField
+                    control={form.control}
+                    name="additionalInfo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Additional Information</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Enter additional information"
+                            rows={3}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* FAQs Section */}
+              <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <HelpCircle className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      FAQs
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Add common questions and answers
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {faqs.map((faq, index) => (
+                    <div
+                      key={index}
+                      className="p-4 border border-gray-200 rounded-lg space-y-3"
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="text-sm font-medium text-gray-500 mt-2 w-16">
+                          Q{index + 1}
+                        </span>
+                        <Input
+                          placeholder="Enter question"
+                          value={faq.question}
+                          onChange={(e) =>
+                            updateFaq(index, "question", e.target.value)
+                          }
+                          className="flex-1"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeFaq(index)}
+                          disabled={faqs.length === 1}
+                          className="shrink-0"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-sm font-medium text-gray-500 mt-2 w-16">
+                          A{index + 1}
+                        </span>
+                        <Textarea
+                          placeholder="Enter answer"
+                          value={faq.answer}
+                          onChange={(e) =>
+                            updateFaq(index, "answer", e.target.value)
+                          }
+                          rows={2}
+                          className="flex-1"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addFaq}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add FAQ
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
+
 
           <div className="flex justify-end space-x-4">
             <Button

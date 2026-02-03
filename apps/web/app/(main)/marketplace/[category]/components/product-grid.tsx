@@ -1,6 +1,7 @@
 "use client";
 
 import Pagination from "@/components/pagination/pagination";
+import { ProductRating } from "@/components/products/product-rating";
 import { MarketplaceFilters, useProducts } from "@/hooks";
 import {
   CategoryItem,
@@ -253,17 +254,24 @@ export default function ProductGrid({
                   />
                 </div>
                 <div className="p-4">
-                  <div className="flex items-center mb-2">
-                    <span className="text-sm text-gray-800">★★★★★</span>
-                  </div>
-                  <h3 className="font-semibold text-base lg:text-lg mb-1 text-gray-900">
-                    {product.manufacturer || "Corrugated Machinery"}
+                  <h3 className="font-semibold text-base lg:text-lg mb-1 text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
+                    {product.title}
                   </h3>
-                  {product.productType !== "MACHINERY" && (
-                    <p className="text-lg font-bold text-gray-900">
-                      ₹{parseFloat(product.price || "0").toLocaleString("en-IN")}
+                  {product.manufacturer && (
+                    <p className="text-xs text-gray-500 mb-1 line-clamp-1">
+                      {product.manufacturer}
                     </p>
                   )}
+                  <ProductRating productId={product.id} />
+                  {product.productType !== "MACHINERY" &&
+                    product.price && (
+                      <p className="text-lg font-bold text-gray-900">
+                        ₹
+                        {parseFloat(product.price || "0").toLocaleString(
+                          "en-IN"
+                        )}
+                      </p>
+                    )}
                 </div>
               </CardContent>
             </Card>

@@ -1,33 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  companyAcquisitionSchema,
-  CompanyAcquisitionFormData,
-} from "@/schemas/company-acquisition-schema";
+import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
+import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useCompanyAcquisitionSubmission } from "@/hooks";
+import {
+    CompanyAcquisitionFormData,
+    companyAcquisitionSchema,
+} from "@/schemas/company-acquisition-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
-import { Label } from "@packtok/ui/components/label";
-import { Textarea } from "@packtok/ui/components/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@packtok/ui/components/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
 } from "@packtok/ui/components/card";
 import { Checkbox } from "@packtok/ui/components/checkbox";
+import { Input } from "@packtok/ui/components/input";
+import { Label } from "@packtok/ui/components/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@packtok/ui/components/select";
+import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
-import ServiceSubmissionModal from "@/components/service-submission-modal";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export function CompanyAcquisitionForm() {
   const acquisitionSubmission = useCompanyAcquisitionSubmission();
@@ -37,21 +38,24 @@ export function CompanyAcquisitionForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string>("");
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    reset,
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(companyAcquisitionSchema),
     defaultValues: {
       wantsNda: false,
       isValued: false,
       hasOngoingLitigation: false,
       hasChangeOfControlClauses: false,
+      agreeToTerms: false,
     },
   });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = form;
 
   const handleAdvisorChange = (advisor: string, checked: boolean) => {
     let updatedAdvisors;
@@ -508,11 +512,23 @@ export function CompanyAcquisitionForm() {
                   </div>
                 </div>
 
+                <div className="px-10 pb-6">
+                  <TermsAndConditionsCheckbox
+                    checked={form.watch("agreeToTerms")}
+                    onCheckedChange={(checked: boolean) =>
+                      form.setValue("agreeToTerms", checked, {
+                        shouldValidate: true,
+                      })
+                    }
+                    error={form.formState.errors.agreeToTerms?.message}
+                  />
+                </div>
+
                 <div className="flex mb-6 mr-10 justify-end">
                   <Button
                     type="submit"
                     disabled={acquisitionSubmission.isPending}
-                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cusror-pointer"
+                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {acquisitionSubmission.isPending
                       ? "Submitting..."

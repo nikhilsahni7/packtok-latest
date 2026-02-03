@@ -17,12 +17,13 @@ export const createMaintenanceRequest = async (
   userId: string,
   data: Prisma.MaintenanceRequestUncheckedCreateWithoutServiceRequestInput
 ) => {
+  const { agreeToTerms, ...dbData } = data as any;
   return prisma.serviceRequest.create({
     data: {
       userId,
       serviceType: ServiceType.MAINTENANCE,
       status: ServiceStatus.SUBMITTED,
-      maintenanceRequest: { create: data },
+      maintenanceRequest: { create: dbData },
     },
     include: requestInclude,
   });
@@ -32,12 +33,13 @@ export const createConsultancyRequest = async (
   userId: string,
   data: Prisma.ConsultancyRequestUncheckedCreateWithoutServiceRequestInput
 ) => {
+  const { agreeToTerms, ...dbData } = data as any;
   return prisma.serviceRequest.create({
     data: {
       userId,
       serviceType: ServiceType.CONSULTANCY,
       status: ServiceStatus.SUBMITTED,
-      consultancyRequest: { create: data },
+      consultancyRequest: { create: dbData },
     },
     include: requestInclude,
   });
@@ -47,12 +49,13 @@ export const createTurnkeyProjectInquiry = async (
   userId: string,
   data: Prisma.TurnkeyProjectInquiryUncheckedCreateWithoutServiceRequestInput
 ) => {
+  const { agreeToTerms, ...dbData } = data as any;
   return prisma.serviceRequest.create({
     data: {
       userId,
       serviceType: ServiceType.TURNKEY_PROJECT,
       status: ServiceStatus.SUBMITTED,
-      turnkeyProjectInquiry: { create: data },
+      turnkeyProjectInquiry: { create: dbData },
     },
     include: requestInclude,
   });
@@ -62,12 +65,13 @@ export const createCompanyAcquisitionInquiry = async (
   userId: string,
   data: Prisma.CompanyAcquisitionInquiryUncheckedCreateWithoutServiceRequestInput
 ) => {
+  const { agreeToTerms, ...dbData } = data as any;
   return prisma.serviceRequest.create({
     data: {
       userId,
       serviceType: ServiceType.COMPANY_ACQUISITION,
       status: ServiceStatus.SUBMITTED,
-      companyAcquisitionInquiry: { create: data },
+      companyAcquisitionInquiry: { create: dbData },
     },
     include: requestInclude,
   });
@@ -77,12 +81,13 @@ export const createManpowerHiringRequest = async (
   userId: string,
   data: Prisma.ManpowerHiringRequestUncheckedCreateWithoutServiceRequestInput
 ) => {
+  const { agreeToTerms, ...dbData } = data as any;
   return prisma.serviceRequest.create({
     data: {
       userId,
       serviceType: ServiceType.MANPOWER_HIRING,
       status: ServiceStatus.SUBMITTED,
-      manpowerHiringRequest: { create: data },
+      manpowerHiringRequest: { create: dbData },
     },
     include: requestInclude,
   });
@@ -92,12 +97,13 @@ export const createJobSeekerProfile = async (
   userId: string,
   data: Prisma.JobSeekerProfileUncheckedCreateWithoutServiceRequestInput
 ) => {
+  const { agreeToTerms, ...dbData } = data as any;
   return prisma.serviceRequest.create({
     data: {
       userId,
       serviceType: ServiceType.JOB_SEEKER_SUBMISSION,
       status: ServiceStatus.SUBMITTED,
-      jobSeekerProfile: { create: data },
+      jobSeekerProfile: { create: dbData },
     },
     include: requestInclude,
   });

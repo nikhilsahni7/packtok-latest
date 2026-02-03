@@ -30,6 +30,25 @@ export const profileImageUpload = multer({
   },
 }).single("profile_image");
 
+export const podcastMediaUpload = multer({
+  storage,
+  limits: { fileSize: 800 * 1024 * 1024 }, // 800MB for video
+}).fields([
+  { name: "video", maxCount: 1 },
+  { name: "thumbnail", maxCount: 1 },
+]);
+
+export const seriesCoverUpload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB for cover image
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed!"));
+    }
+    cb(null, true);
+  },
+}).single("coverImage");
+
 declare global {
   namespace Express {
     interface Request {

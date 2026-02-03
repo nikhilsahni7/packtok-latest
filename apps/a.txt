@@ -1,0 +1,16 @@
+//bidding price incresing
+
+//cart-- in navbar
+
+
+// vendors subscriptions plans
+
+//auction- manual refunds
+
+// shpping-
+
+//investment-takeover-admin control
+
+
+
+//vendors 

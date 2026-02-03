@@ -1,4 +1,5 @@
 export interface Product {
+  cartEnabled: boolean;
   id: string;
   title: string;
   description: string;

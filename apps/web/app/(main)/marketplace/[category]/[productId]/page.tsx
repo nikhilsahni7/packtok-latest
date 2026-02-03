@@ -14,7 +14,7 @@ async function getProduct(productId: string) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${productId}`,
       {
-        next: { revalidate: 180 }, // 3 minutes - balance freshness with performance
+        cache: "no-store",
       }
     );
     console.log("Fetching product:", response);

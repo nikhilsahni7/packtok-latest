@@ -3,6 +3,7 @@ import navbarLogoDark from "@/assets/navbar-logo-dark.png";
 import logo from "@/assets/navbar-logo.png";
 import LogoutButton from "@/components/auth/logout-button";
 import { navbarLinks } from "@/constant/index";
+import { useCart } from "@/contexts/cart-context";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@packtok/ui/components/button";
@@ -23,6 +24,7 @@ export default function Navbar() {
 
   const accessToken = useAuthStore((s) => s.accessToken);
   const { data: user } = useCurrentUser();
+  const { itemCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -173,14 +175,23 @@ export default function Navbar() {
                 />
               )}
             </div>
-            <ShoppingBag
-              className={cn(
-                "h-5 w-5 cursor-pointer transition-colors duration-500 ease-in-out",
-                scrolled
-                  ? "text-gray-700 hover:text-gray-900"
-                  : "text-white hover:text-gray-300"
+
+            <Link href="/cart" className="relative group">
+              <ShoppingBag
+                className={cn(
+                  "h-5 w-5 cursor-pointer transition-colors duration-500 ease-in-out",
+                  scrolled
+                    ? "text-gray-700 hover:text-gray-900"
+                    : "text-white hover:text-gray-300"
+                )}
+              />
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center border-2 border-white">
+                  {itemCount > 9 ? "9+" : itemCount}
+                </span>
               )}
-            />
+            </Link>
+
             {accessToken && user ? (
               <div className="flex items-center gap-4">
                 <Link
@@ -288,14 +299,21 @@ export default function Navbar() {
 
               {/* Mobile Icons */}
               <div className="flex items-center justify-center space-x-6 pt-2 pb-2">
-                <ShoppingBag
-                  className={cn(
-                    "h-6 w-6 cursor-pointer transition-colors duration-500 ease-in-out",
-                    scrolled
-                      ? "text-gray-700 hover:text-gray-900"
-                      : "text-white hover:text-gray-300"
+                <Link href="/cart" onClick={handleLinkClick} className="relative group">
+                  <ShoppingBag
+                    className={cn(
+                      "h-6 w-6 cursor-pointer transition-colors duration-500 ease-in-out",
+                      scrolled
+                        ? "text-gray-700 hover:text-gray-900"
+                        : "text-white hover:text-gray-300"
+                    )}
+                  />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">
+                      {itemCount > 9 ? "9+" : itemCount}
+                    </span>
                   )}
-                />
+                </Link>
               </div>
 
               {/* Mobile Authentication */}

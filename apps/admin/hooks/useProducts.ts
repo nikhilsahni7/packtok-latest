@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../lib/axios";
 import { MarketplaceProduct, MarketplaceProductStatus } from "../types/product";
 import { QK } from "../utils/queryKeys";
@@ -22,7 +22,7 @@ export function useGetProduct(productId: string) {
   return useQuery({
     queryKey: [...QK.products, productId],
     queryFn: async (): Promise<MarketplaceProduct> => {
-      const { data } = await api.get(`/api/v1/products/${productId}`);
+      const { data } = await api.get(`/api/v1/admins/products/${productId}`);
       return data.data || data;
     },
     enabled: !!productId,

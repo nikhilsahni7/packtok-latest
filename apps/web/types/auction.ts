@@ -56,6 +56,12 @@ export interface AuctionProductSummary {
   manufacturer?: string;
   productType?: string;
   status?: string;
+  model?: string;
+  year?: number;
+  specifications?: any;
+  condition?: string;
+  category?: { name: string };
+  faqs?: any;
 }
 
 export interface Auction {

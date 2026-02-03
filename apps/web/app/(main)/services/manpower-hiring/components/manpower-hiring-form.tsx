@@ -1,24 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  manpowerHiringSchema,
-  ManpowerHiringFormData,
-} from "@/schemas/manpower-hiring-schema";
+import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
+import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useManpowerHiringSubmission } from "@/hooks";
-import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
-import { Label } from "@packtok/ui/components/label";
-import { Textarea } from "@packtok/ui/components/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@packtok/ui/components/select";
+  ManpowerHiringFormData,
+  manpowerHiringSchema,
+} from "@/schemas/manpower-hiring-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@packtok/ui/components/button";
 import {
   Card,
   CardContent,
@@ -26,8 +16,19 @@ import {
   CardTitle,
 } from "@packtok/ui/components/card";
 import { Checkbox } from "@packtok/ui/components/checkbox";
+import { Input } from "@packtok/ui/components/input";
+import { Label } from "@packtok/ui/components/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@packtok/ui/components/select";
+import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
-import ServiceSubmissionModal from "@/components/service-submission-modal";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export function ManpowerHiringForm() {
   const manpowerSubmission = useManpowerHiringSubmission();
@@ -39,20 +40,23 @@ export function ManpowerHiringForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string>("");
 
+  const form = useForm({
+    resolver: zodResolver(manpowerHiringSchema),
+    defaultValues: {
+      skilledWorkersRequired: "0",
+      semiSkilledWorkersRequired: "0",
+      unskilledWorkersRequired: "0",
+      agreeToTerms: false,
+    },
+  });
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
     reset,
-  } = useForm({
-    resolver: zodResolver(manpowerHiringSchema),
-    defaultValues: {
-      skilledWorkersRequired: "0",
-      semiSkilledWorkersRequired: "0",
-      unskilledWorkersRequired: "0",
-    },
-  });
+  } = form;
 
   const manpowerOptions = [
     { value: "MACHINE_OPERATORS", label: "Machine Operators" },
@@ -529,11 +533,23 @@ export function ManpowerHiringForm() {
 
               </div>
 
-              <div className="flex my-6 mr-10   justify-end">
+              <div className="px-10 pb-6">
+                <TermsAndConditionsCheckbox
+                  checked={form.watch("agreeToTerms")}
+                  onCheckedChange={(checked: boolean) =>
+                    form.setValue("agreeToTerms", checked, {
+                      shouldValidate: true,
+                    })
+                  }
+                  error={form.formState.errors.agreeToTerms?.message}
+                />
+              </div>
+
+              <div className="flex my-6 mr-10 justify-end">
                 <Button
                   type="submit"
                   disabled={manpowerSubmission.isPending}
-                  className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer"
+                  className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {manpowerSubmission.isPending
                     ? "Submitting..."

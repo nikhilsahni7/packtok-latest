@@ -1,10 +1,10 @@
 import {
-    Cart,
-    CartItem,
-    MarketplaceProductStatus,
-    Prisma,
-    prisma,
-    ProductType,
+  Cart,
+  CartItem,
+  MarketplaceProductStatus,
+  Prisma,
+  prisma,
+  ProductType,
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 
@@ -64,17 +64,18 @@ const validateProductForCart = (
   requestedQuantity: number
 ) => {
   if (product.productType === ProductType.MACHINERY) {
+    console.log(`[CartValidation] Machinery product ${product.id} strictly blocked`);
     throw new ApiError(400, "Machinery products cannot be added to cart. Please request a quote instead.");
   }
   if (!product.cartEnabled) {
+    console.log(`[CartValidation] Product ${product.id} blocked - cartEnabled is false`);
     throw new ApiError(400, "This product is not available for cart purchase. Please request a quote.");
   }
-  if (product.status !== MarketplaceProductStatus.AVAILABLE) {
-    throw new ApiError(400, "This product is currently not available for purchase.");
-  }
   if (product.quantity < requestedQuantity) {
+    console.log(`[CartValidation] Product ${product.id} blocked - insufficient stock: ${product.quantity} < ${requestedQuantity}`);
     throw new ApiError(400, `Insufficient stock. Only ${product.quantity} available.`);
   }
+  console.log(`[CartValidation] Product ${product.id} passed validation`);
 };
 
 // ===== Cart Service Functions =====
@@ -89,6 +90,7 @@ export const getOrCreateCart = async (userId: string): Promise<CartWithItems> =>
   });
 
   if (!cart) {
+    console.log(`[CartService] Creating new cart for user ${userId}`);
     cart = await prisma.cart.create({
       data: { userId },
       include: { items: { include: cartItemInclude } },
@@ -135,6 +137,7 @@ export const addToCart = async (
   input: AddToCartInput
 ): Promise<CartWithItems> => {
   const { productId, quantity } = input;
+  console.log(`[CartService] Adding product ${productId} (qty: ${quantity}) to user ${userId} cart`);
 
   if (quantity < 1) {
     throw new ApiError(400, "Quantity must be at least 1");
@@ -154,6 +157,7 @@ export const addToCart = async (
   });
 
   if (!product) {
+    console.log(`[CartService] Add to cart failed - product ${productId} not found`);
     throw new ApiError(404, "Product not found");
   }
 
@@ -171,15 +175,18 @@ export const addToCart = async (
     // Update quantity
     const newQuantity = existingItem.quantity + quantity;
     if (product.quantity < newQuantity) {
+      console.log(`[CartService] Update quantity failed - insufficient total stock for ${productId}`);
       throw new ApiError(400, `Cannot add ${quantity} more. Only ${product.quantity - existingItem.quantity} additional available.`);
     }
 
+    console.log(`[CartService] Updating existing item ${existingItem.id} quantity to ${newQuantity}`);
     await prisma.cartItem.update({
       where: { id: existingItem.id },
       data: { quantity: newQuantity },
     });
   } else {
     // Add new item
+    console.log(`[CartService] Creating new cart item for product ${productId}`);
     await prisma.cartItem.create({
       data: {
         cartId: cart.id,

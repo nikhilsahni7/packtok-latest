@@ -1,5 +1,6 @@
 "use client";
 
+import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
 import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useTurnkeyProjectSubmission } from "@/hooks";
 import {
@@ -31,32 +32,38 @@ export function TurnkeyProjectForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string>("");
 
+  const form = useForm<TurnkeyProjectFormData>({
+    resolver: zodResolver(turnkeyProjectSchema),
+    defaultValues: {
+      utilitiesAvailable: false,
+      requiresOngoingSupport: false,
+      interestedInFutureUpgrades: false,
+      agreeToTerms: false,
+    },
+  });
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
     reset,
-  } = useForm<TurnkeyProjectFormData>({
-    resolver: zodResolver(turnkeyProjectSchema),
-    defaultValues: {
-      utilitiesAvailable: false,
-      requiresOngoingSupport: false,
-      interestedInFutureUpgrades: false,
-    },
-  });
+  } = form;
 
   const industryOptions = [
-    { value: "Single-Faced Corrugated", label: "Single-Faced Corrugated" },
-    { value: "Single-Wall Corrugated", label: "Single-Wall Corrugated" },
-    { value: "Double-Wall Corrugated", label: "Double-Wall Corrugated" },
-    { value: "Triple-Wall Corrugated", label: "Triple-Wall Corrugated" },
-    { value: "Folding Cartons", label: "Folding Cartons" },
-    { value: "Rigid Boxes", label: "Rigid Boxes" },
-    { value: "Flexible Packaging", label: "Flexible Packaging" },
-    { value: "Corrugated Boxes", label: "Corrugated Boxes" },
-    
+    { value: "MANUFACTURING", label: "Manufacturing" },
+    { value: "AUTOMOTIVE", label: "Automotive" },
+    { value: "FOOD_PROCESSING", label: "Food Processing" },
+    { value: "PHARMACEUTICALS", label: "Pharmaceuticals" },
+    { value: "AGRICULTURE", label: "Agriculture" },
+    { value: "CHEMICALS", label: "Chemicals" },
+    { value: "PETROCHEMICALS", label: "Petrochemicals" },
+    { value: "TEXTILE", label: "Textile" },
+    { value: "PLASTICS_PACKAGING", label: "Plastics & Packaging" },
+    { value: "ELECTRONICS", label: "Electronics" },
+    { value: "OTHER", label: "Other" },
   ];
+
 
   const serviceOptions = [
     { value: "FEASIBILITY_STUDY", label: "Feasibility Study" },
@@ -773,11 +780,23 @@ export function TurnkeyProjectForm() {
 
                 </div>
 
+                <div className="px-10 pb-6">
+                  <TermsAndConditionsCheckbox
+                    checked={form.watch("agreeToTerms")}
+                    onCheckedChange={(checked: boolean) =>
+                      form.setValue("agreeToTerms", checked, {
+                        shouldValidate: true,
+                      })
+                    }
+                    error={form.formState.errors.agreeToTerms?.message}
+                  />
+                </div>
+
                 <div className="flex mb-6 mr-10 justify-end ">
                   <Button
                     type="submit"
                     disabled={turnkeySubmission.isPending}
-                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cusror-pointer"
+                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {turnkeySubmission.isPending
                       ? "Submitting..."

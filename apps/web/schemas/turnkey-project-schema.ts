@@ -98,6 +98,9 @@ export const turnkeyProjectSchema = z.object({
   requiresOngoingSupport: z.boolean().optional(),
   interestedInFutureUpgrades: z.boolean().optional(),
   specialRequirements: z.string().optional(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 export type TurnkeyProjectFormData = z.infer<typeof turnkeyProjectSchema>;

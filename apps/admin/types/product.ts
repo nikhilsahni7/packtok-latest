@@ -45,7 +45,14 @@ export interface MarketplaceProduct {
   createdByUser?: User;
   submissionStatus?: UserSubmissionStatus;
   quoteRequests?: QuoteRequest[];
+  // Cart & Purchase Settings
+  cartEnabled?: boolean;
+  currency?: string;
+  displayPrice?: boolean;
+  // FAQs
+  faqs?: { question: string; answer: string }[];
 }
+
 
 // For backwards compatibility
 export interface Product extends MarketplaceProduct {}
@@ -99,4 +106,8 @@ export interface CreateProductData {
   categoryName: string; // API uses categoryName, not categoryId
   specifications?: string; // JSON string
   additionalInfo?: string;
+  // Cart & Purchase Settings
+  cartEnabled?: boolean;
+  currency?: string;
+  displayPrice?: boolean;
 }

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  MarketplaceProductStatus,
-  Prisma,
-  prisma,
-  ProductType,
-  Role,
-  UserSubmissionStatus,
+    MarketplaceProductStatus,
+    Prisma,
+    prisma,
+    ProductType,
+    Role,
+    UserSubmissionStatus,
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 
@@ -25,7 +25,7 @@ const publicVisibilityWhere: Prisma.MarketplaceProductWhereInput = {
  */
 const sanitizePriceForPublic = (product: any) => {
   const copy: any = { ...product };
-  if (copy.productType === ProductType.MACHINERY) {
+  if (copy.productType === ProductType.MACHINERY && !copy.cartEnabled) {
     delete copy.price;
   }
   // Parse specifications JSON string if present
@@ -341,6 +341,13 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
         subCategory: true,
         condition: true,
         machineType: true,
+        cartEnabled: true,
+        currency: true,
+        quantity: true,
+        manufacturer: true,
+        model: true,
+        year: true,
+        additionalInfo: true,
         category: {
           select: {
             id: true,
@@ -371,11 +378,24 @@ export const getPublicProductById = async (id: string) => {
       productType: true,
       status: true,
       submissionStatus: true,
+      images: true,
       imagesThumbnail: true,
+      videoUrl: true,
+      videoThumbnail: true,
+      pdfUrl: true,
+      specifications: true,
       categoryId: true,
       subCategory: true,
       condition: true,
       machineType: true,
+      cartEnabled: true,
+      currency: true,
+      quantity: true,
+      manufacturer: true,
+      model: true,
+      year: true,
+      additionalInfo: true,
+      faqs: true,
       category: {
         select: {
           id: true,
@@ -388,6 +408,29 @@ export const getPublicProductById = async (id: string) => {
     throw new ApiError(404, "Product not found");
   }
   return sanitizePriceForPublic(product);
+};
+
+export const getProductByIdForAdmin = async (id: string) => {
+  const product = await prisma.marketplaceProduct.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      createdByUser: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      },
+    },
+  });
+
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+
+  return product;
 };
 
 export const deleteProduct = async (

@@ -2,18 +2,19 @@ import { Role } from "@packtok/db";
 import { Router } from "express";
 import { createAdmin } from "../controllers/admin.controller";
 import {
-  adminApproveSubmission,
-  adminCreateProduct,
-  adminGetPendingSubmissions,
-  adminListProducts,
-  adminRejectSubmission,
-  adminUpdateProduct,
-  adminUpdateProductStatus,
-  adminDeleteProduct,
+    adminApproveSubmission,
+    adminCreateProduct,
+    adminDeleteProduct,
+    adminGetPendingSubmissions,
+    adminGetProduct,
+    adminListProducts,
+    adminRejectSubmission,
+    adminUpdateProduct,
+    adminUpdateProductStatus,
 } from "../controllers/admin.product.controller";
 import {
-  adminGetQuotes,
-  adminUpdateQuote,
+    adminGetQuotes,
+    adminUpdateQuote,
 } from "../controllers/admin.quote.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { hasRole } from "../middlewares/roles.middleware";
@@ -28,6 +29,12 @@ router.get(
   authMiddleware,
   hasRole(Role.ADMIN, Role.SUPER_ADMIN),
   adminListProducts
+);
+router.get(
+  "/products/:id",
+  authMiddleware,
+  hasRole(Role.ADMIN, Role.SUPER_ADMIN),
+  adminGetProduct
 );
 router.post(
   "/products",

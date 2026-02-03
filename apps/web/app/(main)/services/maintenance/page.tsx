@@ -1,12 +1,11 @@
 import WebCtaBanner from "@/components/web/cta-banner";
 import { Button } from "@packtok/ui/components/button";
 import {
-  ArrowRight,
-  Check,
-  ShieldCheck,
-  SlidersHorizontal,
-  Star,
-  Wrench,
+    Check,
+    ShieldCheck,
+    SlidersHorizontal,
+    Star,
+    Wrench
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -82,7 +81,7 @@ function Hero() {
           {rows.map((row) => (
             <div
               key={row.label}
-              className="flex items-center justify-between px-5 py-5 bg-white"
+              className="flex items-center px-5 py-5 bg-white"
             >
               <div className="flex items-center gap-4">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-gray-900">
@@ -92,19 +91,18 @@ function Hero() {
                   {row.label}
                 </span>
               </div>
-              <button className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 text-gray-700">
-                <ArrowRight className="h-4 w-4" />
-              </button>
             </div>
           ))}
         </div>
 
+
         <Link
-          href="#"
+          href="/services"
           className="mt-4 inline-block text-xs text-gray-700 underline"
         >
           All Services
         </Link>
+
       </div>
 
       <div className="relative aspect-[4/5] md:aspect-[4/3] w-full overflow-hidden rounded-2xl">

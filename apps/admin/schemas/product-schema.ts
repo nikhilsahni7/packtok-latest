@@ -9,8 +9,8 @@ export const productSchema = z.object({
     .string()
     .min(1, "Product description is required")
     .max(5000, "Description must be less than 5000 characters"),
-  price: z.number().min(0, "Price must be a positive number"),
-  quantity: z.number().int().min(0, "Quantity must be a non-negative integer"),
+  price: z.coerce.number().min(0, "Price must be a positive number"),
+  quantity: z.coerce.number().int().min(0, "Quantity must be a non-negative integer"),
   productType: z.enum(
     ["MACHINERY", "SPARE_PARTS", "CONSUMABLES", "RAW_MATERIALS"],
     {
@@ -31,7 +31,7 @@ export const productSchema = z.object({
     .string()
     .max(255, "Model must be less than 255 characters")
     .optional(),
-  year: z
+  year: z.coerce
     .number()
     .int()
     .min(1900, "Year must be after 1900")

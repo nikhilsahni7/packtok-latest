@@ -126,11 +126,24 @@ export function CartSidebar() {
                           disabled={
                             item.quantity >= item.product.quantity || isLoading
                           }
-                          className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-r-lg"
+                          className="p-2 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded-r-lg"
+                          title={item.quantity >= item.product.quantity ? "No more stock available" : "Add more"}
                         >
                           <Plus className="h-3 w-3" />
                         </button>
                       </div>
+
+                      {item.quantity >= item.product.quantity && item.product.quantity > 0 && (
+                        <span className="text-[10px] text-orange-600 font-bold bg-orange-50 px-2 py-1 rounded">
+                          STOCK LIMIT REACHED
+                        </span>
+                      )}
+
+                      {item.product.quantity <= 0 && (
+                        <span className="text-[10px] text-red-600 font-bold bg-red-50 px-2 py-1 rounded">
+                          OUT OF STOCK
+                        </span>
+                      )}
 
                       <button
                         onClick={() => removeFromCart(item.product.id)}

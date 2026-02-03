@@ -139,27 +139,27 @@ function PopularVacanciesSection() {
     },
     {
       id: 2,
-      title: "Technician",    
+      title: "Technician",
     },
     {
       id: 3,
-      title: "Maintenance Worker",    
+      title: "Maintenance Worker",
     },
     {
       id: 4,
-      title: "Management",    
+      title: "Management",
     },
     {
       id: 5,
-      title: "Supervisor",    
+      title: "Supervisor",
     },
     {
       id: 6,
-      title: "Quality Control",    
+      title: "Quality Control",
     },
     {
       id: 7,
-      title: "Production Worker",    
+      title: "Production Worker",
     }
   ]
 
@@ -379,33 +379,39 @@ function BottomCtas() {
   return (
     <section className="py-24">
       <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto grid gap-6 md:grid-cols-2">
-        <div className="rounded-xl become_man bg-no-repeat h-[232px] border bg-white p-6 md:p-8 flex items-center justify-between">
-          <div>
-            <h4 className="text-[24px] font-meduim">Become a Hiring Partner</h4>
-            <p className="mt-2 text-sm text-gray-600 max-w-md">
+        {/* Hiring Partner Card */}
+        <div className="rounded-xl become_man bg-no-repeat bg-right bg-contain h-[232px] border bg-white p-6 md:p-8 flex items-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-transparent z-0"></div>
+          <div className="relative z-10 max-w-[65%]">
+            <h4 className="text-[24px] font-medium text-gray-900">Become a Hiring Partner</h4>
+            <p className="mt-2 text-sm text-gray-600">
               Grow your workforce with qualified industrial talent. Our platform
               connects you with pre-screened machine operators, warehouse staff,
               and skilled tradespeople ready to work.
             </p>
             <Link
               href="/services/manpower-hiring"
-              className="mt-4 rounded-sm bg-black px-4 py-2 text-xs font-medium tracking-wide text-white"
+              className="mt-4 inline-block rounded-sm bg-black px-4 py-2 text-xs font-medium tracking-wide text-white"
             >
               Register Now
             </Link>
           </div>
         </div>
-        <div className="rounded-xl become_man2 bg-no-repeat h-[232px]  bg-[50%_25%] p-6 md:p-8 text-white relative overflow-hidden">
-          <div>
-            <h4 className="text-[24px] font-meduim">Become an Employer</h4>
-            <p className="mt-2 text-sm text-white/90 max-w-md">
+
+
+        {/* Job Seeker Card */}
+        <div className="rounded-xl become_man2 bg-no-repeat bg-right bg-contain h-[232px] p-6 md:p-8 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-600/90 to-transparent z-0"></div>
+          <div className="relative z-10 max-w-[60%]">
+            <h4 className="text-[24px] font-medium">Find Your Dream Job</h4>
+            <p className="mt-2 text-sm text-white/90">
               Launch your factory career with top manufacturers in your area. We
               specialize in production, assembly, and warehouse jobs with
               competitive pay.
             </p>
             <Link
               href="/services/job-seeker"
-              className="mt-4 rounded-sm bg-white px-4 py-2 text-xs font-medium tracking-wide text-black"
+              className="mt-4 inline-block rounded-sm bg-white px-4 py-2 text-xs font-medium tracking-wide text-black"
             >
               Register Now →
             </Link>

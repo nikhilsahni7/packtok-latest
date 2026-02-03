@@ -240,30 +240,36 @@ export default function CategorySidebar({
       )}
 
       {/* Price Range Filter */}
-      <div>
-        <h4 className="font-medium mb-3 text-sm lg:text-base">PRICE</h4>
-        <div className="space-y-2">
-          {PRICE_RANGES.map((range) => (
-            <div key={range.label} className="flex items-center space-x-2">
-              <Checkbox
-                id={range.label}
-                checked={filters.priceRanges.some(
-                  (r) => r.label === range.label
-                )}
-                onCheckedChange={(checked) =>
-                  onFilterChange("priceRanges", range.label, checked as boolean)
-                }
-              />
-              <label
-                htmlFor={range.label}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-              >
-                {range.label}
-              </label>
-            </div>
-          ))}
+      {category.title !== "Machinery" && (
+        <div>
+          <h4 className="font-medium mb-3 text-sm lg:text-base">PRICE</h4>
+          <div className="space-y-2">
+            {PRICE_RANGES.map((range) => (
+              <div key={range.label} className="flex items-center space-x-2">
+                <Checkbox
+                  id={range.label}
+                  checked={filters.priceRanges.some(
+                    (r) => r.label === range.label
+                  )}
+                  onCheckedChange={(checked) =>
+                    onFilterChange(
+                      "priceRanges",
+                      range.label,
+                      checked as boolean
+                    )
+                  }
+                />
+                <label
+                  htmlFor={range.label}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  {range.label}
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Condition Filter */}
       <div>

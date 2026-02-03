@@ -54,7 +54,16 @@ export function AddToCartButton({
       // Reset after animation
       setTimeout(() => setIsAdded(false), 2000);
     } catch (error: any) {
-      toast.error(error?.message || "Failed to add to cart");
+      const errorMessage = error?.response?.data?.message || error?.message || "Failed to add to cart";
+
+      if (errorMessage.toLowerCase().includes("insufficient stock") || errorMessage.toLowerCase().includes("only")) {
+        toast.error(errorMessage, {
+          icon: "⚠️",
+          duration: 4000
+        });
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsAdding(false);
     }

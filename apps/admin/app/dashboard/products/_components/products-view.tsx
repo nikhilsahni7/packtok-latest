@@ -3,11 +3,11 @@
 import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@packtok/ui/components/select";
 import { Filter, Grid3X3, List, Package, Plus, Search } from "lucide-react";
 import Link from "next/link";
@@ -16,13 +16,13 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { productTabs } from "../../../../constants/navigation";
 import {
-    useDeleteProduct,
-    useProducts,
-    useUpdateProductStatus,
+  useDeleteProduct,
+  useProducts,
+  useUpdateProductStatus,
 } from "../../../../hooks";
 import {
-    MarketplaceProduct,
-    MarketplaceProductStatus,
+  MarketplaceProduct,
+  MarketplaceProductStatus,
 } from "../../../../types/product";
 import { CreateAuctionDialog } from "./create-auction-dialog";
 import { ProductGrid } from "./product-grid";
@@ -182,7 +182,10 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button
+          onClick={() => router.push("/dashboard/products/add")}
+          className="bg-blue-600 hover:bg-blue-700">
+
           <Plus className="h-4 w-4 mr-2" />
           Add Product
         </Button>

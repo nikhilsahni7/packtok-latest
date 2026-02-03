@@ -7,8 +7,11 @@ import {
   registerUser,
   resetPasswordWithOtp,
   sendPasswordResetOtp,
-  verifyOtp,
+  sendVerificationOtp,
+  verifyOtp
 } from "../services/auth.service";
+
+
 import { applyForVendor } from "../services/vendor.service";
 import { ApiError } from "../utils/apiError";
 import { ApiResponse } from "../utils/apiResponse";
@@ -267,3 +270,17 @@ export const resetPassword = asyncHandler(
       );
   }
 );
+
+export const resendOtp = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  await sendVerificationOtp(email);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, null, "Verification OTP sent successfully."));
+});

@@ -1,6 +1,9 @@
 "use client";
 
 import { contactFormSchema } from "@/schemas/contact-form-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@packtok/ui/components/button";
+import { Checkbox } from "@packtok/ui/components/checkbox";
 import {
   Form,
   FormControl,
@@ -9,12 +12,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@packtok/ui/components/form";
-import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
 import { Textarea } from "@packtok/ui/components/textarea";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export default function ContactForm() {
@@ -27,6 +29,7 @@ export default function ContactForm() {
       name: "",
       email: "",
       message: "",
+      agreeToTerms: false,
     },
   });
 
@@ -99,6 +102,33 @@ export default function ContactForm() {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="agreeToTerms"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="leading-none">
+                  <FormLabel className="text-sm font-normal">
+                    I accept the{" "}
+                    <Link
+                      href="/terms"
+                      className="text-orange-500 hover:text-orange-600 underline underline-offset-4"
+                    >
+                      Terms and Conditions
+                    </Link>
+                  </FormLabel>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

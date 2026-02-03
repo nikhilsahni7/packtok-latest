@@ -1,18 +1,20 @@
 "use client";
 
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { ReviewsSection } from "@/components/reviews/reviews-section";
 import { useAuthStore } from "@/store/auth-store";
 import {
   ChevronDown,
   ChevronUp,
   FileText,
+  HelpCircle,
   MessageSquare,
   Minus,
   Plus,
   Star,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCarousel from "./product-carousel";
 import QuoteModal from "./quote-modal";
 
@@ -44,6 +46,8 @@ interface ProductDetailsProps {
     cartEnabled?: boolean;
     currency?: string;
     displayPrice?: boolean;
+    // FAQs
+    faqs?: { question: string; answer: string }[];
   };
 }
 
@@ -51,6 +55,11 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [reviewStats, setReviewStats] = useState<{
+    averageRating: number;
+    totalReviews: number;
+  } | null>(null);
 
   const { user, accessToken } = useAuthStore();
   const router = useRouter();
@@ -58,8 +67,8 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   const images = product.images || [];
   const hasPdf = product.pdfUrl;
 
-  // Cart settings - machinery is always quote-only
-  const isCartEnabled = product.cartEnabled && product.productType !== "MACHINERY";
+  // Cart settings - respect admin toggle
+  const isCartEnabled = !!product.cartEnabled;
   const shouldShowPrice = product.displayPrice !== false;
   const currency = product.currency || "INR";
 
@@ -81,6 +90,24 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     setShowQuoteModal(true);
   };
 
+  // Fetch review stats
+  useEffect(() => {
+    const fetchReviewStats = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${product.id}/reviews/stats`
+        );
+        const data = await res.json();
+        if (data.statusCode === 200 && data.data && data.data.totalReviews > 0) {
+          setReviewStats(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching review stats:", error);
+      }
+    };
+    fetchReviewStats();
+  }, [product.id]);
+
   const specifications = product.specifications || {};
 
   return (
@@ -99,31 +126,50 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
         {/* Product Details */}
         <div className="space-y-6 lg:min-h-[600px]">
-          {/* Reviews */}
-          <div className="flex items-center gap-2">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-black text-black" />
-              ))}
+          {/* Dynamic Rating - Only show if reviews exist */}
+          {reviewStats && reviewStats.totalReviews > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-5 h-5 ${
+                      i < Math.round(reviewStats.averageRating)
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-600 font-normal">
+                {reviewStats.averageRating.toFixed(1)} ({reviewStats.totalReviews} review{reviewStats.totalReviews !== 1 ? "s" : ""})
+              </span>
             </div>
-            <span className="text-sm text-gray-600 font-normal">
-              11 Reviews
-            </span>
+          )}
+
+          <div className="space-y-1">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+              {product.title}
+            </h1>
+            {(product.manufacturer || product.model || product.year) && (
+              <p className="text-sm text-gray-500 font-medium">
+                {[product.manufacturer, product.model, product.year]
+                  .filter(Boolean)
+                  .join(" • ")}
+              </p>
+            )}
           </div>
 
-          {/* Product Title */}
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-            {product.title}
-          </h1>
-
-          {/* Price Display - only if displayPrice is true and cart is enabled */}
-          {shouldShowPrice && isCartEnabled && (
+          {/* Price Display - show for non-machinery OR if cart is enabled */}
+          {shouldShowPrice && (product.productType !== "MACHINERY" || isCartEnabled) && product.price && (
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-orange-600">
                 {currency} {Number(product.price).toLocaleString()}
               </span>
-              {product.quantity > 0 && (
+              {product.quantity > 0 ? (
                 <span className="text-sm text-green-600 font-medium">In Stock</span>
+              ) : (
+                <span className="text-sm text-red-600 font-bold uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded border border-red-100">Out of Stock</span>
               )}
             </div>
           )}
@@ -139,6 +185,30 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               Specifications
             </h3>
             <div className="space-y-2 text-xs sm:text-sm text-gray-600">
+              {product.manufacturer && (
+                <div className="flex flex-col sm:flex-row">
+                  <span className="font-normal sm:min-w-[120px]">Manufacturer:</span>
+                  <span className="sm:ml-2 font-normal">{product.manufacturer}</span>
+                </div>
+              )}
+              {product.model && (
+                <div className="flex flex-col sm:flex-row">
+                  <span className="font-normal sm:min-w-[120px]">Model:</span>
+                  <span className="sm:ml-2 font-normal">{product.model}</span>
+                </div>
+              )}
+              {product.year && (
+                <div className="flex flex-col sm:flex-row">
+                  <span className="font-normal sm:min-w-[120px]">Year:</span>
+                  <span className="sm:ml-2 font-normal">{product.year}</span>
+                </div>
+              )}
+              {product.condition && (
+                <div className="flex flex-col sm:flex-row">
+                  <span className="font-normal sm:min-w-[120px]">Condition:</span>
+                  <span className="sm:ml-2 font-normal">{product.condition}</span>
+                </div>
+              )}
               {Object.entries(specifications).map(([key, value]) => (
                 <div key={key} className="flex flex-col sm:flex-row">
                   <span className="font-normal capitalize sm:min-w-[120px]">
@@ -227,7 +297,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                 SKU
               </span>
               <span className="text-xs sm:text-sm font-normal">
-                {product.id ? product.id.slice(-8).toUpperCase() : "8832"}
+                {product.id.slice(-8).toUpperCase()}
               </span>
             </div>
             <div className="flex justify-between items-start sm:items-center">
@@ -235,8 +305,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                 CATEGORY
               </span>
               <span className="text-xs sm:text-sm font-normal text-right sm:text-left max-w-[60%] sm:max-w-none">
-                {product.category?.name ||
-                  "Ice Cream Equipment, Food Processing Machinery"}
+                {product.category?.name}
               </span>
             </div>
             {product.subCategory && (
@@ -251,59 +320,76 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             )}
           </div>
           {/* Additional Info */}
-          <div className="border-t pt-6">
-            <button
-              onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
-              className="flex items-center justify-between w-full text-left"
-            >
-              <span className="font-semibold text-lg">Additional Info</span>
-              {showAdditionalInfo ? (
-                <ChevronUp className="w-5 h-5" />
-              ) : (
-                <ChevronDown className="w-5 h-5" />
+          {product.additionalInfo && (
+            <div className="border-t pt-6">
+              <button
+                onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
+                className="flex items-center justify-between w-full text-left"
+              >
+                <span className="font-semibold text-lg">Additional Info</span>
+                {showAdditionalInfo ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
+              </button>
+              {showAdditionalInfo && (
+                <div className="mt-4">
+                  <p className="text-sm text-gray-600 leading-relaxed font-normal whitespace-pre-wrap">
+                    {product.additionalInfo}
+                  </p>
+                </div>
               )}
-            </button>
-            {showAdditionalInfo && (
-              <div className="mt-6 space-y-6">
-                <div>
-                  <h4 className="font-semibold mb-3">Details</h4>
-                  <p className="text-sm text-gray-600 leading-relaxed font-normal">
-                    {product.additionalInfo ||
-                      "This machine automates the full ice cream production process—from pasteurization to freezing—ensuring hygiene, efficiency, and uniformity in every batch. The built-in microprocessor allows for precision control of texture, temperature, and timing. Cleaning is simplified with stainless steel surfaces and automatic rinse features."}
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-3">Packaging</h4>
-                  <p className="text-sm text-gray-600 leading-relaxed font-normal">
-                    Width: 20 &quot; Height: 1 ½ &quot; Length: 21 ¼ &quot;
-                    <br />
-                    Weight: 7 lb 8 oz
-                    <br />
-                    Package(s): 1
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Tabs Section */}
-      <div className="mt-12 border-t pt-8">
-        <div className="flex border-b">
-          <button className="px-4 py-2 text-gray-600 hover:text-gray-900">
-            Questions
-          </button>
-          <button className="px-4 py-2 border-b-2 border-black text-black font-medium">
-            Reviews
-          </button>
+      {/* FAQs Section */}
+      {product.faqs && product.faqs.length > 0 && (
+        <div className="mt-12 border-t pt-8">
+          <div className="flex items-center gap-2 mb-6">
+            <HelpCircle className="w-6 h-6 text-gray-700" />
+            <h2 className="text-xl font-semibold">Frequently Asked Questions</h2>
+          </div>
+          <div className="space-y-3">
+            {product.faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="border border-gray-200 rounded-lg overflow-hidden"
+              >
+                <button
+                  onClick={() =>
+                    setExpandedFaq(expandedFaq === index ? null : index)
+                  }
+                  className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-medium text-gray-900">
+                    {faq.question}
+                  </span>
+                  {expandedFaq === index ? (
+                    <ChevronUp className="w-5 h-5 text-gray-500 shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-500 shrink-0" />
+                  )}
+                </button>
+                {expandedFaq === index && (
+                  <div className="px-4 pb-4 text-gray-600 leading-relaxed">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="py-8">
-          <p className="text-gray-600">
-            No reviews yet. Be the first to review this product.
-          </p>
-        </div>
-      </div>
+      )}
+
+      {/* Reviews Section - Dynamic Reviews */}
+      <ReviewsSection
+        productId={product.id}
+        currentUserId={user?.id || null}
+        accessToken={accessToken || null}
+      />
 
       {/* Quote Modal */}
       <QuoteModal

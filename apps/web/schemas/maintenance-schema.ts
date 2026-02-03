@@ -28,6 +28,9 @@ export const maintenanceSchema = z.object({
   partsReplaced: z.string().optional(),
   technicianNotes: z.string().optional(),
   supervisorApprovalName: z.string().optional(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 export type MaintenanceFormData = z.infer<typeof maintenanceSchema>;

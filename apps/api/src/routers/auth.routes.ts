@@ -1,16 +1,17 @@
 import { Router } from "express";
 import {
-  getCurrentUser,
-  login,
-  loginVendor,
-  logout,
-  refresh,
-  requestPasswordReset,
-  resetPassword,
-  signup,
-  signupVendor,
-  updateUserProfile,
-  verifyUserOtp,
+    getCurrentUser,
+    login,
+    loginVendor,
+    logout,
+    refresh,
+    requestPasswordReset,
+    resendOtp,
+    resetPassword,
+    signup,
+    signupVendor,
+    updateUserProfile,
+    verifyUserOtp,
 } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { profileImageUpload } from "../middlewares/upload.middleware";
@@ -24,6 +25,7 @@ router.post("/login-vendor", loginVendor);
 router.post("/logout", logout);
 router.post("/refresh", refresh);
 router.post("/verify-otp", verifyUserOtp);
+router.post("/resend-otp", resendOtp);
 router.post("/forgot-password/request", requestPasswordReset);
 router.post("/forgot-password/confirm", resetPassword);
 

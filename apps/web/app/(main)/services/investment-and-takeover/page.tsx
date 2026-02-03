@@ -1,6 +1,5 @@
 
 // import ChennaiImg from "@/assets/chennai.jpg";
-import Chimneys from "@/assets/chimneys.png";
 // import DelhiImg from "@/assets/delhi.jpg";
 import Icon1 from "@/assets/icon1.svg";
 import Icon2 from "@/assets/icon2.svg";
@@ -23,18 +22,8 @@ import { House, SearchIcon } from "lucide-react";
 
 
 import Image from "next/image";
+import FacilitiesSection from "./components/FacilitiesSection";
 
-
-const facilities = new Array(6).fill(0).map((_, i) => ({
-  id: i,
-  title: [
-    "Heavy Machine Manufacturing Plant",
-    "Food Processing Facility",
-    "Automotive Components Factory",
-  ][i % 3],
-  city: "Mumbai, Maharashtra",
-  image: Chimneys,
-}));
 
 
 
@@ -285,7 +274,7 @@ export default function InvestmentAndTakeoverPage() {
                 EXPLORE PREMIUM INDUSTRIAL FACILITIES
               </h3>
 
-              
+
             </div>
 
             <p className="pl-4 text-justify text-gray-600 mt-2">
@@ -294,28 +283,9 @@ export default function InvestmentAndTakeoverPage() {
               immediate acquisition.
             </p>
 
-            <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {facilities.map((f) => (
-                <article key={f.id} className="bg-white p-4">
-                  {/* <div className="rounded-xl overflow-hidden"> */}
-                  <Image
-                    src={f.image}
-                    alt={f.title}
-                    width={340}
-                    height={340}
-                    className="object-cover w-full aspect-square rounded-xl"
-                  />
-                  {/* </div> */}
-                  <h4 className="mt-3 font-semibold">{f.title}</h4>
-                  <p className="text-sm text-gray-500">{f.city}</p>
-                  <div className="mt-4">
-                    <button className="px-4 py-2 bg-black text-white rounded">
-                      Send Query
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+
+            <FacilitiesSection />
+
 
             {/* <div className="mt-12 text-center">
               <button className="px-6 py-2 border border-black rounded-full">

@@ -278,6 +278,26 @@ enum UrgencyLevel {
   LOW
 }
 
+// ===== Podcast Enums =====
+
+enum PodcastStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
+
+enum UploadStatus {
+  PENDING
+  UPLOADING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id                      String                   @id // Supabase auth.users UUID
   createdAt               DateTime                 @default(now())
@@ -316,6 +336,17 @@ model User {
   cart                    Cart?
   orders                  Order[]
   orderStatusChanges      OrderStatusHistory[] @relation("StatusChangedByUser")
+
+  // Podcast relations
+  podcastReactions        PodcastReaction[]
+  podcastComments         PodcastComment[]
+
+  // Investment relations
+  investmentQueries       InvestmentQuery[]
+
+  // Product reviews
+  productReviews          ProductReview[]  @relation("productReviews")
+
 
   @@map("users")
 }
@@ -376,6 +407,10 @@ model MarketplaceProduct {
   currency        String    @default("INR")  // INR, USD, AED, CNY, etc.
   displayPrice    Boolean   @default(true)   // Hide price for machinery
 
+  // FAQs - Array of {question, answer} objects
+  faqs            Json      @default("[]")   // [{question: string, answer: string}]
+
+
   // --- Relations ---
   category      Category @relation(fields: [categoryId], references: [id])
   categoryId    String
@@ -405,12 +440,38 @@ model MarketplaceProduct {
   cartItems      CartItem[]
   orderItems     OrderItem[]
 
+  // Reviews
+  reviews        ProductReview[]
+
+
   @@map("marketplace_products")
   @@index([createdById])
   @@index([categoryId])
   @@index([status, submissionStatus])
   @@index([cartEnabled, status])
 }
+
+model ProductReview {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  rating        Int      // 1-5 stars
+  comment       String?  @db.Text
+  isVerified    Boolean  @default(false) // Verified purchase (bought the product)
+
+  // Relations
+  product       MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId     String
+
+  user          User     @relation("productReviews", fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+
+  @@unique([userId, productId]) // One review per user per product
+  @@index([productId])
+  @@index([userId])
+  @@map("product_reviews")
+}
+
 
 // Inventory tracking for vendor products
 enum StockMovementReason {
@@ -1091,4 +1152,129 @@ model OrderStatusHistory {
 
   @@map("order_status_history")
   @@index([orderId, createdAt])
+}
+
+// ===== Podcast Models =====
+
+model PodcastSeries {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  title       String
+  description String?   @db.Text
+  coverImage  String?
+  podcasts    Podcast[]
+
+  @@map("podcast_series")
+  @@index([title])
+}
+
+model Podcast {
+  id           String        @id @default(cuid())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  title        String
+  description  String        @db.Text
+  videoUrl     String?
+  thumbnailUrl String?
+  duration     Int?          // Duration in seconds
+  status       PodcastStatus @default(DRAFT)
+  releaseDate  DateTime?
+  viewCount    Int           @default(0)
+
+  // Upload tracking for background processing
+  uploadStatus UploadStatus  @default(PENDING)
+  uploadError  String?       @db.Text
+
+  // Series relationship (optional)
+  series        PodcastSeries? @relation(fields: [seriesId], references: [id], onDelete: SetNull)
+  seriesId      String?
+  episodeNumber Int?
+
+  // Tags as array (GIN indexed for search)
+  tags String[] @default([])
+
+  // Relations
+  reactions PodcastReaction[]
+  comments  PodcastComment[]
+
+  @@map("podcasts")
+  @@index([status, releaseDate])
+  @@index([seriesId, episodeNumber])
+  @@index([uploadStatus])
+}
+
+model PodcastReaction {
+  id        String       @id @default(cuid())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  type      ReactionType
+
+  podcast   Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  podcastId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@unique([podcastId, userId])
+  @@map("podcast_reactions")
+  @@index([podcastId, type])
+}
+
+model PodcastComment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String   @db.Text
+
+  podcast   Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  podcastId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  // Self-referencing for replies
+  parent   PodcastComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId String?
+  replies  PodcastComment[] @relation("CommentReplies")
+
+  @@map("podcast_comments")
+  @@index([podcastId, createdAt])
+  @@index([parentId])
+}
+
+// ===== Investment Properties =====
+
+enum InvestmentQueryStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model InvestmentProperty {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  location  String
+  image     String
+  isActive  Boolean  @default(true)
+  queries   InvestmentQuery[]
+
+  @@map("investment_properties")
+}
+
+model InvestmentQuery {
+  id         String                @id @default(cuid())
+  createdAt  DateTime              @default(now())
+  message    String?               @db.Text
+  status     InvestmentQueryStatus @default(PENDING)
+
+  property   InvestmentProperty @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@map("investment_queries")
+  @@index([propertyId])
+  @@index([userId])
 }

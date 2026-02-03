@@ -1,5 +1,6 @@
 "use client";
 
+import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
 import { useAuthStore } from "@/store/auth-store";
 import { Check, X } from "lucide-react";
 import React, { useState } from "react";
@@ -18,6 +19,7 @@ interface QuoteFormData {
   additionalInfo: string;
   PhoneNo: string;
   Email: string;
+  agreeToTerms: boolean;
 }
 
 export default function QuoteModal({
@@ -33,6 +35,7 @@ export default function QuoteModal({
     additionalInfo: "",
     PhoneNo: "",
     Email: "",
+    agreeToTerms: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -89,6 +92,7 @@ export default function QuoteModal({
           additionalInfo: "",
           PhoneNo: "",
           Email: "",
+          agreeToTerms: false,
         });
       }, 2000);
     } catch (err) {
@@ -233,6 +237,13 @@ export default function QuoteModal({
               </div>
 
               {error && <div className="text-red-600 text-sm">{error}</div>}
+
+              <TermsAndConditionsCheckbox
+                checked={formData.agreeToTerms}
+                onCheckedChange={(checked: boolean) =>
+                  setFormData((prev) => ({ ...prev, agreeToTerms: checked }))
+                }
+              />
 
               <div className="flex space-x-3 pt-4">
                 <button

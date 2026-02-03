@@ -38,6 +38,9 @@ export const jobSeekerSchema = z.object({
   cv: z.instanceof(File, {
     message: "Please upload your CV.",
   }),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 export type JobSeekerFormData = z.infer<typeof jobSeekerSchema>;

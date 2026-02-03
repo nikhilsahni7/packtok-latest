@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
 import { Badge } from "@packtok/ui/components/badge";
+import { Button } from "@packtok/ui/components/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@packtok/ui/components/dropdown-menu";
+import { Input } from "@packtok/ui/components/input";
 import {
   Table,
   TableBody,
@@ -12,46 +17,46 @@ import {
   TableHeader,
   TableRow,
 } from "@packtok/ui/components/table";
+import { cn } from "@packtok/ui/lib/utils";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@packtok/ui/components/dropdown-menu";
-import {
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
+  Edit,
   Mail,
   MoreHorizontal,
   Search,
-  ArrowUpDown,
-  ChevronUp,
-  ChevronDown,
-  Edit,
   Trash2,
 } from "lucide-react";
+import { useMemo, useState } from "react";
 
 interface Customer {
   id: string;
   name: string;
   email: string;
-  phone_number: string;
-  gender: "Male" | "Female";
-  role: "NORMAL_USER" | "VENDOR" | "ADMIN" | "SUPER_ADMIN";
-  avatar?: string;
+  phone_number: string | null;
+  role: string;
+  profile_image?: string | null;
+  createdAt?: string;
 }
 
-type SortField = "name" | "email" | "phone_number" | "gender" | "role";
+type SortField = "name" | "email" | "phone_number" | "role" | "createdAt";
 type SortDirection = "asc" | "desc";
 
 interface CustomersTableProps {
   customers: Customer[];
   onEdit: (customer: Customer) => void;
   onDelete: (customer: Customer) => void;
+  onSelect: (customer: Customer) => void;
+  selectedId?: string;
 }
 
 export function CustomersTable({
   customers,
   onEdit,
   onDelete,
+  onSelect,
+  selectedId,
 }: CustomersTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<SortField>("name");
@@ -85,9 +90,9 @@ export function CustomersTable({
       }
 
       if (sortDirection === "asc") {
-        return aValue > bValue ? 1 : -1;
+        return (aValue ?? "") > (bValue ?? "") ? 1 : -1;
       } else {
-        return aValue < bValue ? 1 : -1;
+        return (aValue ?? "") < (bValue ?? "") ? 1 : -1;
       }
     });
 
@@ -105,20 +110,14 @@ export function CustomersTable({
     );
   };
 
-  const getGenderBadgeColor = (gender: string) => {
-    return gender === "Male"
-      ? "bg-teal-100 text-teal-800"
-      : "bg-pink-100 text-pink-800";
-  };
-
   const getRoleBadge = (role: string) => {
-    const colors = {
+    const colors: Record<string, string> = {
       NORMAL_USER: "bg-blue-100 text-blue-800",
       VENDOR: "bg-green-100 text-green-800",
       ADMIN: "bg-purple-100 text-purple-800",
       SUPER_ADMIN: "bg-red-100 text-red-800",
     };
-    return colors[role as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[role] || "bg-gray-100 text-gray-800";
   };
 
   return (
@@ -174,10 +173,10 @@ export function CustomersTable({
               <Button
                 variant="ghost"
                 className="h-auto p-0 font-medium text-gray-500 hover:bg-transparent"
-                onClick={() => handleSort("gender")}
+                onClick={() => handleSort("createdAt")}
               >
-                Gender
-                <SortIcon field="gender" />
+                Joined
+                <SortIcon field="createdAt" />
               </Button>
             </TableHead>
             <TableHead className="px-6 py-3">
@@ -195,7 +194,14 @@ export function CustomersTable({
         </TableHeader>
         <TableBody>
           {filteredAndSortedCustomers.map((customer) => (
-            <TableRow key={customer.id}>
+            <TableRow
+              key={customer.id}
+              onClick={() => onSelect(customer)}
+              className={cn(
+                "cursor-pointer transition-colors",
+                selectedId === customer.id ? "bg-blue-50/50" : "hover:bg-slate-50/30"
+              )}
+            >
               <TableCell className="px-6 py-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -217,14 +223,10 @@ export function CustomersTable({
                 </div>
               </TableCell>
               <TableCell className="px-6 py-4 text-sm text-gray-600">
-                {customer.phone_number}
+                {customer.phone_number || "-"}
               </TableCell>
-              <TableCell className="px-6 py-4">
-                <Badge
-                  className={`${getGenderBadgeColor(customer.gender)} text-xs`}
-                >
-                  {customer.gender}
-                </Badge>
+              <TableCell className="px-6 py-4 text-sm text-gray-600">
+                {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : "-"}
               </TableCell>
               <TableCell className="px-6 py-4">
                 <Badge className={`${getRoleBadge(customer.role)} text-xs`}>

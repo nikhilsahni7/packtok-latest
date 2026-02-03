@@ -3,22 +3,23 @@
 import { MarketplaceProductStatus } from "@packtok/db";
 import { Request, Response } from "express";
 import {
-  approveSubmission,
-  changeProductStatus,
-  createProductAsAdmin,
-  deleteProduct,
-  getPendingSubmissions,
-  listAllProductsForAdmin,
-  rejectSubmission,
-  updateProduct,
+    approveSubmission,
+    changeProductStatus,
+    createProductAsAdmin,
+    deleteProduct,
+    getPendingSubmissions,
+    getProductByIdForAdmin,
+    listAllProductsForAdmin,
+    rejectSubmission,
+    updateProduct,
 } from "../services/product.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 import {
-  uploadDocumentToSupabase,
-  uploadImageToSupabase,
-  uploadThumbnailImageToSupabase,
-  uploadVideoToSupabase,
+    uploadDocumentToSupabase,
+    uploadImageToSupabase,
+    uploadThumbnailImageToSupabase,
+    uploadVideoToSupabase,
 } from "../utils/storage.service";
 
 const processUploadedMedia = async (files: any) => {
@@ -74,6 +75,14 @@ export const adminCreateProduct = asyncHandler(
         throw new Error("Invalid JSON in specifications field");
       }
     }
+    // Parse FAQs JSON
+    if (body.faqs && typeof body.faqs === "string") {
+      try {
+        body.faqs = JSON.parse(body.faqs);
+      } catch (err) {
+        throw new Error("Invalid JSON in faqs field");
+      }
+    }
     if (body.quantity) body.quantity = Number(body.quantity);
     if (body.year) body.year = Number(body.year);
     if (pdfUrl) body.pdfUrl = pdfUrl;
@@ -100,6 +109,14 @@ export const adminUpdateProduct = asyncHandler(
         throw new Error("Invalid JSON in specifications field");
       }
     }
+    // Parse FAQs JSON
+    if (data.faqs && typeof data.faqs === "string") {
+      try {
+        data.faqs = JSON.parse(data.faqs);
+      } catch (err) {
+        throw new Error("Invalid JSON in faqs field");
+      }
+    }
     if (data.quantity) data.quantity = Number(data.quantity);
     if (data.year) data.year = Number(data.year);
     if (imagesUrls.length) data.images = imagesUrls;
@@ -120,6 +137,16 @@ export const adminListProducts = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, products, "Products fetched successfully"));
+  }
+);
+
+export const adminGetProduct = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const product = await getProductByIdForAdmin(id);
+    res
+      .status(200)
+      .json(new ApiResponse(200, product, "Product fetched successfully"));
   }
 );
 

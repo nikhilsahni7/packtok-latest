@@ -1,24 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  jobSeekerSchema,
-  JobSeekerFormData,
-} from "@/schemas/job-seeker-schema";
+import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
+import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useJobSeekerSubmission } from "@/hooks";
-import { Button } from "@packtok/ui/components/button";
-import { Input } from "@packtok/ui/components/input";
-import { Label } from "@packtok/ui/components/label";
-import { Textarea } from "@packtok/ui/components/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@packtok/ui/components/select";
+  JobSeekerFormData,
+  jobSeekerSchema,
+} from "@/schemas/job-seeker-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@packtok/ui/components/button";
 import {
   Card,
   CardContent,
@@ -26,9 +16,20 @@ import {
   CardTitle,
 } from "@packtok/ui/components/card";
 import { Checkbox } from "@packtok/ui/components/checkbox";
+import { Input } from "@packtok/ui/components/input";
+import { Label } from "@packtok/ui/components/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@packtok/ui/components/select";
+import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
-import { Upload, FileText, X } from "lucide-react";
-import ServiceSubmissionModal from "@/components/service-submission-modal";
+import { FileText, Upload, X } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export function JobSeekerForm() {
   const jobSeekerSubmission = useJobSeekerSubmission();
@@ -38,18 +39,21 @@ export function JobSeekerForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string>("");
 
+  const form = useForm({
+    resolver: zodResolver(jobSeekerSchema),
+    defaultValues: {
+      hasPreviouslyWorkedWithUs: false,
+      agreeToTerms: false,
+    },
+  });
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
     reset,
-  } = useForm({
-    resolver: zodResolver(jobSeekerSchema),
-    defaultValues: {
-      hasPreviouslyWorkedWithUs: false,
-    },
-  });
+  } = form;
 
   const handleCvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -287,10 +291,10 @@ export function JobSeekerForm() {
                         <SelectItem value="Maintenance Worker">
                           Maintenance Worker
                         </SelectItem>
-                        <SelectItem value="Maintenance Worker">
+                        <SelectItem value="Management">
                           Management
                         </SelectItem>
-                        
+
                         <SelectItem value="Supervisor">Supervisor</SelectItem>
                         <SelectItem value="Quality Control">
                           Quality Control
@@ -450,11 +454,23 @@ export function JobSeekerForm() {
                 </div>
               </div>
 
-              <div className="flex my-6 mr-10  justify-end">
+              <div className="px-10 pb-6">
+                <TermsAndConditionsCheckbox
+                  checked={form.watch("agreeToTerms")}
+                  onCheckedChange={(checked: boolean) =>
+                    form.setValue("agreeToTerms", checked, {
+                      shouldValidate: true,
+                    })
+                  }
+                  error={form.formState.errors.agreeToTerms?.message}
+                />
+              </div>
+
+              <div className="flex my-6 mr-10 justify-end">
                 <Button
                   type="submit"
                   disabled={jobSeekerSubmission.isPending}
-                  className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer"
+                  className="bg-linear-to-t from-[#4A3AFF] to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {jobSeekerSubmission.isPending
                     ? "Submitting..."

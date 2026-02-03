@@ -80,6 +80,9 @@ export const manpowerHiringSchema = z.object({
     message: "Please select hiring urgency.",
   }),
   additionalNotes: z.string().optional(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 export type ManpowerHiringFormData = z.infer<typeof manpowerHiringSchema>;

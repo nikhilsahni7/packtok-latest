@@ -348,11 +348,12 @@ function ConsultancyGrid() {
           "text-xs uppercase tracking-[0.2em] text-muted-foreground"
         )}
       >
-        Consultancy List
+        Our Expertise
       </div>
       <h3 className={cn("mt-3 text-3xl font-semibold sm:text-4xl")}>
-        Explore Our Consultancy
+        Explore Our Product Categories
       </h3>
+
 
       <div className={cn("mt-10 grid grid-cols-1 gap-8 md:grid-cols-3")}>
         <ConsultancyCard
@@ -448,8 +449,9 @@ function ConsultancyCard({
           )}
           type="button"
         >
-          Book Your Slot
+          Explore Products
         </Link>
+
       </div>
     </div>
   );

@@ -59,6 +59,9 @@ export const companyAcquisitionSchema = z.object({
   hasChangeOfControlClauses: z.boolean().default(false),
   wantsNda: z.boolean().default(false),
   additionalNotes: z.string().optional(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 export type CompanyAcquisitionFormData = z.infer<

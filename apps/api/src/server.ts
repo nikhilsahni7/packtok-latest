@@ -1,10 +1,10 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, {
-  ErrorRequestHandler,
-  Express,
-  Request,
-  Response,
+    ErrorRequestHandler,
+    Express,
+    Request,
+    Response,
 } from "express";
 import helmet from "helmet";
 import http from "http";
@@ -13,21 +13,28 @@ import config from "./config";
 import { initSocketServer } from "./realtime/socket";
 import addressRouter from "./routers/address.routes";
 import adminAuctionsRouter from "./routers/admin.auctions.routes";
+import adminInvestmentRouter from "./routers/admin.investment.routes";
 import adminOrderRouter from "./routers/admin.order.routes";
+import adminPodcastRouter from "./routers/admin.podcast.routes";
 import adminRouter from "./routers/admin.routes";
 import adminServiceRouter from "./routers/admin.services.routes";
+import adminUserRouter from "./routers/admin.user.routes";
 import adminVendorsRouter from "./routers/admin.vendors.routes";
 import auctionRouter from "./routers/auction.routes";
 import authRouter from "./routers/auth.routes";
 import cartRouter from "./routers/cart.routes";
 import categoryRouter from "./routers/category.routes";
+import investmentRouter from "./routers/investment.routes";
 import orderRouter from "./routers/order.routes";
+import podcastRouter from "./routers/podcast.routes";
 import productRouter from "./routers/product.routes";
 import quoteRouter from "./routers/quote.routes";
 import serviceRouter from "./routers/service.routes";
 import userTrackingRouter from "./routers/user-tracking.routes";
 import vendorProductsRouter from "./routers/vendor.products.routes";
 import vendorRouter from "./routers/vendor.routes";
+import adminReviewRouter from "./routes/admin.review.routes";
+import reviewRouter from "./routes/review.routes";
 import { auctionStatusUpdater } from "./services/auction-status-updater.service";
 import { ApiError } from "./utils/apiError";
 import logger from "./utils/logger";
@@ -69,10 +76,17 @@ app.use("/api/v1/admins/auctions", adminAuctionsRouter);
 app.use("/api/v1/admins/orders", adminOrderRouter);
 app.use("/api/v1/vendors", vendorRouter);
 app.use("/api/v1/admins/vendors", adminVendorsRouter);
+app.use("/api/v1/admins/users", adminUserRouter);
+app.use("/api/v1/admins/podcasts", adminPodcastRouter);
+app.use("/api/v1/podcasts", podcastRouter);
 app.use("/api/v1/user-tracking", userTrackingRouter);
 app.use("/api/v1/addresses", addressRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/investments", investmentRouter);
+app.use("/api/v1/admins/investments", adminInvestmentRouter);
+app.use("/api/v1", reviewRouter); // Review routes
+app.use("/api/v1/admins/reviews", adminReviewRouter); // Admin review routes
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {

@@ -17,7 +17,9 @@ export const signUpSchema = z.object({
     .max(100, "Password must be less than 100 characters")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+
   agreeToTerms: z.boolean().refine((val) => val === true, {
     message: "You must agree to the terms of service and privacy policy",
   }),

@@ -1,29 +1,29 @@
 import {
-  Auction,
-  AuctionBid,
-  AuctionBidType,
-  AuctionEnrollment,
-  AuctionEnrollmentStatus,
-  AuctionResult,
-  AuctionStatus,
-  PaymentIntent,
-  PaymentIntentStatus,
-  PaymentProvider,
-  PaymentRefund,
-  Prisma,
-  prisma,
+    Auction,
+    AuctionBid,
+    AuctionBidType,
+    AuctionEnrollment,
+    AuctionEnrollmentStatus,
+    AuctionResult,
+    AuctionStatus,
+    PaymentIntent,
+    PaymentIntentStatus,
+    PaymentProvider,
+    PaymentRefund,
+    Prisma,
+    prisma,
 } from "@packtok/db";
 import {
-  publishAuctionFinalized,
-  publishBidPlaced,
-  publishLeaderboardSnapshot,
+    publishAuctionFinalized,
+    publishBidPlaced,
+    publishLeaderboardSnapshot,
 } from "../realtime/auction.publisher";
 import { ApiError } from "../utils/apiError";
 import {
-  createOrder as createRazorpayOrder,
-  getRazorpayPublishableKey,
-  RazorpayOrderSummary,
-  verifyPaymentSignature,
+    createOrder as createRazorpayOrder,
+    getRazorpayPublishableKey,
+    RazorpayOrderSummary,
+    verifyPaymentSignature,
 } from "./payments/razorpay.service";
 
 interface CreateAuctionInput {
@@ -659,19 +659,19 @@ export const placeAuctionBid = async (
     if (auction.mode === AuctionBidType.FORWARD) {
       const minIncrement = auction.minBidIncrement ?? new Prisma.Decimal(1);
       const minRequired = reference.add(minIncrement);
-      if (!amount.gt(minRequired)) {
+      if (!amount.gte(minRequired)) {
         throw new ApiError(
           400,
-          `Bid must exceed ${minRequired.toString()} (current: ${reference.toString()} + increment: ${minIncrement.toString()})`
+          `Bid must be at least ${minRequired.toString()} (current: ${reference.toString()} + increment: ${minIncrement.toString()})`
         );
       }
     } else {
       const minDecrement = auction.minBidDecrement ?? new Prisma.Decimal(1);
       const maxAllowed = reference.sub(minDecrement);
-      if (!amount.lt(maxAllowed)) {
+      if (!amount.lte(maxAllowed)) {
         throw new ApiError(
           400,
-          `Bid must be lower than ${maxAllowed.toString()} (current: ${reference.toString()} - decrement: ${minDecrement.toString()})`
+          `Bid must be ${maxAllowed.toString()} or lower (current: ${reference.toString()} - decrement: ${minDecrement.toString()})`
         );
       }
       if (amount.lte(0)) {

@@ -1,38 +1,40 @@
 "use client";
 
+import { ReviewsSection } from "@/components/reviews/reviews-section";
 import { useAuctionRealtime } from "@/hooks/useAuctionRealtime";
 import {
-    useAuction,
-    useConfirmEnrollmentPayment,
-    useEnrollInAuction,
-    useMyAuctionEnrollments,
-    usePlaceBid,
+  useAuction,
+  useConfirmEnrollmentPayment,
+  useEnrollInAuction,
+  useMyAuctionEnrollments,
+  usePlaceBid,
 } from "@/hooks/useAuctions";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { loadRazorpayCheckout } from "@/lib/razorpay";
 import { useAuthStore } from "@/store/auth-store";
 import {
-    Auction,
-    AuctionLeaderboardSnapshot,
-    AuctionStatus,
+  Auction,
+  AuctionLeaderboardSnapshot,
+  AuctionStatus,
 } from "@/types/auction";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
 } from "@packtok/ui/components/card";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@packtok/ui/components/dialog";
 import { Input } from "@packtok/ui/components/input";
+import { ChevronDown, ChevronUp, HelpCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -133,6 +135,11 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingBidAmount, setPendingBidAmount] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [reviewStats, setReviewStats] = useState<{
+    averageRating: number;
+    totalReviews: number;
+  } | null>(null);
 
   // Use countdown hook for auction end time
   const countdown = useCountdown(
@@ -144,6 +151,26 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
       setSnapshot(auction.leaderboard.snapshot);
     }
   }, [auction?.leaderboard?.snapshot]);
+
+  useEffect(() => {
+    if (!auction?.productId) return;
+
+    const fetchReviewStats = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${auction.productId}/reviews/stats`
+        );
+        const data = await res.json();
+        if (data.statusCode === 200 && data.data) {
+          setReviewStats(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching review stats:", error);
+      }
+    };
+
+    fetchReviewStats();
+  }, [auction?.productId]);
 
   useAuctionRealtime(auction?.id ?? null, {
     onLeaderboard: (event) => {
@@ -288,9 +315,9 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
     // Validate minimum bid amount
     if (minBidAmount !== null) {
       if (auction.mode === "FORWARD") {
-        if (numericAmount <= minBidAmount) {
+        if (numericAmount < minBidAmount) {
           toast.error(
-            `Bid must be greater than ${formatCurrency(
+            `Bid must be at least ${formatCurrency(
               minBidAmount.toString(),
               auction.currency
             )}`
@@ -298,12 +325,12 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
           return;
         }
       } else {
-        if (numericAmount >= minBidAmount) {
+        if (numericAmount > minBidAmount) {
           toast.error(
-            `Bid must be less than ${formatCurrency(
+            `Bid must be ${formatCurrency(
               minBidAmount.toString(),
               auction.currency
-            )}`
+            )} or lower`
           );
           return;
         }
@@ -707,64 +734,157 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <svg
+                    <Star
                       key={i}
-                      className="w-5 h-5 text-yellow-400 fill-current"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
+                      className={`w-5 h-5 ${
+                        reviewStats && i < Math.round(reviewStats.averageRating)
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
+                      }`}
+                    />
                   ))}
                 </div>
-                <span className="text-sm text-gray-600">11 Reviews</span>
+                <span className="text-sm text-gray-600">
+                  {reviewStats ? `${reviewStats.totalReviews} Reviews` : "No reviews yet"}
+                </span>
               </div>
 
-              <h1 className="text-3xl font-bold mb-4">
-                {product?.title ?? "Corrugated Machinery"}
+              <h1 className="text-3xl font-bold mb-2">
+                {product?.title ?? "Auction"}
               </h1>
 
-              <p className="text-gray-600 leading-relaxed">
+              {/* Manufacturer • Model • Year */}
+              <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+                <span>{product?.manufacturer || "Manufacturer"}</span>
+                <span>•</span>
+                <span>{product?.model || "Model"}</span>
+                <span>•</span>
+                <span>{product?.year || "Year"}</span>
+              </div>
+
+              <p className="text-gray-600 leading-relaxed mb-6">
                 {product?.description ??
                   "Produce premium-quality ice cream at scale with this high-efficiency machine, perfect for commercial kitchens, factories, or dairy processing plants. Engineered for consistency, durability, and speed—ideal for meeting high production demands."}
               </p>
 
-              {/* Specifications */}
-              {auction.notes && (
-                <div className="mt-6">
-                  <h3 className="font-semibold mb-2">Specifications</h3>
-                  <p className="text-sm text-gray-600">{auction.notes}</p>
+              {/* Technical Specifications & Equipment Details */}
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-gray-50/50 rounded-xl border border-gray-100">
+                <div className="space-y-4">
+                  <h3 className="font-bold text-gray-900 flex items-center gap-2 border-b border-gray-200 pb-2">
+                    <div className="w-1.5 h-4 bg-orange-500 rounded-full" />
+                    Technical Specs
+                  </h3>
+                  <div className="space-y-3">
+                    {product?.specifications && typeof product.specifications === 'object' ? (
+                      Object.entries(product.specifications as Record<string, any>).map(([key, value]) => (
+                        <div key={key} className="flex justify-between text-sm items-center">
+                          <span className="text-gray-500 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                          <span className="font-semibold text-gray-900">{String(value)}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-400 italic">No specifications provided</p>
+                    )}
+                  </div>
                 </div>
-              )}
 
-              {/* Additional Details */}
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">SKU</p>
-                  <p className="font-medium">{auction.id.slice(0, 8)}</p>
+                <div className="space-y-4">
+                  <h3 className="font-bold text-gray-900 flex items-center gap-2 border-b border-gray-200 pb-2">
+                    <div className="w-1.5 h-4 bg-blue-500 rounded-full" />
+                    Equipment Details
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm items-center">
+                      <span className="text-gray-500">Manufacturer:</span>
+                      <span className="font-semibold text-gray-900">{product?.manufacturer || '-'}</span>
+                    </div>
+                    <div className="flex justify-between text-sm items-center">
+                      <span className="text-gray-500">Model:</span>
+                      <span className="font-semibold text-gray-900">{product?.model || '-'}</span>
+                    </div>
+                    <div className="flex justify-between text-sm items-center">
+                      <span className="text-gray-500">Year:</span>
+                      <span className="font-semibold text-gray-900">{product?.year || '-'}</span>
+                    </div>
+                    <div className="flex justify-between text-sm items-center">
+                      <span className="text-gray-500">Condition:</span>
+                      <Badge variant="outline" className="bg-white font-bold text-xs">
+                        {product?.condition || '-'}
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">CATEGORY</p>
-                  <p className="font-medium">
-                    {product?.productType?.replaceAll("_", " ") ?? "-"}
-                  </p>
+              </div>
+
+              {/* SKU & Category Integration */}
+              <div className="mt-8 flex flex-wrap gap-12 border-t border-gray-100 pt-6">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left">Product SKU</span>
+                  <span className="font-mono text-sm font-semibold text-gray-900">
+                    {product?.id.slice(-8).toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-left">Category</span>
+                  <span className="text-sm font-bold text-orange-600">
+                    {product?.category?.name || product?.productType?.replaceAll("_", " ") || "-"}
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Questions Section */}
-            <div className="bg-white rounded-lg p-6">
-              <h3 className="font-semibold mb-4">Questions</h3>
-              <p className="text-sm text-gray-500">
-                No questions asked yet. Be the first!
-              </p>
+            <div className="bg-white rounded-lg p-6 border-t pt-8">
+              <div className="flex items-center gap-2 mb-6">
+                <HelpCircle className="w-6 h-6 text-gray-700" />
+                <h2 className="text-xl font-semibold">Frequently Asked Questions</h2>
+              </div>
+
+              {product?.faqs && Array.isArray(product.faqs) && product.faqs.length > 0 ? (
+                <div className="space-y-3">
+                  {(product.faqs as any[]).map((faq, index) => (
+                    <div
+                      key={index}
+                      className="border border-gray-200 rounded-lg overflow-hidden"
+                    >
+                      <button
+                        onClick={() =>
+                          setExpandedFaq(expandedFaq === index ? null : index)
+                        }
+                        className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+                      >
+                        <span className="font-medium text-gray-900">
+                          {faq.question}
+                        </span>
+                        {expandedFaq === index ? (
+                          <ChevronUp className="w-5 h-5 text-gray-500 shrink-0" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-gray-500 shrink-0" />
+                        )}
+                      </button>
+                      {expandedFaq === index && (
+                        <div className="px-4 pb-4 text-gray-600 leading-relaxed text-sm">
+                          {faq.answer}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                  <p className="text-gray-500 font-medium">
+                    No questions asked yet. Be the first!
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Reviews Detail Section */}
             <div className="bg-white rounded-lg p-6">
-              <h3 className="font-semibold mb-4">Reviews (11)</h3>
-              <p className="text-sm text-gray-500">
-                Customer reviews will appear here.
-              </p>
+              <ReviewsSection
+                productId={product?.id || ""}
+                currentUserId={user?.id || ""}
+                accessToken={accessToken || ""}
+              />
             </div>
           </div>
 

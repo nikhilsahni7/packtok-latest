@@ -84,6 +84,9 @@ export const consultancySchema = z.object({
   expectedCompletionDate: z.string().optional(),
   estimatedBudget: z.string().optional(),
   additionalNotes: z.string().optional(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 export type ConsultancyFormData = z.infer<typeof consultancySchema>;
