@@ -188,7 +188,7 @@ export function SubmissionsTable({
                 {getConditionBadge(submission.condition)}
               </TableCell>
               <TableCell className="py-4 px-6">
-                ${submission.price.toLocaleString()}
+                {submission.currency || "INR"} {Number(submission.price).toLocaleString()}
               </TableCell>
               <TableCell className="py-4 px-6">
                 {getStatusBadge(
@@ -211,81 +211,90 @@ export function SubmissionsTable({
                     <Eye className="h-4 w-4" />
                   </Button>
 
-                  {submission.submissionStatus === "PENDING_APPROVAL" && (
-                    <>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-green-600 hover:text-green-800"
+                  {/* Approve button - show for PENDING and REJECTED */}
+                  {submission.submissionStatus !== "APPROVED" && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-green-600 hover:text-green-800"
+                          title="Approve"
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Approve Submission?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to approve the submission
+                            &quot;{submission.title}&quot;? This will make it
+                            available as a marketplace product.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() =>
+                              handleApproval(submission.id, "approve")
+                            }
+                            className="bg-green-600 hover:bg-green-700"
                           >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Approve Submission?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to approve the submission
-                              &quot;{submission.title}&quot;? This will make it
-                              available as a marketplace product.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() =>
-                                handleApproval(submission.id, "approve")
-                              }
-                              className="bg-green-600 hover:bg-green-700"
-                            >
-                              {approveMutation.isPending
-                                ? "Approving..."
-                                : "Approve"}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 hover:text-red-800"
+                            {approveMutation.isPending
+                              ? "Approving..."
+                              : "Approve"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+
+                  {/* Reject button - show for PENDING and APPROVED */}
+                  {submission.submissionStatus !== "REJECTED" && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-800"
+                          title={submission.submissionStatus === "APPROVED" ? "Revert / Reject" : "Reject"}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            {submission.submissionStatus === "APPROVED"
+                              ? "Revert Approval & Reject?"
+                              : "Reject Submission?"}
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {submission.submissionStatus === "APPROVED"
+                              ? `Are you sure you want to revert and reject the submission "${submission.title}"? This will remove it from the marketplace.`
+                              : `Are you sure you want to reject the submission "${submission.title}"?`}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() =>
+                              handleApproval(submission.id, "reject")
+                            }
+                            className="bg-red-600 hover:bg-red-700"
                           >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Reject Submission?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to reject the submission
-                              &quot;{submission.title}&quot;? This action cannot
-                              be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() =>
-                                handleApproval(submission.id, "reject")
-                              }
-                              className="bg-red-600 hover:bg-red-700"
-                            >
-                              {rejectMutation.isPending
-                                ? "Rejecting..."
-                                : "Reject"}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </>
+                            {(() => {
+                              if (rejectMutation.isPending) return "Rejecting...";
+                              if (submission.submissionStatus === "APPROVED") return "Revert & Reject";
+                              return "Reject";
+                            })()}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   )}
                 </div>
               </TableCell>

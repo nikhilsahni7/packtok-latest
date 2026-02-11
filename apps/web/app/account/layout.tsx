@@ -2,10 +2,13 @@
 
 import Protected from "@/components/auth/protected";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@packtok/ui/components/button";
-import { FileText, Heart, LogOut, MapPin, Package, User } from "lucide-react";
+import { FileText, Heart, LogOut, MapPin, Package, User, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 const navItems = [
   { href: "/account", label: "Account", icon: User, exact: true },
@@ -21,7 +24,17 @@ export default function AccountLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: user, isLoading } = useCurrentUser();
+  const logout = useAuthStore((s) => s.logout);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogout = async () => {
+    setShowLogoutConfirm(false);
+    await logout();
+    toast.success("Logged out successfully");
+    router.push("/");
+  };
 
   if (isLoading) {
     return (
@@ -70,15 +83,56 @@ export default function AccountLayout({
               <Button
                 variant="ghost"
                 className="w-full justify-start gap-3 px-3 text-red-600 hover:bg-red-50 hover:text-red-700"
-                asChild
+                onClick={() => setShowLogoutConfirm(true)}
               >
-                <Link href="/auth/signout">
-                  <LogOut className="h-4 w-4" />
-                  <span>Log Out</span>
-                </Link>
+                <LogOut className="h-4 w-4" />
+                <span>Log Out</span>
               </Button>
             </nav>
           </aside>
+
+          {/* Logout Confirmation Modal */}
+          {showLogoutConfirm && (
+            <>
+              <button
+                type="button"
+                aria-label="Close dialog"
+                className="fixed inset-0 bg-black/50 z-50 cursor-default"
+                onClick={() => setShowLogoutConfirm(false)}
+              />
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+                <div className="bg-white rounded-2xl max-w-sm w-full shadow-xl pointer-events-auto">
+                  <div className="flex items-center justify-between p-5 border-b">
+                    <h3 className="font-semibold text-lg">Confirm Logout</h3>
+                    <button
+                      onClick={() => setShowLogoutConfirm(false)}
+                      className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <X className="h-5 w-5 text-gray-500" />
+                    </button>
+                  </div>
+                  <div className="p-5">
+                    <p className="text-gray-600">Are you sure you want to log out?</p>
+                  </div>
+                  <div className="flex gap-3 p-5 pt-0">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => setShowLogoutConfirm(false)}
+                    >
+                      No, Stay
+                    </Button>
+                    <Button
+                      className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                      onClick={handleLogout}
+                    >
+                      Yes, Log Out
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Content */}
           <main className="md:col-span-3">{children}</main>

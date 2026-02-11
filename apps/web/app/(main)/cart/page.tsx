@@ -171,7 +171,7 @@ export default function CartPage() {
                     <div className="text-right">
                       <p className="text-gray-400 text-sm font-medium">Price per item</p>
                       <p className="text-xl font-black text-emerald-600">
-                        {currency} {parseFloat(item.product.price).toLocaleString("en-IN")}
+                        {currency} {parseFloat(item.product.price).toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -194,7 +194,7 @@ export default function CartPage() {
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-gray-400 font-medium">
                 <span>Subtotal ({itemCount} items)</span>
-                <span>{currency} {totalAmount.toLocaleString("en-IN")}</span>
+                <span>{currency} {totalAmount.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-gray-400 font-medium">
                 <span>Shipping</span>
@@ -205,7 +205,7 @@ export default function CartPage() {
                 <div>
                   <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">Total Amount</p>
                   <p className="text-4xl font-black text-white mt-1">
-                    {currency} {totalAmount.toLocaleString("en-IN")}
+                    {currency} {totalAmount.toLocaleString()}
                   </p>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Pagination from "@/components/pagination/pagination";
+import { BookmarkButton } from "@/components/products/bookmark-button";
 import { ProductRating } from "@/components/products/product-rating";
 import { MarketplaceFilters, useProducts } from "@/hooks";
 import {
@@ -243,7 +244,7 @@ export default function ProductGrid({
                   <Image
                     src={
                       product.imagesThumbnail ||
-                      product.images[0] ||
+                      product.images?.[0] ||
                       "/marketplace1.png"
                     }
                     alt={product.title}
@@ -252,6 +253,9 @@ export default function ProductGrid({
                     sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     className="h-48 lg:h-56 w-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-md"
                   />
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <BookmarkButton productId={product.id} size="sm" />
+                  </div>
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-base lg:text-lg mb-1 text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
@@ -266,10 +270,8 @@ export default function ProductGrid({
                   {product.productType !== "MACHINERY" &&
                     product.price && (
                       <p className="text-lg font-bold text-gray-900">
-                        ₹
-                        {parseFloat(product.price || "0").toLocaleString(
-                          "en-IN"
-                        )}
+                        {product.currency || "INR"}{" "}
+                        {Number.parseFloat(product.price || "0").toLocaleString()}
                       </p>
                     )}
                 </div>

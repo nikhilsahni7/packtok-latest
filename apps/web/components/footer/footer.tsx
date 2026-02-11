@@ -108,19 +108,28 @@ export default function PacktokFooter() {
                     </Link>
                   </li>
                   <li>
-                    <span className="text-muted-foreground cursor-not-allowed">
+                    <Link
+                      href="/cart"
+                      className="hover:text-white transition-colors"
+                    >
                       My Cart
-                    </span>
+                    </Link>
                   </li>
                   <li>
-                    <span className="text-muted-foreground cursor-not-allowed">
+                    <Link
+                      href="/account/wishlist"
+                      className="hover:text-white transition-colors"
+                    >
                       My Wishlist
-                    </span>
+                    </Link>
                   </li>
                   <li>
-                    <span className="text-muted-foreground cursor-not-allowed">
+                    <Link
+                      href="/account/orders"
+                      className="hover:text-white transition-colors"
+                    >
                       Orders
-                    </span>
+                    </Link>
                   </li>
                 </ul>
               </div>

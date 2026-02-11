@@ -1,7 +1,8 @@
 "use client";
 
 import { useVendorApplication } from "@/hooks/useVendorApplication";
-import { Loader2 } from "lucide-react";
+import { useMySubscription } from "@/hooks/useVendorSubscription";
+import { Crown, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 export default function VendorDashboardClient() {
@@ -107,7 +108,73 @@ export default function VendorDashboardClient() {
 
   // APPROVED - Full Dashboard
   return (
+    <DashboardContent />
+  );
+}
+
+function DashboardContent() {
+  const { data: subInfo } = useMySubscription();
+
+  const productCount = subInfo?.productCount ?? 0;
+  const productLimit = subInfo?.productLimit ?? 0;
+  const canCreate = subInfo?.canCreateProduct ?? true;
+  const planName = subInfo?.subscription?.planNameSnapshot ?? "Free";
+  const planSlug = subInfo?.subscription?.plan?.slug ?? "free";
+
+  return (
     <div className="p-6 space-y-6">
+      {/* Subscription Banner */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+              <Crown className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="font-semibold text-gray-900">
+                {planName} Plan
+              </p>
+              <p className="text-xs text-gray-500">
+                {productCount} / {productLimit} products used
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="w-40">
+              <div className="w-full bg-blue-200 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all ${
+                    productCount >= productLimit
+                      ? "bg-red-500"
+                      : productCount >= productLimit * 0.8
+                        ? "bg-amber-500"
+                        : "bg-blue-500"
+                  }`}
+                  style={{
+                    width: `${Math.min(100, (productCount / Math.max(productLimit, 1)) * 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+            {planSlug === "free" && (
+              <Link
+                href="/vendor/subscription"
+                className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Upgrade Plan
+              </Link>
+            )}
+          </div>
+        </div>
+        {!canCreate && (
+          <div className="mt-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <p className="text-xs text-red-700">
+              You&apos;ve reached your product limit. <Link href="/vendor/subscription" className="font-semibold underline">Upgrade your plan</Link> to add more products.
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -121,12 +188,21 @@ export default function VendorDashboardClient() {
             </div>
           </div>
         </div>
-        <Link
-          href="/vendor/products/new"
-          className="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          + Add product
-        </Link>
+        {canCreate ? (
+          <Link
+            href="/vendor/products/new"
+            className="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            + Add product
+          </Link>
+        ) : (
+          <Link
+            href="/vendor/subscription"
+            className="inline-flex items-center px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 transition-colors"
+          >
+            Upgrade to add products
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

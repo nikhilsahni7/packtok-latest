@@ -1,12 +1,14 @@
 "use client";
 
 import api from "@/lib/axios";
+import { useAuthStore } from "@/store/auth-store";
 import {
     createContext,
     ReactNode,
     useCallback,
     useContext,
     useEffect,
+    useRef,
     useState,
 } from "react";
 
@@ -52,6 +54,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const prevUserRef = useRef(user);
 
   const refreshCart = useCallback(async () => {
     try {
@@ -63,9 +67,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // React to auth state changes (login/logout)
   useEffect(() => {
-    refreshCart();
-  }, [refreshCart]);
+    const prevUser = prevUserRef.current;
+    prevUserRef.current = user;
+
+    if (!user && prevUser) {
+      // User logged out — clear cart immediately
+      setCart(null);
+      setIsOpen(false);
+    } else if (user && !prevUser) {
+      // User logged in — fetch their cart
+      refreshCart();
+    }
+  }, [user, refreshCart]);
+
+  // Initial cart fetch (only when user is already logged in on mount)
+  useEffect(() => {
+    if (user) {
+      refreshCart();
+    }
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;
 

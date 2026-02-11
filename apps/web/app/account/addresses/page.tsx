@@ -2,6 +2,7 @@
 
 import api from "@/lib/axios";
 import { Briefcase, Check, Edit, Home, Loader2, MapPin, Plus, Trash2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -21,9 +22,12 @@ interface Address {
 }
 
 export default function AddressesPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(!!redirectTo);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     label: "Home",
@@ -71,6 +75,11 @@ export default function AddressesPage() {
       setEditingId(null);
       resetForm();
       fetchAddresses();
+
+      // Redirect back if came from another page (e.g. checkout)
+      if (redirectTo) {
+        router.push(redirectTo);
+      }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to save address");
     } finally {

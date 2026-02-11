@@ -185,7 +185,15 @@ export const listAllProductsForAdmin = async () => {
 
 export const getPendingSubmissions = async () => {
   return prisma.marketplaceProduct.findMany({
-    where: { submissionStatus: UserSubmissionStatus.PENDING_APPROVAL },
+    where: {
+      submissionStatus: {
+        in: [
+          UserSubmissionStatus.PENDING_APPROVAL,
+          UserSubmissionStatus.APPROVED,
+          UserSubmissionStatus.REJECTED,
+        ],
+      },
+    },
     include: {
       createdByUser: {
         select: {
@@ -198,7 +206,7 @@ export const getPendingSubmissions = async () => {
       },
       category: true,
     },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
   });
 };
 
@@ -228,6 +236,7 @@ export const rejectSubmission = async (
     where: { id: productId },
     data: {
       submissionStatus: UserSubmissionStatus.REJECTED,
+      status: MarketplaceProductStatus.DRAFT, // Revert to draft so it's no longer available
       reviewedById: reviewerId,
       reviewedAt: new Date(),
       reviewNotes: notes,

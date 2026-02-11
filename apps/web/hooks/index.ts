@@ -3,6 +3,9 @@ export * from "./useCurrentUser";
 export * from "./useLogin";
 export * from "./useSignup";
 
+// Bookmark / Wishlist hooks
+export * from "./useBookmarks";
+
 // Marketplace hooks
 export * from "./useCategories";
 export * from "./useCreateCategory";

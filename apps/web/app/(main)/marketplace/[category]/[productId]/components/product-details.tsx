@@ -2,19 +2,23 @@
 
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { ReviewsSection } from "@/components/reviews/reviews-section";
+import { useBookmarkToggle } from "@/hooks/useBookmarks";
 import { useAuthStore } from "@/store/auth-store";
 import {
   ChevronDown,
   ChevronUp,
   FileText,
+  Heart,
   HelpCircle,
   MessageSquare,
   Minus,
   Plus,
+  Share2,
   Star,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import ProductCarousel from "./product-carousel";
 import QuoteModal from "./quote-modal";
 
@@ -63,6 +67,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
   const { user, accessToken } = useAuthStore();
   const router = useRouter();
+  const { isBookmarked, isLoading: isBookmarkLoading, toggle: toggleBookmark } = useBookmarkToggle(product.id);
 
   const images = product.images || [];
   const hasPdf = product.pdfUrl;
@@ -148,9 +153,37 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           )}
 
           <div className="space-y-1">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-              {product.title}
-            </h1>
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                {product.title}
+              </h1>
+              <div className="flex items-center gap-2 shrink-0 pt-1">
+                <button
+                  onClick={toggleBookmark}
+                  disabled={isBookmarkLoading}
+                  className={`p-2.5 rounded-full border transition-all duration-200 ${
+                    isBookmarked
+                      ? "bg-red-50 border-red-200 text-red-500 hover:bg-red-100"
+                      : "bg-white border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50"
+                  }`}
+                  title={isBookmarked ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  <Heart
+                    className={`h-5 w-5 transition-all ${isBookmarked ? "fill-red-500" : ""}`}
+                  />
+                </button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast.success("Link copied to clipboard");
+                  }}
+                  className="p-2.5 rounded-full border border-gray-200 bg-white text-gray-400 hover:text-orange-500 hover:border-orange-200 hover:bg-orange-50 transition-all duration-200"
+                  title="Share product"
+                >
+                  <Share2 className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
             {(product.manufacturer || product.model || product.year) && (
               <p className="text-sm text-gray-500 font-medium">
                 {[product.manufacturer, product.model, product.year]

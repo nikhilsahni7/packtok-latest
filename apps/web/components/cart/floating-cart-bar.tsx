@@ -78,7 +78,7 @@ export function FloatingCartBar() {
                   <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
                 </div>
                 <p className="text-emerald-100 text-sm font-medium">
-                  Total: {currency} {totalAmount.toLocaleString("en-IN")}
+                  Total: {currency} {totalAmount.toLocaleString()}
                 </p>
               </div>
             </div>

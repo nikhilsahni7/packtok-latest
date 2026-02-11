@@ -151,7 +151,7 @@ export function TopSellingProductsTable({
                   </div>
                 </TableCell>
                 <TableCell className="py-3">
-                  <span className="text-gray-900">${product.price}</span>
+                  <span className="text-gray-900">INR {Number(product.price).toLocaleString()}</span>
                 </TableCell>
                 <TableCell className="py-3">
                   <span className="text-gray-900">

@@ -1,3 +1,4 @@
+import { BookmarkButton } from "@/components/products/bookmark-button";
 import { Product } from "@/types/marketplace";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
@@ -56,6 +57,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           >
             NEW
           </Badge>
+          <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+            <BookmarkButton productId={product.id} size="sm" />
+          </div>
           <div className="absolute inset-0 bg-black/10 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4">
             <Button
               size="lg"

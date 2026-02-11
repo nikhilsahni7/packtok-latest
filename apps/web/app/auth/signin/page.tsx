@@ -28,7 +28,7 @@ function SignupCta() {
 export default function Page() {
   return (
     <main className="space-y-8">
-      <h1 className="text-3xl font-bold text-foreground mb-2">Sign In</h1>
+      <h1 className="text-3xl font-bold text-foreground mb-2">Sign In as User</h1>
       <Suspense fallback={null}>
         <SignupCta />
       </Suspense>

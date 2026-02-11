@@ -129,14 +129,13 @@ export const submitOwnProductForReview = async (
 
 export const deleteOwnProduct = async (userId: string, productId: string) => {
   const product = await ensureOwnership(userId, productId);
-  // Allow deletion only if DRAFT or REJECTED
-  const canDelete =
-    product.status === MarketplaceProductStatus.DRAFT ||
-    product.submissionStatus === UserSubmissionStatus.REJECTED;
-  if (!canDelete) {
+  // Vendors can only delete products that are NOT approved/live
+  const isApproved =
+    product.submissionStatus === UserSubmissionStatus.APPROVED;
+  if (isApproved) {
     throw new ApiError(
-      400,
-      "Only draft or rejected products can be deleted by vendor"
+      403,
+      "Approved products cannot be deleted by vendors. Please contact an admin to remove a live product."
     );
   }
   return prisma.marketplaceProduct.delete({ where: { id: productId } });
@@ -286,8 +285,26 @@ export const createVendorDraft = async (
     condition: string;
     categoryId?: string;
     categoryName?: string;
+    currency?: string;
+    subCategory?: string;
+    manufacturer?: string;
+    model?: string;
+    year?: number;
+    quantity?: number;
+    machineType?: string;
   }
 ) => {
+  // ── Enforce vendor approval ──
+  const vendorApp = await prisma.vendorApplication.findUnique({
+    where: { userId },
+  });
+  if (vendorApp?.status !== "APPROVED") {
+    throw new ApiError(
+      403,
+      "Your vendor account is not yet approved. Please wait for admin approval before adding products."
+    );
+  }
+
   // ── Enforce subscription product limit ──
   const { allowed, currentCount, limit } = await canVendorCreateProduct(userId);
   if (!allowed) {
@@ -326,6 +343,13 @@ export const createVendorDraft = async (
       specifications: {},
       status: MarketplaceProductStatus.DRAFT,
       submissionStatus: UserSubmissionStatus.PENDING_APPROVAL,
+      ...(data.currency ? { currency: data.currency } : {}),
+      ...(data.subCategory ? { subCategory: data.subCategory } : {}),
+      ...(data.manufacturer ? { manufacturer: data.manufacturer } : {}),
+      ...(data.model ? { model: data.model } : {}),
+      ...(data.year ? { year: data.year } : {}),
+      ...(data.quantity ? { quantity: data.quantity } : {}),
+      ...(data.machineType ? { machineType: data.machineType as import("@packtok/db").MachineType } : {}),
     },
     select: { id: true },
   });

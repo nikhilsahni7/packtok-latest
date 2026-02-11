@@ -2,7 +2,8 @@
 
 import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
-import { Check, Loader2, Search, X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Check, Loader2, RefreshCw, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   useApproveVendor,
@@ -15,6 +16,8 @@ export default function VendorsPage() {
   const { data, isLoading, isError } = useVendorApplications();
   const approve = useApproveVendor();
   const reject = useRejectVendor();
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
 
   const apps = useMemo(() => data?.data ?? [], [data]);
   const filtered = useMemo(() => {
@@ -27,18 +30,34 @@ export default function VendorsPage() {
     );
   }, [apps, search]);
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: ["admin", "vendor-applications"] });
+    setRefreshing(false);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">Vendors</h1>
-        <div className="relative w-80">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Search by name, email, company or notes"
-            className="pl-8"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+            Refresh
+          </button>
+          <div className="relative w-80">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search by name, email, company or notes"
+              className="pl-8"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 

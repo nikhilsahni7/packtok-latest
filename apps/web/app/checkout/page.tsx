@@ -177,40 +177,50 @@ export default function CheckoutPage() {
                 <div className="text-center py-8">
                   <p className="text-gray-500 mb-4">No addresses saved</p>
                   <Link
-                    href="/profile/addresses/new?redirect=/checkout"
-                    className="text-orange-600 hover:underline"
+                    href="/account/addresses?redirect=/checkout"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium text-sm transition-colors"
                   >
+                    <MapPin className="h-4 w-4" />
                     Add a new address
                   </Link>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {addresses.map((addr) => (
-                    <button
-                      key={addr.id}
-                      onClick={() => setSelectedAddressId(addr.id)}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${
-                        selectedAddressId === addr.id
-                          ? "border-orange-500 bg-orange-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <p className="font-semibold">{addr.fullName}</p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {addr.addressLine1}
-                        {addr.addressLine2 && `, ${addr.addressLine2}`}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {addr.city}, {addr.state} {addr.postalCode}
-                      </p>
-                      <p className="text-sm text-gray-500 mt-2">{addr.phoneNumber}</p>
-                      {addr.isDefault && (
-                        <span className="inline-block mt-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
-                          Default
-                        </span>
-                      )}
-                    </button>
-                  ))}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {addresses.map((addr) => (
+                      <button
+                        key={addr.id}
+                        onClick={() => setSelectedAddressId(addr.id)}
+                        className={`p-4 rounded-xl border-2 text-left transition-all ${
+                          selectedAddressId === addr.id
+                            ? "border-orange-500 bg-orange-50"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <p className="font-semibold">{addr.fullName}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {addr.addressLine1}
+                          {addr.addressLine2 && `, ${addr.addressLine2}`}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {addr.city}, {addr.state} {addr.postalCode}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-2">{addr.phoneNumber}</p>
+                        {addr.isDefault && (
+                          <span className="inline-block mt-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                            Default
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <Link
+                    href="/account/addresses?redirect=/checkout"
+                    className="inline-flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors"
+                  >
+                    <MapPin className="h-4 w-4" />
+                    Add a new address
+                  </Link>
                 </div>
               )}
             </div>

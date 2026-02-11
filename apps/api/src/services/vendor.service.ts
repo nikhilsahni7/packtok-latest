@@ -1,4 +1,4 @@
-import { prisma, Role, VendorApplicationStatus } from "@packtok/db";
+import { VendorSubscriptionStatus, prisma, Role, VendorApplicationStatus } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 
 export const applyForVendor = async (
@@ -53,16 +53,45 @@ export const approveVendorApplication = async (applicationId: string) => {
   });
   if (!app) throw new ApiError(404, "Application not found");
 
-  await prisma.$transaction([
-    prisma.vendorApplication.update({
+  // Look up the free plan to auto-assign
+  const freePlan = await prisma.vendorPlan.findFirst({
+    where: { slug: "free", isActive: true },
+  });
+
+  await prisma.$transaction(async (tx) => {
+    await tx.vendorApplication.update({
       where: { id: applicationId },
       data: { status: VendorApplicationStatus.APPROVED },
-    }),
-    prisma.user.update({
+    });
+    await tx.user.update({
       where: { id: app.userId },
       data: { role: Role.VENDOR },
-    }),
-  ]);
+    });
+
+    // Auto-assign free plan if one exists and vendor has no subscription
+    if (freePlan) {
+      const existingSub = await tx.vendorSubscription.findFirst({
+        where: {
+          userId: app.userId,
+          status: VendorSubscriptionStatus.ACTIVE,
+        },
+      });
+      if (!existingSub) {
+        await tx.vendorSubscription.create({
+          data: {
+            userId: app.userId,
+            planId: freePlan.id,
+            status: VendorSubscriptionStatus.ACTIVE,
+            startDate: new Date(),
+            endDate: null, // Free plan doesn't expire
+            planNameSnapshot: freePlan.name,
+            maxProductsSnapshot: freePlan.maxProducts,
+            priceUsdSnapshot: freePlan.priceUsd,
+          },
+        });
+      }
+    }
+  });
 
   return prisma.vendorApplication.findUnique({ where: { id: applicationId } });
 };

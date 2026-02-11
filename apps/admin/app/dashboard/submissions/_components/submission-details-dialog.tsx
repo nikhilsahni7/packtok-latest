@@ -167,7 +167,7 @@ export function SubmissionDetailsDialog({
                   <div>
                     <p className="text-xs text-muted-foreground">Price</p>
                     <p className="text-sm font-medium">
-                      ${Number(submission.price).toLocaleString()}
+                      {submission.currency || "INR"} {Number(submission.price).toLocaleString()}
                     </p>
                   </div>
                 </div>

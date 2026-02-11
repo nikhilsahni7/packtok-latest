@@ -7,17 +7,19 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex mt-20">
+    <div className="min-h-screen flex">
       {/* Left side - Image */}
       <div className="hidden bg-gray-100 lg:flex lg:w-1/2 items-center justify-center p-12">
-        <Image
-          src="/signup-user.png"
-          alt="Sign up"
-          className="object-contain"
-          width={600}
-          height={600}
-          priority
-        />
+        <div className="signup before:w-[10%] before:h-full before:z-[3] before:left-0 before:top-0 before:absolute after:w-[10%] after:h-full after:z-[2] after:left-0 after:top-0 after:absolute">
+          <Image
+            src="/signup-user.png"
+            alt="Sign up"
+            className="object-contain"
+            width={600}
+            height={600}
+            priority
+          />
+        </div>
       </div>
 
       {/* Right side - Form */}

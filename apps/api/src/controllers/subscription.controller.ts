@@ -5,7 +5,6 @@ import {
   getActivePlans,
   getActiveSubscription,
   getSubscriptionHistory,
-  getVendorProductCount,
   initiateSubscription,
   verifySubscriptionPayment,
 } from "../services/subscription.service";

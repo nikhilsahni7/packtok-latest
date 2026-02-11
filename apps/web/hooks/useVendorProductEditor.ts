@@ -21,6 +21,8 @@ export type VendorProductForm = {
   condition: string;
   quantity?: number;
   categoryName: string;
+  currency?: string;
+  subCategory?: string;
   manufacturer?: string;
   model?: string;
   year?: number;
@@ -109,6 +111,23 @@ export function useRemoveVendorProductImage(productId: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vendor-products"] });
       toast.success("Image removed");
+    },
+  });
+}
+
+export function useDeleteVendorProduct() {
+  const qc = useQueryClient();
+  return useMutation<unknown, Error, string>({
+    mutationFn: async (productId: string) => {
+      const { data } = await api.delete(
+        `/api/v1/vendors/products/${productId}`
+      );
+      return data.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["vendor-products"] });
+      qc.invalidateQueries({ queryKey: ["vendor-product-limit"] });
+      qc.invalidateQueries({ queryKey: ["vendor-subscription-info"] });
     },
   });
 }

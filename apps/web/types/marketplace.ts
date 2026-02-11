@@ -4,6 +4,8 @@ export interface Product {
   title: string;
   description: string;
   price: string;
+  currency?: string; // INR, USD, AED, CNY, EUR etc. – set by admin
+  displayPrice?: boolean; // Admin toggle to show/hide price
   quantity: number;
   productType: ProductType;
   machineType?: MachineType;

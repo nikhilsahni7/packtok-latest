@@ -153,7 +153,7 @@ export function ProductTable({
                 </Badge>
               </TableCell>
               <TableCell className="py-4 px-6 font-medium">
-                ${product.price.toLocaleString()}
+                {product.currency || "INR"} {Number(product.price).toLocaleString()}
               </TableCell>
               <TableCell className="py-4 px-6">
                 {product.quantity} pcs

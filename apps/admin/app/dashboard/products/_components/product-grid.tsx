@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@packtok/ui/components/dropdown-menu";
-import { Activity, Edit, Gavel, MoreHorizontal, Trash2 } from "lucide-react";
+import { Activity, Edit, Gavel, MoreHorizontal, Package, Trash2 } from "lucide-react";
 import Image from "next/image";
 import {
   MarketplaceProduct,
@@ -53,14 +53,20 @@ export function ProductGrid({
         >
           {/* Product Image */}
           <div className="aspect-video bg-gray-100 rounded-t-lg flex items-center justify-center">
-            <Image
-              width={300}
-              height={200}
-              className="w-full h-full object-contain rounded-t-lg"
-              src={product.imagesThumbnail || ""}
-              alt={product.title}
-              objectFit="contain"
-            />
+            {product.imagesThumbnail || product.images?.[0] ? (
+              <Image
+                width={300}
+                height={200}
+                className="w-full h-full object-contain rounded-t-lg"
+                src={product.imagesThumbnail || product.images[0]}
+                alt={product.title}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-gray-400">
+                <Package className="h-10 w-10 mb-1" />
+                <span className="text-xs">No image</span>
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -157,7 +163,7 @@ export function ProductGrid({
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Price:</span>
                 <span className="font-semibold text-gray-900">
-                  ${product.price.toLocaleString()}
+                  {product.currency || "INR"} {Number(product.price).toLocaleString()}
                 </span>
               </div>
 

@@ -5,7 +5,7 @@ import { ServiceRequest, useMyServiceRequests } from "@/hooks/useServiceSubmissi
 import { Badge } from "@packtok/ui/components/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@packtok/ui/components/card";
 import { Input } from "@packtok/ui/components/input";
-import { Loader2 } from "lucide-react";
+import { LayoutDashboard, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 export default function AccountPage() {
@@ -52,6 +52,25 @@ export default function AccountPage() {
 
   return (
     <div className="space-y-8">
+      {/* Vendor Dashboard Link */}
+      {user.role === "VENDOR" && (
+        <Link
+          href="/vendor/dashboard"
+          className="flex items-center gap-3 p-4 bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl hover:shadow-md transition-all group"
+        >
+          <div className="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <LayoutDashboard className="h-5 w-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-gray-900">Vendor Dashboard</p>
+            <p className="text-xs text-gray-500">Manage your products, orders & analytics</p>
+          </div>
+          <span className="text-orange-500 font-medium text-sm group-hover:translate-x-1 transition-transform">
+            Go to Dashboard &rarr;
+          </span>
+        </Link>
+      )}
+
       {/* Account Details */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Account Details</h2>

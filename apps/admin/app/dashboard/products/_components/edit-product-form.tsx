@@ -844,7 +844,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       name="price"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Price ($)</FormLabel>
+                          <FormLabel>Price</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -852,7 +852,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               {...field}
                               onChange={(e) => {
                                 const val = e.target.value;
-                                field.onChange(val === "" ? "" : parseFloat(val) || 0);
+                                field.onChange(val === "" ? "" : Number.parseFloat(val) || 0);
                               }}
                             />
                           </FormControl>
@@ -861,6 +861,37 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       )}
                     />
                   </div>
+
+                  {/* Currency - always visible for all product types */}
+                  <FormField
+                    control={form.control}
+                    name="currency"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Currency</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select currency" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
+                            <SelectItem value="USD">🇺🇸 USD - US Dollar</SelectItem>
+                            <SelectItem value="AED">🇦🇪 AED - UAE Dirham</SelectItem>
+                            <SelectItem value="EUR">🇪🇺 EUR - Euro</SelectItem>
+                            <SelectItem value="GBP">🇬🇧 GBP - British Pound</SelectItem>
+                            <SelectItem value="CNY">🇨🇳 CNY - Chinese Yuan</SelectItem>
+                            <SelectItem value="TWD">🇹🇼 TWD - Taiwan Dollar</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
 
@@ -897,54 +928,26 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       )}
                     />
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="currency"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-black">Currency</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select currency" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
-                                <SelectItem value="USD">🇺🇸 USD - US Dollar</SelectItem>
-                                <SelectItem value="AED">🇦🇪 AED - UAE Dirham</SelectItem>
-                                <SelectItem value="EUR">🇪🇺 EUR - Euro</SelectItem>
-                                <SelectItem value="GBP">🇬🇧 GBP - British Pound</SelectItem>
-                                <SelectItem value="CNY">🇨🇳 CNY - Chinese Yuan</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="displayPrice"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col justify-end">
-                            <div className="flex items-center justify-between rounded-lg border bg-white p-3">
-                              <FormLabel className="text-sm font-medium text-black">Show Price to Customers</FormLabel>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="displayPrice"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center justify-between rounded-lg border bg-white p-4">
+                          <div>
+                            <FormLabel className="text-base font-medium text-black">Show Price to Customers</FormLabel>
+                            <p className="text-sm text-gray-500">
+                              When disabled, the price will be hidden on the product page.
+                            </p>
+                          </div>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
               )}

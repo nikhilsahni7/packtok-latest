@@ -194,6 +194,19 @@ export default function Navbar() {
 
             {accessToken && user ? (
               <div className="flex items-center gap-4">
+                {user.role === "VENDOR" && (
+                  <Link
+                    href="/vendor/dashboard"
+                    className={cn(
+                      "text-sm font-medium px-3 py-1.5 rounded-md border transition-colors duration-500 ease-in-out",
+                      scrolled
+                        ? "border-orange-500 text-orange-600 hover:bg-orange-50"
+                        : "border-orange-400 text-orange-400 hover:bg-orange-400/10"
+                    )}
+                  >
+                    Dashboard
+                  </Link>
+                )}
                 <Link
                   href="/account"
                   className={cn(
@@ -224,7 +237,7 @@ export default function Navbar() {
                 )}
                 asChild
               >
-                <Link href="/auth/signin">Sign In</Link>
+                <Link href="/auth">Sign In</Link>
               </Button>
             )}
           </div>
@@ -339,6 +352,15 @@ export default function Navbar() {
                         Welcome, {user.name?.split(" ")[0] || user.email}
                       </Link>
                     </div>
+                    {user.role === "VENDOR" && (
+                      <div className="px-3">
+                        <Button asChild variant="outline" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
+                          <Link href="/vendor/dashboard" onClick={handleLinkClick}>
+                            Vendor Dashboard
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
                     <div className="px-3">
                       <LogoutButton />
                     </div>
@@ -346,7 +368,7 @@ export default function Navbar() {
                 ) : (
                   <div className="px-3">
                     <Button asChild className="w-full">
-                      <Link href="/auth/signin" onClick={handleLinkClick}>
+                      <Link href="/auth" onClick={handleLinkClick}>
                         Sign In
                       </Link>
                     </Button>
