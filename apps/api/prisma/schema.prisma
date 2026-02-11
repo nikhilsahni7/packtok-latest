@@ -347,6 +347,8 @@ model User {
   // Product reviews
   productReviews          ProductReview[]  @relation("productReviews")
 
+  // Vendor subscriptions
+  vendorSubscriptions     VendorSubscription[]
 
   @@map("users")
 }
@@ -747,6 +749,89 @@ model JobSeekerProfile {
   serviceRequestId            String         @unique
 
   @@map("job_seeker_profiles")
+}
+
+// ===== Vendor Subscription / Plans =====
+
+enum VendorPlanInterval {
+  YEARLY
+}
+
+enum VendorSubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PAYMENT_PENDING
+}
+
+model VendorPlan {
+  id              String            @id @default(cuid())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  name            String            @unique // e.g., "Free", "Basic", "Premium", "Super Premium", "Long Term Business"
+  slug            String            @unique // e.g., "free", "basic", "premium", "super-premium", "long-term-business"
+  description     String?           @db.Text
+  maxProducts     Int               // product listing limit, e.g. 2, 12, 25, 40
+  priceUsd        Decimal           @db.Decimal(10, 2) // price in USD (0 for free)
+  interval        VendorPlanInterval @default(YEARLY)
+  isContactSales  Boolean           @default(false) // true for "Long Term Business"
+  isActive        Boolean           @default(true)  // soft-disable plans
+  sortOrder       Int               @default(0)     // display order
+  features        Json              @default("[]")  // Array of feature strings for UI display
+
+  subscriptions   VendorSubscription[]
+
+  @@map("vendor_plans")
+  @@index([isActive, sortOrder])
+}
+
+model VendorSubscription {
+  id              String                   @id @default(cuid())
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  status          VendorSubscriptionStatus @default(PAYMENT_PENDING)
+  startDate       DateTime?                // set when payment succeeds
+  endDate         DateTime?                // startDate + 1 year (null for free)
+  autoRenew       Boolean                  @default(false)
+
+  // Relations
+  user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  plan            VendorPlan               @relation(fields: [planId], references: [id], onDelete: Restrict)
+  planId          String
+
+  // Snapshot of plan at purchase time
+  planNameSnapshot    String
+  maxProductsSnapshot Int
+  priceUsdSnapshot    Decimal              @db.Decimal(10, 2)
+
+  payments        SubscriptionPayment[]
+
+  @@map("vendor_subscriptions")
+  @@index([userId, status])
+  @@index([status, endDate])
+}
+
+model SubscriptionPayment {
+  id                  String                   @id @default(cuid())
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  amount              Decimal                  @db.Decimal(10, 2)
+  currency            String                   @default("USD")
+  status              PaymentIntentStatus      @default(CREATED)
+
+  // Razorpay specifics
+  razorpayOrderId     String?                  @unique
+  razorpayPaymentId   String?                  @unique
+  razorpaySignature   String?
+
+  // Relation
+  subscription        VendorSubscription       @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  subscriptionId      String
+
+  @@map("subscription_payments")
+  @@index([subscriptionId])
+  @@index([razorpayOrderId])
 }
 
 // Additions for Vendor Application approval flow

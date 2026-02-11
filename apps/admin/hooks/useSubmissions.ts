@@ -34,6 +34,7 @@ export function useApproveSubmission() {
     mutationFn: async (submissionId: string): Promise<Submission> => {
       const { data } = await api.put(
         `/api/v1/admins/submissions/${submissionId}/approve`,
+        {},
       );
       return data.data || data;
     },
@@ -53,6 +54,7 @@ export function useRejectSubmission() {
     mutationFn: async (submissionId: string): Promise<Submission> => {
       const { data } = await api.put(
         `/api/v1/admins/submissions/${submissionId}/reject`,
+        {},
       );
       return data.data || data;
     },

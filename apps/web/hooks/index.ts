@@ -15,6 +15,9 @@ export * from "./useVendorInventory";
 export * from "./useVendorProductEditor";
 export * from "./useVendorProducts";
 
+// Vendor subscription hooks
+export * from "./useVendorSubscription";
+
 // Service hooks
 export * from "./useServiceSubmission";
 

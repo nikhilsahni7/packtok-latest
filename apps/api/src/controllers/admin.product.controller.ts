@@ -176,7 +176,7 @@ export const adminGetPendingSubmissions = asyncHandler(
 export const adminApproveSubmission = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { notes } = req.body as { notes?: string };
+    const { notes } = (req.body || {}) as { notes?: string };
     const updated = await approveSubmission(id, req.user!.id, notes);
     res.status(200).json(new ApiResponse(200, updated, "Submission approved"));
   }
@@ -185,7 +185,7 @@ export const adminApproveSubmission = asyncHandler(
 export const adminRejectSubmission = asyncHandler(
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { notes } = req.body as { notes?: string };
+    const { notes } = (req.body || {}) as { notes?: string };
     const updated = await rejectSubmission(id, req.user!.id, notes);
     res.status(200).json(new ApiResponse(200, updated, "Submission rejected"));
   }

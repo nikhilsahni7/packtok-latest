@@ -9,6 +9,7 @@ import {
   prisma,
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
+import { canVendorCreateProduct } from "./subscription.service";
 
 type ListFilters = {
   status?: MarketplaceProductStatus;
@@ -287,6 +288,15 @@ export const createVendorDraft = async (
     categoryName?: string;
   }
 ) => {
+  // ── Enforce subscription product limit ──
+  const { allowed, currentCount, limit } = await canVendorCreateProduct(userId);
+  if (!allowed) {
+    throw new ApiError(
+      403,
+      `Product limit reached (${currentCount}/${limit}). Please upgrade your subscription plan to add more products.`
+    );
+  }
+
   // Resolve category by name or id
   let categoryId = data.categoryId;
   if (!categoryId && data.categoryName) {

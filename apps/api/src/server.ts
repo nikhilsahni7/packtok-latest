@@ -33,9 +33,12 @@ import serviceRouter from "./routers/service.routes";
 import userTrackingRouter from "./routers/user-tracking.routes";
 import vendorProductsRouter from "./routers/vendor.products.routes";
 import vendorRouter from "./routers/vendor.routes";
+import adminSubscriptionRouter from "./routers/admin.subscription.routes";
+import subscriptionRouter from "./routers/subscription.routes";
 import adminReviewRouter from "./routes/admin.review.routes";
 import reviewRouter from "./routes/review.routes";
 import { auctionStatusUpdater } from "./services/auction-status-updater.service";
+import { seedDefaultPlans } from "./services/subscription.service";
 import { ApiError } from "./utils/apiError";
 import logger from "./utils/logger";
 
@@ -87,6 +90,8 @@ app.use("/api/v1/investments", investmentRouter);
 app.use("/api/v1/admins/investments", adminInvestmentRouter);
 app.use("/api/v1", reviewRouter); // Review routes
 app.use("/api/v1/admins/reviews", adminReviewRouter); // Admin review routes
+app.use("/api/v1/subscriptions", subscriptionRouter); // Vendor subscription routes
+app.use("/api/v1/admins/subscriptions", adminSubscriptionRouter); // Admin plan management
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
@@ -117,12 +122,20 @@ export const createHttpServer = () => {
 if (require.main === module) {
   const port = Number(config.port);
   const server = createHttpServer();
-  server.listen(port, () => {
+  server.listen(port, async () => {
     logger.info(`API server listening on port ${port}`);
 
     // Start the auction status updater
     auctionStatusUpdater.start();
     logger.info("Auction status updater started");
+
+    // Seed default vendor plans (idempotent)
+    try {
+      await seedDefaultPlans();
+      logger.info("Default vendor plans seeded");
+    } catch (err) {
+      logger.error(err, "Failed to seed default vendor plans");
+    }
   });
 
   // Graceful shutdown
