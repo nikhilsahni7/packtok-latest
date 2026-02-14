@@ -1,92 +1,49 @@
 "use client";
 
 import api from "@/lib/axios";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { useMutation } from "@tanstack/react-query";
+import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
-import { z } from "zod";
 
-const requestSchema = z.object({
-  email: z.string().email("Invalid email address"),
-});
-
-const passwordSchema = z
-  .string()
-  .min(8, "Password must be at least 8 characters")
-  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-  .regex(/[0-9]/, "Password must contain at least one number")
-  .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
-
-const confirmSchema = z
-  .object({
-    email: z.string().email("Invalid email address"),
-    otp: z.string().length(6, "OTP must be 6 digits"),
-    newPassword: passwordSchema,
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-
-type RequestForm = z.infer<typeof requestSchema>;
-type ConfirmForm = z.infer<typeof confirmSchema>;
+type Step = "email" | "otp" | "password";
 
 export default function ForgotPasswordForm() {
   const params = useSearchParams();
   const presetEmail = params.get("email") || "";
+  const fromAccount = params.get("from") === "account";
   const router = useRouter();
 
-  const [step, setStep] = useState<"request" | "confirm">(
-    presetEmail ? "confirm" : "request"
-  );
+  const [step, setStep] = useState<Step>(presetEmail ? "otp" : "email");
+  const [email, setEmail] = useState(presetEmail);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const requestForm = useForm<RequestForm>({
-    resolver: zodResolver(requestSchema),
-    defaultValues: { email: presetEmail || "" },
-  });
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const confirmForm = useForm<ConfirmForm>({
-    resolver: zodResolver(confirmSchema),
-    defaultValues: {
-      email: presetEmail || "",
-      otp: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
-
+  // Auto-send OTP if email is preset (from account page)
   useEffect(() => {
-    if (presetEmail) {
-      requestForm.setValue("email", presetEmail);
-      confirmForm.setValue("email", presetEmail);
+    if (presetEmail && step === "otp") {
+      // OTP was already requested before redirect
     }
-  }, [presetEmail, requestForm, confirmForm]);
+  }, [presetEmail, step]);
 
   const requestMutation = useMutation({
-    mutationFn: async (payload: RequestForm) => {
-      await api.post("/api/v1/auth/forgot-password/request", payload);
+    mutationFn: async (emailVal: string) => {
+      await api.post("/api/v1/auth/forgot-password/request", {
+        email: emailVal,
+      });
     },
     onSuccess: () => {
       toast.success("OTP sent to your email");
-      setStep("confirm");
-      confirmForm.setValue("email", requestForm.getValues("email"));
+      setStep("otp");
     },
     onError: (err: Error) => {
       const axiosError = err as { response?: { data?: { message?: string } } };
@@ -96,181 +53,322 @@ export default function ForgotPasswordForm() {
   });
 
   const confirmMutation = useMutation({
-    mutationFn: async (payload: ConfirmForm) => {
-      await api.post("/api/v1/auth/forgot-password/confirm", {
-        email: payload.email,
-        otp: payload.otp,
-        newPassword: payload.newPassword,
-      });
+    mutationFn: async (payload: {
+      email: string;
+      otp: string;
+      newPassword: string;
+    }) => {
+      await api.post("/api/v1/auth/forgot-password/confirm", payload);
     },
     onSuccess: () => {
-      toast.success("Password reset successful. Please sign in.");
-      router.push("/auth/signin");
+      toast.success("Password reset successful!");
+      if (fromAccount) {
+        router.push("/account");
+      } else {
+        router.push("/auth/signin");
+      }
     },
     onError: (err: Error) => {
       const axiosError = err as { response?: { data?: { message?: string } } };
       const message =
         axiosError?.response?.data?.message || "Password reset failed";
       toast.error(message);
+      // If OTP is invalid/expired, go back to OTP step
+      if (
+        message.toLowerCase().includes("otp") ||
+        message.toLowerCase().includes("invalid") ||
+        message.toLowerCase().includes("expired")
+      ) {
+        setOtp(["", "", "", "", "", ""]);
+        setStep("otp");
+      }
     },
   });
 
-  return (
-    <div className="space-y-8">
-      {step === "request" ? (
-        <Form {...requestForm}>
-          <form
-            onSubmit={requestForm.handleSubmit((data) =>
-              requestMutation.mutate(data)
-            )}
-            className="space-y-6"
-          >
-            <FormField
-              control={requestForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="Enter your email"
-                      className="border-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast.error("Please enter your email");
+      return;
+    }
+    requestMutation.mutate(email);
+  };
 
-            <Button
-              type="submit"
-              className="w-full"
+  const handleOtpChange = useCallback(
+    (index: number, value: string) => {
+      if (value.length > 1) {
+        // Handle paste
+        const digits = value.replace(/\D/g, "").slice(0, 6);
+        const newOtp = [...otp];
+        for (let i = 0; i < digits.length && index + i < 6; i++) {
+          newOtp[index + i] = digits[i];
+        }
+        setOtp(newOtp);
+        const nextIdx = Math.min(index + digits.length, 5);
+        otpRefs.current[nextIdx]?.focus();
+        return;
+      }
+
+      if (value && !/^\d$/.test(value)) return;
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      if (value && index < 5) {
+        otpRefs.current[index + 1]?.focus();
+      }
+    },
+    [otp]
+  );
+
+  const handleOtpKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const otpValue = otp.join("");
+    if (otpValue.length !== 6) {
+      toast.error("Please enter the complete 6-digit OTP");
+      return;
+    }
+    setStep("password");
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword) {
+      toast.error("Please enter a new password");
+      return;
+    }
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    confirmMutation.mutate({
+      email,
+      otp: otp.join(""),
+      newPassword,
+    });
+  };
+
+  const maskedEmail =
+    email.length > 5
+      ? `${email.slice(0, 3)}...${email.slice(email.indexOf("@"))}`
+      : email;
+
+  // Step 1: Email
+  if (step === "email") {
+    return (
+      <div>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          Forgot password
+        </h1>
+        <p className="text-gray-500 mb-10">
+          Please enter your email to reset the password
+        </p>
+
+        <form onSubmit={handleEmailSubmit} className="space-y-8">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Your Email
+            </label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full h-12 bg-white border-gray-200 rounded-full px-5 focus:border-orange-400 focus:ring-orange-400"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            disabled={requestMutation.isPending}
+            className="w-full h-14 bg-gray-900 hover:bg-gray-800 text-white text-lg font-medium rounded-full"
+          >
+            {requestMutation.isPending ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              "Next"
+            )}
+          </Button>
+
+          <p className="text-sm text-gray-500 text-center">
+            Remembered your password?{" "}
+            <Link
+              href="/auth/signin"
+              className="text-orange-500 hover:text-orange-600 font-medium"
+            >
+              Sign In
+            </Link>
+          </p>
+        </form>
+      </div>
+    );
+  }
+
+  // Step 2: OTP Verification
+  if (step === "otp") {
+    return (
+      <div>
+        <button
+          onClick={() => setStep("email")}
+          className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-8"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </button>
+
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          Check your email
+        </h1>
+        <p className="text-gray-500 mb-2">
+          We sent a reset link to {maskedEmail}
+        </p>
+        <p className="text-gray-400 text-sm mb-10">
+          Enter the 6-digit code mentioned in the email
+        </p>
+
+        <form onSubmit={handleOtpSubmit} className="space-y-8">
+          <div className="flex gap-3 justify-center">
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                ref={(el) => {
+                  otpRefs.current[index] = el;
+                }}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleOtpChange(index, e.target.value)}
+                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const pasted = e.clipboardData.getData("text");
+                  handleOtpChange(index, pasted);
+                }}
+                className="w-12 h-14 md:w-14 md:h-16 text-center text-xl font-semibold border-2 border-gray-200 rounded-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all bg-white"
+              />
+            ))}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full h-14 bg-gray-900 hover:bg-gray-800 text-white text-lg font-medium rounded-full"
+          >
+            Next
+          </Button>
+
+          <p className="text-sm text-gray-500 text-center">
+            Didn&apos;t receive the code?{" "}
+            <button
+              type="button"
+              className="text-orange-500 hover:text-orange-600 font-medium"
+              onClick={() => requestMutation.mutate(email)}
               disabled={requestMutation.isPending}
             >
-              {requestMutation.isPending ? "Sending…" : "Send OTP"}
-            </Button>
+              {requestMutation.isPending ? "Sending..." : "Resend"}
+            </button>
+          </p>
+        </form>
+      </div>
+    );
+  }
 
-            <div className="text-sm text-muted-foreground text-center">
-              Remembered your password?{" "}
-              <Link
-                href="/auth/signin"
-                className="text-primary hover:underline"
-              >
-                Sign In
-              </Link>
-            </div>
-          </form>
-        </Form>
-      ) : (
-        <Form {...confirmForm}>
-          <form
-            onSubmit={confirmForm.handleSubmit((data) =>
-              confirmMutation.mutate(data)
-            )}
-            className="space-y-6"
-          >
-            <FormField
-              control={confirmForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="Enter your email"
-                      className="border-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={confirmForm.control}
-              name="otp"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>OTP</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="Enter 6-digit OTP"
-                      className="border-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={confirmForm.control}
-              name="newPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>New Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="Enter new password"
-                      className="border-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={confirmForm.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm New Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="Confirm new password"
-                      className="border-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+  // Step 3: Set New Password
+  return (
+    <div>
+      <button
+        onClick={() => setStep("otp")}
+        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-8"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back
+      </button>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={confirmMutation.isPending}
+      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+        Set a new password
+      </h1>
+      <p className="text-gray-500 mb-10">
+        Create a new password. Ensure it differs from previous ones for security
+      </p>
+
+      <form onSubmit={handlePasswordSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Password
+          </label>
+          <div className="relative">
+            <Input
+              type={showNew ? "text" : "password"}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter your new password"
+              className="w-full h-12 bg-white border-gray-200 rounded-full px-5 pr-12 focus:border-orange-400 focus:ring-orange-400"
+            />
+            <button
+              type="button"
+              onClick={() => setShowNew(!showNew)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
-              {confirmMutation.isPending ? "Resetting…" : "Reset Password"}
-            </Button>
+              {showNew ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+        </div>
 
-            <div className="text-sm text-muted-foreground text-center">
-              Didn’t receive OTP?{" "}
-              <button
-                type="button"
-                className="text-primary hover:underline"
-                onClick={() =>
-                  requestMutation.mutate({
-                    email: confirmForm.getValues("email"),
-                  })
-                }
-                disabled={requestMutation.isPending}
-              >
-                Resend
-              </button>
-            </div>
-          </form>
-        </Form>
-      )}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Confirm Password
+          </label>
+          <div className="relative">
+            <Input
+              type={showConfirm ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter password"
+              className="w-full h-12 bg-white border-gray-200 rounded-full px-5 pr-12 focus:border-orange-400 focus:ring-orange-400"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              {showConfirm ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        <Button
+          type="submit"
+          disabled={confirmMutation.isPending}
+          className="w-full h-14 bg-gray-900 hover:bg-gray-800 text-white text-lg font-medium rounded-full"
+        >
+          {confirmMutation.isPending ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            "Update Password"
+          )}
+        </Button>
+      </form>
     </div>
   );
 }

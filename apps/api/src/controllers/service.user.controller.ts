@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { getRequestById } from "../services/admin/serviceRequests.service";
 import {
+  cancelUserServiceRequest,
   createCompanyAcquisitionInquiry,
   createConsultancyRequest,
   createJobSeekerProfile,
   createMaintenanceRequest,
   createManpowerHiringRequest,
   createTurnkeyProjectInquiry,
-  getUserServiceRequests,
+  getUserServiceRequests
 } from "../services/user/serviceRequests.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -123,5 +124,27 @@ export const getMyServiceRequestDetails = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, request, "Service request details fetched"));
+  }
+);
+
+export const cancelMyServiceRequest = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    if (!reason || typeof reason !== "string" || reason.trim().length === 0) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Cancellation reason is required"));
+    }
+
+    const updated = await cancelUserServiceRequest(
+      req.user!.id,
+      id,
+      reason.trim()
+    );
+    res
+      .status(200)
+      .json(new ApiResponse(200, updated, "Service request cancelled"));
   }
 );

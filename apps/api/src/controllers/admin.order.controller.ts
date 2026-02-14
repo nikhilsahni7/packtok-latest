@@ -1,8 +1,9 @@
 import {
-    OrderStatus,
-    prisma,
-    Prisma,
-    StockMovementReason
+  MarketplaceProductStatus,
+  OrderStatus,
+  prisma,
+  Prisma,
+  StockMovementReason
 } from "@packtok/db";
 import { Request, Response } from "express";
 import { ApiError } from "../utils/apiError";
@@ -143,10 +144,21 @@ export const updateStatus = asyncHandler(async (req: Request, res: Response) => 
     // Restore stock if order was paid
     await prisma.$transaction(async (tx) => {
       for (const item of order.items) {
-        await tx.marketplaceProduct.update({
+        const updatedProduct = await tx.marketplaceProduct.update({
           where: { id: item.productId },
           data: { quantity: { increment: item.quantity } },
         });
+
+        // Auto-restore to AVAILABLE if product was OUT_OF_STOCK
+        if (
+          updatedProduct.quantity > 0 &&
+          updatedProduct.status === MarketplaceProductStatus.OUT_OF_STOCK
+        ) {
+          await tx.marketplaceProduct.update({
+            where: { id: item.productId },
+            data: { status: MarketplaceProductStatus.AVAILABLE },
+          });
+        }
 
         await tx.stockMovement.create({
           data: {

@@ -4,7 +4,8 @@ import Protected from "@/components/auth/protected";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@packtok/ui/components/button";
-import { FileText, Heart, LogOut, MapPin, Package, User, X } from "lucide-react";
+import { ClipboardList, FileText, Heart, LogOut, MapPin, Package, ShoppingCart, User, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,8 +13,10 @@ import { toast } from "react-hot-toast";
 
 const navItems = [
   { href: "/account", label: "Account", icon: User, exact: true },
+  { href: "/account/addresses", label: "Address", icon: MapPin },
   { href: "/account/orders", label: "Orders", icon: Package },
-  { href: "/account/addresses", label: "Addresses", icon: MapPin },
+  { href: "/cart", label: "Cart", icon: ShoppingCart },
+  { href: "/account/form-tracking", label: "Form Tracking", icon: ClipboardList },
   { href: "/account/quotes", label: "Quote Requests", icon: FileText },
   { href: "/account/wishlist", label: "Wishlist", icon: Heart },
 ];
@@ -44,18 +47,30 @@ export default function AccountLayout({
     );
   }
 
+  const profileImage = (user?.profile_image as string) || null;
+
   return (
     <Protected>
-      <div className="max-w-6xl mx-auto pb-20 pt-24 px-4">
+      <div className="max-w-5xl mx-auto pb-20 pt-24 px-4">
         <h1 className="text-3xl font-bold mb-10 text-center">My Account</h1>
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="flex flex-col md:flex-row gap-10">
           {/* Sidebar */}
-          <aside className="bg-gray-50 rounded-xl p-6 h-fit md:sticky md:top-24">
+          <aside className="w-full md:w-56 shrink-0 h-fit md:sticky md:top-24">
             <div className="flex flex-col items-center text-center space-y-2 mb-6">
-              <div className="h-20 w-20 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-2xl font-semibold text-white">
-                {user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? "U"}
+              <div className="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-2xl font-semibold text-white ring-4 ring-white shadow-lg">
+                {profileImage ? (
+                  <Image
+                    src={profileImage}
+                    alt="Profile"
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? "U"
+                )}
               </div>
-              <h2 className="font-semibold">{user?.name || "User"}</h2>
+              <h2 className="font-semibold text-gray-900">{user?.name || "User"}</h2>
               <p className="text-sm text-gray-500 truncate max-w-full">{user?.email}</p>
             </div>
             <nav className="space-y-1">
@@ -135,7 +150,7 @@ export default function AccountLayout({
           )}
 
           {/* Content */}
-          <main className="md:col-span-3">{children}</main>
+          <main className="flex-1 min-w-0">{children}</main>
         </div>
       </div>
     </Protected>

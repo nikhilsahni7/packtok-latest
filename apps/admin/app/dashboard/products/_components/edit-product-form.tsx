@@ -3,37 +3,37 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-  ComboboxOption,
-  CustomCombobox,
+    ComboboxOption,
+    CustomCombobox,
 } from "@packtok/ui/components/custom-combobox";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@packtok/ui/components/select";
 import { Switch } from "@packtok/ui/components/switch";
 import { Textarea } from "@packtok/ui/components/textarea";
 import {
-  FileText,
-  FileVideo,
-  HelpCircle,
-  Minus,
-  Plus,
-  Save,
-  Upload,
-  X
+    FileText,
+    FileVideo,
+    HelpCircle,
+    Minus,
+    Plus,
+    Save,
+    Upload,
+    X
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -41,13 +41,13 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import {
-  useCategories,
-  useCreateCategory,
-  useUpdateProduct,
+    useCategories,
+    useCreateCategory,
+    useUpdateProduct,
 } from "../../../../hooks";
 import {
-  updateProductSchema,
-  type UpdateProductFormData,
+    updateProductSchema,
+    type UpdateProductFormData,
 } from "../../../../schemas/product-schema";
 import { MarketplaceProduct } from "../../../../types/product";
 import MediaPreviewModal from "./media-preview-modal";
@@ -164,7 +164,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       title: product.title,
       description: product.description,
       price: product.price ? Number(product.price) : 0,
-      quantity: product.quantity ? Number(product.quantity) : 1,
+      quantity: product.quantity != null ? Number(product.quantity) : 1,
       productType: product.productType,
       machineType: product.machineType || undefined,
       condition: product.condition || "NEW",
@@ -224,6 +224,11 @@ export default function EditProductForm({ product }: EditProductFormProps) {
 
       if (thumbnail) {
         formData.append("thumbnail", thumbnail);
+      }
+
+      // Send existing image URLs so the backend can preserve them
+      if (existingImages.length > 0) {
+        formData.append("existingImages", JSON.stringify(existingImages));
       }
 
       uploadedImages.forEach((image) => {
@@ -834,6 +839,11 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               }}
                             />
                           </FormControl>
+                          {field.value === 0 && (
+                            <p className="text-xs font-medium text-red-600 flex items-center gap-1 mt-1">
+                              ⚠ Out of Stock
+                            </p>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}

@@ -350,6 +350,9 @@ model User {
   // Vendor subscriptions
   vendorSubscriptions     VendorSubscription[]
 
+  // Articles
+  articles                Article[] @relation("articlesCreated")
+
   @@map("users")
 }
 
@@ -527,6 +530,7 @@ model QuoteRequest {
   message        String      @db.Text
   additionalInfo String?     @db.Text
   status         QuoteStatus @default(PENDING)
+  cancellationReason String? @db.Text
 
   // --- Relations ---
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1362,4 +1366,23 @@ model InvestmentQuery {
   @@map("investment_queries")
   @@index([propertyId])
   @@index([userId])
+}
+
+// ─── Articles / Blog ──────────────────────────────────────────────
+model Article {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String
+  content     String   @db.Text
+  coverImage  String?
+  published   Boolean  @default(false)
+
+  // Author (admin who created it)
+  author      User     @relation("articlesCreated", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+
+  @@map("articles")
+  @@index([authorId])
+  @@index([published, createdAt])
 }

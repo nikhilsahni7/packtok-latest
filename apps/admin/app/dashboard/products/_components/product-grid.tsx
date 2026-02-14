@@ -86,12 +86,17 @@ export function ProductGrid({
                     <Edit className="w-4 h-4 mr-2" />
                     Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onStatusChange(product.id, "AVAILABLE")}
-                  >
-                    <Activity className="w-4 h-4 mr-2" />
-                    Mark Available
-                  </DropdownMenuItem>
+                  {/* Only allow Mark Available if product is approved or admin-created */}
+                  {(product.submissionStatus === undefined ||
+                    product.submissionStatus === null ||
+                    product.submissionStatus === "APPROVED") && (
+                    <DropdownMenuItem
+                      onClick={() => onStatusChange(product.id, "AVAILABLE")}
+                    >
+                      <Activity className="w-4 h-4 mr-2" />
+                      Mark Available
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem
                     onClick={() => onStatusChange(product.id, "SOLD")}
                   >
@@ -155,9 +160,21 @@ export function ProductGrid({
                 >
                   {product.productType.replace("_", " ")}
                 </Badge>
-                <Badge className={`${cxBadge(product.status)} text-xs`}>
-                  {product.status.replace("_", " ")}
-                </Badge>
+                <div className="flex items-center gap-1">
+                  {product.submissionStatus === "PENDING_APPROVAL" && (
+                    <Badge className="bg-yellow-100 text-yellow-800 text-xs">
+                      PENDING
+                    </Badge>
+                  )}
+                  {product.submissionStatus === "REJECTED" && (
+                    <Badge className="bg-red-100 text-red-800 text-xs">
+                      REJECTED
+                    </Badge>
+                  )}
+                  <Badge className={`${cxBadge(product.status)} text-xs`}>
+                    {product.status.replace("_", " ")}
+                  </Badge>
+                </div>
               </div>
 
               <div className="flex items-center justify-between text-sm">
@@ -169,7 +186,9 @@ export function ProductGrid({
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Stock:</span>
-                <span className="font-medium">{product.quantity} pcs</span>
+                <span className={`font-medium ${(product.quantity ?? 0) === 0 ? 'text-red-600' : 'text-gray-900'}`}>
+                  {(product.quantity ?? 0) === 0 ? 'Out of Stock' : `${product.quantity} pcs`}
+                </span>
               </div>
 
               {product.manufacturer && (

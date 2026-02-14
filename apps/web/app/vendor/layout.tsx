@@ -1,7 +1,8 @@
 "use client";
 
 import { useAuthStore, useHasHydrated } from "@/store/auth-store";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { VendorSidebar } from "./dashboard/components/vendor-sidebar";
 
 export default function VendorLayout({
@@ -12,12 +13,42 @@ export default function VendorLayout({
   const accessToken = useAuthStore((state) => state.accessToken);
   const user = useAuthStore((state) => state.user);
   const hasHydrated = useHasHydrated();
+  const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Give AuthBootstrap a short window to refresh the token after hydration
+  const [bootstrapDone, setBootstrapDone] = useState(false);
 
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed);
 
+  // After hydration, wait briefly for AuthBootstrap to potentially refresh the
+  // token (from the refresh cookie via the API). If the token is already
+  // present from Zustand persistence we skip the wait entirely.
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (accessToken) {
+      setBootstrapDone(true);
+      return;
+    }
+    // Wait up to 2 seconds for AuthBootstrap to finish refreshing
+    const timer = setTimeout(() => setBootstrapDone(true), 2000);
+    return () => clearTimeout(timer);
+  }, [hasHydrated, accessToken]);
+
+  // Redirect logic — only runs once bootstrap is done
+  useEffect(() => {
+    if (!bootstrapDone) return;
+    if (!accessToken) {
+      router.replace("/auth/vendor/signin");
+      return;
+    }
+    // If user is loaded but is NOT a vendor, send them to the homepage
+    if (user && user.role !== "VENDOR") {
+      router.replace("/");
+    }
+  }, [bootstrapDone, accessToken, user, router]);
+
   // Don't render anything until hydration is complete
-  if (!hasHydrated) {
+  if (!hasHydrated || !bootstrapDone) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
@@ -25,7 +56,7 @@ export default function VendorLayout({
     );
   }
 
-  // If not authenticated yet, show a loader while bootstrap/middleware establishes session
+  // If no token after bootstrap, show spinner while redirect fires
   if (!accessToken) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">

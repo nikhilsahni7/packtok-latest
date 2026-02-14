@@ -3,27 +3,29 @@
 import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@packtok/ui/components/select";
-import { Filter, Grid3X3, List, Package, Plus, Search } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Filter, Grid3X3, List, Package, Plus, RefreshCw, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { productTabs } from "../../../../constants/navigation";
 import {
-  useDeleteProduct,
-  useProducts,
-  useUpdateProductStatus,
+    useDeleteProduct,
+    useProducts,
+    useUpdateProductStatus,
 } from "../../../../hooks";
 import {
-  MarketplaceProduct,
-  MarketplaceProductStatus,
+    MarketplaceProduct,
+    MarketplaceProductStatus,
 } from "../../../../types/product";
+import { QK } from "../../../../utils/queryKeys";
 import { CreateAuctionDialog } from "./create-auction-dialog";
 import { ProductGrid } from "./product-grid";
 import { ProductTable } from "./product-table";
@@ -48,9 +50,14 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
     useState<MarketplaceProduct | null>(null);
 
   const router = useRouter();
-  const { data: products = initialProducts, isLoading, error } = useProducts();
+  const queryClient = useQueryClient();
+  const { data: products = initialProducts, isLoading, isFetching, error } = useProducts();
   const updateStatusMutation = useUpdateProductStatus();
   const deleteProductMutation = useDeleteProduct();
+
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: QK.products });
+  };
 
   useEffect(() => {
     if (error) {
@@ -182,13 +189,23 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-        <Button
-          onClick={() => router.push("/dashboard/products/add")}
-          className="bg-blue-600 hover:bg-blue-700">
-
-          <Plus className="h-4 w-4 mr-2" />
-          Add Product
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={handleRefresh}
+            disabled={isFetching}
+            className="gap-2"
+          >
+            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+            {isFetching ? 'Refreshing...' : 'Refresh'}
+          </Button>
+          <Button
+            onClick={() => router.push("/dashboard/products/add")}
+            className="bg-blue-600 hover:bg-blue-700">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Product
+          </Button>
+        </div>
       </div>
 
       {/* Tabs */}

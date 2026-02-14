@@ -1,12 +1,12 @@
 import {
-  MarketplaceProductStatus,
-  Prisma,
-  ProductCondition,
-  ProductType,
-  Role,
-  StockMovementReason,
-  UserSubmissionStatus,
-  prisma,
+    MarketplaceProductStatus,
+    Prisma,
+    ProductCondition,
+    ProductType,
+    Role,
+    StockMovementReason,
+    UserSubmissionStatus,
+    prisma,
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 import { canVendorCreateProduct } from "./subscription.service";
@@ -170,20 +170,37 @@ export const upsertInventory = async (
       : (existing?.stockOnHand ?? 0);
   if (stockOnHand < 0)
     throw new ApiError(400, "stockOnHand cannot be negative");
-  return prisma.productInventory.upsert({
-    where: { productId },
-    create: {
-      productId,
-      stockOnHand,
-      lowStockThreshold: data.lowStockThreshold,
-      warehouseLocation: data.warehouseLocation,
-    },
-    update: {
-      stockOnHand,
-      lowStockThreshold: data.lowStockThreshold,
-      warehouseLocation: data.warehouseLocation,
-    },
-  });
+
+  // Sync product.quantity to match stockOnHand (single source of truth)
+  const productUpdate: Prisma.MarketplaceProductUpdateInput = {
+    quantity: stockOnHand,
+  };
+  // Auto-update product status based on stock level
+  if (stockOnHand <= 0) {
+    productUpdate.status = MarketplaceProductStatus.OUT_OF_STOCK;
+  }
+
+  const [inventory] = await prisma.$transaction([
+    prisma.productInventory.upsert({
+      where: { productId },
+      create: {
+        productId,
+        stockOnHand,
+        lowStockThreshold: data.lowStockThreshold,
+        warehouseLocation: data.warehouseLocation,
+      },
+      update: {
+        stockOnHand,
+        lowStockThreshold: data.lowStockThreshold,
+        warehouseLocation: data.warehouseLocation,
+      },
+    }),
+    prisma.marketplaceProduct.update({
+      where: { id: productId },
+      data: productUpdate,
+    }),
+  ]);
+  return inventory;
 };
 
 export const adjustInventory = async (
@@ -208,6 +225,26 @@ export const adjustInventory = async (
       where: { productId },
       data: { stockOnHand: newStock },
     });
+
+    // Sync product.quantity to match
+    const updatedProduct = await tx.marketplaceProduct.update({
+      where: { id: productId },
+      data: { quantity: { increment: delta } },
+    });
+
+    // Auto-update product status based on stock level
+    if (updatedProduct.quantity <= 0) {
+      await tx.marketplaceProduct.update({
+        where: { id: productId },
+        data: { status: MarketplaceProductStatus.OUT_OF_STOCK },
+      });
+    } else if (updatedProduct.status === MarketplaceProductStatus.OUT_OF_STOCK) {
+      await tx.marketplaceProduct.update({
+        where: { id: productId },
+        data: { status: MarketplaceProductStatus.AVAILABLE },
+      });
+    }
+
     await tx.stockMovement.create({
       data: {
         productId,

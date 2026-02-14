@@ -20,8 +20,7 @@ export default function CartPage() {
   const {
     cart,
     itemCount,
-    totalAmount,
-    currency,
+    totalsByCurrency,
     isLoading,
     updateQuantity,
     removeFromCart
@@ -171,7 +170,7 @@ export default function CartPage() {
                     <div className="text-right">
                       <p className="text-gray-400 text-sm font-medium">Price per item</p>
                       <p className="text-xl font-black text-emerald-600">
-                        {currency} {parseFloat(item.product.price).toLocaleString()}
+                        {item.product.currency} {parseFloat(item.product.price).toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -194,7 +193,11 @@ export default function CartPage() {
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-gray-400 font-medium">
                 <span>Subtotal ({itemCount} items)</span>
-                <span>{currency} {totalAmount.toLocaleString()}</span>
+                <div className="text-right space-y-1">
+                  {Object.entries(totalsByCurrency).map(([cur, amount]) => (
+                    <span key={cur} className="block">{cur} {amount.toLocaleString()}</span>
+                  ))}
+                </div>
               </div>
               <div className="flex justify-between text-gray-400 font-medium">
                 <span>Shipping</span>
@@ -204,9 +207,13 @@ export default function CartPage() {
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">Total Amount</p>
-                  <p className="text-4xl font-black text-white mt-1">
-                    {currency} {totalAmount.toLocaleString()}
-                  </p>
+                  <div className="mt-1 space-y-1">
+                    {Object.entries(totalsByCurrency).map(([cur, amount]) => (
+                      <p key={cur} className="text-3xl font-black text-white">
+                        {cur} {amount.toLocaleString()}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

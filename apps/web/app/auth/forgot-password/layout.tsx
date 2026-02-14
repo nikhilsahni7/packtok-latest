@@ -1,14 +1,14 @@
 import Image from "next/image";
 import type React from "react";
 
-export default function AuthLayout({
+export default function ForgotPasswordLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex ">
-      {/* Left side - Image */}
+    <div className="min-h-screen flex">
+      {/* Left side - Image (same as sign-in/sign-up) */}
       <div className="hidden bg-gray-100 lg:flex lg:w-1/2 items-center justify-center p-12">
         <div className="signup before:w-[10%] before:h-full before:z-[3] before:left-0 before:top-0 before:absolute after:w-[10%] after:h-full after:z-[2] after:left-0 after:top-0 after:absolute ">
           <Image
@@ -17,6 +17,7 @@ export default function AuthLayout({
             className="object-contain"
             width={600}
             height={600}
+            priority
           />
         </div>
       </div>

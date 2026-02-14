@@ -12,8 +12,7 @@ export function CartSidebar() {
     closeCart,
     isLoading,
     itemCount,
-    totalAmount,
-    currency,
+    totalsByCurrency,
     updateQuantity,
     removeFromCart,
   } = useCart();
@@ -171,11 +170,15 @@ export function CartSidebar() {
         {/* Footer */}
         {cart && cart.items.length > 0 && (
           <div className="border-t p-6 bg-white">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-start mb-4">
               <span className="text-gray-600">Subtotal</span>
-              <span className="text-2xl font-bold text-gray-900">
-                {currency} {totalAmount.toLocaleString()}
-              </span>
+              <div className="text-right space-y-1">
+                {Object.entries(totalsByCurrency).map(([cur, amount]) => (
+                  <p key={cur} className="text-xl font-bold text-gray-900">
+                    {cur} {amount.toLocaleString()}
+                  </p>
+                ))}
+              </div>
             </div>
             <p className="text-xs text-gray-500 mb-4">
               Shipping & taxes calculated at checkout

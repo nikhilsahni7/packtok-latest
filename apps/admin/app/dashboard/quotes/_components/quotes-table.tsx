@@ -3,20 +3,20 @@
 import { Badge } from "@packtok/ui/badge";
 import { Button } from "@packtok/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@packtok/ui/card";
 import { Input } from "@packtok/ui/input";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@packtok/ui/table";
 import { Eye, Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -110,7 +110,7 @@ export function QuotesTable({ initialQuotes = [] }: QuotesTableProps) {
   }
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
         <CardTitle>Quote Requests</CardTitle>
         <CardDescription>
@@ -144,33 +144,34 @@ export function QuotesTable({ initialQuotes = [] }: QuotesTableProps) {
           </div>
         </div>
 
-        <Table>
+        <div className="overflow-x-auto">
+        <Table className="table-fixed w-full">
           <TableHeader>
             <TableRow>
-              <TableHead>Company</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead className="w-[150px]">Actions</TableHead>
+              <TableHead className="w-[20%]">Company</TableHead>
+              <TableHead className="w-[25%]">Product</TableHead>
+              <TableHead className="w-[12%] text-center">Status</TableHead>
+              <TableHead className="w-[13%]">Date</TableHead>
+              <TableHead className="w-[18%]">Contact</TableHead>
+              <TableHead className="w-[12%] text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredQuotes.map((quote) => (
               <TableRow key={quote.id}>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium truncate">
                   {quote.companyName}
                 </TableCell>
-                <TableCell>
+                <TableCell className="truncate">
                   {quote.product?.title || "Unknown Product"}
                 </TableCell>
-                <TableCell>{getStatusBadge(quote.status)}</TableCell>
+                <TableCell className="text-center">{getStatusBadge(quote.status)}</TableCell>
                 <TableCell>
                   {new Date(quote.createdAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell>{quote.user?.name || "Unknown"}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
+                <TableCell className="truncate">{quote.user?.name || "Unknown"}</TableCell>
+                <TableCell className="text-center">
+                  <div className="flex justify-center gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -184,6 +185,7 @@ export function QuotesTable({ initialQuotes = [] }: QuotesTableProps) {
             ))}
           </TableBody>
         </Table>
+        </div>
 
         {filteredQuotes.length === 0 && (
           <div className="text-center py-8">

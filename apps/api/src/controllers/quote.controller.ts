@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import {
+    cancelUserQuoteRequest,
     createQuoteRequest,
     getMyQuoteRequests,
     getQuoteRequestById,
@@ -35,5 +36,23 @@ export const getQuoteById = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, quote, "Quote request fetched successfully"));
+  }
+);
+
+export const cancelQuote = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    if (!reason || typeof reason !== "string" || reason.trim().length === 0) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, null, "Cancellation reason is required"));
+    }
+
+    const quote = await cancelUserQuoteRequest(id, req.user!.id, reason.trim());
+    res
+      .status(200)
+      .json(new ApiResponse(200, quote, "Quote request cancelled"));
   }
 );

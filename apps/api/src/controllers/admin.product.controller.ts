@@ -119,7 +119,19 @@ export const adminUpdateProduct = asyncHandler(
     }
     if (data.quantity) data.quantity = Number(data.quantity);
     if (data.year) data.year = Number(data.year);
-    if (imagesUrls.length) data.images = imagesUrls;
+
+    // Merge existing images (URLs the admin chose to keep) with newly uploaded ones
+    let existingImages: string[] = [];
+    if (data.existingImages && typeof data.existingImages === "string") {
+      try {
+        existingImages = JSON.parse(data.existingImages);
+      } catch (_) {
+        existingImages = [];
+      }
+      delete data.existingImages;
+    }
+    data.images = [...existingImages, ...imagesUrls];
+
     if (videoUrl) data.videoUrl = videoUrl;
     if (pdfUrl) data.pdfUrl = pdfUrl;
     if (imagesThumbnail) data.imagesThumbnail = imagesThumbnail;

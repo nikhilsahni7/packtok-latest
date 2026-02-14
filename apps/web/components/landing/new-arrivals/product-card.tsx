@@ -71,7 +71,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </CardContent>
       </Card>
       <div className="pt-4 space-y-2 text-left">
-        <StarRating rating={5} />
+        <StarRating rating={product.averageRating ?? 0} />
         <h3 className="text-base font-semibold text-gray-800 line-clamp-2">
           {product.title}
         </h3>

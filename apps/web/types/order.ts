@@ -22,6 +22,9 @@ export interface OrderItem {
   product?: {
     id: string;
     imagesThumbnail?: string;
+    category?: {
+      name: string;
+    };
   };
 }
 
@@ -47,7 +50,14 @@ export interface Order {
   customerNotes?: string;
   createdAt: string;
   updatedAt: string;
+  cancelledAt?: string;
   items: OrderItem[];
+  statusHistory?: {
+    id: string;
+    createdAt: string;
+    status: OrderStatus;
+    notes?: string;
+  }[];
 }
 
 export interface Address {

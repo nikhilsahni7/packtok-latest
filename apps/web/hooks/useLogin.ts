@@ -3,7 +3,7 @@
 import api from "@/lib/axios";
 import { useAuthStore } from "@/store/auth-store";
 import { User } from "@/types/auth";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 
@@ -17,6 +17,7 @@ export function useLogin() {
   const setUser = useAuthStore((s) => s.setUser);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload: LoginPayload) => {
@@ -26,6 +27,8 @@ export function useLogin() {
     onSuccess: ({ accessToken, user }) => {
       setAccessToken(accessToken);
       setUser(user);
+      // Invalidate the cached "me" query so navbar picks up the new user immediately
+      queryClient.invalidateQueries({ queryKey: ["me"] });
       toast.success("Logged in successfully");
       const callbackUrl = searchParams?.get("callbackUrl");
       router.push(

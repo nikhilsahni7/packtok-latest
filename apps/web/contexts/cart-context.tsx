@@ -36,6 +36,7 @@ interface CartContextType {
   isLoading: boolean;
   itemCount: number;
   totalAmount: number;
+  totalsByCurrency: Record<string, number>;
   currency: string;
   isOpen: boolean;
   openCart: () => void;
@@ -90,6 +91,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;
+
+  const totalsByCurrency: Record<string, number> =
+    cart?.items.reduce((acc, item) => {
+      const cur = item.product.currency || "INR";
+      acc[cur] = (acc[cur] || 0) + parseFloat(item.product.price) * item.quantity;
+      return acc;
+    }, {} as Record<string, number>) || {};
 
   const totalAmount =
     cart?.items.reduce(
@@ -170,6 +178,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         isLoading,
         itemCount,
         totalAmount,
+        totalsByCurrency,
         currency,
         isOpen,
         openCart,

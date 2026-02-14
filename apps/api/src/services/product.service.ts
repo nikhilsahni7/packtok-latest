@@ -147,6 +147,21 @@ export const changeProductStatus = async (
   productId: string,
   newStatus: MarketplaceProductStatus
 ) => {
+  // Guard: cannot set AVAILABLE unless the product has been approved (or is admin-created with null submissionStatus)
+  if (newStatus === MarketplaceProductStatus.AVAILABLE) {
+    const product = await prisma.marketplaceProduct.findUnique({
+      where: { id: productId },
+      select: { submissionStatus: true },
+    });
+    if (
+      product?.submissionStatus !== null &&
+      product?.submissionStatus !== UserSubmissionStatus.APPROVED
+    ) {
+      throw new Error(
+        "Cannot mark product as AVAILABLE — it must be approved first. Please approve the submission before changing status."
+      );
+    }
+  }
   return prisma.marketplaceProduct.update({
     where: { id: productId },
     data: { status: newStatus },
@@ -155,15 +170,7 @@ export const changeProductStatus = async (
 
 export const listAllProductsForAdmin = async () => {
   return prisma.marketplaceProduct.findMany({
-    select: {
-      id: true,
-      title: true,
-      price: true,
-      status: true,
-      submissionStatus: true,
-      productType: true,
-      createdAt: true,
-      imagesThumbnail: true,
+    include: {
       createdByUser: {
         select: {
           id: true,
@@ -363,6 +370,9 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
             name: true,
           },
         },
+        reviews: {
+          select: { rating: true },
+        },
       },
       skip,
       take: limit,
@@ -371,7 +381,15 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
     prisma.marketplaceProduct.count({ where }),
   ]);
 
-  const sanitized = items.map(sanitizePriceForPublic);
+  // Compute average rating from reviews and sanitize
+  const sanitized = items.map((item) => {
+    const { reviews, ...rest } = item;
+    const averageRating =
+      reviews.length > 0
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+        : 0;
+    return { ...sanitizePriceForPublic(rest), averageRating, reviewCount: reviews.length };
+  });
   return { items: sanitized, total, page, limit };
 };
 

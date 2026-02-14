@@ -13,7 +13,7 @@ import { toast } from "react-hot-toast";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, totalAmount, currency, itemCount, clearCart } = useCart();
+  const { cart, totalsByCurrency, itemCount, clearCart } = useCart();
   const user = useAuthStore((s) => s.user);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -270,8 +270,12 @@ export default function CheckoutPage() {
 
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span>{currency} {totalAmount.toLocaleString()}</span>
+                  <span>Subtotal</span>
+                  <div className="text-right space-y-1">
+                    {Object.entries(totalsByCurrency).map(([cur, amount]) => (
+                      <span key={cur} className="block">{cur} {amount.toLocaleString()}</span>
+                    ))}
+                  </div>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
@@ -284,7 +288,11 @@ export default function CheckoutPage() {
                 <div className="border-t pt-3 mt-3">
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Total</span>
-                    <span>{currency} {totalAmount.toLocaleString()}</span>
+                    <div className="text-right space-y-1">
+                      {Object.entries(totalsByCurrency).map(([cur, amount]) => (
+                        <span key={cur} className="block">{cur} {amount.toLocaleString()}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -302,7 +310,10 @@ export default function CheckoutPage() {
                 ) : (
                   <>
                     <CreditCard className="h-5 w-5" />
-                    Pay {currency} {totalAmount.toLocaleString()}
+                    Pay{" "}
+                    {Object.entries(totalsByCurrency)
+                      .map(([cur, amount]) => `${cur} ${amount.toLocaleString()}`)
+                      .join(" + ")}
                   </>
                 )}
               </button>

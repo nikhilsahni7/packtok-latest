@@ -5,7 +5,6 @@ import { User } from "@/types/auth";
 import {
   BarChart3,
   Boxes,
-  CalendarClock,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -16,8 +15,6 @@ import {
   LayoutDashboard,
   LogOut,
   Package,
-  Settings,
-  Wallet,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -91,12 +88,6 @@ const sidebarStructure: SidebarNode[] = [
         href: "/vendor/products",
         icon: Boxes,
       },
-      {
-        type: "link",
-        name: "Scheduled",
-        href: "/vendor/products/scheduled",
-        icon: CalendarClock,
-      },
     ],
   },
   {
@@ -105,8 +96,6 @@ const sidebarStructure: SidebarNode[] = [
     href: "/vendor/subscription",
     icon: CreditCard,
   },
-  { type: "link", name: "Revenue", href: "/vendor/revenue", icon: Wallet },
-  { type: "link", name: "Settings", href: "/vendor/settings", icon: Settings },
 ];
 
 export function VendorSidebar({

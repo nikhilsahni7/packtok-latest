@@ -11,6 +11,9 @@ const requestInclude = {
   companyAcquisitionInquiry: true,
   manpowerHiringRequest: true,
   jobSeekerProfile: true,
+  actionLogs: {
+    orderBy: { createdAt: "desc" as const },
+  },
 };
 
 export const createMaintenanceRequest = async (
@@ -115,4 +118,43 @@ export const getUserServiceRequests = async (userId: string) => {
     include: requestInclude,
     orderBy: { createdAt: "desc" },
   });
+};
+
+export const cancelUserServiceRequest = async (
+  userId: string,
+  requestId: string,
+  reason: string
+) => {
+  const request = await prisma.serviceRequest.findUnique({
+    where: { id: requestId },
+  });
+  if (!request) throw new Error("Service request not found");
+  if (request.userId !== userId) throw new Error("Unauthorized");
+
+  const nonCancellable: string[] = [
+    ServiceStatus.COMPLETED,
+    ServiceStatus.CLOSED,
+    ServiceStatus.CANCELLED,
+  ];
+  if (nonCancellable.includes(request.status)) {
+    throw new Error("This request cannot be cancelled");
+  }
+
+  const updated = await prisma.serviceRequest.update({
+    where: { id: requestId },
+    data: { status: ServiceStatus.CANCELLED },
+    include: requestInclude,
+  });
+
+  // Log the cancellation with the user's reason
+  await prisma.serviceActionLog.create({
+    data: {
+      requestId,
+      actorId: userId,
+      action: "Cancelled by user",
+      notes: reason,
+    },
+  });
+
+  return updated;
 };

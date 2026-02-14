@@ -3,7 +3,7 @@
 import api from "@/lib/axios";
 import { useAuthStore } from "@/store/auth-store";
 import { User } from "@/types/auth";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
@@ -16,6 +16,7 @@ export function useVendorLogin() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setUser = useAuthStore((s) => s.setUser);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload: VendorLoginPayload) => {
@@ -25,6 +26,8 @@ export function useVendorLogin() {
     onSuccess: ({ accessToken, user }) => {
       setAccessToken(accessToken);
       setUser(user);
+      // Invalidate the cached "me" query so navbar picks up the new user immediately
+      queryClient.invalidateQueries({ queryKey: ["me"] });
       toast.success("Logged in successfully");
       router.push("/vendor/dashboard");
     },

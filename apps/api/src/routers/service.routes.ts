@@ -1,13 +1,14 @@
 import { Router } from "express";
 import {
-  getMyServiceRequestDetails,
-  listMyServiceRequests,
-  submitAcquisition,
-  submitConsultancy,
-  submitJobSeeker,
-  submitMaintenance,
-  submitManpower,
-  submitTurnkey,
+    cancelMyServiceRequest,
+    getMyServiceRequestDetails,
+    listMyServiceRequests,
+    submitAcquisition,
+    submitConsultancy,
+    submitJobSeeker,
+    submitMaintenance,
+    submitManpower,
+    submitTurnkey,
 } from "../controllers/service.user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { cvUpload } from "../middlewares/upload.middleware";
@@ -24,5 +25,6 @@ router.post("/jobseeker", authMiddleware, cvUpload, submitJobSeeker);
 
 router.get("/my", authMiddleware, listMyServiceRequests);
 router.get("/:id", authMiddleware, getMyServiceRequestDetails);
+router.put("/:id/cancel", authMiddleware, cancelMyServiceRequest);
 
 export default router;

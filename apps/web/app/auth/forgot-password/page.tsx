@@ -3,16 +3,8 @@ import { Suspense } from "react";
 
 export default function Page() {
   return (
-    <main className="space-y-8">
-      <h1 className="text-3xl font-bold text-foreground mb-2">
-        Forgot Password
-      </h1>
-      <p className="text-muted-foreground">
-        Enter your email to receive an OTP, then set a new password.
-      </p>
-      <Suspense fallback={null}>
-        <ForgotPasswordForm />
-      </Suspense>
-    </main>
+    <Suspense fallback={null}>
+      <ForgotPasswordForm />
+    </Suspense>
   );
 }

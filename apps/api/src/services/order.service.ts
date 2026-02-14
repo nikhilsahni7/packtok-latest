@@ -1,4 +1,5 @@
 import {
+  MarketplaceProductStatus,
   Order,
   OrderItem,
   OrderPayment,
@@ -7,7 +8,7 @@ import {
   PaymentProvider,
   Prisma,
   prisma,
-  StockMovementReason,
+  StockMovementReason
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 import { clearCart, validateCartForCheckout } from "./cart.service";
@@ -58,7 +59,7 @@ const toMinorUnits = (amount: Prisma.Decimal, currency: string): number => {
 };
 
 const orderInclude = {
-  items: { include: { product: { select: { id: true, title: true, imagesThumbnail: true } } } },
+  items: { include: { product: { select: { id: true, title: true, imagesThumbnail: true, category: { select: { name: true } } } } } },
   payment: true,
   statusHistory: { orderBy: { createdAt: "desc" as const }, take: 5 },
   user: { select: { id: true, name: true, email: true } },
@@ -250,10 +251,18 @@ export const verifyPaymentAndCompleteOrder = async (
     // Deduct stock for each item
     for (const item of order.items) {
       // Update product quantity
-      await tx.marketplaceProduct.update({
+      const updatedProduct = await tx.marketplaceProduct.update({
         where: { id: item.productId },
         data: { quantity: { decrement: item.quantity } },
       });
+
+      // Auto-set OUT_OF_STOCK when quantity reaches 0
+      if (updatedProduct.quantity <= 0) {
+        await tx.marketplaceProduct.update({
+          where: { id: item.productId },
+          data: { status: MarketplaceProductStatus.OUT_OF_STOCK },
+        });
+      }
 
       // Record stock movement
       await tx.stockMovement.create({
@@ -366,7 +375,7 @@ export const getOrderById = async (userId: string, orderId: string): Promise<Ord
 /**
  * Cancel order (only before shipment)
  */
-export const cancelOrder = async (userId: string, orderId: string): Promise<Order> => {
+export const cancelOrder = async (userId: string, orderId: string, reason?: string): Promise<Order> => {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: { items: true },
@@ -386,14 +395,29 @@ export const cancelOrder = async (userId: string, orderId: string): Promise<Orde
     throw new ApiError(400, "Order cannot be cancelled after shipment");
   }
 
+  const cancelNote = reason
+    ? `Cancelled by customer: ${reason}`
+    : "Cancelled by customer";
+
   return prisma.$transaction(async (tx) => {
     // If order was paid, restore stock
     if (order.status !== OrderStatus.PENDING_PAYMENT) {
       for (const item of order.items) {
-        await tx.marketplaceProduct.update({
+        const updatedProduct = await tx.marketplaceProduct.update({
           where: { id: item.productId },
           data: { quantity: { increment: item.quantity } },
         });
+
+        // Auto-restore to AVAILABLE if product was OUT_OF_STOCK
+        if (
+          updatedProduct.quantity > 0 &&
+          updatedProduct.status === MarketplaceProductStatus.OUT_OF_STOCK
+        ) {
+          await tx.marketplaceProduct.update({
+            where: { id: item.productId },
+            data: { status: MarketplaceProductStatus.AVAILABLE },
+          });
+        }
 
         await tx.stockMovement.create({
           data: {
@@ -401,7 +425,7 @@ export const cancelOrder = async (userId: string, orderId: string): Promise<Orde
             delta: item.quantity,
             reason: StockMovementReason.CANCELLATION,
             createdById: userId,
-            meta: { orderId: order.id, reason: "User cancelled order" },
+            meta: { orderId: order.id, reason: cancelNote },
           },
         });
       }
@@ -420,7 +444,7 @@ export const cancelOrder = async (userId: string, orderId: string): Promise<Orde
             status: order.status === OrderStatus.PENDING_PAYMENT
               ? OrderStatus.CANCELLED
               : OrderStatus.REFUND_PENDING,
-            notes: "Cancelled by customer",
+            notes: cancelNote,
             changedById: userId,
           },
         },

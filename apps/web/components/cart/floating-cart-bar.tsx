@@ -1,23 +1,53 @@
 "use client";
 
 import { useCart } from "@/contexts/cart-context";
-import { ArrowRight, ShoppingBag, Sparkles } from "lucide-react";
+import { ArrowRight, ShoppingBag, Sparkles, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Pages where the floating cart should not appear
 const excludedPaths = ["/checkout", "/cart", "/auth"];
+const PERMANENT_HIDE_KEY = "packtok_hide_cart_bar";
 
 export function FloatingCartBar() {
-  const { itemCount, totalAmount, currency, openCart, isOpen } = useCart();
+  const { itemCount, totalsByCurrency, openCart, isOpen } = useCart();
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [isPermanentlyHidden, setIsPermanentlyHidden] = useState(false);
+  const [showPermanentOption, setShowPermanentOption] = useState(false);
+  const prevItemCountRef = useRef(itemCount);
 
-  // Animate in when cart has items
+  // Load permanent hide preference from localStorage on mount
   useEffect(() => {
-    if (itemCount > 0 && !isOpen) {
+    const stored = localStorage.getItem(PERMANENT_HIDE_KEY);
+    if (stored === "true") {
+      setIsPermanentlyHidden(true);
+      setIsDismissed(true);
+    }
+  }, []);
+
+  // Re-show bar when cart changes (items added/removed/updated), unless permanently hidden
+  useEffect(() => {
+    if (isPermanentlyHidden) return;
+
+    const prevCount = prevItemCountRef.current;
+    prevItemCountRef.current = itemCount;
+
+    // If item count changed and bar was dismissed, re-show it
+    if (itemCount !== prevCount && itemCount > 0 && isDismissed) {
+      setIsDismissed(false);
+      setShowPermanentOption(false);
+    }
+  }, [itemCount, isDismissed, isPermanentlyHidden]);
+
+  // Animate in/out
+  useEffect(() => {
+    const shouldShow = itemCount > 0 && !isOpen && !isDismissed;
+
+    if (shouldShow) {
       setIsAnimating(true);
       const timer = setTimeout(() => setIsVisible(true), 50);
       return () => clearTimeout(timer);
@@ -26,7 +56,46 @@ export function FloatingCartBar() {
       const timer = setTimeout(() => setIsAnimating(false), 300);
       return () => clearTimeout(timer);
     }
-  }, [itemCount, isOpen]);
+  }, [itemCount, isOpen, isDismissed]);
+
+  const handleDismiss = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsDismissed(true);
+      setShowPermanentOption(false);
+    },
+    []
+  );
+
+  const handleTogglePermanentOption = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setShowPermanentOption((prev) => !prev);
+    },
+    []
+  );
+
+  const handlePermanentHide = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsPermanentlyHidden(true);
+      setIsDismissed(true);
+      setShowPermanentOption(false);
+      localStorage.setItem(PERMANENT_HIDE_KEY, "true");
+    },
+    []
+  );
+
+  const handleUndoPermanentHide = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsPermanentlyHidden(false);
+      setIsDismissed(false);
+      setShowPermanentOption(false);
+      localStorage.removeItem(PERMANENT_HIDE_KEY);
+    },
+    []
+  );
 
   // Don't show on excluded pages or if cart is empty
   if (!isAnimating && itemCount === 0) return null;
@@ -40,6 +109,35 @@ export function FloatingCartBar() {
       }`}
     >
       <div className="max-w-2xl mx-auto">
+        {/* Permanent hide option tooltip */}
+        {showPermanentOption && (
+          <div className="mb-2 flex items-center justify-end gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <div className="bg-gray-900/95 backdrop-blur-md text-white px-4 py-2.5 rounded-xl shadow-xl border border-gray-700/50 flex items-center gap-3 text-sm">
+              {isPermanentlyHidden ? (
+                <>
+                  <span className="text-gray-300">Cart bar is hidden permanently</span>
+                  <button
+                    onClick={handleUndoPermanentHide}
+                    className="bg-emerald-500 hover:bg-emerald-400 text-white px-3 py-1 rounded-lg font-medium transition-colors text-xs"
+                  >
+                    Show again
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="text-gray-300">Don&apos;t show this bar?</span>
+                  <button
+                    onClick={handlePermanentHide}
+                    className="bg-red-500/90 hover:bg-red-400 text-white px-3 py-1 rounded-lg font-medium transition-colors text-xs"
+                  >
+                    Hide permanently
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Main Cart Bar */}
         <div
           onClick={openCart}
@@ -78,15 +176,49 @@ export function FloatingCartBar() {
                   <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
                 </div>
                 <p className="text-emerald-100 text-sm font-medium">
-                  Total: {currency} {totalAmount.toLocaleString()}
+                  Total:{" "}
+                  {Object.entries(totalsByCurrency)
+                    .map(([cur, amount]) => `${cur} ${amount.toLocaleString()}`)
+                    .join(" + ")}
                 </p>
               </div>
             </div>
 
-            {/* Right side - View Cart button */}
-            <div className="flex items-center gap-2 bg-white text-emerald-600 px-6 py-3 rounded-xl font-bold text-sm shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-              <span>View Cart</span>
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            {/* Right side - View Cart + actions */}
+            <div className="flex items-center gap-2">
+              {/* View Cart button */}
+              <div className="flex items-center gap-2 bg-white text-emerald-600 px-6 py-3 rounded-xl font-bold text-sm shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+                <span>View Cart</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+
+              {/* Settings (three-dot) button */}
+              <button
+                onClick={handleTogglePermanentOption}
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors"
+                title="Options"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <circle cx="12" cy="5" r="2" />
+                  <circle cx="12" cy="12" r="2" />
+                  <circle cx="12" cy="19" r="2" />
+                </svg>
+              </button>
+
+              {/* Close button */}
+              <button
+                onClick={handleDismiss}
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors"
+                title="Dismiss"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>

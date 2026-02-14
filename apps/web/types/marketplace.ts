@@ -31,6 +31,8 @@ export interface Product {
     email: string;
   };
   submissionStatus?: SubmissionStatus;
+  averageRating?: number;
+  reviewCount?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -45,13 +47,18 @@ export interface Category {
 export interface QuoteRequest {
   id: string;
   companyName: string;
+  phone: string;
+  email: string;
   address: string;
   message: string;
   additionalInfo?: string;
+  cancellationReason?: string;
   status: QuoteStatus;
   userId: string;
   productId: string;
   product?: Product;
+  response?: string;
+  respondedAt?: string;
   user?: {
     id: string;
     name: string;

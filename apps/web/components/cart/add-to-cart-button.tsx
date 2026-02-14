@@ -10,6 +10,7 @@ import { useCart } from "../../contexts/cart-context";
 interface AddToCartButtonProps {
   productId: string;
   productTitle: string;
+  quantity?: number;
   disabled?: boolean;
   className?: string;
 }
@@ -17,6 +18,7 @@ interface AddToCartButtonProps {
 export function AddToCartButton({
   productId,
   productTitle,
+  quantity = 1,
   disabled = false,
   className = "",
 }: AddToCartButtonProps) {
@@ -40,7 +42,7 @@ export function AddToCartButton({
 
     setIsAdding(true);
     try {
-      await addToCart(productId, 1);
+      await addToCart(productId, quantity);
       setIsAdded(true);
       toast.success(`${productTitle} added to cart!`, {
         icon: "🛒",

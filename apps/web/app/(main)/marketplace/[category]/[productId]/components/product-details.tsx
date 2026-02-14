@@ -5,16 +5,16 @@ import { ReviewsSection } from "@/components/reviews/reviews-section";
 import { useBookmarkToggle } from "@/hooks/useBookmarks";
 import { useAuthStore } from "@/store/auth-store";
 import {
-  ChevronDown,
-  ChevronUp,
-  FileText,
-  Heart,
-  HelpCircle,
-  MessageSquare,
-  Minus,
-  Plus,
-  Share2,
-  Star,
+    ChevronDown,
+    ChevronUp,
+    FileText,
+    Heart,
+    HelpCircle,
+    MessageSquare,
+    Minus,
+    Plus,
+    Share2,
+    Star,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -309,6 +309,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               <AddToCartButton
                 productId={product.id}
                 productTitle={product.title}
+                quantity={quantity}
                 disabled={product.quantity <= 0}
                 className="w-full"
               />

@@ -76,6 +76,7 @@ export const getOrder = asyncHandler(async (req: Request, res: Response) => {
  */
 export const cancel = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const order = await cancelOrder(req.user!.id, id);
+  const { reason } = req.body;
+  const order = await cancelOrder(req.user!.id, id, reason);
   res.json(new ApiResponse(200, order, "Order cancelled successfully"));
 });

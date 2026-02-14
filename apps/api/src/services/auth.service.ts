@@ -23,8 +23,9 @@ export const registerUser = async (userData: {
   country?: string;
   password: string;
 }): Promise<User> => {
+  const normalizedEmail = userData.email.toLowerCase().trim();
   const existingUser = await prisma.user.findUnique({
-    where: { email: userData.email },
+    where: { email: normalizedEmail },
   });
   if (existingUser) {
     throw new ApiError(409, "User with this email already exists");
@@ -42,7 +43,7 @@ export const registerUser = async (userData: {
   }
 
   const { data, error } = await supabase.auth.admin.createUser({
-    email: userData.email,
+    email: normalizedEmail,
     password: userData.password,
     phone: userData.phone_number,
     user_metadata: { name: userData.name, country: userData.country },
@@ -50,7 +51,11 @@ export const registerUser = async (userData: {
   });
 
   if (error || !data.user) {
-    if (error?.message?.toLowerCase().includes("user already registered")) {
+    const errorMsg = error?.message?.toLowerCase() || "";
+    if (
+      errorMsg.includes("user already registered") ||
+      errorMsg.includes("email exists")
+    ) {
       throw new ApiError(409, "User with this email already exists");
     }
     throw new ApiError(500, `Supabase error: ${error?.message}`);
@@ -62,7 +67,7 @@ export const registerUser = async (userData: {
       data: {
         id: data.user.id,
         name: userData.name,
-        email: userData.email,
+        email: normalizedEmail,
         phone_number: userData.phone_number,
         country: userData.country,
       },
@@ -77,7 +82,7 @@ export const registerUser = async (userData: {
     throw err;
   }
 
-  await sendVerificationOtp(userData.email);
+  await sendVerificationOtp(normalizedEmail);
 
   return newUser;
 };
@@ -93,15 +98,16 @@ export const loginUser = async (
   refreshToken: string;
   user: User;
 }> => {
+  const normalizedEmail = email.toLowerCase().trim();
   const { data, error } = await supabase.auth.signInWithPassword({
-    email,
+    email: normalizedEmail,
     password,
   });
 
   if (error) {
     const msg = error.message?.toLowerCase() || "";
     if (msg.includes("email not confirmed") || msg.includes("confirm")) {
-      await sendVerificationOtp(email);
+      await sendVerificationOtp(normalizedEmail);
       throw new ApiError(403, "Account not verified. A new OTP has been sent.");
     }
     throw new ApiError(401, "Invalid email or password");
@@ -166,11 +172,12 @@ export const logoutUser = async (userId: string) => {
 
 // ------------------ OTP FLOW ------------------
 export const sendVerificationOtp = async (email: string) => {
+  const normalizedEmail = email.toLowerCase().trim();
   const otp = crypto.randomInt(100000, 999999).toString();
   const hashedOtp = hashOtp(otp);
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (!user) throw new ApiError(404, "User not found");
 
   await (prisma as any).otp.upsert({
@@ -181,14 +188,15 @@ export const sendVerificationOtp = async (email: string) => {
 
   await resend.emails.send({
     from: config.resend.fromEmail,
-    to: email,
+    to: normalizedEmail,
     subject: "Your Packtok verification code",
     html: `<p>Your OTP is <strong>${otp}</strong>. It expires in 10 minutes.</p>`,
   });
 };
 
 export const verifyOtp = async (email: string, otp: string): Promise<void> => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (!user) throw new ApiError(404, "User not found");
 
   const otpRecord = await (prisma as any).otp.findUnique({
@@ -212,7 +220,8 @@ export const verifyOtp = async (email: string, otp: string): Promise<void> => {
 
 // ------------------ PASSWORD RESET FLOW ------------------
 export const sendPasswordResetOtp = async (email: string): Promise<void> => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (!user) throw new ApiError(404, "User not found");
 
   const otp = crypto.randomInt(100000, 999999).toString();
@@ -228,7 +237,7 @@ export const sendPasswordResetOtp = async (email: string): Promise<void> => {
 
   await resend.emails.send({
     from: config.resend.fromEmail,
-    to: email,
+    to: normalizedEmail,
     subject: "Your Packtok password reset code",
     html: `<p>Your password reset OTP is <strong>${otp}</strong>. It expires in 10 minutes.</p>`,
   });
@@ -239,7 +248,8 @@ export const resetPasswordWithOtp = async (
   otp: string,
   newPassword: string
 ): Promise<void> => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (!user) throw new ApiError(404, "User not found");
 
   const otpRecord = await (prisma as any).otp.findUnique({
