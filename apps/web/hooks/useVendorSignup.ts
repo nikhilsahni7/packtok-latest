@@ -20,7 +20,11 @@ export function useVendorSignup() {
 
   return useMutation({
     mutationFn: async (payload: VendorSignupPayload) => {
-      const { data } = await api.post("/api/v1/auth/signup-vendor", payload);
+      const normalizedPayload = {
+        ...payload,
+        email: payload.email.toLowerCase().trim(),
+      };
+      const { data } = await api.post("/api/v1/auth/signup-vendor", normalizedPayload);
       return data;
     },
     onSuccess: (_data, variables) => {

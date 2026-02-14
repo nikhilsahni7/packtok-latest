@@ -49,6 +49,7 @@ export {
     useUpdateAuction
 } from "./useAuctions";
 
+export { useMessages, useUpdateMessageStatus } from "./useMessages";
 export { useAdminUser, useAdminUsers } from "./useUsers";
 
 // Re-export types

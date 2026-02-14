@@ -566,17 +566,6 @@ export default function FormTrackingPage() {
           })}
         </div>
       )}
-
-      {/* Cancel Confirmation Modal */}
-      {cancellingId && (
-        <div
-          className="fixed inset-0 bg-black/30 z-40"
-          onClick={() => {
-            setCancellingId(null);
-            setCancelReason("");
-          }}
-        />
-      )}
     </div>
   );
 }

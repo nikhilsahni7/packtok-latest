@@ -1,4 +1,5 @@
 import { prisma, Prisma, ServiceStatus, ServiceType } from "@packtok/db";
+import { ApiError } from "../../utils/apiError";
 
 /*
  * Generic helper to attach the common include block so that frontend always
@@ -128,8 +129,8 @@ export const cancelUserServiceRequest = async (
   const request = await prisma.serviceRequest.findUnique({
     where: { id: requestId },
   });
-  if (!request) throw new Error("Service request not found");
-  if (request.userId !== userId) throw new Error("Unauthorized");
+  if (!request) throw new ApiError(404, "Service request not found");
+  if (request.userId !== userId) throw new ApiError(403, "Unauthorized access to this request");
 
   const nonCancellable: string[] = [
     ServiceStatus.COMPLETED,
@@ -137,7 +138,7 @@ export const cancelUserServiceRequest = async (
     ServiceStatus.CANCELLED,
   ];
   if (nonCancellable.includes(request.status)) {
-    throw new Error("This request cannot be cancelled");
+    throw new ApiError(400, "This request cannot be cancelled in its current state");
   }
 
   const updated = await prisma.serviceRequest.update({

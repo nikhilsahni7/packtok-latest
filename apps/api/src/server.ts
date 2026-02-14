@@ -1,10 +1,10 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, {
-    ErrorRequestHandler,
-    Express,
-    Request,
-    Response,
+  ErrorRequestHandler,
+  Express,
+  Request,
+  Response,
 } from "express";
 import helmet from "helmet";
 import http from "http";
@@ -18,23 +18,24 @@ import adminOrderRouter from "./routers/admin.order.routes";
 import adminPodcastRouter from "./routers/admin.podcast.routes";
 import adminRouter from "./routers/admin.routes";
 import adminServiceRouter from "./routers/admin.services.routes";
+import adminSubscriptionRouter from "./routers/admin.subscription.routes";
 import adminUserRouter from "./routers/admin.user.routes";
 import adminVendorsRouter from "./routers/admin.vendors.routes";
 import auctionRouter from "./routers/auction.routes";
 import authRouter from "./routers/auth.routes";
 import cartRouter from "./routers/cart.routes";
 import categoryRouter from "./routers/category.routes";
+import contactRouter from "./routers/contact.routes";
 import investmentRouter from "./routers/investment.routes";
 import orderRouter from "./routers/order.routes";
 import podcastRouter from "./routers/podcast.routes";
 import productRouter from "./routers/product.routes";
 import quoteRouter from "./routers/quote.routes";
 import serviceRouter from "./routers/service.routes";
+import subscriptionRouter from "./routers/subscription.routes";
 import userTrackingRouter from "./routers/user-tracking.routes";
 import vendorProductsRouter from "./routers/vendor.products.routes";
 import vendorRouter from "./routers/vendor.routes";
-import adminSubscriptionRouter from "./routers/admin.subscription.routes";
-import subscriptionRouter from "./routers/subscription.routes";
 import adminReviewRouter from "./routes/admin.review.routes";
 import reviewRouter from "./routes/review.routes";
 import { auctionStatusUpdater } from "./services/auction-status-updater.service";
@@ -92,6 +93,7 @@ app.use("/api/v1", reviewRouter); // Review routes
 app.use("/api/v1/admins/reviews", adminReviewRouter); // Admin review routes
 app.use("/api/v1/subscriptions", subscriptionRouter); // Vendor subscription routes
 app.use("/api/v1/admins/subscriptions", adminSubscriptionRouter); // Admin plan management
+app.use("/api/v1/contact", contactRouter);
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {

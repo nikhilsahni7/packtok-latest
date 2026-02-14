@@ -38,7 +38,7 @@ export default function ForgotPasswordForm() {
   const requestMutation = useMutation({
     mutationFn: async (emailVal: string) => {
       await api.post("/api/v1/auth/forgot-password/request", {
-        email: emailVal,
+        email: emailVal.toLowerCase().trim(),
       });
     },
     onSuccess: () => {
@@ -58,7 +58,10 @@ export default function ForgotPasswordForm() {
       otp: string;
       newPassword: string;
     }) => {
-      await api.post("/api/v1/auth/forgot-password/confirm", payload);
+      await api.post("/api/v1/auth/forgot-password/confirm", {
+        ...payload,
+        email: payload.email.toLowerCase().trim(),
+      });
     },
     onSuccess: () => {
       toast.success("Password reset successful!");

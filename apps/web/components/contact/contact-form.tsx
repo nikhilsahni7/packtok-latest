@@ -1,27 +1,26 @@
 "use client";
 
+import { useContact } from "@/hooks/useContact";
 import { contactFormSchema } from "@/schemas/contact-form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import { Checkbox } from "@packtok/ui/components/checkbox";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { Textarea } from "@packtok/ui/components/textarea";
 import Link from "next/link";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function ContactForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
+  const { mutate, isPending } = useContact();
 
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
@@ -34,18 +33,11 @@ export default function ContactForm() {
   });
 
   async function onSubmit(values: z.infer<typeof contactFormSchema>) {
-    setIsSubmitting(true);
-    setSubmitMessage("");
-
-    try {
-      console.log(values);
-      setSubmitMessage("Message sent successfully!");
-      form.reset();
-    } catch (error) {
-      setSubmitMessage("Failed to send message. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    mutate(values, {
+      onSuccess: () => {
+        form.reset();
+      },
+    });
   }
 
   return (
@@ -137,24 +129,12 @@ export default function ContactForm() {
           <Button
             type="submit"
             className="w-fit bg-black text-white cursor-pointer"
-            disabled={isSubmitting}
+            disabled={isPending}
           >
-            {isSubmitting ? "Sending..." : "Send Message"}
+            {isPending ? "Sending..." : "Send Message"}
           </Button>
         </form>
       </Form>
-
-      {submitMessage && (
-        <div
-          className={`text-center p-3 rounded-md ${
-            submitMessage.includes("success")
-              ? "bg-green-50 text-green-700"
-              : "bg-red-50 text-red-700"
-          }`}
-        >
-          {submitMessage}
-        </div>
-      )}
     </div>
   );
 }

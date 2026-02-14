@@ -52,6 +52,12 @@ export default function QuoteModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.agreeToTerms) {
+      setError("You must agree to the terms and conditions");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 

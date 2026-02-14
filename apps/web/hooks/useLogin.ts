@@ -21,7 +21,11 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (payload: LoginPayload) => {
-      const { data } = await api.post("/api/v1/auth/login", payload);
+      const normalizedPayload = {
+        ...payload,
+        email: payload.email.toLowerCase().trim(),
+      };
+      const { data } = await api.post("/api/v1/auth/login", normalizedPayload);
       return data.data as { accessToken: string; user: User };
     },
     onSuccess: ({ accessToken, user }) => {

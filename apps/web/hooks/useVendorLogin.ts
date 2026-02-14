@@ -20,7 +20,11 @@ export function useVendorLogin() {
 
   return useMutation({
     mutationFn: async (payload: VendorLoginPayload) => {
-      const { data } = await api.post("/api/v1/auth/login-vendor", payload);
+      const normalizedPayload = {
+        ...payload,
+        email: payload.email.toLowerCase().trim(),
+      };
+      const { data } = await api.post("/api/v1/auth/login-vendor", normalizedPayload);
       return data.data as { accessToken: string; user: User };
     },
     onSuccess: ({ accessToken, user }) => {

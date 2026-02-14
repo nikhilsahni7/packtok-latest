@@ -1386,3 +1386,18 @@ model Article {
   @@index([authorId])
   @@index([published, createdAt])
 }
+
+// ─── Contact Inquiries ───────────────────────────────────────────
+model ContactInquiry {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  email     String
+  message   String   @db.Text
+  isHandled Boolean  @default(false)
+
+  @@map("contact_inquiries")
+  @@index([createdAt])
+  @@index([isHandled])
+}

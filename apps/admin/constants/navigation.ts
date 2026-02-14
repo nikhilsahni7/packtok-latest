@@ -4,6 +4,7 @@ import {
   Landmark,
   LayoutDashboard,
   LucideIcon,
+  MessageSquare,
   Package,
   Tags,
   Truck,
@@ -79,6 +80,12 @@ export const navigation: NavigationItem[] = [
     name: "Investments",
     href: "/dashboard/investments",
     icon: Landmark,
+    current: false,
+  },
+  {
+    name: "Messages",
+    href: "/dashboard/messages",
+    icon: MessageSquare,
     current: false,
   },
 ];

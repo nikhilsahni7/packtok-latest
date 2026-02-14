@@ -18,7 +18,11 @@ export function useSignup() {
 
   return useMutation({
     mutationFn: async (payload: SignupPayload) => {
-      const { data } = await api.post("/api/v1/auth/signup", payload);
+      const normalizedPayload = {
+        ...payload,
+        email: payload.email.toLowerCase().trim(),
+      };
+      const { data } = await api.post("/api/v1/auth/signup", normalizedPayload);
       return data;
     },
     onSuccess: (_, variables) => {

@@ -53,7 +53,10 @@ export default function VerifyOtpForm() {
   // Verify OTP mutation
   const { mutate: verifyMutate, isPending: isVerifying } = useMutation({
     mutationFn: async (data: FormData) => {
-      await api.post("/api/v1/auth/verify-otp", { email, otp: data.otp });
+      await api.post("/api/v1/auth/verify-otp", {
+        email: email.toLowerCase().trim(),
+        otp: data.otp,
+      });
     },
     onSuccess: () => {
       toast.success("Email verified. You can now login.");
@@ -72,7 +75,9 @@ export default function VerifyOtpForm() {
   // Resend OTP mutation
   const { mutate: resendMutate, isPending: isResending } = useMutation({
     mutationFn: async () => {
-      await api.post("/api/v1/auth/resend-otp", { email });
+      await api.post("/api/v1/auth/resend-otp", {
+        email: email.toLowerCase().trim(),
+      });
     },
     onSuccess: () => {
       toast.success("A new OTP has been sent to your email.");
