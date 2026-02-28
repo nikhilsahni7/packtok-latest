@@ -5,27 +5,27 @@ import { useVendorApplication } from "@/hooks/useVendorApplication";
 import { useMySubscription } from "@/hooks/useVendorSubscription";
 import api from "@/lib/axios";
 import {
-  Button,
-  Card,
-  Input,
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Textarea,
+    Button,
+    Card,
+    Input,
+    Label,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Textarea,
 } from "@packtok/ui";
 import {
-  ArrowRight,
-  Crown,
-  ImagePlus,
-  Loader2,
-  ShieldAlert,
-  Trash2,
-  Upload,
-  Video,
-  FileText,
+    ArrowRight,
+    Crown,
+    FileText,
+    ImagePlus,
+    Loader2,
+    ShieldAlert,
+    Trash2,
+    Upload,
+    Video,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -139,21 +139,28 @@ export default function NewVendorProductPage() {
   // ── Create handler ─────────────────────────────────────────────────────
 
   const handleCreate = async () => {
-    const { id } = await createDraft.mutateAsync({
-      title,
-      description,
-      price,
-      currency,
-      productType,
-      quantity,
-      machineType: machineType === "NONE" ? undefined : machineType,
-      condition,
-      categoryName,
-      subCategory: subCategory || undefined,
-      manufacturer: manufacturer || undefined,
-      model: model || undefined,
-      year: year || undefined,
-    });
+    let id: string;
+    try {
+      const result = await createDraft.mutateAsync({
+        title,
+        description,
+        price,
+        currency,
+        productType,
+        quantity,
+        machineType: machineType === "NONE" ? undefined : machineType,
+        condition,
+        categoryName,
+        subCategory: subCategory || undefined,
+        manufacturer: manufacturer || undefined,
+        model: model || undefined,
+        year: year || undefined,
+      });
+      id = result.id;
+    } catch {
+      return; // createDraft mutation already shows its own error toast
+    }
+
     try {
       // Save specs
       const specObj: Record<string, string> = {};
@@ -182,7 +189,12 @@ export default function NewVendorProductPage() {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
-    } finally {
+
+      // Only redirect on success
+      router.push(`/vendor/products/${id}`);
+    } catch {
+      // Draft was created; redirect to editor even on media failure so the
+      // vendor can retry the upload from the editor page.
       router.push(`/vendor/products/${id}`);
     }
   };
@@ -262,14 +274,14 @@ export default function NewVendorProductPage() {
   // ── Main form ─────────────────────────────────────────────────────────
 
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto">
+    <div className="p-4 sm:p-6 space-y-6 max-w-6xl mx-auto">
       {/* Subscription bar */}
-      <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+      <div className="flex flex-wrap items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-3 sm:px-4 py-3">
         <div className="flex-1 text-sm text-blue-900">
           <strong>{planName}</strong> &mdash; {productCount} / {productLimit}{" "}
           products used
         </div>
-        <div className="w-32 bg-blue-200 rounded-full h-2">
+        <div className="w-24 sm:w-32 bg-blue-200 rounded-full h-2">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all"
             style={{
@@ -280,7 +292,7 @@ export default function NewVendorProductPage() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-2xl font-bold text-gray-900">New Product</h1>
         <Button
           onClick={handleCreate}
@@ -297,7 +309,7 @@ export default function NewVendorProductPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ── Left: Form ──────────────────────────────────────────────── */}
         <div className="lg:col-span-2 space-y-6">
           {/* Basic info */}
@@ -323,7 +335,7 @@ export default function NewVendorProductPage() {
                   placeholder="Describe the product features, capabilities, and condition..."
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label>Manufacturer / Brand</Label>
                   <Input
@@ -362,7 +374,7 @@ export default function NewVendorProductPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Category & Classification
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Category *</Label>
                 <Select
@@ -467,7 +479,7 @@ export default function NewVendorProductPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Pricing & Stock
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Price</Label>
                 <Input
@@ -621,7 +633,7 @@ export default function NewVendorProductPage() {
               </h2>
             </div>
             {galleryPreviews.length > 0 && (
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {galleryPreviews.map((src, idx) => (
                   <div
                     key={src}

@@ -1,29 +1,29 @@
 "use client";
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@packtok/ui/components/dropdown-menu";
 import { Activity, Edit, Gavel, MoreHorizontal, Package, Trash2 } from "lucide-react";
 import Image from "next/image";
 import {
-  MarketplaceProduct,
-  MarketplaceProductStatus,
+    MarketplaceProduct,
+    MarketplaceProductStatus,
 } from "../../../../types/product";
 import { cxBadge, cxTypeBadge } from "../../../../utils/badges";
 
@@ -109,7 +109,20 @@ export function ProductGrid({
                     <Activity className="w-4 h-4 mr-2" />
                     Mark Out of Stock
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onCreateAuction(product)}>
+                  <DropdownMenuItem
+                    onClick={() => onStatusChange(product.id, "DRAFT")}
+                  >
+                    <Activity className="w-4 h-4 mr-2" />
+                    Mark Draft
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => onCreateAuction(product)}
+                    disabled={
+                      product.submissionStatus === "PENDING_APPROVAL" ||
+                      product.submissionStatus === "REJECTED" ||
+                      product.status === "DRAFT"
+                    }
+                  >
                     <Gavel className="w-4 h-4 mr-2" />
                     Add to Auction
                   </DropdownMenuItem>
@@ -171,6 +184,13 @@ export function ProductGrid({
                       REJECTED
                     </Badge>
                   )}
+                  {product.createdByUser?.role === "ADMIN" || product.createdByUser?.role === "SUPER_ADMIN" ? (
+                    <Badge variant="outline" className="border-blue-200 text-blue-700 bg-blue-50">ADMIN</Badge>
+                  ) : product.createdByUser?.role === "VENDOR" ? (
+                    <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50">VENDOR</Badge>
+                  ) : product.createdByUser?.role === "NORMAL_USER" ? (
+                    <Badge variant="outline" className="border-gray-200 text-gray-700 bg-gray-50">USER</Badge>
+                  ) : null}
                   <Badge className={`${cxBadge(product.status)} text-xs`}>
                     {product.status.replace("_", " ")}
                   </Badge>
@@ -204,6 +224,17 @@ export function ProductGrid({
               <Button
                 size="sm"
                 className="flex-1"
+                disabled={
+                  product.submissionStatus === "PENDING_APPROVAL" ||
+                  product.submissionStatus === "REJECTED" ||
+                  product.status === "DRAFT"
+                }
+                title={
+                  product.submissionStatus === "PENDING_APPROVAL" ||
+                  product.status === "DRAFT"
+                    ? "Product must be approved and published"
+                    : ""
+                }
                 onClick={() => onCreateAuction(product)}
               >
                 <Gavel className="h-3 w-3 mr-1" />

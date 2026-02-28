@@ -5,17 +5,18 @@ import { useMySubscription } from "@/hooks/useVendorSubscription";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  AlertCircle,
-  CheckCircle2,
-  Clock,
-  Crown,
-  Eye,
-  Loader2,
-  Package,
-  Pencil,
-  Plus,
-  Trash2,
-  XCircle,
+    AlertCircle,
+    AlertTriangle,
+    CheckCircle2,
+    Clock,
+    Crown,
+    ExternalLink,
+    Loader2,
+    Package,
+    Pencil,
+    Plus,
+    Trash2,
+    XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,6 +41,7 @@ export default function VendorProductsPage() {
   const { data: subInfo } = useMySubscription();
   const deleteProduct = useDeleteVendorProduct();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
   const products = data ?? [];
 
   const productCount = subInfo?.productCount ?? 0;
@@ -47,11 +49,12 @@ export default function VendorProductsPage() {
   const canCreate = subInfo?.canCreateProduct ?? true;
   const planName = subInfo?.subscription?.planNameSnapshot ?? "Free";
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) return;
-    setDeletingId(id);
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeletingId(deleteTarget.id);
+    setDeleteTarget(null);
     try {
-      await deleteProduct.mutateAsync(id);
+      await deleteProduct.mutateAsync(deleteTarget.id);
       toast.success("Product deleted");
     } catch (err: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,17 +66,17 @@ export default function VendorProductsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Subscription Usage */}
       {subInfo && (
-        <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+        <div className="flex flex-wrap items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-3 sm:px-4 py-3">
           <Crown className="h-4 w-4 text-blue-600 shrink-0" />
           <div className="flex-1">
             <p className="text-sm text-blue-900">
               <strong>{planName}</strong> &mdash; {productCount} / {productLimit} products
             </p>
           </div>
-          <div className="w-32 bg-blue-200 rounded-full h-2">
+          <div className="w-24 sm:w-32 bg-blue-200 rounded-full h-2">
             <div
               className={`h-2 rounded-full transition-all ${
                 productCount >= productLimit
@@ -99,7 +102,7 @@ export default function VendorProductsPage() {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">All Products</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -265,16 +268,20 @@ export default function VendorProductsPage() {
                           >
                             <Pencil className="h-4 w-4" />
                           </Link>
-                          <Link
-                            href={`/vendor/products/${product.id}`}
-                            className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
-                            title="View"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Link>
+                          {product.submissionStatus === "APPROVED" && (
+                            <a
+                              href={`/marketplace/all/${product.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 rounded-md hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+                              title="View on marketplace"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </a>
+                          )}
                           {product.submissionStatus !== "APPROVED" && (
                             <button
-                              onClick={() => handleDelete(product.id, product.title)}
+                              onClick={() => setDeleteTarget({ id: product.id, title: product.title })}
                               disabled={deletingId === product.id}
                               className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
                               title="Delete"
@@ -293,6 +300,51 @@ export default function VendorProductsPage() {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setDeleteTarget(null)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <AlertTriangle className="h-7 w-7 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Delete Product
+              </h3>
+              <p className="text-sm text-gray-500 mb-1">
+                Are you sure you want to delete
+              </p>
+              <p className="text-sm font-semibold text-gray-900 mb-1">
+                &ldquo;{deleteTarget.title}&rdquo;
+              </p>
+              <p className="text-xs text-red-500 mb-6">
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3 w-full">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setDeleteTarget(null)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                  onClick={confirmDelete}
+                >
+                  <Trash2 className="h-4 w-4 mr-1.5" />
+                  Delete
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}

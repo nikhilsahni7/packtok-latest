@@ -162,7 +162,7 @@ export interface ServiceActionLog {
   createdAt: string;
   action: string;
   notes?: string;
-  actor: {
+  actor?: {
     id: string;
     name: string;
     email: string;

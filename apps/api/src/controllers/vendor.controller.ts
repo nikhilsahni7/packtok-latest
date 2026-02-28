@@ -1,16 +1,16 @@
 import { prisma } from "@packtok/db";
 import { Request, Response } from "express";
 import {
-  applyForVendor,
-  approveVendorApplication,
-  listVendorApplications,
-  rejectVendorApplication,
+    applyForVendor,
+    approveVendorApplication,
+    listVendorApplications,
+    rejectVendorApplication,
 } from "../services/vendor.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 
 export const applyVendor = asyncHandler(async (req: Request, res: Response) => {
-  const { companyName, notes } = req.body as {
+  const { companyName, notes } = (req.body ?? {}) as {
     companyName?: string;
     notes?: string;
   };

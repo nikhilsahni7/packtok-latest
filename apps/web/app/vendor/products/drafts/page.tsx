@@ -5,16 +5,17 @@ import { useMySubscription } from "@/hooks/useVendorSubscription";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  AlertCircle,
-  Clock,
-  Crown,
-  FileEdit,
-  Loader2,
-  Package,
-  Pencil,
-  Plus,
-  Trash2,
-  XCircle,
+    AlertCircle,
+    AlertTriangle,
+    Clock,
+    Crown,
+    FileEdit,
+    Loader2,
+    Package,
+    Pencil,
+    Plus,
+    Trash2,
+    XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,14 +27,16 @@ export default function VendorDraftsPage() {
   const { data: subInfo } = useMySubscription();
   const deleteProduct = useDeleteVendorProduct();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
   const drafts = data ?? [];
   const canCreate = subInfo?.canCreateProduct ?? true;
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) return;
-    setDeletingId(id);
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeletingId(deleteTarget.id);
+    setDeleteTarget(null);
     try {
-      await deleteProduct.mutateAsync(id);
+      await deleteProduct.mutateAsync(deleteTarget.id);
       toast.success("Draft deleted");
     } catch (err: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,9 +48,9 @@ export default function VendorDraftsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Drafts</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -119,7 +122,7 @@ export default function VendorDraftsPage() {
                 key={product.id}
                 className="bg-white rounded-xl border p-4 hover:shadow-sm transition-shadow"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                   {/* Thumbnail */}
                   <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden shrink-0 relative">
                     {product.imagesThumbnail ? (
@@ -169,14 +172,14 @@ export default function VendorDraftsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="shrink-0 flex items-center gap-2">
+                  <div className="shrink-0 flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
                     <Link href={`/vendor/products/${product.id}`}>
                       <Button variant="outline" size="sm" className="gap-1.5">
                         <Pencil className="h-3.5 w-3.5" /> Edit
                       </Button>
                     </Link>
                     <button
-                      onClick={() => handleDelete(product.id, product.title)}
+                      onClick={() => setDeleteTarget({ id: product.id, title: product.title })}
                       disabled={deletingId === product.id}
                       className="p-2 rounded-md border border-red-200 hover:bg-red-50 text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
                       title="Delete"
@@ -192,6 +195,51 @@ export default function VendorDraftsPage() {
               </div>
             );
           })}
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setDeleteTarget(null)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <AlertTriangle className="h-7 w-7 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Delete Draft
+              </h3>
+              <p className="text-sm text-gray-500 mb-1">
+                Are you sure you want to delete
+              </p>
+              <p className="text-sm font-semibold text-gray-900 mb-1">
+                &ldquo;{deleteTarget.title}&rdquo;
+              </p>
+              <p className="text-xs text-red-500 mb-6">
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3 w-full">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setDeleteTarget(null)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                  onClick={confirmDelete}
+                >
+                  <Trash2 className="h-4 w-4 mr-1.5" />
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

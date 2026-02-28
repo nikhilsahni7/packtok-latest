@@ -1,24 +1,24 @@
+import Commitment from "@/assets/Commitment_Free.png";
+import export_1 from "@/assets/export_1.png";
+import Fast_24_Hour from "@/assets/Fast 24-Hour Service.png";
+import Flexible_Scheduling from "@/assets/Flexible Scheduling.png";
+import Free_Quotes from "@/assets/Free Quotes.png";
+import installer_bg from "@/assets/installer_bg.png";
+import installer_bg_2 from "@/assets/installer_bg_2.png";
+import our_machinary from "@/assets/our_machinary.png";
+import Professionals from "@/assets/Professionals.png";
+import Satisfaction_Guarantee from "@/assets/Satisfaction Guarantee.png";
 import { CtaBanner as WebCtaBanner } from "@/components";
 import {
-  CalendarClock,
-  Check,
-  BadgeCheck,
-  PhoneCall,
-  ShieldCheck,
-  MapPin,
-  Wrench,
+    BadgeCheck,
+    CalendarClock,
+    Check,
+    MapPin,
+    PhoneCall,
+    ShieldCheck,
+    Wrench,
 } from "lucide-react";
 import Image from "next/image";
-import installer_bg from "@/assets/installer_bg.png"
-import installer_bg_2 from "@/assets/installer_bg_2.png"
-import export_1 from "@/assets/export_1.png"
-import our_machinary from "@/assets/our_machinary.png"
-import Satisfaction_Guarantee from "@/assets/Satisfaction Guarantee.png"
-import Free_Quotes from "@/assets/Free Quotes.png"
-import Professionals from "@/assets/Professionals.png"
-import Fast_24_Hour from "@/assets/Fast 24-Hour Service.png"
-import Flexible_Scheduling from "@/assets/Flexible Scheduling.png"
-import Commitment from "@/assets/Commitment_Free.png"
 
 
 
@@ -66,7 +66,7 @@ function HeroSection() {
           <div className="text-[14px] tracking-[0.25em] font-meduim text-white/70">
             FOCUSED ON SKILLED PERSONNEL SUPPLY
           </div>
-          <h1 className="mt-2 text-[45px] pb-3 font-bold leading-tight">
+          <h1 className="mt-2 text-3xl md:text-[45px] pb-3 font-bold leading-tight">
             Manpower Services
             <br /> for Machinery Setup
             <br /> &amp; Operations
@@ -84,7 +84,7 @@ function HeroSection() {
             Book Now
           </button>
 
-          <div className="mt-8 grid grid-cols-3 gap-3 text-[11px]">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px]">
             <div className="flex gap-2 justify-center items-center"><BadgeCheck className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">Trained Machinery Operators</span></div>
             <div className="flex gap-2 justify-center items-center"><ShieldCheck className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">Certified Local Professionals</span></div>
             <div className="flex gap-2 justify-center items-center"><MapPin className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">On-Site Setup & Installationl</span></div>
@@ -120,7 +120,7 @@ function ExpertSection() {
     <section className="py-12 md:py-16">
       <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
         <div className="md:col-span-6">
-          <h2 className="text-[2.5rem] font-bold leading-snug">
+          <h2 className="text-3xl md:text-[2.5rem] font-bold leading-snug">
             Expert Manpower for
             <br /> Machinery Services
           </h2>
@@ -196,7 +196,7 @@ function HowItWorks() {
         </div>
 
         <div className="md:col-span-6">
-          <h3 className="text-[2.5rem] leading-12 font-semibold">
+          <h3 className="text-3xl md:text-[2.5rem] leading-tight md:leading-12 font-semibold">
             How Our Machinery
             <br /> Manpower Service Works
           </h3>
@@ -204,13 +204,13 @@ function HowItWorks() {
             {steps.map((s, i) => (
 
 
-              <div key={s.title} className="flex gap-5 items-end">
-                <div className="flex gap-5 w-[176px]">
+              <div key={s.title} className="flex flex-col md:flex-row gap-5 items-start md:items-end">
+                <div className="flex gap-5 w-full md:w-[176px]">
                   <span className="text-[2.5rem] text-[#9EA3B5] font-semibold">{i + 1}.</span>
                   <span className="text-[1.1rem] font-bold ">{s.title}</span>
                 </div>
 
-                <p className="text-[13.5px] text-[#545971] w-[323px] leading-relaxed">
+                <p className="text-[13.5px] text-[#545971] w-full md:w-[323px] leading-relaxed">
                   {s.desc}
                 </p>
               </div>
@@ -260,18 +260,18 @@ function GuaranteeSection() {
   return (
     <section className="pt-12 pb-30">
       <div className="w-[95%] sm:w-[90%] md:w-[90%] mx-auto">
-        <div className="rounded-2xl bg-black text-white p-20">
-          <h3 className="text-[2.5rem] pb-16 font-bold">
+        <div className="rounded-2xl bg-black text-white p-6 md:p-20">
+          <h3 className="text-3xl md:text-[2.5rem] pb-8 md:pb-16 font-bold">
             Fast, Friendly, and
             <br /> Satisfaction Guarantee
           </h3>
-          <div className="mt-8 grid gap-30 gap-y-[5rem] sm:grid-cols-2 lg:grid-cols-2">
+          <div className="mt-8 grid gap-10 md:gap-30 gap-y-10 md:gap-y-[5rem] grid-cols-1 sm:grid-cols-2 grid-cols-1 lg:grid-cols-2">
             {items.map((it) => (
               <div
                 key={it.title}
                 className=" p-5"
               >
-                <div className="flex items-center gap-8 ">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 ">
                   <div className="flex w-[100px] h-[100px] items-center justify-center rounded-md ">
                     <Image src={it.icon} alt={it.title} className="w-full" />
                   </div>

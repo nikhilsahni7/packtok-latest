@@ -3,42 +3,43 @@
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
 } from "@packtok/ui/components/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@packtok/ui/components/table";
 import { cn } from "@packtok/ui/lib/utils";
 import {
-  Activity,
-  ArrowUpRight,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Gavel,
-  History as HistoryIcon,
-  Package,
-  RefreshCw,
-  Search,
-  TrendingUp,
-  Trophy as TrophyIcon
+    Activity,
+    ArrowLeft,
+    ArrowUpRight,
+    Calendar,
+    CheckCircle2,
+    Clock,
+    Gavel,
+    History as HistoryIcon,
+    Package,
+    RefreshCw,
+    Search,
+    TrendingUp,
+    Trophy as TrophyIcon
 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useAdminAuction, useFinalizeAuction } from "../../../../hooks";
 import { useAuctionRealtime } from "../../../../hooks/useAuctionRealtime";
 import {
-  AuctionLeaderboardSnapshot,
-  AuctionStatus,
+    AuctionLeaderboardSnapshot,
+    AuctionStatus,
 } from "../../../../types/auction";
 
 const statusVariant: Record<AuctionStatus, { class: string; label: string; icon?: any }> = {
@@ -70,6 +71,7 @@ const formatTimestamp = (value: string) => {
 };
 
 export default function AuctionDetailPage() {
+  const router = useRouter();
   const params = useParams<{ auctionId: string }>();
   const auctionId = params?.auctionId ?? "";
 
@@ -126,6 +128,16 @@ export default function AuctionDetailPage() {
   if (isLoading) {
     return (
       <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto animate-pulse">
+        <div className="mb-2">
+          <Button
+            variant="outline"
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </div>
         {/* Header skeleton */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-2">
@@ -180,6 +192,16 @@ export default function AuctionDetailPage() {
   if (isError || !auction) {
     return (
       <div className="p-6">
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </div>
         <Card>
           <CardHeader>
             <CardTitle>Auction</CardTitle>
@@ -202,7 +224,15 @@ export default function AuctionDetailPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-sm text-slate-600">
+            <Button
+              variant="outline"
+              onClick={() => router.back()}
+              className="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-bold border-slate-200"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+            <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-sm text-slate-600 hidden sm:block">
               <Gavel className="w-6 h-6" />
             </div>
             <div>
@@ -407,7 +437,18 @@ export default function AuctionDetailPage() {
         </CardContent>
       </Card>
 
-      {auction.result && (
+      {auction.result && (() => {
+        // Parse winners data — it's stored as JSON in the DB
+        const winners: Array<{
+          rank: number;
+          user: { id: string; name: string; email: string };
+          bidId: string;
+          amount: string;
+          userId: string;
+          sequence: number;
+        }> = Array.isArray(auction.result.winners) ? auction.result.winners : [];
+
+        return (
         <Card className="border-slate-100 shadow-sm overflow-hidden bg-slate-900 text-white mt-12">
           <CardHeader className="border-b border-white/5 bg-white/5 p-6">
             <div className="flex items-center gap-4">
@@ -422,19 +463,71 @@ export default function AuctionDetailPage() {
                </div>
             </div>
           </CardHeader>
-          <CardContent className="p-8">
-            <div className="rounded-2xl bg-black/40 border border-white/10 p-6 backdrop-blur-md">
-              <div className="flex items-center gap-2.5 mb-5 text-primary-400 font-black text-[10px] uppercase tracking-[0.2em]">
-                 <HistoryIcon className="w-4 h-4" />
-                 Official Winner Data
+          <CardContent className="p-0">
+            {winners.length === 0 ? (
+              <div className="py-12 text-center text-slate-400">
+                <p className="font-medium">No winner data available</p>
               </div>
-              <pre className="text-xs font-mono text-slate-300 overflow-auto max-h-[400px] custom-scrollbar leading-relaxed">
-                {JSON.stringify(auction.result.winners, null, 2)}
-              </pre>
-            </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-white/5">
+                    <TableRow className="hover:bg-transparent border-white/5">
+                      <TableHead className="w-16 text-center font-bold text-slate-400 uppercase text-[10px] tracking-wider">Rank</TableHead>
+                      <TableHead className="font-bold text-slate-400 uppercase text-[10px] tracking-wider">Winner</TableHead>
+                      <TableHead className="font-bold text-slate-400 uppercase text-[10px] tracking-wider">Winning Bid</TableHead>
+                      <TableHead className="w-24 text-center font-bold text-slate-400 uppercase text-[10px] tracking-wider">Bid #</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {winners.map((winner) => (
+                      <TableRow key={winner.bidId || winner.rank} className="group hover:bg-white/5 border-white/5">
+                        <TableCell className="text-center">
+                          <span className={cn(
+                            "inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-black",
+                            winner.rank === 1 ? "bg-amber-400/20 text-amber-400 ring-1 ring-amber-400/30" :
+                            winner.rank === 2 ? "bg-slate-300/20 text-slate-300 ring-1 ring-slate-300/30" :
+                            winner.rank === 3 ? "bg-orange-400/20 text-orange-400 ring-1 ring-orange-400/30" :
+                            "bg-white/10 text-slate-400"
+                          )}>
+                            {winner.rank}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="font-bold text-white group-hover:text-primary-400 transition-colors">
+                              {winner.user?.name || "Anonymous"}
+                            </span>
+                            <span className="text-[11px] font-medium text-slate-500">
+                              {winner.user?.email || "-"}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <span className="font-black text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-lg border border-emerald-400/20">
+                            {formatCurrency(winner.amount, auction.currency)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center font-bold text-slate-400 text-xs">
+                          #{winner.sequence}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {auction.result.settledAt && (
+              <div className="px-6 py-3 border-t border-white/5 text-xs text-slate-500 font-medium flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                Settled on {formatTimestamp(auction.result.settledAt)}
+              </div>
+            )}
           </CardContent>
         </Card>
-      )}
+        );
+      })()}
     </div>
   );
 }

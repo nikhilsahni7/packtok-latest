@@ -24,7 +24,7 @@ body:has(main.fluid-bg) {
 }
 
 @theme {
- 
+
   --text-34: 2.125rem;
   --bg-newsletter: url('/newsletter.png');
 
@@ -42,8 +42,15 @@ body:has(main.fluid-bg) {
 
 .newsletter-bg {
   background-image: url("../assets/newsletter.png");
-  background-size: 100% 100%;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
+}
+
+@media (min-width: 768px) {
+  .newsletter-bg {
+    background-size: 100% 100%;
+  }
 }
 
 .form-bg {

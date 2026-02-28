@@ -30,6 +30,7 @@ export default function VerifyOtpForm() {
   const params = useSearchParams();
   const email = params.get("email") || "";
   const callbackUrl = params.get("callbackUrl") || "";
+  const type = params.get("type") || "";
   const router = useRouter();
 
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -60,7 +61,7 @@ export default function VerifyOtpForm() {
     },
     onSuccess: () => {
       toast.success("Email verified. You can now login.");
-      const signinPath = "/auth/signin";
+      const signinPath = type === "vendor" ? "/auth/vendor/signin" : "/auth/signin";
       const href = callbackUrl
         ? `${signinPath}?callbackUrl=${encodeURIComponent(callbackUrl)}`
         : signinPath;

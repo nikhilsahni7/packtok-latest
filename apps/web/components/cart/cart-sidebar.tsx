@@ -3,6 +3,7 @@
 import { Minus, Package, Plus, ShoppingCart, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import { useCart } from "../../contexts/cart-context";
 
 export function CartSidebar() {
@@ -15,7 +16,15 @@ export function CartSidebar() {
     totalsByCurrency,
     updateQuantity,
     removeFromCart,
+    refreshCart,
   } = useCart();
+
+  // Refresh cart when sidebar opens to catch products deleted by admin
+  useEffect(() => {
+    if (isOpen) {
+      refreshCart();
+    }
+  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!isOpen) return null;
 

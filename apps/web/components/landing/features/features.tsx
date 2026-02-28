@@ -1,10 +1,10 @@
 import bidding from "@/assets/bidding1.webp";
 import features3 from "@/assets/feature-consultancy.png";
-import features5 from "@/assets/Mechanics.png";
 import features6 from "@/assets/feature-investment.png";
 import features4 from "@/assets/feature-machinery.png";
 import features2 from "@/assets/feature-services.png";
 import features1 from "@/assets/feature-turnkey.png";
+import features5 from "@/assets/Mechanics.png";
 import { ChevronRight, MoveRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,8 +65,8 @@ const GridSection = () => {
             {/* Text content */}
             <div className="flex flex-col justify-end w-full text-left mt-4">
               <h3
-                className="text-xl sm:text-2xl md:text-[2.125rem] 
-     text-gray-900 mb-4 leading-tight font-medium w-[200px]"
+                className="text-xl sm:text-2xl md:text-[2.125rem]
+     text-gray-900 mb-4 leading-tight font-medium max-w-[200px] w-full"
               >
                 {item.heading}
               </h3>

@@ -14,6 +14,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 function AuthBootstrap() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
+  const setRefreshToken = useAuthStore((s) => s.setRefreshToken);
   const setUser = useAuthStore((s) => s.setUser);
   const [hasBootstrapped, setHasBootstrapped] = useState(false);
 
@@ -29,11 +30,18 @@ function AuthBootstrap() {
         return;
       }
       try {
-        const { data } = await api.post("/api/v1/auth/refresh");
+        const storedRefreshToken = useAuthStore.getState().refreshToken;
+        const { data } = await api.post("/api/v1/auth/refresh", {
+          refreshToken: storedRefreshToken,
+        });
         const newToken = data?.data?.accessToken as string | undefined;
+        const newRefreshToken = data?.data?.refreshToken as string | undefined;
         if (cancelled) return;
         if (newToken) {
           setAccessToken(newToken);
+          if (newRefreshToken) {
+            setRefreshToken(newRefreshToken);
+          }
           try {
             const me = await api.get("/api/v1/auth/me");
             if (!cancelled) setUser(me?.data?.data ?? null);
@@ -52,7 +60,7 @@ function AuthBootstrap() {
     return () => {
       cancelled = true;
     };
-  }, [accessToken, setAccessToken, setUser, hasBootstrapped]);
+  }, [accessToken, setAccessToken, setRefreshToken, setUser, hasBootstrapped]);
 
   useEffect(() => {
     const allowContextMenu = (e: Event) => e.stopPropagation();

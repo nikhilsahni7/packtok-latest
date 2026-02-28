@@ -1,23 +1,23 @@
 "use client";
 
-import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@packtok/ui/dialog";
 import { Badge } from "@packtok/ui/badge";
 import { Button } from "@packtok/ui/button";
-import { Separator } from "@packtok/ui/separator";
-import { ScrollArea } from "@packtok/ui/scroll-area";
 import {
-  ServiceRequest,
-  ServiceStatus,
-  ServiceType,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@packtok/ui/dialog";
+import { ScrollArea } from "@packtok/ui/scroll-area";
+import { Separator } from "@packtok/ui/separator";
+import { Clock, Download, User } from "lucide-react";
+import React from "react";
+import {
+    ServiceRequest,
+    ServiceStatus,
+    ServiceType,
 } from "../../../../types/service";
-import { User, Clock, Download } from "lucide-react";
 
 interface ServiceDetailsDialogProps {
   service: ServiceRequest | null;
@@ -666,7 +666,7 @@ export function ServiceDetailsDialog({
                         <div className="flex-1">
                           <p className="text-sm font-medium">{log.action}</p>
                           <p className="text-xs text-gray-500">
-                            by {log.actor.name} on{" "}
+                            by {log.actor?.name || "System"} on{" "}
                             {new Date(log.createdAt).toLocaleDateString()}
                           </p>
                           {log.notes && (

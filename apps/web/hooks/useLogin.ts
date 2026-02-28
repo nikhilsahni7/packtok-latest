@@ -14,6 +14,7 @@ interface LoginPayload {
 
 export function useLogin() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
+  const setRefreshToken = useAuthStore((s) => s.setRefreshToken);
   const setUser = useAuthStore((s) => s.setUser);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,10 +27,11 @@ export function useLogin() {
         email: payload.email.toLowerCase().trim(),
       };
       const { data } = await api.post("/api/v1/auth/login", normalizedPayload);
-      return data.data as { accessToken: string; user: User };
+      return data.data as { accessToken: string; refreshToken: string; user: User };
     },
-    onSuccess: ({ accessToken, user }) => {
+    onSuccess: ({ accessToken, refreshToken, user }) => {
       setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
       setUser(user);
       // Invalidate the cached "me" query so navbar picks up the new user immediately
       queryClient.invalidateQueries({ queryKey: ["me"] });

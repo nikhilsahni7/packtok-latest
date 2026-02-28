@@ -290,7 +290,7 @@ export function ProductSubmissionForm() {
                   <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 1 Information</h3>
 
                   <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                       <Label htmlFor="title">Item Name</Label>
                       <Input
                         id="title"
@@ -305,7 +305,7 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="price">Price</Label>
                       <Input
                         id="price"
@@ -320,7 +320,7 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="productType">Product Type</Label>
                       <Select
                         onValueChange={(value) => {
@@ -361,7 +361,7 @@ export function ProductSubmissionForm() {
 
                     {/* Machine Type - Only show for MACHINERY products */}
                     {selectedProductType === "MACHINERY" && (
-                      <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                         <Label htmlFor="machineType">
                           Machine Type (Optional)
                         </Label>
@@ -400,7 +400,7 @@ export function ProductSubmissionForm() {
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="condition">Condition</Label>
                       <Select
                         onValueChange={(value) =>
@@ -423,7 +423,7 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="categoryName">Category</Label>
                       <Select
                         onValueChange={(value) => setValue("categoryName", value)}
@@ -446,7 +446,7 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="manufacturer">
                         Manufacturer (Optional)
                       </Label>
@@ -458,7 +458,7 @@ export function ProductSubmissionForm() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="model">Model (Optional)</Label>
                       <Input
                         id="model"
@@ -468,12 +468,12 @@ export function ProductSubmissionForm() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="year">Year (Optional)</Label>
                       <Input id="year" placeholder="2024" {...register("year")} className="border-[#D3D3D3] px-4 h-[44px]" />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="description">Description</Label>
                       <Textarea
                         id="description"
@@ -489,7 +489,7 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label className="text-sm font-medium mb-2 block">
                         Specifications (Optional)
                       </Label>
@@ -536,7 +536,7 @@ export function ProductSubmissionForm() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="additionalInfo">
                         Additional Information (Optional)
                       </Label>
@@ -556,7 +556,7 @@ export function ProductSubmissionForm() {
                     Section: 2 Share Photos and Videos
                   </h3>
                   <div className="px-10 py-5 border-t-[1px] border-[#E0E0E0] text-[#828282]">
-                    <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 grid-cols-1 gap-5">
                       {/* Thumbnail Upload */}
                       <div >
                         <Label className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
@@ -622,7 +622,7 @@ export function ProductSubmissionForm() {
                             (Max 5 images)
                           </span>
                         </Label>
-                        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 grid-cols-1 md:grid-cols-6 gap-4 mb-4">
                           {uploadedImages.length < 5 && (
                             <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
                               <label className="cursor-pointer text-center p-4">
@@ -673,7 +673,7 @@ export function ProductSubmissionForm() {
 
                   {/* Video Upload */}
                   <div className="px-10 py-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 gap-8">
                       <div>
                         <Label className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
                           Product Video

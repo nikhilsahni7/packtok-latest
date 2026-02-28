@@ -2,11 +2,31 @@
 
 import { useVendorApplication } from "@/hooks/useVendorApplication";
 import { useMySubscription } from "@/hooks/useVendorSubscription";
-import { Crown, Loader2 } from "lucide-react";
+import api from "@/lib/axios";
+import { useQueryClient } from "@tanstack/react-query";
+import { Crown, Loader2, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 export default function VendorDashboardClient() {
   const { data, isLoading, isError } = useVendorApplication();
+  const [reapplying, setReapplying] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleReapply = async () => {
+    setReapplying(true);
+    try {
+      await api.post("/api/v1/vendors/apply");
+      toast.success("Your application has been re-submitted! We will review it shortly.");
+      queryClient.invalidateQueries({ queryKey: ["vendor-application"] });
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || "Failed to re-apply. Please try again.";
+      toast.error(msg);
+    } finally {
+      setReapplying(false);
+    }
+  };
 
   if (isLoading)
     return (
@@ -96,12 +116,18 @@ export default function VendorDashboardClient() {
               <p className="text-sm text-red-700">{data.notes}</p>
             </div>
           )}
-          <Link
-            href="/auth/vendor/signup"
-            className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+          <button
+            onClick={handleReapply}
+            disabled={reapplying}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
           >
-            Re-apply as Vendor
-          </Link>
+            {reapplying ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            {reapplying ? "Re-applying..." : "Re-apply as Vendor"}
+          </button>
         </div>
       </div>
     );
@@ -122,7 +148,7 @@ function DashboardContent() {
   const planSlug = subInfo?.subscription?.plan?.slug ?? "free";
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Subscription Banner */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -176,7 +202,7 @@ function DashboardContent() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           <div className="flex items-center gap-4 mt-2">
@@ -325,7 +351,7 @@ function DashboardContent() {
             </div>
 
             {/* Bar Chart */}
-            <div className="h-64 flex items-end justify-between gap-4 mb-4">
+            <div className="h-64 flex items-end justify-between gap-1 sm:gap-4 mb-4 overflow-x-auto">
               {[
                 { month: "Jan", lifetime: 85, customer: 60 },
                 { month: "Feb", lifetime: 72, customer: 45 },

@@ -1,29 +1,29 @@
 import {
-    Auction,
-    AuctionBid,
-    AuctionBidType,
-    AuctionEnrollment,
-    AuctionEnrollmentStatus,
-    AuctionResult,
-    AuctionStatus,
-    PaymentIntent,
-    PaymentIntentStatus,
-    PaymentProvider,
-    PaymentRefund,
-    Prisma,
-    prisma,
+  Auction,
+  AuctionBid,
+  AuctionBidType,
+  AuctionEnrollment,
+  AuctionEnrollmentStatus,
+  AuctionResult,
+  AuctionStatus,
+  PaymentIntent,
+  PaymentIntentStatus,
+  PaymentProvider,
+  PaymentRefund,
+  Prisma,
+  prisma,
 } from "@packtok/db";
 import {
-    publishAuctionFinalized,
-    publishBidPlaced,
-    publishLeaderboardSnapshot,
+  publishAuctionFinalized,
+  publishBidPlaced,
+  publishLeaderboardSnapshot,
 } from "../realtime/auction.publisher";
 import { ApiError } from "../utils/apiError";
 import {
-    createOrder as createRazorpayOrder,
-    getRazorpayPublishableKey,
-    RazorpayOrderSummary,
-    verifyPaymentSignature,
+  createOrder as createRazorpayOrder,
+  getRazorpayPublishableKey,
+  RazorpayOrderSummary,
+  verifyPaymentSignature,
 } from "./payments/razorpay.service";
 
 interface CreateAuctionInput {
@@ -172,6 +172,17 @@ export const createAuction = async (
   });
   if (!product) {
     throw new ApiError(404, "Product not found");
+  }
+
+  if (
+    product.status === "DRAFT" ||
+    product.submissionStatus === "PENDING_APPROVAL" ||
+    product.submissionStatus === "REJECTED"
+  ) {
+    throw new ApiError(
+      400,
+      "Cannot create an auction for an unapproved or draft product"
+    );
   }
 
   const overlap = await prisma.auction.findFirst({
@@ -668,12 +679,20 @@ export const placeAuctionBid = async (
     } else {
       const minDecrement = auction.minBidDecrement ?? new Prisma.Decimal(1);
       const maxAllowed = reference.sub(minDecrement);
-      if (!amount.lte(maxAllowed)) {
-        throw new ApiError(
-          400,
-          `Bid must be ${maxAllowed.toString()} or lower (current: ${reference.toString()} - decrement: ${minDecrement.toString()})`
-        );
+
+      if (maxAllowed.lte(0)) {
+        if (!amount.lt(reference)) {
+          throw new ApiError(400, "Bid must be strictly lower than the current amount");
+        }
+      } else {
+        if (!amount.lte(maxAllowed)) {
+          throw new ApiError(
+            400,
+            `Bid must be ${maxAllowed.toString()} or lower (current: ${reference.toString()} - decrement: ${minDecrement.toString()})`
+          );
+        }
       }
+
       if (amount.lte(0)) {
         throw new ApiError(400, "Reverse bids must remain above zero");
       }

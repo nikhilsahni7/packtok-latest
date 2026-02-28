@@ -30,7 +30,7 @@ export function useVendorSignup() {
     onSuccess: (_data, variables) => {
       toast.success("Registration successful. Check your email for OTP.");
       router.push(
-        `/auth/verify-otp?email=${encodeURIComponent(variables.email)}`
+        `/auth/verify-otp?email=${encodeURIComponent(variables.email)}&type=vendor`
       );
     },
     onError: (err: Error) => {

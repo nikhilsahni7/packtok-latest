@@ -1,29 +1,33 @@
 "use client";
 
+import { useVendorProducts } from "@/hooks";
 import { useAuthStore } from "@/store/auth-store";
 import { User } from "@/types/auth";
 import {
-  BarChart3,
-  Boxes,
-  CheckCircle2,
-  ChevronDown,
-  ChevronUp,
-  ChevronsLeft,
-  ChevronsRight,
-  CreditCard,
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  Package,
+    BarChart3,
+    Boxes,
+    CheckCircle2,
+    ChevronDown,
+    ChevronUp,
+    ChevronsLeft,
+    CreditCard,
+    FileText,
+    LayoutDashboard,
+    LogOut,
+    Menu,
+    Package,
+    X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { useMemo } from "react";
 
 interface VendorSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
   user: User | null;
+  mobileOpen: boolean;
+  onMobileClose: () => void;
 }
 
 type LinkItem = {
@@ -44,65 +48,78 @@ type SectionItem = {
 
 type SidebarNode = LinkItem | SectionItem;
 
-const sidebarStructure: SidebarNode[] = [
-  {
-    type: "link",
-    name: "Dashboard",
-    href: "/vendor/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    type: "section",
-    name: "Product",
-    icon: Package,
-    badge: 6,
-    children: [
+function useSidebarStructure(): SidebarNode[] {
+  const { data: products } = useVendorProducts();
+
+  return useMemo(() => {
+    const all = products ?? [];
+    const totalCount = all.length;
+    const draftCount = all.filter((p) => p.status === "DRAFT").length;
+
+    return [
       {
         type: "link",
-        name: "Create New",
-        href: "/vendor/products/new",
-        icon: FileText,
+        name: "Dashboard",
+        href: "/vendor/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        type: "section",
+        name: "Product",
+        icon: Package,
+        badge: totalCount || undefined,
+        children: [
+          {
+            type: "link",
+            name: "Create New",
+            href: "/vendor/products/new",
+            icon: FileText,
+          },
+          {
+            type: "link",
+            name: "Analytics",
+            href: "/vendor/products/analytics",
+            icon: BarChart3,
+          },
+          {
+            type: "link",
+            name: "Drafts",
+            href: "/vendor/products/drafts",
+            icon: FileText,
+            badge: draftCount || undefined,
+          },
+          {
+            type: "link",
+            name: "Released",
+            href: "/vendor/products/released",
+            icon: CheckCircle2,
+          },
+          {
+            type: "link",
+            name: "All Products",
+            href: "/vendor/products",
+            icon: Boxes,
+          },
+        ],
       },
       {
         type: "link",
-        name: "Analytics",
-        href: "/vendor/products/analytics",
-        icon: BarChart3,
+        name: "Subscription",
+        href: "/vendor/subscription",
+        icon: CreditCard,
       },
-      {
-        type: "link",
-        name: "Drafts",
-        href: "/vendor/products/drafts",
-        icon: FileText,
-        badge: 3,
-      },
-      {
-        type: "link",
-        name: "Released",
-        href: "/vendor/products/released",
-        icon: CheckCircle2,
-      },
-      {
-        type: "link",
-        name: "All Products",
-        href: "/vendor/products",
-        icon: Boxes,
-      },
-    ],
-  },
-  {
-    type: "link",
-    name: "Subscription",
-    href: "/vendor/subscription",
-    icon: CreditCard,
-  },
-];
+    ];
+  }, [products]);
+}
 
 export function VendorSidebar({
   collapsed,
   onToggle,
   user,
+  mobileOpen,
+  onMobileClose,
 }: VendorSidebarProps) {
+  const sidebarStructure = useSidebarStructure();
   const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
   const pathname = usePathname();
@@ -118,189 +135,240 @@ export function VendorSidebar({
   const toggleSection = (name: string) =>
     setOpenSections((prev) => ({ ...prev, [name]: !prev[name] }));
 
-  return (
-    <aside
-      className={`fixed left-0 top-20 h-[calc(100vh-5rem)] transition-all duration-300 ease-in-out z-40 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white border-r border-gray-200 pointer-events-auto ${
-        collapsed ? "w-16" : "w-64"
-      }`}
-    >
-      <div className="flex flex-col h-full overflow-hidden">
-        {/* Logo */}
-        <div className="flex items-center h-16 px-2 sm:px-3 border-b border-gray-200 justify-between">
-          {!collapsed && (
-            <p className="text-sm font-semibold text-gray-800">Vendor</p>
-          )}
-          <div className="ml-auto">
-            <button
-              onClick={onToggle}
-              className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {collapsed ? (
-                <ChevronsRight className="h-5 w-5 text-gray-600" />
-              ) : (
-                <ChevronsLeft className="h-5 w-5 text-gray-600" />
-              )}
-            </button>
-          </div>
-        </div>
+  const handleNavClick = () => {
+    // Close mobile drawer on navigation
+    if (mobileOpen) onMobileClose();
+  };
 
-        {/* Navigation */}
-        <nav className="flex-1 px-2 sm:px-3 py-4 space-y-1 overflow-y-auto">
-          {sidebarStructure.map((node) => {
-            if (node.type === "link") {
-              const Icon = node.icon;
-              const isActive = pathname === node.href;
-              return (
-                <Link
-                  key={node.name}
-                  href={node.href}
-                  className={`group relative flex items-center rounded-md px-2 py-2 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-orange-50 text-orange-700 border-r-2 border-orange-600"
-                      : "text-gray-700 hover:bg-gray-50"
-                  } ${collapsed ? "justify-center" : ""}`}
-                >
-                  {Icon && (
-                    <Icon
-                      className={`h-5 w-5 ${
-                        collapsed ? "" : "mr-3"
-                      } ${isActive ? "text-orange-600" : "text-gray-500"}`}
-                    />
-                  )}
-                  {!collapsed && <span>{node.name}</span>}
-                  {!collapsed && node.badge && (
-                    <span className="ml-auto bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-0.5 rounded-full">
-                      {node.badge}
-                    </span>
-                  )}
-
-                  {collapsed && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
-                      {node.name}
-                    </div>
-                  )}
-                </Link>
-              );
-            }
-
-            // section
-            const SectionIcon = node.icon;
-            const open = openSections[node.name] ?? true;
-            const someChildActive = node.children.some((c) =>
-              pathname.startsWith(c.href)
-            );
-            return (
-              <div key={node.name} className="">
-                <button
-                  onClick={() => toggleSection(node.name)}
-                  className={`group relative w-full flex items-center rounded-md px-2 py-2 text-sm font-semibold transition-colors ${
-                    someChildActive
-                      ? "bg-orange-50 text-orange-700 border-r-2 border-orange-600"
-                      : "text-gray-800 hover:bg-gray-50"
-                  } ${collapsed ? "justify-center" : ""}`}
-                  aria-expanded={open}
-                >
-                  {SectionIcon && (
-                    <SectionIcon
-                      className={`h-5 w-5 ${collapsed ? "" : "mr-3"} ${
-                        someChildActive ? "text-orange-600" : "text-gray-500"
-                      }`}
-                    />
-                  )}
-                  {!collapsed && <span>{node.name}</span>}
-                  {!collapsed && node.badge && (
-                    <span className="ml-2 bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">
-                      {node.badge}
-                    </span>
-                  )}
-                  {!collapsed && (
-                    <span className="ml-auto text-gray-500">
-                      {open ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                    </span>
-                  )}
-
-                  {collapsed && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
-                      {node.name}
-                    </div>
-                  )}
-                </button>
-
-                {/* children */}
-                {!collapsed && open && (
-                  <div className="mt-1 mb-2 ml-9 space-y-1">
-                    {node.children.map((child) => {
-                      const ChildIcon = child.icon;
-                      const isActive = pathname === child.href;
-                      return (
-                        <Link
-                          key={child.name}
-                          href={child.href}
-                          className={`group flex items-center rounded-md px-2 py-1.5 text-sm transition-colors ${
-                            isActive
-                              ? "bg-orange-50 text-orange-700"
-                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                          }`}
-                        >
-                          {ChildIcon && (
-                            <ChildIcon
-                              className={`h-4 w-4 mr-2 ${
-                                isActive ? "text-orange-600" : "text-gray-400"
-                              }`}
-                            />
-                          )}
-                          <span>{child.name}</span>
-                          {child.badge && (
-                            <span className="ml-auto bg-orange-100 text-orange-800 text-xs font-semibold px-1.5 py-0.5 rounded-full">
-                              {child.badge}
-                            </span>
-                          )}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </nav>
-
-        {/* User Info & Logout */}
-        <div className="p-3 sm:p-4 border-t border-gray-200">
-          {!collapsed && user && (
-            <div className="mb-3 px-3 py-2">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {user.name}
-              </p>
-              <p className="text-xs text-gray-500 truncate">{user.email}</p>
-            </div>
-          )}
-
+  const sidebarContent = (
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center h-16 px-3 border-b border-gray-200 justify-between">
+        {(!collapsed || mobileOpen) && (
+          <p className="text-sm font-semibold text-gray-800">Vendor</p>
+        )}
+        <div className="ml-auto flex items-center gap-1">
+          {/* Desktop collapse toggle */}
           <button
-            onClick={handleLogout}
-            className={`flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors group ${
-              collapsed ? "justify-center" : ""
-            }`}
+            onClick={onToggle}
+            className="p-1 rounded-lg hover:bg-gray-100 transition-colors hidden lg:block"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <LogOut
-              className={`h-5 w-5 text-gray-500 ${collapsed ? "" : "mr-3"}`}
-            />
-            {!collapsed && <span>Logout</span>}
-
-            {/* Tooltip for collapsed state */}
-            {collapsed && (
-              <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
-                Logout
-              </div>
-            )}
+            <ChevronsLeft className={`h-5 w-5 text-gray-600 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+          </button>
+          {/* Mobile close button */}
+          <button
+            onClick={onMobileClose}
+            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
+            aria-label="Close sidebar"
+          >
+            <X className="h-5 w-5 text-gray-600" />
           </button>
         </div>
       </div>
-    </aside>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        {sidebarStructure.map((node) => {
+          // For mobile drawer, always show expanded (not collapsed)
+          const isCollapsedView = collapsed && !mobileOpen;
+
+          if (node.type === "link") {
+            const Icon = node.icon;
+            const isActive = pathname === node.href;
+            return (
+              <Link
+                key={node.name}
+                href={node.href}
+                onClick={handleNavClick}
+                className={`group relative flex items-center rounded-md px-2 py-2.5 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-orange-50 text-orange-700 border-r-2 border-orange-600"
+                    : "text-gray-700 hover:bg-gray-50"
+                } ${isCollapsedView ? "justify-center" : ""}`}
+              >
+                {Icon && (
+                  <Icon
+                    className={`h-5 w-5 ${
+                      isCollapsedView ? "" : "mr-3"
+                    } ${isActive ? "text-orange-600" : "text-gray-500"}`}
+                  />
+                )}
+                {!isCollapsedView && <span>{node.name}</span>}
+                {!isCollapsedView && node.badge && (
+                  <span className="ml-auto bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-0.5 rounded-full">
+                    {node.badge}
+                  </span>
+                )}
+
+                {isCollapsedView && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+                    {node.name}
+                  </div>
+                )}
+              </Link>
+            );
+          }
+
+          // section
+          const SectionIcon = node.icon;
+          const open = openSections[node.name] ?? true;
+          const someChildActive = node.children.some((c) =>
+            pathname.startsWith(c.href)
+          );
+          return (
+            <div key={node.name} className="">
+              <button
+                onClick={() => toggleSection(node.name)}
+                className={`group relative w-full flex items-center rounded-md px-2 py-2.5 text-sm font-semibold transition-colors ${
+                  someChildActive
+                    ? "bg-orange-50 text-orange-700 border-r-2 border-orange-600"
+                    : "text-gray-800 hover:bg-gray-50"
+                } ${isCollapsedView ? "justify-center" : ""}`}
+                aria-expanded={open}
+              >
+                {SectionIcon && (
+                  <SectionIcon
+                    className={`h-5 w-5 ${isCollapsedView ? "" : "mr-3"} ${
+                      someChildActive ? "text-orange-600" : "text-gray-500"
+                    }`}
+                  />
+                )}
+                {!isCollapsedView && <span>{node.name}</span>}
+                {!isCollapsedView && node.badge && (
+                  <span className="ml-2 bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                    {node.badge}
+                  </span>
+                )}
+                {!isCollapsedView && (
+                  <span className="ml-auto text-gray-500">
+                    {open ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </span>
+                )}
+
+                {isCollapsedView && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+                    {node.name}
+                  </div>
+                )}
+              </button>
+
+              {/* children */}
+              {!isCollapsedView && open && (
+                <div className="mt-1 mb-2 ml-9 space-y-1">
+                  {node.children.map((child) => {
+                    const ChildIcon = child.icon;
+                    const isActive = pathname === child.href;
+                    return (
+                      <Link
+                        key={child.name}
+                        href={child.href}
+                        onClick={handleNavClick}
+                        className={`group flex items-center rounded-md px-2 py-2 text-sm transition-colors ${
+                          isActive
+                            ? "bg-orange-50 text-orange-700"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        }`}
+                      >
+                        {ChildIcon && (
+                          <ChildIcon
+                            className={`h-4 w-4 mr-2 ${
+                              isActive ? "text-orange-600" : "text-gray-400"
+                            }`}
+                          />
+                        )}
+                        <span>{child.name}</span>
+                        {child.badge && (
+                          <span className="ml-auto bg-orange-100 text-orange-800 text-xs font-semibold px-1.5 py-0.5 rounded-full">
+                            {child.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* User Info & Logout */}
+      <div className="p-4 border-t border-gray-200">
+        {(!collapsed || mobileOpen) && user && (
+          <div className="mb-3 px-3 py-2">
+            <p className="text-sm font-medium text-gray-900 truncate">
+              {user.name}
+            </p>
+            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+          </div>
+        )}
+
+        <button
+          onClick={handleLogout}
+          className={`flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors group ${
+            collapsed && !mobileOpen ? "justify-center" : ""
+          }`}
+        >
+          <LogOut
+            className={`h-5 w-5 text-gray-500 ${collapsed && !mobileOpen ? "" : "mr-3"}`}
+          />
+          {(!collapsed || mobileOpen) && <span>Logout</span>}
+
+          {/* Tooltip for collapsed state */}
+          {collapsed && !mobileOpen && (
+            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+              Logout
+            </div>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={onMobileClose}
+        />
+      )}
+
+      {/* Sidebar — fixed on desktop, slide-out drawer on mobile */}
+      <aside
+        className={`
+          fixed top-20 h-[calc(100vh-5rem)] z-50 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out
+
+          /* Mobile: full-width drawer, off-screen by default */
+          ${mobileOpen ? "left-0" : "-left-full"}
+          w-72
+
+          /* Desktop: always visible, respects collapsed state */
+          lg:left-0
+          ${collapsed ? "lg:w-16" : "lg:w-64"}
+        `}
+      >
+        {sidebarContent}
+      </aside>
+    </>
+  );
+}
+
+/** Mobile hamburger button for the vendor layout */
+export function VendorMobileMenuButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="fixed bottom-6 right-6 z-30 lg:hidden w-14 h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg shadow-orange-200 flex items-center justify-center transition-all active:scale-95"
+      aria-label="Open navigation"
+    >
+      <Menu className="h-6 w-6" />
+    </button>
   );
 }

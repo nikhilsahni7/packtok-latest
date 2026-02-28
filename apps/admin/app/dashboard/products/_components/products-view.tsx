@@ -1,14 +1,16 @@
 "use client";
 
 import { Button } from "@packtok/ui/components/button";
+import { Checkbox } from "@packtok/ui/components/checkbox";
 import { Input } from "@packtok/ui/components/input";
+import { Label } from "@packtok/ui/components/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@packtok/ui/components/select";
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@packtok/ui/components/popover";
+import { ScrollArea } from "@packtok/ui/components/scroll-area";
+import { Separator } from "@packtok/ui/components/separator";
 import { useQueryClient } from "@tanstack/react-query";
 import { Filter, Grid3X3, List, Package, Plus, RefreshCw, Search } from "lucide-react";
 import Link from "next/link";
@@ -41,7 +43,13 @@ interface ProductsViewProps {
 export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
   const [activeTab, setActiveTab] = useState("products");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState<string>("all");
+
+  // Advance Filter States
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedCreators, setSelectedCreators] = useState<string[]>([]);
+
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortField, setSortField] = useState<SortField>("title");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -106,12 +114,31 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = products.filter((product) => {
+      // Search
       const matchesSearch =
         product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType =
-        selectedType === "all" || product.productType === selectedType;
-      return matchesSearch && matchesType;
+
+      // Type
+      const matchesType = selectedTypes.length === 0 || selectedTypes.includes(product.productType);
+
+      // Condition
+      const matchesCondition = selectedConditions.length === 0 || selectedConditions.includes(product.condition);
+
+      // Status (checks both marketplace status and submission status)
+      const matchesStatus = selectedStatuses.length === 0 ||
+                            selectedStatuses.includes(product.status) ||
+                            (product.submissionStatus && selectedStatuses.includes(product.submissionStatus));
+
+      // Creator Role
+      const creatorRole = product.createdByUser?.role;
+      const isAdmin = creatorRole === "ADMIN" || creatorRole === "SUPER_ADMIN";
+      const matchesCreator = selectedCreators.length === 0 ||
+                             (selectedCreators.includes("ADMIN") && isAdmin) ||
+                             (selectedCreators.includes("VENDOR") && creatorRole === "VENDOR") ||
+                             (selectedCreators.includes("USER") && creatorRole === "NORMAL_USER");
+
+      return matchesSearch && matchesType && matchesCondition && matchesStatus && matchesCreator;
     });
 
     if (viewMode === "list") {
@@ -135,7 +162,20 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
     }
 
     return filtered;
-  }, [searchTerm, selectedType, sortField, sortDirection, viewMode, products]);
+  }, [searchTerm, selectedTypes, selectedConditions, selectedStatuses, selectedCreators, sortField, sortDirection, viewMode, products]);
+
+  const toggleFilter = (stateSetter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
+    stateSetter(prev => prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]);
+  };
+
+  const clearAllFilters = () => {
+    setSelectedTypes([]);
+    setSelectedConditions([]);
+    setSelectedStatuses([]);
+    setSelectedCreators([]);
+  };
+
+  const activeFilterCount = selectedTypes.length + selectedConditions.length + selectedStatuses.length + selectedCreators.length;
 
   if (isLoading) {
     return (
@@ -237,27 +277,129 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-64"
+                className="pl-10 w-full sm:w-64"
               />
             </div>
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="All Types" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="MACHINERY">Machinery</SelectItem>
-                <SelectItem value="SPARE_PARTS">Spare Parts</SelectItem>
-                <SelectItem value="CONSUMABLES">Consumables</SelectItem>
-                <SelectItem value="RAW_MATERIALS">Raw Materials</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Desktop Filters Button (hidden on mobile, popover below) */}
           </div>
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="relative">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                  {activeFilterCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-0" align="end">
+                <div className="flex items-center justify-between p-4 border-b">
+                  <h4 className="font-semibold text-sm">Filters</h4>
+                  {activeFilterCount > 0 && (
+                    <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-auto p-0 text-xs text-blue-600 hover:text-blue-700 hover:bg-transparent">
+                      Clear all
+                    </Button>
+                  )}
+                </div>
+                <ScrollArea className="h-[400px] p-4 text-sm">
+                  <div className="space-y-6">
+                    {/* Types */}
+                    <div className="space-y-3">
+                      <h5 className="font-medium text-gray-900">Product Type</h5>
+                      <div className="space-y-2">
+                        {[
+                          { id: "MACHINERY", label: "Machinery" },
+                          { id: "SPARE_PARTS", label: "Spare Parts" },
+                          { id: "CONSUMABLES", label: "Consumables" },
+                          { id: "RAW_MATERIALS", label: "Raw Materials" },
+                        ].map((type) => (
+                          <div key={type.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`type-${type.id}`}
+                              checked={selectedTypes.includes(type.id)}
+                              onCheckedChange={() => toggleFilter(setSelectedTypes, type.id)}
+                            />
+                            <Label htmlFor={`type-${type.id}`} className="font-normal cursor-pointer">{type.label}</Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <Separator />
+
+                    {/* Creator Role */}
+                    <div className="space-y-3">
+                      <h5 className="font-medium text-gray-900">Submitted By</h5>
+                      <div className="space-y-2">
+                        {[
+                          { id: "ADMIN", label: "Admins & Staff" },
+                          { id: "VENDOR", label: "Vendors" },
+                          { id: "USER", label: "Normal Users" },
+                        ].map((role) => (
+                          <div key={role.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`role-${role.id}`}
+                              checked={selectedCreators.includes(role.id)}
+                              onCheckedChange={() => toggleFilter(setSelectedCreators, role.id)}
+                            />
+                            <Label htmlFor={`role-${role.id}`} className="font-normal cursor-pointer">{role.label}</Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <Separator />
+
+                    {/* Status */}
+                    <div className="space-y-3">
+                      <h5 className="font-medium text-gray-900">Status</h5>
+                      <div className="space-y-2">
+                        {[
+                          { id: "AVAILABLE", label: "Available" },
+                          { id: "OUT_OF_STOCK", label: "Out of Stock" },
+                          { id: "DRAFT", label: "Draft" },
+                          { id: "SOLD", label: "Sold" },
+                          { id: "PENDING_APPROVAL", label: "Pending Approval" },
+                          { id: "APPROVED", label: "Approved" },
+                          { id: "REJECTED", label: "Rejected" },
+                        ].map((status) => (
+                          <div key={status.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`status-${status.id}`}
+                              checked={selectedStatuses.includes(status.id)}
+                              onCheckedChange={() => toggleFilter(setSelectedStatuses, status.id)}
+                            />
+                            <Label htmlFor={`status-${status.id}`} className="font-normal cursor-pointer">{status.label}</Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <Separator />
+
+                    {/* Condition */}
+                    <div className="space-y-3">
+                      <h5 className="font-medium text-gray-900">Condition</h5>
+                      <div className="space-y-2">
+                        {[
+                          { id: "NEW", label: "New" },
+                          { id: "USED", label: "Used" },
+                        ].map((condition) => (
+                          <div key={condition.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`condition-${condition.id}`}
+                              checked={selectedConditions.includes(condition.id)}
+                              onCheckedChange={() => toggleFilter(setSelectedConditions, condition.id)}
+                            />
+                            <Label htmlFor={`condition-${condition.id}`} className="font-normal cursor-pointer">{condition.label}</Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </ScrollArea>
+              </PopoverContent>
+            </Popover>
             <div className="flex items-center border rounded-md">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}

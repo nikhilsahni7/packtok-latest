@@ -44,9 +44,8 @@ export const createOrder = async (
   const client = getClient();
   const order = await client.orders.create({
     amount: params.amountInPaise,
-    currency: params.currency,
+    currency: params.currency.toUpperCase(),
     receipt: params.receipt,
-    payment_capture: 1,
     notes: params.notes,
   });
   return {

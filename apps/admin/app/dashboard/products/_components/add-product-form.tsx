@@ -199,6 +199,71 @@ export default function AddProductForm() {
     }
   };
 
+  const onSaveAsDraft = async (data: ProductFormData) => {
+    try {
+      const formData = new FormData();
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== "") {
+          formData.append(key, value.toString());
+        }
+      });
+
+      const validSpecs = specifications.filter(
+        (spec) => spec.key.trim() && spec.value.trim()
+      );
+      if (validSpecs.length > 0) {
+        const specsObj = validSpecs.reduce(
+          (acc, spec) => {
+            acc[spec.key] = spec.value;
+            return acc;
+          },
+          {} as Record<string, string>
+        );
+        formData.append("specifications", JSON.stringify(specsObj));
+      }
+
+      if (thumbnail) {
+        formData.append("thumbnail", thumbnail);
+      }
+
+      uploadedImages.forEach((image) => {
+        formData.append("images", image);
+      });
+
+      if (video) {
+        formData.append("video", video);
+      }
+
+      if (videoThumbnail) {
+        formData.append("videoThumbnail", videoThumbnail);
+      }
+
+      if (pdf) {
+        formData.append("pdf", pdf);
+      }
+
+      // Add DRAFT status
+      formData.append("status", "DRAFT");
+
+      await createProductMutation.mutateAsync(formData);
+
+      toast.success("Draft saved successfully");
+
+      form.reset();
+      setUploadedImages([]);
+      setThumbnail(null);
+      setVideo(null);
+      setVideoThumbnail(null);
+      setPdf(null);
+      setSpecifications([{ key: "", value: "" }]);
+
+      router.push("/dashboard/products");
+    } catch (error) {
+      toast.error("Failed to save draft");
+    }
+  };
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && uploadedImages.length + files.length <= 5) {
@@ -1122,7 +1187,12 @@ export default function AddProductForm() {
           </div>
 
           <div className="flex justify-end space-x-4">
-            <Button variant="outline" type="button">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={form.handleSubmit(onSaveAsDraft)}
+              disabled={createProductMutation.isPending}
+            >
               Save as Draft
             </Button>
             <Button

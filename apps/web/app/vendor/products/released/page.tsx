@@ -5,15 +5,15 @@ import { useMySubscription } from "@/hooks/useVendorSubscription";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  AlertCircle,
-  CheckCircle2,
-  Crown,
-  Eye,
-  Globe,
-  Loader2,
-  Package,
-  Pencil,
-  Plus,
+    AlertCircle,
+    CheckCircle2,
+    Crown,
+    ExternalLink,
+    Globe,
+    Loader2,
+    Package,
+    Pencil,
+    Plus,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,9 +27,9 @@ export default function VendorReleasedPage() {
   const canCreate = subInfo?.canCreateProduct ?? true;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Released Products</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -155,13 +155,17 @@ export default function VendorReleasedPage() {
                       >
                         <Pencil className="h-4 w-4 text-gray-500" />
                       </Link>
-                      <Link
-                        href={`/vendor/products/${product.id}`}
-                        className="p-2 rounded-lg border hover:bg-gray-50 transition-colors"
-                        title="View"
-                      >
-                        <Eye className="h-4 w-4 text-gray-500" />
-                      </Link>
+                      {product.submissionStatus === "APPROVED" && (
+                        <a
+                          href={`/marketplace/all/${product.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-lg border hover:bg-gray-50 transition-colors"
+                          title="View on marketplace"
+                        >
+                          <ExternalLink className="h-4 w-4 text-gray-500" />
+                        </a>
+                      )}
                       {/* Approved products can only be deleted by admin */}
                     </div>
                   </div>

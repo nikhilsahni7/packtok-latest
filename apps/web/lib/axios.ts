@@ -89,14 +89,21 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       return new Promise((resolve, reject) => {
+        const storedRefreshToken = useAuthStore.getState().refreshToken;
         api
-          .post("/api/v1/auth/refresh")
+          .post("/api/v1/auth/refresh", {
+            refreshToken: storedRefreshToken,
+          })
           .then(({ data }) => {
             const newToken = data.data?.accessToken as string;
+            const newRefreshToken = data.data?.refreshToken as string;
             if (newToken) {
               useAuthStore.getState().setAccessToken(newToken);
               api.defaults.headers.common["Authorization"] =
                 `Bearer ${newToken}`;
+            }
+            if (newRefreshToken) {
+              useAuthStore.getState().setRefreshToken(newRefreshToken);
             }
             processQueue(null, newToken);
             if (originalRequest.headers) {

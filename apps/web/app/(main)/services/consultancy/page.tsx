@@ -108,7 +108,7 @@ function HeroSection() {
           <div
             className={cn(
               // Layout & box model
-              "grid grid-cols-2 gap-6 rounded-md border p-6 sm:gap-8",
+              "grid grid-cols-1 sm:grid-cols-2 gap-6 rounded-md border p-6 sm:gap-8",
 
               // Colors
               "border-border"
@@ -227,7 +227,7 @@ function AboutSection() {
             ))}
           </ul>
 
-          <div className={cn("mt-8 grid grid-cols-2 gap-6 sm:max-w-md")}>
+          <div className={cn("mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:max-w-md")}>
             <KpiBox value="2X" label="Faster Problem Solving" />
             <KpiBox value="90%" label="Client Success Rate" />
           </div>
@@ -280,7 +280,7 @@ function WhyChooseUs() {
         </p>
       </div>
 
-      <div className={cn("mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3")}>
+      <div className={cn("mt-10 grid grid-cols-1 gap-8 grid-cols-1 sm:grid-cols-3")}>
         <FeatureItem
           title="Comprehensive Solutions"
           desc="End-to-end strategic guidance, covering analysis, planning, and implementation for holistic business growth."
@@ -355,7 +355,7 @@ function ConsultancyGrid() {
       </h3>
 
 
-      <div className={cn("mt-10 grid grid-cols-1 gap-8 md:grid-cols-3")}>
+      <div className={cn("mt-10 grid grid-cols-1 gap-8 grid-cols-1 md:grid-cols-3")}>
         <ConsultancyCard
           title="Machinery"
           price=""

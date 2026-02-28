@@ -1,36 +1,38 @@
 "use client";
 
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
-  useAdjustVendorInventory,
-  useCategories,
-  useDeleteVendorProduct,
-  useRemoveVendorProductImage,
-  useSubmitVendorProduct,
-  useUpdateVendorProduct,
-  useUploadVendorProductMedia,
-  useUpsertVendorInventory,
-  useVendorInventory,
+    useAdjustVendorInventory,
+    useCategories,
+    useDeleteVendorProduct,
+    useRemoveVendorProductImage,
+    useSubmitVendorProduct,
+    useUpdateVendorProduct,
+    useUploadVendorProductMedia,
+    useUpsertVendorInventory,
+    useVendorInventory,
 } from "@/hooks";
 import api from "@/lib/axios";
 import {
-  Button,
-  Card,
-  Input,
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Textarea,
+    Button,
+    Card,
+    Input,
+    Label,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Textarea,
 } from "@packtok/ui";
 import {
-  FileText,
-  ImagePlus,
-  Loader2,
-  Trash2,
-  Upload,
-  Video,
+    FileText,
+    ImagePlus,
+    Loader2,
+    Save,
+    Trash2,
+    Upload,
+    Video,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -72,6 +74,10 @@ export default function VendorProductEditorPage() {
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>([
     { key: "", value: "" },
   ]);
+
+  // Initial state for change detection (Save button highlighting)
+  const [initialStateStr, setInitialStateStr] = useState<string | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   // Media state
   const [pendingImages, setPendingImages] = useState<File[]>([]);
@@ -142,6 +148,30 @@ export default function VendorProductEditorPage() {
     setExistingVideo(p.videoUrl ?? null);
     setExistingVideoThumb(p.videoThumbnail ?? null);
     setExistingPdf(p.pdfUrl ?? null);
+
+    // Save stringified initial state to detect changes
+    const initStr = JSON.stringify({
+      title: p.title ?? "",
+      description: p.description ?? "",
+      price: Number(p.price ?? 0),
+      currency: p.currency ?? "INR",
+      productType: p.productType ?? "MACHINERY",
+      machineType: p.machineType ?? "NONE",
+      condition: p.condition ?? "NEW",
+      quantity: typeof p.quantity === "number" ? p.quantity : 1,
+      categoryName: p.category?.name ?? "",
+      subCategory: p.subCategory ?? "",
+      manufacturer: p.manufacturer ?? "",
+      model: p.model ?? "",
+      year: p.year ?? undefined,
+      specs: p.specifications && typeof p.specifications === "object"
+        ? Object.entries(p.specifications).filter(([k]) => k.trim()).map(([k, v]) => ({ key: k, value: String(v) }))
+        : [],
+      additionalInfo: p.additionalInfo ?? "",
+    });
+    setInitialStateStr(initStr);
+    setHasChanges(false);
+
     setIsLoaded(true);
   };
 
@@ -168,6 +198,43 @@ export default function VendorProductEditorPage() {
       pendingPreviews.forEach((src) => URL.revokeObjectURL(src));
     };
   }, [pendingPreviews]);
+
+  const [removeImageTarget, setRemoveImageTarget] = useState<string | null>(null);
+
+  // Check for unsaved changes
+  useEffect(() => {
+    if (!isLoaded || !initialStateStr) return;
+
+    // Changes to media instantly make it "unsaved"
+    if (thumbnail || pendingImages.length > 0 || video || videoThumbnail || pdf || removeImageTarget) {
+      setHasChanges(true);
+      return;
+    }
+
+    const currentStateStr = JSON.stringify({
+      title,
+      description,
+      price,
+      currency,
+      productType,
+      machineType,
+      condition,
+      quantity,
+      categoryName,
+      subCategory,
+      manufacturer,
+      model,
+      year,
+      specs,
+      additionalInfo,
+    });
+
+    setHasChanges(currentStateStr !== initialStateStr);
+  }, [
+    isLoaded, initialStateStr, title, description, price, currency, productType, machineType,
+    condition, quantity, categoryName, subCategory, manufacturer, model, year, specs,
+    additionalInfo, thumbnail, pendingImages, video, videoThumbnail, pdf, removeImageTarget
+  ]);
 
   // ── Handlers ───────────────────────────────────────────────────────────
 
@@ -215,8 +282,9 @@ export default function VendorProductEditorPage() {
       setVideo(null);
       setVideoThumbnail(null);
       setPdf(null);
-      await fetchProduct();
     }
+    await fetchProduct(); // This will reset initialState and hasChanges
+
     toast.success("Product saved");
   };
 
@@ -241,7 +309,7 @@ export default function VendorProductEditorPage() {
   };
 
   const handleRemoveExistingImage = async (url: string) => {
-    if (!confirm("Remove this image from the gallery?")) return;
+    setRemoveImageTarget(null);
     await removeImage.mutateAsync(url);
     setExistingImages((prev) => prev.filter((u) => u !== url));
     toast.success("Image removed");
@@ -267,7 +335,8 @@ export default function VendorProductEditorPage() {
   // ── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto">
+    <>
+    <div className="p-4 sm:p-6 space-y-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
@@ -282,16 +351,18 @@ export default function VendorProductEditorPage() {
             </Button>
           )}
           <Button
-            variant="secondary"
             onClick={handleSave}
             disabled={update.isPending || uploadMedia.isPending}
+            className="bg-green-600 hover:bg-green-700 text-white gap-1.5"
           >
             {update.isPending || uploadMedia.isPending ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" /> Saving...
               </span>
             ) : (
-              "Save"
+              <>
+                <Save className="h-4 w-4" /> Save Changes
+              </>
             )}
           </Button>
           <Button
@@ -351,7 +422,7 @@ export default function VendorProductEditorPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ── Left: Form ──────────────────────────────────────────────── */}
         <div className="lg:col-span-2 space-y-6">
           {/* Basic Information */}
@@ -375,7 +446,7 @@ export default function VendorProductEditorPage() {
                 rows={5}
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Manufacturer / Brand</Label>
                 <Input
@@ -413,7 +484,7 @@ export default function VendorProductEditorPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Category & Classification
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Category</Label>
                 <Select
@@ -518,7 +589,7 @@ export default function VendorProductEditorPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Pricing & Stock
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Price</Label>
                 <Input
@@ -629,7 +700,7 @@ export default function VendorProductEditorPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Inventory
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Stock on Hand</Label>
                 <Input
@@ -779,7 +850,7 @@ export default function VendorProductEditorPage() {
                 <p className="text-xs text-gray-500 mb-2">
                   Current images (click to remove)
                 </p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {existingImages.map((url) => (
                     <div
                       key={url}
@@ -793,7 +864,7 @@ export default function VendorProductEditorPage() {
                       />
                       <button
                         type="button"
-                        onClick={() => handleRemoveExistingImage(url)}
+                        onClick={() => setRemoveImageTarget(url)}
                         className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
                       >
                         <Trash2 className="h-5 w-5 text-white" />
@@ -810,7 +881,7 @@ export default function VendorProductEditorPage() {
                 <p className="text-xs text-gray-500 mb-2">
                   New images (will be added on save)
                 </p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {pendingPreviews.map((src, idx) => (
                     <div
                       key={src}
@@ -966,5 +1037,17 @@ export default function VendorProductEditorPage() {
         </div>
       </div>
     </div>
+
+    {/* Remove Image Confirm Modal */}
+    <ConfirmModal
+      open={!!removeImageTarget}
+      onConfirm={() => removeImageTarget && handleRemoveExistingImage(removeImageTarget)}
+      onCancel={() => setRemoveImageTarget(null)}
+      title="Remove Image"
+      description="Are you sure you want to remove this image from the gallery?"
+      confirmLabel="Remove"
+      variant="danger"
+    />
+    </>
   );
 }

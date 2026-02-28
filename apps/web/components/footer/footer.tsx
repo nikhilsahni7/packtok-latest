@@ -1,16 +1,16 @@
 import {
-  AU as AustraliaFlag,
-  CN as ChinaFlag,
-  IN as IndiaFlag,
-  AE as UAEFlag,
+    AU as AustraliaFlag,
+    CN as ChinaFlag,
+    IN as IndiaFlag,
+    AE as UAEFlag,
 } from "country-flag-icons/react/3x2";
 import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Phone,
-  Twitter,
-  Youtube,
+    Facebook,
+    Instagram,
+    Linkedin,
+    Phone,
+    Twitter,
+    Youtube,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -51,7 +51,7 @@ export default function PacktokFooter() {
             </div>
 
             {/* Navigation Columns */}
-            <div className="flex gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {/* Pages Column */}
               <div>
                 <h3 className="text-white font-semibold mb-2 text-base">

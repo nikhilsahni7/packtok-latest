@@ -2,15 +2,7 @@
 
 import api from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-const toast = {
-  success: (msg: string) => {
-    if (typeof window !== "undefined") {
-      // Replace with your existing toast solution if available
-      // eslint-disable-next-line no-alert
-      alert(msg);
-    }
-  },
-};
+import { toast } from "react-hot-toast";
 
 export type VendorProductForm = {
   title: string;

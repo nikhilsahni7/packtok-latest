@@ -3,28 +3,28 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@packtok/ui/components/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@packtok/ui/components/select";
 import { Textarea } from "@packtok/ui/components/textarea";
 import { useEffect, useMemo } from "react";
@@ -32,8 +32,8 @@ import { Resolver, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useCreateAuction } from "../../../../hooks";
 import {
-  auctionFormSchema,
-  AuctionFormValues,
+    auctionFormSchema,
+    AuctionFormValues,
 } from "../../../../schemas/auction-schema";
 import { MarketplaceProduct } from "../../../../types/product";
 
@@ -188,9 +188,22 @@ export function CreateAuctionDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Currency</FormLabel>
-                    <FormControl>
-                      <Input placeholder="INR" {...field} />
-                    </FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select currency" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
+                        <SelectItem value="USD">🇺🇸 USD - US Dollar</SelectItem>
+                        <SelectItem value="AED">🇦🇪 AED - UAE Dirham</SelectItem>
+                        <SelectItem value="EUR">🇪🇺 EUR - Euro</SelectItem>
+                        <SelectItem value="GBP">🇬🇧 GBP - British Pound</SelectItem>
+                        <SelectItem value="CNY">🇨🇳 CNY - Chinese Yuan</SelectItem>
+                        <SelectItem value="TWD">🇹🇼 TWD - Taiwan Dollar</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

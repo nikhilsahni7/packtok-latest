@@ -122,7 +122,7 @@ export function CompanyAcquisitionForm() {
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
                 <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 1 Contact Information</h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <Label htmlFor="contactName">Contact Name</Label>
                     <Input
                       id="contactName"
@@ -137,7 +137,7 @@ export function CompanyAcquisitionForm() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="companyName">Company Name</Label>
                     <Input
                       id="companyName"
@@ -152,7 +152,7 @@ export function CompanyAcquisitionForm() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="role">Role</Label>
                     <Input
                       id="role"
@@ -167,7 +167,7 @@ export function CompanyAcquisitionForm() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="email">Email Address</Label>
                     <Input
                       id="email"
@@ -183,7 +183,7 @@ export function CompanyAcquisitionForm() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input
                       id="phone"
@@ -203,7 +203,7 @@ export function CompanyAcquisitionForm() {
               <div className="space-y-4">
                 <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 2 Transaction Details</h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <Label htmlFor="inquirerType">Inquirer Type</Label>
                     <Select
                       onValueChange={(value) => {
@@ -231,7 +231,7 @@ export function CompanyAcquisitionForm() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="transactionType">Transaction Type</Label>
                     <Select
                       onValueChange={(value) =>
@@ -262,7 +262,7 @@ export function CompanyAcquisitionForm() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="intendedOutcome">Intended Outcome</Label>
                     <Textarea
                       id="intendedOutcome"
@@ -292,7 +292,7 @@ export function CompanyAcquisitionForm() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
                       <Label htmlFor="sellerLegalStructure">Legal Structure</Label>
                       <Select
@@ -385,7 +385,7 @@ export function CompanyAcquisitionForm() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
                       <Label htmlFor="buyerTargetSize">Target Size</Label>
                       <Input
@@ -425,7 +425,7 @@ export function CompanyAcquisitionForm() {
                 <div className="px-10 border-t-[1px] py-4 border-[#E0E0E0]">
                   <div>
                     <Label className="py-2">Advisors Engaged</Label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 grid-cols-1 md:grid-cols-3 gap-3 mt-2">
                       {advisorOptions.map((advisor) => (
                         <div key={advisor} className="flex items-center border p-4 border-[#D3D3D3] justify-center text-[#828282] space-x-2">
                           <Checkbox
@@ -443,7 +443,7 @@ export function CompanyAcquisitionForm() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 py-4 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 py-4 grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="flex items-center border p-4 border-[#D3D3D3] justify-center text-[#828282] space-x-2">
                       <Checkbox
                         id="isValued"
@@ -489,7 +489,7 @@ export function CompanyAcquisitionForm() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 mb-6  gap-5 space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 mb-6  gap-5 space-y-2">
                     <Label htmlFor="litigationDetails">
                       Litigation Details (if applicable)
                     </Label>
@@ -501,7 +501,7 @@ export function CompanyAcquisitionForm() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 mb-6  gap-5 space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 mb-6  gap-5 space-y-2">
                     <Label htmlFor="additionalNotes">Additional Notes</Label>
                     <Textarea
                       id="additionalNotes"

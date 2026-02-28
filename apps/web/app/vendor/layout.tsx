@@ -3,7 +3,7 @@
 import { useAuthStore, useHasHydrated } from "@/store/auth-store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { VendorSidebar } from "./dashboard/components/vendor-sidebar";
+import { VendorMobileMenuButton, VendorSidebar } from "./dashboard/components/vendor-sidebar";
 
 export default function VendorLayout({
   children,
@@ -15,6 +15,7 @@ export default function VendorLayout({
   const hasHydrated = useHasHydrated();
   const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   // Give AuthBootstrap a short window to refresh the token after hydration
   const [bootstrapDone, setBootstrapDone] = useState(false);
 
@@ -71,14 +72,22 @@ export default function VendorLayout({
         collapsed={sidebarCollapsed}
         onToggle={toggleSidebar}
         user={user}
+        mobileOpen={mobileOpen}
+        onMobileClose={() => setMobileOpen(false)}
       />
+      {/* Main content: no margin on mobile, sidebar margin on desktop */}
       <main
         className={`min-h-[calc(100vh-5rem)] transition-all duration-300 ease-in-out ${
-          sidebarCollapsed ? "ml-16" : "ml-64"
+          sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
         }`}
       >
         {children}
       </main>
+
+      {/* Floating menu button for mobile */}
+      {!mobileOpen && (
+        <VendorMobileMenuButton onClick={() => setMobileOpen(true)} />
+      )}
     </div>
   );
 }

@@ -18,6 +18,8 @@ export const jobSeekerSchema = z.object({
   }),
   postalCode: z.string().min(3, {
     message: "Postal code must be at least 3 characters.",
+  }).regex(/^[0-9]+$/, {
+    message: "Postal code must contain only digits.",
   }),
   stateOfResidence: z.string().min(2, {
     message: "State of residence must be at least 2 characters.",

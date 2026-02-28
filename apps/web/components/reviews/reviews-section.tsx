@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { Edit2, Trash2, VerifiedIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -42,6 +43,7 @@ export function ReviewsSection
   const [isEditing, setIsEditing] = useState(false);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Fetch reviews
   const fetchReviews = async () => {
@@ -178,7 +180,7 @@ export function ReviewsSection
   // Delete review
   const handleDelete = async () => {
     if (!existingReview || !accessToken) return;
-    if (!confirm("Are you sure you want to delete your review?")) return;
+    setShowDeleteConfirm(false);
 
     try {
       const res = await fetch(
@@ -222,6 +224,7 @@ export function ReviewsSection
 
 
   return (
+    <>
     <div className="mt-12 border-t pt-8">
       {/* Header with stats */}
       <div className="flex items-center justify-between mb-6">
@@ -256,7 +259,7 @@ export function ReviewsSection
                     <Edit2 className="w-4 h-4" /> Edit
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={() => setShowDeleteConfirm(true)}
                     className="px-3 py-1.5 flex items-center gap-1.5 text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
                   >
                     <Trash2 className="w-4 h-4" /> Delete
@@ -387,5 +390,17 @@ export function ReviewsSection
         )
       )}
     </div>
+
+    {/* Delete Review Confirm Modal */}
+    <ConfirmModal
+      open={showDeleteConfirm}
+      onConfirm={handleDelete}
+      onCancel={() => setShowDeleteConfirm(false)}
+      title="Delete Review"
+      description="Are you sure you want to delete your review? This action cannot be undone."
+      confirmLabel="Delete Review"
+      variant="danger"
+    />
+  </>
   );
 }

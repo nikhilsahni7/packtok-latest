@@ -1,6 +1,6 @@
 import Consumables from "@/assets/Consumables1.png";
-import machinery from "@/assets/packtok.png";
 import ManPower from "@/assets/Man Power.png";
+import machinery from "@/assets/packtok.png";
 import RawMaterials from "@/assets/Raw Materials.png";
 
 import SparePart from "@/assets/spare_part_1.png";
@@ -12,7 +12,7 @@ import Link from "next/link";
 export default function ShopNow() {
   return (
     <div
-      className={`flex gap-2 sm:gap-3 md:gap-4 w-[95%] sm:w-[90%] md:w-[80%] mx-auto grid grid-cols-2`}
+      className={`flex gap-2 sm:gap-3 md:gap-4 w-[95%] sm:w-[90%] md:w-[80%] mx-auto grid grid-cols-1 lg:grid-cols-2`}
     >
       {/* Left Rectangle*/}
       <div className="bg-gray-100  justify-between row-span-2">

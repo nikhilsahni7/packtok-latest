@@ -2,7 +2,10 @@ import { z } from "zod";
 
 export const vendorSignUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long"),
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Please enter a valid email address").refine(
+    (val) => /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/.test(val) && !/\.([a-zA-Z]{2,})\.\1$/i.test(val),
+    { message: "Please enter a valid email address" }
+  ),
   phone_number: z
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format (E.164)")

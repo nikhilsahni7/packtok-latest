@@ -1,28 +1,30 @@
 "use client";
 
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
-  useCancelSubscription,
-  useMySubscription,
-  usePlans,
-  useSubscribe,
-  useVerifySubscriptionPayment,
-  type SubscribeResult,
-  type VendorPlan,
+    useCancelSubscription,
+    useMySubscription,
+    usePlans,
+    useSubscribe,
+    useVerifySubscriptionPayment,
+    type SubscribeResult,
+    type VendorPlan,
 } from "@/hooks";
+import { useVendorApplication } from "@/hooks/useVendorApplication";
 import { loadRazorpayCheckout } from "@/lib/razorpay";
 import { useAuthStore } from "@/store/auth-store";
 import { Button, Card } from "@packtok/ui";
 import {
-  AlertCircle,
-  BadgeCheck,
-  CalendarDays,
-  CheckCircle2,
-  Crown,
-  Loader2,
-  Package,
-  Sparkles,
-  Star,
-  Zap,
+    AlertCircle,
+    BadgeCheck,
+    CalendarDays,
+    CheckCircle2,
+    Crown,
+    Loader2,
+    Package,
+    Sparkles,
+    Star,
+    Zap,
 } from "lucide-react";
 import { useCallback, useState } from "react";
 
@@ -73,6 +75,7 @@ export default function VendorSubscriptionPage() {
   const user = useAuthStore((s) => s.user);
   const { data: plans, isLoading: plansLoading } = usePlans();
   const { data: subInfo, isLoading: subLoading } = useMySubscription();
+  const { data: vendorApp, isLoading: appLoading } = useVendorApplication();
   const subscribeMutation = useSubscribe();
   const verifyMutation = useVerifySubscriptionPayment();
   const cancelMutation = useCancelSubscription();
@@ -80,9 +83,11 @@ export default function VendorSubscriptionPage() {
   const [processingPlanId, setProcessingPlanId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const currentPlanSlug = subInfo?.subscription?.plan?.slug ?? null;
   const isActive = subInfo?.subscription?.status === "ACTIVE";
+  const vendorNotApproved = vendorApp?.status === "PENDING" || vendorApp?.status === "REJECTED";
 
   // ── Handle Razorpay Checkout ─────────────────────────────────────────────
   const openRazorpayCheckout = useCallback(
@@ -181,7 +186,7 @@ export default function VendorSubscriptionPage() {
 
   // ── Cancel Handler ───────────────────────────────────────────────────────
   const handleCancel = async () => {
-    if (!confirm("Are you sure you want to cancel auto-renewal? Your subscription will remain active until the end date.")) return;
+    setShowCancelConfirm(false);
     setError(null);
     setSuccess(null);
     try {
@@ -194,7 +199,7 @@ export default function VendorSubscriptionPage() {
     }
   };
 
-  if (plansLoading || subLoading) {
+  if (plansLoading || subLoading || appLoading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
@@ -213,6 +218,23 @@ export default function VendorSubscriptionPage() {
           Choose a plan that fits your business needs
         </p>
       </div>
+
+      {/* Vendor not approved warning */}
+      {vendorNotApproved && (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
+          <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
+          <div className="text-sm">
+            <p className="font-medium">
+              {vendorApp?.status === "PENDING"
+                ? "Your vendor application is pending approval."
+                : "Your vendor application was rejected."}
+            </p>
+            <p className="mt-1 text-amber-600">
+              You cannot select a subscription plan until your application is approved by an admin.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Status alerts */}
       {error && (
@@ -265,7 +287,7 @@ export default function VendorSubscriptionPage() {
             {subInfo.subscription.plan.slug !== "free" && (
               <Button
                 variant="secondary"
-                onClick={handleCancel}
+                onClick={() => setShowCancelConfirm(true)}
                 disabled={cancelMutation.isPending}
                 className="shrink-0"
               >
@@ -392,6 +414,7 @@ export default function VendorSubscriptionPage() {
                   <button
                     onClick={() => handleSubscribe(plan)}
                     disabled={
+                      vendorNotApproved ||
                       isProcessing ||
                       subscribeMutation.isPending ||
                       verifyMutation.isPending
@@ -431,6 +454,24 @@ export default function VendorSubscriptionPage() {
           access continues until the billing period ends.
         </p>
       </div>
+      {/* Cancel Subscription Confirm Modal */}
+      <ConfirmModal
+        open={showCancelConfirm}
+        onConfirm={handleCancel}
+        onCancel={() => setShowCancelConfirm(false)}
+        title="Cancel Auto-Renewal"
+        description={
+          <>
+            <p>Are you sure you want to cancel auto-renewal?</p>
+            <p className="mt-2 text-xs text-gray-400">
+              Your subscription will remain active until the end of the current billing period.
+            </p>
+          </>
+        }
+        confirmLabel="Cancel Renewal"
+        variant="warning"
+        loading={cancelMutation.isPending}
+      />
     </div>
   );
 }

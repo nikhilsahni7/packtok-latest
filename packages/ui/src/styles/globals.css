@@ -123,6 +123,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
 }
 
@@ -131,7 +132,7 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;     /* Firefox */
   }
-  
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;            /* Chrome, Safari and Opera */
   }

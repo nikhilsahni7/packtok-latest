@@ -2,13 +2,13 @@ import { prisma, Role } from "@packtok/db";
 import { Request, Response } from "express";
 import config from "../config";
 import {
-  loginUser,
-  refreshAccessToken,
-  registerUser,
-  resetPasswordWithOtp,
-  sendPasswordResetOtp,
-  sendVerificationOtp,
-  verifyOtp
+    loginUser,
+    refreshAccessToken,
+    registerUser,
+    resetPasswordWithOtp,
+    sendPasswordResetOtp,
+    sendVerificationOtp,
+    verifyOtp
 } from "../services/auth.service";
 
 
@@ -99,7 +99,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: "lax" as const,
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
@@ -130,7 +130,7 @@ export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: "lax" as const,
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
@@ -147,7 +147,7 @@ export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const refresh = asyncHandler(async (req: Request, res: Response) => {
-  const incomingRefreshToken = req.cookies.refreshToken;
+  const incomingRefreshToken = req.cookies.refreshToken || req.body?.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Refresh token missing");
   }
@@ -158,7 +158,7 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: "lax" as const,
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
@@ -176,7 +176,7 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: "lax" as const,
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 

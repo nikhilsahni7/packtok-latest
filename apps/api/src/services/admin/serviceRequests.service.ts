@@ -20,7 +20,14 @@ const includeBlock = {
   assignedTo: {
     select: { id: true, name: true, email: true },
   },
-  actionLogs: true,
+  actionLogs: {
+    include: {
+      actor: {
+        select: { id: true, name: true, email: true },
+      },
+    },
+    orderBy: { createdAt: "desc" as const },
+  },
 };
 
 export const listAllServiceRequests = async () => {

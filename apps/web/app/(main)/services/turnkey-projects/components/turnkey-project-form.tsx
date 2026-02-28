@@ -174,7 +174,7 @@ export function TurnkeyProjectForm() {
                     Section 1: Contact Information
                   </h3>
                   <div className="px-10 border-y-[1px] pt-4 border-[#E0E0E0]">
-                    <div className="grid grid-cols-2 mb-6  gap-5 space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 mb-6  gap-5 space-y-2">
                       <Label
                         htmlFor="contactName"
                         className="text-sm font-medium text-gray-700"
@@ -197,7 +197,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                    <div className="space-y-2 grid grid-cols-1 sm:grid-cols-2 mb-6 gap-5 ">
                       <Label
                         htmlFor="companyName"
                         className="text-sm font-medium text-gray-700"
@@ -219,7 +219,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                    <div className="space-y-2 grid grid-cols-1 sm:grid-cols-2 mb-6 gap-5 ">
                       <Label
                         htmlFor="role"
                         className="text-sm font-medium text-gray-700"
@@ -242,7 +242,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                    <div className="space-y-2 grid grid-cols-1 sm:grid-cols-2 mb-6 gap-5 ">
                       <Label
                         htmlFor="email"
                         className="text-sm font-medium text-gray-700"
@@ -266,7 +266,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                    <div className="space-y-2 grid grid-cols-1 sm:grid-cols-2 mb-6 gap-5 ">
                       <Label
                         htmlFor="phone"
                         className="text-sm font-medium text-gray-700"
@@ -289,7 +289,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-2 pb-5 gap-5 ">
+                    <div className="space-y-2 grid grid-cols-1 sm:grid-cols-2 pb-5 gap-5 ">
                       <Label
                         htmlFor="website"
                         className="text-sm font-medium text-gray-700"
@@ -323,7 +323,7 @@ export function TurnkeyProjectForm() {
                       <Label className="text-sm font-medium text-gray-700">
                         Industry Type:
                       </Label>
-                      <div className="grid py-6 grid-cols-2 md:grid-cols-3 gap-10 mt-2">
+                      <div className="grid py-6 grid-cols-1 sm:grid-cols-2 grid-cols-1 md:grid-cols-3 gap-10 mt-2">
                         {industryOptions.map((industry) => (
                           <div
                             key={industry.value}
@@ -358,7 +358,7 @@ export function TurnkeyProjectForm() {
 
 
                       <div className=" py-4">
-                        <div className="space-y-2 mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2 mb-10 grid grid-cols-1 gap-4">
                           <Label
                             htmlFor="facilityType"
                             className="text-sm font-medium text-gray-700"
@@ -406,7 +406,7 @@ export function TurnkeyProjectForm() {
                           )}
                         </div>
 
-                        <div className="space-y-2 mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2 mb-10 grid grid-cols-1 gap-4">
                           <Label
                             htmlFor="targetProductionCapacity"
                             className="text-sm font-medium text-gray-700"
@@ -429,7 +429,7 @@ export function TurnkeyProjectForm() {
                           )}
                         </div>
 
-                        <div className=" grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className=" grid grid-cols-1 gap-4">
                           <Label
                             htmlFor="projectDescription"
                             className="text-sm font-medium items-start text-gray-700"
@@ -467,7 +467,7 @@ export function TurnkeyProjectForm() {
                     Section 3: Timeline & Budget
                   </h3>
                   <div className=" border-y px-10 py-6 border-[#E0E0E0] ">
-                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="space-y-2 grid grid-cols-1 gap-4 mb-4">
                       <Label
                         htmlFor="completionTimeline"
                         className="text-sm font-medium text-gray-700"
@@ -510,7 +510,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="space-y-2 grid grid-cols-1 gap-4 mb-4">
                       <Label
                         htmlFor="estimatedBudget"
                         className="text-sm font-medium text-gray-700"
@@ -555,7 +555,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="space-y-2 grid grid-cols-1 gap-4 mb-4">
                       <Label
                         htmlFor="fundingStatus"
                         className="text-sm font-medium text-gray-700"
@@ -602,7 +602,7 @@ export function TurnkeyProjectForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2 grid grid-cols-1 gap-4">
                       <Label
                         htmlFor="siteAvailableStatus"
                         className="text-sm font-medium text-gray-700"
@@ -644,7 +644,7 @@ export function TurnkeyProjectForm() {
                   <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
                     Section 4:  Services Needed
                   </h3>
-                  <div className="border-y px-10 py-6 border-[#E0E0E0] grid grid-cols-1 md:grid-cols-2  gap-3">
+                  <div className="border-y px-10 py-6 border-[#E0E0E0] grid grid-cols-1  gap-3">
                     {serviceOptions.map((service) => (
                       <div
                         key={service.value}
@@ -678,7 +678,7 @@ export function TurnkeyProjectForm() {
                     Section 5: Additional Information
                   </h3>
                   <div className="border-t px-10 py-6 border-[#E0E0E0] ">
-                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2  gap-4">
+                    <div className="space-y-2 grid grid-cols-1  gap-4">
                       <Label
                         htmlFor="powerSupplyAvailable"
                         className="text-sm font-medium text-gray-700"
@@ -692,7 +692,7 @@ export function TurnkeyProjectForm() {
                         className="border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 focus:ring-purple-500"
                       />
                     </div>
-                    <div className="grid py-10 grid-cols-1 md:grid-cols-3  gap-4">
+                    <div className="grid py-10 grid-cols-1 grid-cols-1 md:grid-cols-3  gap-4">
 
                       <div className="flex items-center border p-4 border-[#D3D3D3] justify-center space-x-2">
                         <Checkbox
@@ -744,7 +744,7 @@ export function TurnkeyProjectForm() {
                     </div>
 
 
-                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="space-y-2 grid grid-cols-1 gap-4 mb-6">
                       <Label
                         htmlFor="machineryPreferences"
                         className="text-sm font-medium text-gray-700"
@@ -760,7 +760,7 @@ export function TurnkeyProjectForm() {
                       />
                     </div>
 
-                    <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2 grid grid-cols-1 gap-4">
                       <Label
                         htmlFor="specialRequirements"
                         className="text-sm font-medium text-gray-700"

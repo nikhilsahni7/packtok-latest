@@ -36,8 +36,9 @@ interface Customer {
   email: string;
   phone_number: string | null;
   role: string;
-  profile_image?: string | null;
-  createdAt?: string;
+  profile_image: string | null;
+  createdAt: string;
+  country: string | null;
 }
 
 type SortField = "name" | "email" | "phone_number" | "role" | "createdAt";

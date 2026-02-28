@@ -23,7 +23,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Header */}
-      <section className="bg-black py-2 border-y-[3px] border-[#FE7B02]">
+      <section className="bg-black py-2 pt-16 md:pt-2 border-y-[3px] border-[#FE7B02]">
         <div className="w-[95%] mx-auto">
           <h1 className="text-[40px] font-medium text-white text-center">
             Services
@@ -46,10 +46,10 @@ export default function ServicesPage() {
               alt="Turnkey projects"
               width={700}
               height={450}
-              className="w-full object-cover col-span-2 border border-[#000] -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
+              className="w-full object-cover md:col-span-2 border border-[#000] -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-1 md:row-start-1"
             />
 
-            <div className="flex items-end col-start-1 row-start-1">
+            <div className="hidden md:flex items-end md:col-start-1 md:row-start-1">
               <Image
                 src="/tunkery-icon.png"
                 alt="Turnkey Icon"
@@ -59,16 +59,16 @@ export default function ServicesPage() {
               />
             </div>
 
-            <div className="col-start-2 row-start-1 bg-black w-full h-[580px]"></div>
-            <div className="col-span-3 h-[580px]">
-              <div className="bg-black text-white p-12 shadow-2xl min-h-[580px] flex flex-col justify-center">
+            <div className="hidden md:block md:col-start-2 md:row-start-1 bg-black w-full h-auto md:h-[580px]"></div>
+            <div className="md:col-span-3 h-auto md:h-[580px]">
+              <div className="bg-black text-white p-12 shadow-2xl min-h-0 md:min-h-[580px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-white text-center">
                   Turnkey projects
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                   End-to-end turnkey project solutions
                 </p>
-                <div className="w-[521px] mx-auto">
+                <div className="w-full max-w-[521px] mx-auto">
                   <p className="text-gray-300 mb-10 leading-relaxed text-[12px] text-justify">
                     Packtak offers end-to-end turnkey project solutions for the
                     packaging industry, managing everything from initial
@@ -94,10 +94,10 @@ export default function ServicesPage() {
               alt="Maintenance projects"
               width={700}
               height={450}
-              className="w-full object-cover col-span-2 border border-[#000] -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
+              className="w-full object-cover md:col-span-2 border border-[#000] -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-4 md:row-start-1"
             />
 
-            <div className="flex items-end col-start-5 row-start-1">
+            <div className="hidden md:flex items-end md:col-start-5 md:row-start-1">
               <Image
                 src="/maintain-icon.png"
                 alt="Maintenance Icon"
@@ -107,16 +107,16 @@ export default function ServicesPage() {
               />
             </div>
 
-            <div className="col-start-4 row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-[580px]"></div>
-            <div className="col-span-3 row-start-1 col-start-1 h-[580px]">
-              <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
+            <div className="hidden md:block md:col-start-4 md:row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-auto md:h-[580px]"></div>
+            <div className="md:col-span-3 md:row-start-1 md:col-start-1 h-auto md:h-[580px]">
+              <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-0 md:min-h-[580px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-black text-center">
                   Maintenance
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                   Proactive maintenance solutions
                 </p>
-                <div className="w-[521px] mx-auto">
+                <div className="w-full max-w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                     Our comprehensive maintenance services ensure your packaging
                     equipment operates at peak performance. From preventive
@@ -144,10 +144,10 @@ export default function ServicesPage() {
               alt="Consultancy projects"
               width={700}
               height={450}
-              className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
+              className="w-full object-cover border border-[#000] md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-1 md:row-start-1"
             />
 
-            <div className="flex items-end col-start-1 row-start-1">
+            <div className="hidden md:flex items-end md:col-start-1 md:row-start-1">
               <Image
                 src="/consult-icon.png"
                 alt="Consultancy Icon"
@@ -157,16 +157,16 @@ export default function ServicesPage() {
               />
             </div>
 
-            <div className="col-start-2 row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-[580px]"></div>
-            <div className="col-span-3 h-[580px]">
-              <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
+            <div className="hidden md:block md:col-start-2 md:row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-auto md:h-[580px]"></div>
+            <div className="md:col-span-3 h-auto md:h-[580px]">
+              <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-0 md:min-h-[580px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-black text-center ">
                   Consultancy
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                   PackTok&apos;s expert consultancy
                 </p>
-                <div className="w-[521px] mx-auto">
+                <div className="w-full max-w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                     Packtak offers specialized consultancy services for the
                     packaging industry, delivering strategic guidance to
@@ -192,19 +192,19 @@ export default function ServicesPage() {
               alt="Machinery projects"
               width={700}
               height={450}
-              className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
+              className="w-full object-cover border border-[#000] md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-4 md:row-start-1"
             />
 
-            <div className="col-start-4 row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-[580px]"></div>
-            <div className="col-span-3 relative row-start-1 col-start-1 h-[580px]">
-              <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
+            <div className="hidden md:block md:col-start-4 md:row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-auto md:h-[580px]"></div>
+            <div className="md:col-span-3 relative md:row-start-1 md:col-start-1 h-auto md:h-[580px]">
+              <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-0 md:min-h-[580px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-black text-center">
                   Buy & Sell Machinery
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                   Buyers and Sellers of Corrugated & Packaging Equipment
                 </p>
-                <div className="w-[521px] mx-auto">
+                <div className="w-full max-w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                    PackTok helps packaging companies recover value from underutilized machinery and surplus equipment. We conduct detailed audits, ensure compliance, and help turn idle inventory into working capital while optimizing operational efficiency. In addition, companies can buy verified used equipment directly through our platform, ensuring reliability, transparency, and quality in every purchase.
                   </p>
@@ -236,19 +236,19 @@ export default function ServicesPage() {
               alt="Investment and Takeover projects"
               width={700}
               height={450}
-              className="w-full border border-[#000] object-cover col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
+              className="w-full border border-[#000] object-cover md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-1 md:row-start-1"
             />
 
-            <div className="col-start-2 row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-[580px]"></div>
-            <div className="col-span-3 h-[580px]">
-              <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
+            <div className="hidden md:block md:col-start-2 md:row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-auto md:h-[580px]"></div>
+            <div className="md:col-span-3 h-auto md:h-[580px]">
+              <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-0 md:min-h-[580px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-black text-center">
                   Acquisition and Takeover
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                   Acquisition & Takeover Solutions
                 </p>
-                <div className="w-[521px] mx-auto">
+                <div className="w-full max-w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                     Strategic acquisition and takeover services for packaging
                     companies looking to expand or optimize their operations. We
@@ -275,19 +275,19 @@ export default function ServicesPage() {
               alt="Job Finder projects"
               width={700}
               height={450}
-              className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
+              className="w-full object-cover border border-[#000] md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-4 md:row-start-1"
             />
 
-            <div className="col-start-4 row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-[580px]"></div>
-            <div className="col-span-3 row-start-1 col-start-1 h-[580px]">
-              <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-[580px] flex flex-col justify-center">
+            <div className="hidden md:block md:col-start-4 md:row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-auto md:h-[580px]"></div>
+            <div className="md:col-span-3 md:row-start-1 md:col-start-1 h-auto md:h-[580px]">
+              <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-0 md:min-h-[580px] flex flex-col justify-center">
                 <h2 className="text-5xl font-bold mb-6 text-black text-center">
                   Machinery Installer
                 </h2>
                 <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                   Expert in installing packaging machinery
                 </p>
-                <div className="w-[521px] mx-auto">
+                <div className="w-full max-w-[521px] mx-auto">
                   <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                    At Packtok, we provide expert machinery installation services tailored to the corrugated and packaging industry. Our team of skilled engineers and technicians ensures every piece of equipment is installed, aligned, and commissioned with precision — helping you achieve smooth operations and long-term reliability.
                   </p>

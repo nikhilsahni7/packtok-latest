@@ -1,6 +1,7 @@
 "use client";
 
 import Protected from "@/components/auth/protected";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import api from "@/lib/axios";
 import { Order, ORDER_STATUS_CONFIG } from "@/types/order";
 import {
@@ -37,6 +38,7 @@ function OrdersContent() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [cancelOrderTarget, setCancelOrderTarget] = useState<{ id: string; orderNumber: string } | null>(null);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -68,8 +70,7 @@ function OrdersContent() {
   }, [searchParams, router]);
 
   const handleCancelOrder = async (orderId: string) => {
-    if (!confirm("Are you sure you want to cancel this order?")) return;
-
+    setCancelOrderTarget(null);
     try {
       await api.post(`/api/v1/orders/${orderId}/cancel`);
       toast.success("Order cancelled successfully");
@@ -233,7 +234,7 @@ function OrdersContent() {
 
                     {(order.status === "PAID" || order.status === "PROCESSING") && (
                       <button
-                        onClick={() => handleCancelOrder(order.id)}
+                        onClick={() => setCancelOrderTarget({ id: order.id, orderNumber: order.orderNumber })}
                         className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
                       >
                         Cancel Order
@@ -326,6 +327,23 @@ function OrdersContent() {
           </div>
         </div>
       )}
+
+      {/* Cancel Order Confirm Modal */}
+      <ConfirmModal
+        open={!!cancelOrderTarget}
+        onConfirm={() => cancelOrderTarget && handleCancelOrder(cancelOrderTarget.id)}
+        onCancel={() => setCancelOrderTarget(null)}
+        title="Cancel Order"
+        description={
+          <>
+            <p>Are you sure you want to cancel order</p>
+            <p className="font-semibold text-gray-900 mt-1">{cancelOrderTarget?.orderNumber}</p>
+            <p className="mt-2 text-xs text-red-500">This action cannot be undone.</p>
+          </>
+        }
+        confirmLabel="Cancel Order"
+        variant="danger"
+      />
     </div>
   );
 }

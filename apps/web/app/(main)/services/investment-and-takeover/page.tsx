@@ -71,7 +71,7 @@ export default function InvestmentAndTakeoverPage() {
         <div className="min-h-screen text-gray-900 py-8">
           {/* Hero */}
           <section className="p-8 overflow-hidden">
-            <h1 className="text-4xl md:text-5xl font-semibold leading-16">
+            <h1 className="text-3xl md:text-5xl font-semibold leading-tight md:leading-16">
               FACTORY  ACQUISITION  <br />  TAKEOVER  PLATFORM
             </h1>
             <p className="mt-4 text-gray-600 text-justify max-w-3xl">
@@ -79,7 +79,7 @@ export default function InvestmentAndTakeoverPage() {
               unlocking capital, facilitating acquisitions and maximizing
               intrinsic asset value through strategic partnerships.
             </p>
-            <div className="py-8 grid md:grid-cols-2 gap-8 place-items-center">
+            <div className="py-8 grid grid-cols-1 md:grid-cols-2 gap-8 place-items-center">
               <div className="rounded-2xl overflow-hidden shadow-xl">
                 <Image
                   src={Main}
@@ -121,7 +121,7 @@ export default function InvestmentAndTakeoverPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-center gap-8">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
               <div className="flex gap-4 items-center px-8 py-6 rounded-full shadow-lg bg-white max-w-sm">
                 <Image
                   src={SocialIcons}
@@ -151,7 +151,7 @@ export default function InvestmentAndTakeoverPage() {
           </section>
 
           {/* Who we are */}
-          <section className="mt-16 grid md:grid-cols-2 gap-8 items-center">
+          <section className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-sm text-indigo-500 font-semibold">
                 WHO ARE WE
@@ -194,13 +194,13 @@ export default function InvestmentAndTakeoverPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Image
                 src={WhoWeAre1}
                 alt="factory"
                 width={400}
                 height={300}
-                className="object-cover w-full h-full rounded-2xl shadow-lg translate-y-8"
+                className="object-cover w-full h-full rounded-2xl shadow-lg md:translate-y-8"
               />
               <div className="flex flex-col gap-4">
                 <Image
@@ -227,10 +227,10 @@ export default function InvestmentAndTakeoverPage() {
 
             {/* merger and acquisitaion.jpg */}
 
-            <h3 className=" text-[3rem] font-semibold uppercase">
+            <h3 className="text-3xl md:text-[3rem] font-semibold uppercase">
               Acquisition
             </h3>
-            <div className="grid py-20 grid-cols-2 gap-10">
+            <div className="grid py-10 md:py-20 grid-cols-1 sm:grid-cols-2 gap-10">
               <div>
                 <Image
                   src={merger}
@@ -238,20 +238,20 @@ export default function InvestmentAndTakeoverPage() {
                   className="rounded-[1rem]"
                 />
               </div>
-              <div className="pl-4 text-[1.5rem] text-justify text-gray-600 mt-2"> <ul>
+              <div className="pl-4 text-lg md:text-[1.5rem] text-justify text-gray-600 mt-2"> <ul>
                 <li className="list-disc">At Packtok, acquisition refers to a business transaction where one company purchases a majority or all of another {"company's"} shares or assets, gaining full control.</li>
                 <li className="py-4 list-disc">The purpose is to integrate the target {"company's"} operations, resources, or market presence into the acquiring company.</li>
                 <li className="list-disc">This process helps businesses expand market share, improve efficiencies, and explore.</li>
               </ul></div>
             </div>
 
-            <h3 className="text-[3rem] font-semibold uppercase">
+            <h3 className="text-3xl md:text-[3rem] font-semibold uppercase">
               Takeover
             </h3>
 
-            <div className="grid py-20 grid-cols-2 gap-5">
+            <div className="grid py-10 md:py-20 grid-cols-1 sm:grid-cols-2 gap-5">
 
-              <div className="pl-4 text-[1.5rem] text-justify text-gray-600 mt-2">
+              <div className="pl-4 text-lg md:text-[1.5rem] text-justify text-gray-600 mt-2">
 
                 <ul>
                   <li className="list-disc">At Packtok, a takeover refers to the process where one company the acquirer gains control or ownership of another company the target by purchasing a significant portion of its shares or assets. </li>
@@ -270,7 +270,7 @@ export default function InvestmentAndTakeoverPage() {
             </div>
 
             <div className="flex justify-between">
-              <h3 className="pl-4 text-3xl font-semibold uppercase">
+              <h3 className="pl-4 text-2xl md:text-3xl font-semibold uppercase">
                 EXPLORE PREMIUM INDUSTRIAL FACILITIES
               </h3>
 
@@ -279,7 +279,7 @@ export default function InvestmentAndTakeoverPage() {
 
             <p className="pl-4 text-justify text-gray-600 mt-2">
               Discover high-value manufacturing plants and
-              warehouses—production-ready <br /> with turnkey operations for
+              warehouses—production-ready <br className="hidden md:block"/> with turnkey operations for
               immediate acquisition.
             </p>
 
@@ -303,7 +303,7 @@ export default function InvestmentAndTakeoverPage() {
               Neighborhood Factories
             </h2>
 
-            <div className="mt-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-15 gap-8">
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 grid-cols-1 md:grid-cols-3 lg:grid-cols-15 gap-8">
               {neighborhoods.map((n) => (
                 <div
                   key={n.id}

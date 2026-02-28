@@ -325,15 +325,23 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
           return;
         }
       } else {
-        if (numericAmount > minBidAmount) {
-          toast.error(
-            `Bid must be ${formatCurrency(
-              minBidAmount.toString(),
-              auction.currency
-            )} or lower`
-          );
-          return;
+        if (minBidAmount <= 0) {
+          if (numericAmount >= parseFloat(currentAmount)) {
+            toast.error("Bid must be strictly lower than the current amount");
+            return;
+          }
+        } else {
+          if (numericAmount > minBidAmount) {
+            toast.error(
+              `Bid must be ${formatCurrency(
+                minBidAmount.toString(),
+                auction.currency
+              )} or lower`
+            );
+            return;
+          }
         }
+
         if (numericAmount <= 0) {
           toast.error("Bid must be greater than zero");
           return;
@@ -367,9 +375,9 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
         <div className="bg-white">
           <div className="container mx-auto px-4 lg:px-8 py-6">
             <div className="h-4 w-24 rounded bg-gray-200 animate-pulse" />
-            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <div className="mt-6 grid gap-6 grid-cols-1 lg:grid-cols-2">
               {/* Product Images Skeleton */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="aspect-square bg-gray-200 rounded-lg animate-pulse" />
                 ))}
@@ -384,7 +392,7 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
                       <div className="h-3 w-24 rounded bg-gray-700" />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div className="space-y-2">
                       <div className="h-3 w-20 rounded bg-gray-700" />
                       <div className="h-5 w-24 rounded bg-gray-600" />
@@ -470,9 +478,9 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
             Back to auctions
           </Link>
 
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <div className="mt-6 grid gap-6 grid-cols-1 lg:grid-cols-2">
             {/* Product Images Grid */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {product?.images && product.images.length > 0 ? (
                 product.images.slice(0, 4).map((image: string, idx: number) => (
                   <div
@@ -500,8 +508,8 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
               )}
             </div>
 
-            {/* Auction Info Panel - Desktop Only */}
-            <div className="hidden lg:block">
+            {/* Auction Info Panel */}
+            <div className="w-full lg:block">
               <div className="bg-black text-white rounded-lg p-6 mb-4">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
@@ -509,17 +517,24 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
                       {user?.name?.charAt(0) ?? "?"}
                     </span>
                   </div>
-                  <div>
-                    <h2 className="font-semibold text-lg">
-                      {product?.title ?? "Auction"}
-                    </h2>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <h2 className="font-semibold text-lg">
+                        {product?.title ?? "Auction"}
+                      </h2>
+                      {auction.mode === "REVERSE" && (
+                        <Badge variant="destructive" className="bg-red-500 hover:bg-red-600 text-[10px] px-1.5 py-0 leading-tight">
+                          REVERSE BID - BID LOWER
+                        </Badge>
+                      )}
+                    </div>
                     <p className="text-sm text-gray-400">
                       {user?.name ?? "Owner"}
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-sm text-gray-400">Starting price</p>
                     <p className="text-lg font-semibold">
@@ -668,22 +683,34 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
                   {/* Quick Bid Buttons */}
                   {hasActiveEnrollment && (
                     <>
-                      <div className="grid grid-cols-4 gap-2 mb-4">
-                        {[
-                          Math.ceil((minBidAmount || 0) / 100) * 100,
-                          Math.ceil((minBidAmount || 0) / 100) * 100 + 1000,
-                          Math.ceil((minBidAmount || 0) / 100) * 100 + 2000,
-                          Math.ceil((minBidAmount || 0) / 100) * 100 + 5000,
-                        ].map(
+                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-4">
+                        {(auction.mode === "REVERSE"
+                          ? [
+                              minBidAmount || 0,
+                              (minBidAmount || 0) - (Number(auction.minBidDecrement) || 100),
+                              (minBidAmount || 0) - (Number(auction.minBidDecrement) || 100) * 2,
+                              (minBidAmount || 0) - (Number(auction.minBidDecrement) || 100) * 5,
+                            ]
+                          : [
+                              minBidAmount || 0,
+                              (minBidAmount || 0) + (Number(auction.minBidIncrement) || 100),
+                              (minBidAmount || 0) + (Number(auction.minBidIncrement) || 100) * 2,
+                              (minBidAmount || 0) + (Number(auction.minBidIncrement) || 100) * 5,
+                            ]
+                        ).map(
                           (amount, idx) =>
                             amount > 0 && (
                               <button
                                 key={idx}
                                 onClick={() => setBidAmount(amount.toString())}
-                                className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-50"
+                                className="px-3 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-50 text-center flex items-center justify-center flex-col shadow-sm transition-all"
                               >
-                                {auction.currency}
-                                {amount.toLocaleString()}
+                                <span className="font-bold">
+                                  {formatCurrency(amount.toString(), auction.currency)}
+                                </span>
+                                {idx === 0 ? (
+                                  <span className="text-[10px] text-gray-500 mt-1 uppercase">Min Bid</span>
+                                ) : null}
                               </button>
                             )
                         )}
@@ -727,7 +754,7 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
 
       {/* Product Details Section */}
       <div className="container mx-auto px-4 lg:px-8 py-8">
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {/* Reviews Section */}
             <div className="bg-white rounded-lg p-6">
@@ -768,7 +795,7 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
               </p>
 
               {/* Technical Specifications & Equipment Details */}
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-gray-50/50 rounded-xl border border-gray-100">
+              <div className="mt-8 grid grid-cols-1 grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-gray-50/50 rounded-xl border border-gray-100">
                 <div className="space-y-4">
                   <h3 className="font-bold text-gray-900 flex items-center gap-2 border-b border-gray-200 pb-2">
                     <div className="w-1.5 h-4 bg-orange-500 rounded-full" />
@@ -887,58 +914,10 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
               />
             </div>
           </div>
-
-          {/* Mobile Bid Panel */}
-          <div className="lg:hidden space-y-4">
-            <div className="bg-black text-white rounded-lg p-6">
-              <h2 className="font-semibold text-lg mb-4">
-                {product?.title ?? "Auction"}
-              </h2>
-              <div className="space-y-2 mb-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Current Bid:</span>
-                  <span className="font-semibold">
-                    {formatCurrency(currentAmount, auction.currency)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Status:</span>
-                  <Badge className={statusVariant[auction.status]}>
-                    {auction.status}
-                  </Badge>
-                </div>
-              </div>
-
-              {!hasActiveEnrollment ? (
-                <Button
-                  onClick={handleEnroll}
-                  disabled={enrollmentPending}
-                  className="w-full bg-white text-black hover:bg-gray-100"
-                >
-                  {enrollmentPending ? "Processing..." : "Enroll Now"}
-                </Button>
-              ) : auction.status === "LIVE" ? (
-                <form onSubmit={handleSubmitBid} className="space-y-3">
-                  <Input
-                    type="number"
-                    value={bidAmount}
-                    onChange={(e) => setBidAmount(e.target.value)}
-                    placeholder="Enter bid amount"
-                    className="bg-white"
-                  />
-                  <Button
-                    type="submit"
-                    disabled={!canBid || placeBidMutation.isPending}
-                    className="w-full bg-orange-500 hover:bg-orange-600"
-                  >
-                    {placeBidMutation.isPending ? "Submitting..." : "Place Bid"}
-                  </Button>
-                </form>
-              ) : null}
-            </div>
-          </div>
         </div>
       </div>
+
+
 
       {/* Confirmation Dialog */}
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>

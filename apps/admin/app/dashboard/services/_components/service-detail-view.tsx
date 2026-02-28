@@ -1,33 +1,33 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, UserPlus, Edit, Trash2, Download } from "lucide-react";
+import { Badge } from "@packtok/ui/badge";
 import { Button } from "@packtok/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@packtok/ui/card";
-import { Badge } from "@packtok/ui/badge";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
+import { ArrowLeft, Download, Edit, Trash2, UserPlus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
-  ServiceRequest,
-  ServiceStatus,
-  ServiceType,
-} from "../../../../types/service";
-import {
-  useUpdateServiceStatus,
-  useAssignService,
-  useDeleteService,
+    useAssignService,
+    useDeleteService,
+    useUpdateServiceStatus,
 } from "../../../../hooks/useServices";
+import {
+    ServiceRequest,
+    ServiceStatus,
+    ServiceType,
+} from "../../../../types/service";
 import { AssignServiceDialog } from "./assign-service-dialog";
 import { UpdateStatusDialog } from "./update-status-dialog";
 
@@ -308,7 +308,7 @@ export function ServiceDetailView({ service }: ServiceDetailViewProps) {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{log.action}</p>
                     <p className="text-xs text-muted-foreground">
-                      by {log.actor.name} on{" "}
+                      by {log.actor?.name || "System"} on{" "}
                       {new Date(log.createdAt).toLocaleDateString()}
                     </p>
                     {log.notes && (

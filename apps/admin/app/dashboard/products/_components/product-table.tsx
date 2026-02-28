@@ -3,33 +3,33 @@
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@packtok/ui/components/dropdown-menu";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@packtok/ui/components/table";
 import {
-  Activity,
-  ArrowUpDown,
-  ChevronDown,
-  ChevronUp,
-  Edit,
-  Gavel,
-  MoreHorizontal,
-  Package,
-  Trash2,
+    Activity,
+    ArrowUpDown,
+    ChevronDown,
+    ChevronUp,
+    Edit,
+    Gavel,
+    MoreHorizontal,
+    Package,
+    Trash2,
 } from "lucide-react";
 import {
-  MarketplaceProduct,
-  MarketplaceProductStatus,
+    MarketplaceProduct,
+    MarketplaceProductStatus,
 } from "../../../../types/product";
 import { cxBadge, cxTypeBadge } from "../../../../utils/badges";
 
@@ -146,11 +146,20 @@ export function ProductTable({
                 </div>
               </TableCell>
               <TableCell className="py-4 px-6">
-                <Badge
-                  className={`${cxTypeBadge(product.productType)} text-xs`}
-                >
-                  {product.productType.replace("_", " ")}
-                </Badge>
+                <div className="flex flex-col gap-1 items-start">
+                  <Badge
+                    className={`${cxTypeBadge(product.productType)} text-xs`}
+                  >
+                    {product.productType.replace("_", " ")}
+                  </Badge>
+                  {product.createdByUser?.role === "ADMIN" || product.createdByUser?.role === "SUPER_ADMIN" ? (
+                    <Badge variant="outline" className="border-blue-200 text-blue-700 bg-blue-50 text-[10px] leading-tight px-1.5 py-0">ADMIN</Badge>
+                  ) : product.createdByUser?.role === "VENDOR" ? (
+                    <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50 text-[10px] leading-tight px-1.5 py-0">VENDOR</Badge>
+                  ) : product.createdByUser?.role === "NORMAL_USER" ? (
+                    <Badge variant="outline" className="border-gray-200 text-gray-700 bg-gray-50 text-[10px] leading-tight px-1.5 py-0">USER</Badge>
+                  ) : null}
+                </div>
               </TableCell>
               <TableCell className="py-4 px-6 font-medium">
                 {product.currency || "INR"} {Number(product.price).toLocaleString()}
@@ -165,7 +174,21 @@ export function ProductTable({
               </TableCell>
               <TableCell className="py-4 px-6">
                 <div className="flex items-center gap-2">
-                  <Button size="sm" onClick={() => onCreateAuction(product)}>
+                  <Button
+                    size="sm"
+                    disabled={
+                      product.submissionStatus === "PENDING_APPROVAL" ||
+                      product.submissionStatus === "REJECTED" ||
+                      product.status === "DRAFT"
+                    }
+                    title={
+                      product.submissionStatus === "PENDING_APPROVAL" ||
+                      product.status === "DRAFT"
+                        ? "Product must be approved and published"
+                        : ""
+                    }
+                    onClick={() => onCreateAuction(product)}
+                  >
                     <Gavel className="h-4 w-4 mr-1" />
                     Auction
                   </Button>
@@ -202,6 +225,11 @@ export function ProductTable({
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => onCreateAuction(product)}
+                        disabled={
+                          product.submissionStatus === "PENDING_APPROVAL" ||
+                          product.submissionStatus === "REJECTED" ||
+                          product.status === "DRAFT"
+                        }
                       >
                         <Gavel className="w-4 h-4 mr-2" />
                         Add to Auction

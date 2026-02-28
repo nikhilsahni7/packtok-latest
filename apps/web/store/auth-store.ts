@@ -7,8 +7,10 @@ import { persist } from "zustand/middleware";
 
 interface AuthState {
   accessToken: string | null;
+  refreshToken: string | null;
   user: User | null;
   setAccessToken: (token: string | null) => void;
+  setRefreshToken: (token: string | null) => void;
   setUser: (user: User | null) => void;
   logout: () => Promise<void>;
 }
@@ -18,8 +20,10 @@ export const useAuthStore = create<AuthState>()(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (set, get) => ({
       accessToken: null,
+      refreshToken: null,
       user: null,
       setAccessToken: (token) => set({ accessToken: token }),
+      setRefreshToken: (token) => set({ refreshToken: token }),
       setUser: (user) => set({ user }),
       logout: async () => {
         try {
@@ -33,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
         } catch (_) {
           // ignore
         }
-        set({ accessToken: null, user: null });
+        set({ accessToken: null, refreshToken: null, user: null });
         // Invalidate persisted storage
         if (typeof window !== "undefined") {
           localStorage.removeItem("auth-store");
@@ -44,6 +48,7 @@ export const useAuthStore = create<AuthState>()(
       name: "auth-store",
       partialize: (state) => ({
         accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         user: state.user,
       }),
     }

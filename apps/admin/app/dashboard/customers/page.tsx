@@ -1,25 +1,59 @@
 "use client";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@packtok/ui/components/alert-dialog";
 import { Button } from "@packtok/ui/components/button";
-import { Activity } from "lucide-react";
+import { Activity, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { productTabs } from "../../../constants/navigation";
-import { useAdminUser, useAdminUsers } from "../../../hooks/useUsers";
+import {
+    AdminUser,
+    useAdminUser,
+    useAdminUsers,
+    useDeleteUser,
+} from "../../../hooks/useUsers";
 import { CustomerSidebar } from "./_components/customer-sidebar";
 import { CustomersTable } from "./_components/customers-table";
+import { EditCustomerDialog } from "./_components/edit-customer-dialog";
 
 export default function CustomersPage() {
   const { data: customers = [], isLoading, isError } = useAdminUsers();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const { data: userDetail, isLoading: isDetailLoading } = useAdminUser(selectedUserId);
+  const { data: userDetail, isLoading: isDetailLoading } =
+    useAdminUser(selectedUserId);
 
-  const handleEdit = (customer: any) => {
-    console.log("Edit customer:", customer);
+  const [editingCustomer, setEditingCustomer] = useState<AdminUser | null>(
+    null
+  );
+  const [deletingCustomer, setDeletingCustomer] = useState<AdminUser | null>(
+    null
+  );
+  const deleteUser = useDeleteUser();
+
+  const handleEdit = (customer: AdminUser) => {
+    setEditingCustomer(customer);
   };
 
-  const handleDelete = (customer: any) => {
-    console.log("Delete customer:", customer);
+  const handleDelete = (customer: AdminUser) => {
+    setDeletingCustomer(customer);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingCustomer) return;
+    await deleteUser.mutateAsync(deletingCustomer.id);
+    if (selectedUserId === deletingCustomer.id) {
+      setSelectedUserId(null);
+    }
+    setDeletingCustomer(null);
   };
 
   if (isError) {
@@ -30,11 +64,19 @@ export default function CustomersPage() {
             <Activity className="text-red-600 w-6 h-6" />
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-bold text-slate-900">Failed to load customers</h3>
-            <p className="text-sm text-slate-600">There was an error communicating with the server. Please try again.</p>
+            <h3 className="text-lg font-bold text-slate-900">
+              Failed to load customers
+            </h3>
+            <p className="text-sm text-slate-600">
+              There was an error communicating with the server. Please try
+              again.
+            </p>
           </div>
-          <Button onClick={() => window.location.reload()} className="w-full rounded-2xl h-12 font-bold shadow-lg shadow-red-200">
-             Retry Connection
+          <Button
+            onClick={() => window.location.reload()}
+            className="w-full rounded-2xl h-12 font-bold shadow-lg shadow-red-200"
+          >
+            Retry Connection
           </Button>
         </div>
       </div>
@@ -46,8 +88,12 @@ export default function CustomersPage() {
       {/* Premium Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-none">Users</h1>
-          <p className="text-slate-500 font-medium text-sm">Manage entries, roles and access permissions for all users.</p>
+          <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-none">
+            Users
+          </h1>
+          <p className="text-slate-500 font-medium text-sm">
+            Manage entries, roles and access permissions for all users.
+          </p>
         </div>
 
         <div className="flex items-center gap-2 bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
@@ -71,31 +117,76 @@ export default function CustomersPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Customer List */}
         <div className="lg:col-span-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-           {isLoading ? (
-             <div className="space-y-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="h-20 w-full bg-slate-200 animate-pulse rounded-2xl" />
-                ))}
-             </div>
-           ) : (
-             <CustomersTable
-               customers={customers}
-               onEdit={handleEdit}
-               onDelete={handleDelete}
-               onSelect={(user) => setSelectedUserId(user.id)}
-               selectedId={selectedUserId || undefined}
-             />
-           )}
+          {isLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-20 w-full bg-slate-200 animate-pulse rounded-2xl"
+                />
+              ))}
+            </div>
+          ) : (
+            <CustomersTable
+              customers={customers}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onSelect={(user) => setSelectedUserId(user.id)}
+              selectedId={selectedUserId || undefined}
+            />
+          )}
         </div>
 
         {/* Customer Detail Sidebar */}
         <div className="lg:col-span-4 lg:sticky lg:top-8 animate-in fade-in slide-in-from-right-2 duration-500">
-           <CustomerSidebar
-              customer={userDetail || null}
-              isLoading={isDetailLoading}
-           />
+          <CustomerSidebar
+            customer={userDetail || null}
+            isLoading={isDetailLoading}
+          />
         </div>
       </div>
+
+      {/* Edit Dialog */}
+      <EditCustomerDialog
+        customer={editingCustomer}
+        onClose={() => setEditingCustomer(null)}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={!!deletingCustomer}
+        onOpenChange={() => setDeletingCustomer(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Delete User Permanently?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <span className="block">
+                You are about to permanently delete{" "}
+                <strong>{deletingCustomer?.name}</strong> (
+                {deletingCustomer?.email}).
+              </span>
+              <span className="block text-red-600 font-medium">
+                This will also remove all their orders, cart, addresses,
+                bookmarks, reviews, auction bids, service requests, and all
+                other related data. This action cannot be undone.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {deleteUser.isPending ? "Deleting..." : "Delete Permanently"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

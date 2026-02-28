@@ -12,12 +12,16 @@ import {
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const vendorSignInSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Please enter a valid email address").refine(
+    (val) => /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/.test(val) && !/\.([a-zA-Z]{2,})\.\1$/i.test(val),
+    { message: "Please enter a valid email address" }
+  ),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -82,6 +86,15 @@ export default function VendorSignInForm() {
             </FormItem>
           )}
         />
+
+        <div className="flex justify-end">
+          <Link
+            href="/auth/forgot-password"
+            className="text-sm text-orange-500 hover:text-orange-500/80 underline-offset-4 hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </div>
 
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? "Signing In..." : "Sign In"}

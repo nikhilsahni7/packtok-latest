@@ -1,10 +1,13 @@
 "use client";
 
+import { ConfirmModal } from "@/components/ui/confirm-modal";
 import api from "@/lib/axios";
-import { Briefcase, Check, Edit, Home, Loader2, MapPin, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Briefcase, Check, Edit, Home, Loader2, MapPin, Plus, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+
+const POSTAL_CODE_REGEX = /^[0-9]{6}$/;
 
 interface Address {
   id: string;
@@ -29,6 +32,7 @@ export default function AddressesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(!!redirectTo);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     label: "Home",
     fullName: "",
@@ -62,6 +66,12 @@ export default function AddressesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!POSTAL_CODE_REGEX.test(formData.postalCode)) {
+      toast.error("Postal code must be exactly 6 digits");
+      return;
+    }
+
     setIsSaving(true);
     try {
       if (editingId) {
@@ -88,7 +98,7 @@ export default function AddressesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this address?")) return;
+    setDeleteTargetId(null);
     try {
       await api.delete(`/api/v1/addresses/${id}`);
       toast.success("Address deleted");
@@ -186,7 +196,7 @@ export default function AddressesPage() {
                   <option>Other</option>
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Full Name</label>
                   <input type="text" required value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500" />
@@ -204,7 +214,7 @@ export default function AddressesPage() {
                 <label className="block text-sm font-medium mb-1">Address Line 2 (Optional)</label>
                 <input type="text" value={formData.addressLine2} onChange={(e) => setFormData({ ...formData, addressLine2: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">City</label>
                   <input type="text" required value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500" />
@@ -214,10 +224,26 @@ export default function AddressesPage() {
                   <input type="text" required value={formData.state} onChange={(e) => setFormData({ ...formData, state: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Postal Code</label>
-                  <input type="text" required value={formData.postalCode} onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500" />
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
+                    required
+                    value={formData.postalCode}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      setFormData({ ...formData, postalCode: value });
+                    }}
+                    placeholder="e.g. 110001"
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 ${formData.postalCode && !POSTAL_CODE_REGEX.test(formData.postalCode) ? "border-red-500" : ""}`}
+                  />
+                  {formData.postalCode && !POSTAL_CODE_REGEX.test(formData.postalCode) && (
+                    <p className="text-red-500 text-xs mt-1">Postal code must be exactly 6 digits</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Country</label>
@@ -270,7 +296,7 @@ export default function AddressesPage() {
                     <button onClick={() => handleEdit(addr)} className="p-2 hover:bg-blue-50 rounded-full transition-colors">
                       <Edit className="h-4 w-4 text-blue-500" />
                     </button>
-                    <button onClick={() => handleDelete(addr.id)} className="p-2 hover:bg-red-50 rounded-full transition-colors">
+                    <button onClick={() => setDeleteTargetId(addr.id)} className="p-2 hover:bg-red-50 rounded-full transition-colors">
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </button>
                   </div>
@@ -295,6 +321,18 @@ export default function AddressesPage() {
           })}
         </div>
       )}
+
+      {/* Delete Address Confirm Modal */}
+      <ConfirmModal
+        open={!!deleteTargetId}
+        onConfirm={() => deleteTargetId && handleDelete(deleteTargetId)}
+        onCancel={() => setDeleteTargetId(null)}
+        title="Delete Address"
+        description="Are you sure you want to delete this address? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        icon={<AlertTriangle className="h-7 w-7 text-red-600" />}
+      />
     </div>
   );
 }

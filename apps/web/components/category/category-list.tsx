@@ -25,10 +25,10 @@ function CategoryList() {
             loading="lazy"
             placeholder="blur"
             sizes="(max-width: 768px) 100vw, 40vw"
-            className="w-full border border-[#000] object-cover col-span-2 -translate-y-12  col-start-1 row-start-1"
+            className="w-full border border-[#000] object-cover md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-1 md:row-start-1"
           />
 
-          <div className="flex  items-end col-start-1 row-start-1">
+          <div className="hidden md:flex items-end md:col-start-1 md:row-start-1">
             <Image
               src="/tunkery-icon.png"
               alt="Mahinery Icon"
@@ -38,16 +38,16 @@ function CategoryList() {
             />
           </div>
 
-          <div className="col-start-2 row-start-1 bg-black w-full  h-[569px]"></div>
-          <div className="col-span-3 relative">
-            <div className="bg-black text-white p-12 shadow-2xl min-h-[569px] flex flex-col justify-center">
-              <h2 className="text-5xl font-bold mb-6 text-white text-center">
+          <div className="hidden md:block md:col-start-2 md:row-start-1 bg-black w-full  h-auto md:h-[569px]"></div>
+          <div className="md:col-span-3 relative">
+            <div className="bg-black text-white p-12 shadow-2xl min-h-0 md:min-h-[569px] flex flex-col justify-center">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-white text-center">
                 Machinery
               </h2>
               <p className="text-[18px] uppercase tracking-widest mb-8 text-center font-medium">
                 Premium Machinery for Peak Performance
               </p>
-              <div className="w-[521px] mx-auto">
+              <div className="w-full max-w-[521px] mx-auto">
                 <p className=" text-gray-300 mb-10 leading-relaxed text-[12px] text-justify">
                   At PackTok, we deliver Premium machinery, built to last.
                   Engineered for peak performance, Driven by precision and
@@ -84,10 +84,10 @@ function CategoryList() {
             height={450}
             loading="lazy"
             placeholder="blur"
-            className="w-full object-cover border  border-r-0 border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
+            className="w-full object-cover border  border-r-0 border-[#000] md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-4 md:row-start-1"
           />
 
-          <div className="flex items-end col-start-5 row-start-1">
+          <div className="hidden md:flex items-end md:col-start-5 md:row-start-1">
             <Image
               src="/maintain-icon.png"
               alt="Spareparts Icon"
@@ -97,16 +97,16 @@ function CategoryList() {
             />
           </div>
 
-          <div className="col-start-4 row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-[569px]"></div>
-          <div className="col-span-3 row-start-1 col-start-1 h-[569px]">
-            <div className="bg-white border-l-2 border-y-2 border-black  text-black p-12 min-h-[569px] flex flex-col justify-center">
-              <h2 className="text-5xl font-bold mb-6 text-black text-center">
+          <div className="hidden md:block md:col-start-4 md:row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-auto md:h-[569px]"></div>
+          <div className="md:col-span-3 md:row-start-1 md:col-start-1 h-auto md:h-[569px]">
+            <div className="bg-white border-l-2 border-y-2 border-black  text-black p-6 md:p-12 min-h-0 md:min-h-[569px] flex flex-col justify-center">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black text-center">
                 Spare Parts
               </h2>
               <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                 Smooth Operations Guaranteed
               </p>
-              <div className="w-[521px] mx-auto">
+              <div className="w-full max-w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                   At PackTok, we understand that consistent production depends
                   on the availability of high-quality spare parts. {"That’s"}{" "}
@@ -139,10 +139,10 @@ function CategoryList() {
             height={450}
             loading="lazy"
             placeholder="blur"
-            className="w-full object-cover border border-black col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
+            className="w-full object-cover border border-black md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-1 md:row-start-1"
           />
 
-          <div className="flex items-end col-start-1 row-start-1">
+          <div className="hidden md:flex items-end md:col-start-1 md:row-start-1">
             <Image
               src="/consult-icon.png"
               alt="RawMaterial Icon"
@@ -152,17 +152,17 @@ function CategoryList() {
             />
           </div>
 
-          <div className="col-start-2 row-start-1  border-l-2  border-b-2  border-[#000] w-full  h-[569px]"></div>
+          <div className="hidden md:block md:col-start-2 md:row-start-1  border-l-2  border-b-2  border-[#000] w-full  h-auto md:h-[569px]"></div>
 
-          <div className="col-span-3">
-            <div className="bg-white   border-y-2 border-r-2 border-black  text-black p-12 min-h-[569px] flex flex-col justify-center">
-              <h2 className="text-5xl font-bold mb-6 text-black text-center ">
+          <div className="md:col-span-3">
+            <div className="bg-white   border-y-2 border-r-2 border-black  text-black p-6 md:p-12 min-h-0 md:min-h-[569px] flex flex-col justify-center">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black text-center ">
                 Raw Material
               </h2>
               <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                 Quality Uncompromised
               </p>
-              <div className="w-[521px] mx-auto">
+              <div className="w-full max-w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                   At PackTok is a trusted destination for sourcing high-quality
                   raw materials used in corrugated and packaging machinery. We
@@ -196,7 +196,7 @@ function CategoryList() {
             height={450}
             loading="lazy"
             placeholder="blur"
-            className="w-full object-cover col-span-2 border border-[#000] -translate-y-12 aspect-[6/5] col-start-4 row-start-1"
+            className="w-full object-cover md:col-span-2 border border-[#000] -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-4 md:row-start-1"
           />
 
           {/* <div className="flex items-end col-start-5 row-start-1">
@@ -209,16 +209,16 @@ function CategoryList() {
             </svg>
           </div> */}
 
-          <div className="col-start-4 row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-[569px]"></div>
-          <div className="col-span-3 relative row-start-1 col-start-1 h-[569px]">
-            <div className="bg-white border-l-2 border-y-2 border-black text-black p-12 min-h-[569px] flex flex-col justify-center">
-              <h2 className="text-5xl font-bold mb-6 text-black text-center">
+          <div className="hidden md:block md:col-start-4 md:row-start-1 bg-white border-r-2 border-y-2 border-black w-full h-auto md:h-[569px]"></div>
+          <div className="md:col-span-3 relative md:row-start-1 md:col-start-1 h-auto md:h-[569px]">
+            <div className="bg-white border-l-2 border-y-2 border-black text-black p-6 md:p-12 min-h-0 md:min-h-[569px] flex flex-col justify-center">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black text-center">
                 Consumables
               </h2>
               <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                 Unstoppable Productivity
               </p>
-              <div className="w-[521px] mx-auto">
+              <div className="w-full max-w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                   At PackTok keep your operations running smoothly with our
                   high-quality consumables, designed for efficiency and
@@ -258,11 +258,11 @@ function CategoryList() {
             height={450}
             loading="lazy"
             placeholder="blur"
-            className="w-full object-cover border border-[#000] col-span-2 -translate-y-12 aspect-[6/5] col-start-1 row-start-1"
+            className="w-full object-cover border border-[#000] md:col-span-2 -translate-y-12 md:-translate-y-12 md:aspect-[6/5] md:col-start-1 md:row-start-1"
           />
 
-          <div className="col-start-2 row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-[569px]"></div>
-          <div className="col-span-3  h-[569px]">
+          <div className="hidden md:block md:col-start-2 md:row-start-1 bg-white border-l-2 border-y-2 border-black w-full h-auto md:h-[569px]"></div>
+          <div className="md:col-span-3  h-auto md:h-[569px]">
             <Image
               src={man_power_bg}
               alt="Man Power Image"
@@ -270,14 +270,14 @@ function CategoryList() {
               height={450}
               className="w-40 object-cover  pointer-events-none absolute -top-5 right-0"
             />
-            <div className="bg-white border-r-2 border-y-2 border-black text-black p-12 min-h-[569px] flex flex-col justify-center">
-              <h2 className="text-5xl font-bold mb-6 text-black text-center">
+            <div className="bg-white border-r-2 border-y-2 border-black text-black p-6 md:p-12 min-h-0 md:min-h-[569px] flex flex-col justify-center">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-6 text-black text-center">
                 Man Power
               </h2>
               <p className="text-[20px] uppercase tracking-widest mb-8 text-center font-semibold">
                 Skilled Workforce for the Corrugated & Packaging Industry
               </p>
-              <div className="w-[521px] mx-auto">
+              <div className="w-full max-w-[521px] mx-auto">
                 <p className="text-gray-800 mb-10 leading-relaxed text-[12px] text-justify">
                   At PackTok, we not only provide skilled manpower to the
                   corrugated and packaging industry, but also create meaningful

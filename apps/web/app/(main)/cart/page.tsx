@@ -15,6 +15,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CartPage() {
   const {
@@ -23,9 +24,15 @@ export default function CartPage() {
     totalsByCurrency,
     isLoading,
     updateQuantity,
-    removeFromCart
+    removeFromCart,
+    refreshCart
   } = useCart();
   const router = useRouter();
+
+  // Refresh cart on mount to catch products deleted by admin
+  useEffect(() => {
+    refreshCart();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading && !cart) {
     return (

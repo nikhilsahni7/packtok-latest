@@ -203,7 +203,7 @@ export function ConsultancyForm() {
                 </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                       <Label htmlFor="companyName">Company Name</Label>
                       <Input
                         id="companyName"
@@ -221,7 +221,7 @@ export function ConsultancyForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="designation">Designation</Label>
                       <Input
                         id="designation"
@@ -239,7 +239,7 @@ export function ConsultancyForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="phone">Phone Number</Label>
                       <Input
                         id="phone"
@@ -257,7 +257,7 @@ export function ConsultancyForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="email">Email Address</Label>
                       <Input
                         id="email"
@@ -276,7 +276,7 @@ export function ConsultancyForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="employeesOperatingMachines">
                         Employees Operating Machines
                       </Label>
@@ -289,7 +289,7 @@ export function ConsultancyForm() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="yearsInOperation">
                         Years in Operation
                       </Label>
@@ -302,7 +302,7 @@ export function ConsultancyForm() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="contactPerson">Contact Person</Label>
                       <Input
                         id="contactPerson"
@@ -320,7 +320,7 @@ export function ConsultancyForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                       <Label htmlFor="companyAddress">Company Address</Label>
                       <Textarea
                         id="companyAddress"
@@ -347,7 +347,7 @@ export function ConsultancyForm() {
                   Section: 2 Industry & Operations
                 </h3>
                 <div className="px-10 py-5 border-y-[1px] border-[#E0E0E0]">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <Label htmlFor="industryType">Industry Type</Label>
                     <Select
                       onValueChange={(value) => {
@@ -421,7 +421,7 @@ export function ConsultancyForm() {
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="machineTypesInUse">
                       Machine Types in Use
                     </Label>
@@ -449,7 +449,7 @@ export function ConsultancyForm() {
                   Section: 3 Services Required
                 </h3>
                 <div className="px-10 py-5 border-y-[1px] border-[#E0E0E0] text-[#828282]">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-3">
                     {serviceOptions.map((service) => (
                       <div
                         key={service.value}
@@ -487,7 +487,7 @@ export function ConsultancyForm() {
                   Section: 4 Project Goals
                 </h3>
                 <div className="px-10 py-5 border-y-[1px] border-[#E0E0E0] text-[#828282]">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-3">
                     {goalOptions.map((goal) => (
                       <div
                         key={goal.value}
@@ -522,7 +522,7 @@ export function ConsultancyForm() {
                   Section 5 Project Details
                 </h3>
                 <div className="px-10 border-t-[1px] pt-4 border-[#E0E0E0]">
-                  <div className="space-y-2 grid grid-cols-2 mb-6 gap-5 ">
+                  <div className="space-y-2 grid grid-cols-1 sm:grid-cols-2 mb-6 gap-5 ">
                     <Label htmlFor="currentChallenges">
                       Current Challenges
                     </Label>
@@ -542,7 +542,7 @@ export function ConsultancyForm() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <Label htmlFor="preferredStartDate">
                       Preferred Start Date
                     </Label>
@@ -554,7 +554,7 @@ export function ConsultancyForm() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                  <div className="grid grid-cols-1 gap-4 pt-4">
                     <Label htmlFor="expectedCompletionDate">
                       Expected Completion Date
                     </Label>
@@ -566,7 +566,7 @@ export function ConsultancyForm() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                  <div className="grid grid-cols-1 gap-4 pt-4">
                     <Label htmlFor="estimatedBudget">Estimated Budget</Label>
                     <Input
                       id="estimatedBudget"
@@ -576,7 +576,7 @@ export function ConsultancyForm() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                  <div className="grid grid-cols-1 gap-4 pt-4">
                     <Label htmlFor="additionalNotes">Additional Notes</Label>
                     <Textarea
                       id="additionalNotes"

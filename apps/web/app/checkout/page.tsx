@@ -13,7 +13,7 @@ import { toast } from "react-hot-toast";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, totalsByCurrency, itemCount, clearCart } = useCart();
+  const { cart, totalsByCurrency, itemCount, clearCart, refreshCart } = useCart();
   const user = useAuthStore((s) => s.user);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -25,6 +25,9 @@ export default function CheckoutPage() {
       router.push("/auth/signin?redirect=/checkout");
       return;
     }
+
+    // Refresh cart to catch any products deleted by admin
+    refreshCart();
 
     async function fetchAddresses() {
       try {
@@ -115,6 +118,8 @@ export default function CheckoutPage() {
     } catch (error: any) {
       console.error("Checkout error:", error);
       toast.error(error?.response?.data?.message || "Failed to initiate checkout");
+      // Refresh cart to reflect any removed/unavailable items
+      await refreshCart();
     } finally {
       setIsProcessing(false);
     }

@@ -512,8 +512,8 @@ model StockMovement {
   // Relations
   product    MarketplaceProduct  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId  String
-  createdBy  User                @relation("StockMovementsCreatedByUser", fields: [createdById], references: [id], onDelete: Restrict)
-  createdById String
+  createdBy   User?               @relation("StockMovementsCreatedByUser", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById  String?
 
   @@map("stock_movements")
   @@index([productId, createdAt])
@@ -577,8 +577,8 @@ model ServiceActionLog {
   // --- Relations ---
   request    ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
   requestId  String
-  actor      User           @relation("ActionByActor", fields: [actorId], references: [id], onDelete:Restrict)
-  actorId    String
+  actor      User?          @relation("ActionByActor", fields: [actorId], references: [id], onDelete: SetNull)
+  actorId    String?
 
   @@map("service_action_logs")
 }

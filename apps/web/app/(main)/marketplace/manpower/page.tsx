@@ -33,7 +33,7 @@ function HeroSection() {
       <section className="py-17 w-[95%]  sm:w-[90%] md:w-[70%] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           <div className="md:col-span-6">
-            <h1 className="text-[2.7rem] font-medium leading-tight">
+            <h1 className="text-3xl sm:text-[2.7rem] font-medium leading-tight">
               Find a job that suits your interest & skills.
             </h1>
             <p className="mt-4 text-gray-600 max-w-xl">
@@ -380,10 +380,10 @@ function BottomCtas() {
     <section className="py-24">
       <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto grid gap-6 md:grid-cols-2">
         {/* Hiring Partner Card */}
-        <div className="rounded-xl become_man bg-no-repeat bg-right bg-contain h-[232px] border bg-white p-6 md:p-8 flex items-center relative overflow-hidden">
+        <div className="rounded-xl become_man bg-no-repeat bg-right bg-contain min-h-[232px] h-auto md:h-[232px] border bg-white p-6 md:p-8 flex items-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-transparent z-0"></div>
-          <div className="relative z-10 max-w-[65%]">
-            <h4 className="text-[24px] font-medium text-gray-900">Become a Hiring Partner</h4>
+          <div className="relative z-10 max-w-full sm:max-w-[65%]">
+            <h4 className="text-xl sm:text-[24px] font-medium text-gray-900">Become a Hiring Partner</h4>
             <p className="mt-2 text-sm text-gray-600">
               Grow your workforce with qualified industrial talent. Our platform
               connects you with pre-screened machine operators, warehouse staff,
@@ -400,10 +400,10 @@ function BottomCtas() {
 
 
         {/* Job Seeker Card */}
-        <div className="rounded-xl become_man2 bg-no-repeat bg-right bg-contain h-[232px] p-6 md:p-8 text-white relative overflow-hidden">
+        <div className="rounded-xl become_man2 bg-no-repeat bg-right bg-contain min-h-[232px] h-auto md:h-[232px] p-6 md:p-8 text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-600/90 to-transparent z-0"></div>
-          <div className="relative z-10 max-w-[60%]">
-            <h4 className="text-[24px] font-medium">Find Your Dream Job</h4>
+          <div className="relative z-10 max-w-full sm:max-w-[60%]">
+            <h4 className="text-xl sm:text-[24px] font-medium">Find Your Dream Job</h4>
             <p className="mt-2 text-sm text-white/90">
               Launch your factory career with top manufacturers in your area. We
               specialize in production, assembly, and warehouse jobs with
