@@ -2,7 +2,10 @@
 import { PodcastStatus, Prisma, ReactionType, prisma } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 import logger from "../utils/logger";
-import { uploadPodcastVideoToS3 } from "../utils/podcastVideoStorage.service";
+import {
+  getSignedPodcastPlaybackUrl,
+  uploadPodcastVideoToS3,
+} from "../utils/podcastVideoStorage.service";
 import {
   uploadThumbnailImageToSupabase,
 } from "../utils/storage.service";
@@ -359,7 +362,13 @@ export const getPodcastByIdForAdmin = async (id: string) => {
     },
   });
   if (!podcast) throw new ApiError(404, "Podcast not found");
-  return podcast;
+
+  if (!podcast.videoUrl) return podcast;
+
+  return {
+    ...podcast,
+    videoUrl: await getSignedPodcastPlaybackUrl(podcast.videoUrl),
+  };
 };
 
 export const listPodcastsForAdmin = async () => {
@@ -521,9 +530,13 @@ export const getPublicPodcastById = async (id: string, userId?: string) => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { reactions, _count, series, ...rest } = podcast;
+  const signedVideoUrl = rest.videoUrl
+    ? await getSignedPodcastPlaybackUrl(rest.videoUrl)
+    : null;
 
   return {
     ...rest,
+    videoUrl: signedVideoUrl,
     likeCount,
     dislikeCount,
     commentCount: _count.comments,

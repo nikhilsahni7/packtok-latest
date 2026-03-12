@@ -1,4 +1,5 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuid } from "uuid";
 import config from "../config";
 
@@ -25,18 +26,43 @@ const getS3Client = () => {
   });
 };
 
-const buildPublicUrl = (key: string) => {
-  if (config.s3.publicBaseUrl) {
-    const base = config.s3.publicBaseUrl.replace(/\/+$/, "");
-    return `${base}/${key}`;
+const buildStorageReference = (bucket: string, key: string) => {
+  return `s3://${bucket}/${key}`;
+};
+
+const parseS3Reference = (
+  reference: string
+): { bucket: string; key: string } | null => {
+  if (!reference) return null;
+
+  if (reference.startsWith("s3://")) {
+    const withoutProtocol = reference.replace("s3://", "");
+    const slashIndex = withoutProtocol.indexOf("/");
+    if (slashIndex <= 0) return null;
+    const bucket = withoutProtocol.slice(0, slashIndex);
+    const key = withoutProtocol.slice(slashIndex + 1);
+    if (!bucket || !key) return null;
+    return { bucket, key };
   }
 
-  if (config.s3.endpoint && config.s3.forcePathStyle) {
-    const endpoint = config.s3.endpoint.replace(/\/+$/, "");
-    return `${endpoint}/${config.s3.podcastBucket}/${key}`;
-  }
+  try {
+    const parsed = new URL(reference);
+    const pathname = parsed.pathname.replace(/^\/+/, "");
+    if (!pathname) return null;
 
-  return `https://${config.s3.podcastBucket}.s3.${config.s3.region}.amazonaws.com/${key}`;
+    // Path-style format: https://host/bucket/key
+    if (pathname.startsWith(`${config.s3.podcastBucket}/`)) {
+      return {
+        bucket: config.s3.podcastBucket,
+        key: pathname.slice(config.s3.podcastBucket.length + 1),
+      };
+    }
+
+    // Virtual-hosted/custom-domain format where path is already key.
+    return { bucket: config.s3.podcastBucket, key: pathname };
+  } catch {
+    return null;
+  }
 };
 
 export const uploadPodcastVideoToS3 = async (
@@ -61,5 +87,20 @@ export const uploadPodcastVideoToS3 = async (
     throw new Error(`S3 podcast video upload failed: ${message}`);
   }
 
-  return buildPublicUrl(key);
+  return buildStorageReference(config.s3.podcastBucket, key);
+};
+
+export const getSignedPodcastPlaybackUrl = async (reference: string) => {
+  const parsed = parseS3Reference(reference);
+  if (!parsed) return reference;
+
+  const client = getS3Client();
+  return getSignedUrl(
+    client,
+    new GetObjectCommand({
+      Bucket: parsed.bucket,
+      Key: parsed.key,
+    }),
+    { expiresIn: config.s3.signedUrlExpiresSeconds }
+  );
 };

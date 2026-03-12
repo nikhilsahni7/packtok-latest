@@ -26,6 +26,9 @@ const config = {
     publicBaseUrl: process.env.AWS_PODCAST_PUBLIC_BASE_URL || "",
     endpoint: process.env.AWS_S3_ENDPOINT || "",
     forcePathStyle: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
+    signedUrlExpiresSeconds: Number(
+      process.env.AWS_PODCAST_SIGNED_URL_EXPIRES_SECONDS || 3600
+    ),
   },
   resend: {
     apiKey: process.env.RESEND_API_KEY!,
