@@ -28,7 +28,7 @@ import Link from "next/link";
 
 export default function MachineryInstallerPage() {
   return (
-    <main className="w-full">
+    <main className="w-full overflow-x-hidden">
       <HeroSection />
       <ExpertSection />
       <HowItWorks />
@@ -48,8 +48,8 @@ export default function MachineryInstallerPage() {
 
 function HeroSection() {
   return (
-    <section className="pt-20 bg-black md:pt-24">
-      <div className="w-[95%] sm:w-[90%] md:w-[95%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+    <section className="bg-black pt-20 md:pt-24">
+      <div className="mx-auto grid w-[95%] grid-cols-1 items-center gap-4 sm:w-[90%] md:w-[95%] md:grid-cols-12 md:gap-6">
         {/* Left Image */}
         <div className="md:col-span-3">
           <div className="rounded-lg">
@@ -63,21 +63,21 @@ function HeroSection() {
         </div>
 
         {/* Center Card */}
-        <div className="md:col-span-6 bg-black text-white text-center rounded-2xl p-5 relative overflow-hidden">
-          <div className="text-[14px] tracking-[0.25em] font-meduim text-white/70">
+        <div className="relative overflow-hidden rounded-2xl bg-black p-4 text-center text-white sm:p-5 md:col-span-6">
+          <div className="text-[12px] font-medium tracking-[0.15em] text-white/70 sm:text-[14px] sm:tracking-[0.25em]">
             FOCUSED ON SKILLED PERSONNEL SUPPLY
           </div>
-          <h1 className="mt-2 text-3xl md:text-[45px] pb-3 font-bold leading-tight">
+          <h1 className="mt-2 pb-3 text-2xl font-bold leading-tight sm:text-3xl md:text-[45px]">
             Manpower Services
             <br /> for Machinery Setup
             <br /> &amp; Operations
           </h1>
-          <div className="mt-3 text-center justify-center pb-4 flex gap-6 text-xs text-white/80">
-            <div className="flex items-center text-[#15B2F5] gap-2">
+          <div className="mt-3 flex flex-wrap justify-center gap-3 pb-4 text-center text-xs text-white/80 sm:gap-6">
+            <div className="flex items-center gap-2 text-[#15B2F5]">
               <Check className="h-4 w-4 text-[#15B2F5]" /> Free
               Consultations
             </div>
-            <div className="flex items-center text-[#15B2F5] gap-2">
+            <div className="flex items-center gap-2 text-[#15B2F5]">
               <Check className="h-4 w-4 text-[#15B2F5]" /> No Obligation
             </div>
           </div>
@@ -88,10 +88,19 @@ function HeroSection() {
             Book Now
           </Link>
 
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px]">
-            <div className="flex gap-2 justify-center items-center"><BadgeCheck className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">Trained Machinery Operators</span></div>
-            <div className="flex gap-2 justify-center items-center"><ShieldCheck className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">Certified Local Professionals</span></div>
-            <div className="flex gap-2 justify-center items-center"><MapPin className="w-[33px] h-[33px] bg-white rounded-full text-black p-2" /> <span className="text-[12.6px] font-semibold">On-Site Setup & Installationl</span></div>
+          <div className="mt-8 grid grid-cols-1 gap-3 text-[11px] sm:grid-cols-3">
+            <div className="flex items-center justify-center gap-2">
+              <BadgeCheck className="h-[33px] w-[33px] rounded-full bg-white p-2 text-black" />
+              <span className="text-sm font-semibold">Trained Machinery Operators</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <ShieldCheck className="h-[33px] w-[33px] rounded-full bg-white p-2 text-black" />
+              <span className="text-sm font-semibold">Certified Local Professionals</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <MapPin className="h-[33px] w-[33px] rounded-full bg-white p-2 text-black" />
+              <span className="text-sm font-semibold">On-Site Setup & Installation</span>
+            </div>
           </div>
         </div>
 
@@ -179,10 +188,10 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-30">
-      <div className="w-[95%] sm:w-[90%] md:w-[70%] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+    <section className="py-14 md:py-24">
+      <div className="mx-auto grid w-[95%] grid-cols-1 items-center gap-8 sm:w-[90%] md:w-[70%] md:grid-cols-12">
         <div className="md:col-span-6">
-          <div className="relative left-[-12%]">
+          <div className="md:relative md:left-[-12%]">
             <div className=" rounded-xl">
               <Image
                 src={our_machinary}
@@ -194,7 +203,7 @@ function HowItWorks() {
         </div>
 
         <div className="md:col-span-6">
-          <h3 className="text-3xl md:text-[2.5rem] leading-tight md:leading-12 font-semibold">
+          <h3 className="text-3xl font-semibold leading-tight md:text-[2.5rem] md:leading-[3rem]">
             How Our Machinery
             <br /> Manpower Service Works
           </h3>
@@ -202,9 +211,12 @@ function HowItWorks() {
             {steps.map((s, i) => (
 
 
-              <div key={s.title} className="flex flex-col md:flex-row gap-5 items-start md:items-end">
+              <div
+                key={s.title}
+                className="flex flex-col items-start gap-5 md:flex-row md:items-end"
+              >
                 <div className="flex gap-5 w-full md:w-[176px]">
-                  <span className="text-[2.5rem] text-[#9EA3B5] font-semibold">{i + 1}.</span>
+                  <span className="text-[2.5rem] font-semibold text-[#9EA3B5]">{i + 1}.</span>
                   <span className="text-[1.1rem] font-bold ">{s.title}</span>
                 </div>
 
@@ -256,18 +268,18 @@ function GuaranteeSection() {
   ];
 
   return (
-    <section className="pt-12 pb-30">
+    <section className="py-14 md:py-24">
       <div className="w-[95%] sm:w-[90%] md:w-[90%] mx-auto">
         <div className="rounded-2xl bg-black text-white p-6 md:p-20">
           <h3 className="text-3xl md:text-[2.5rem] pb-8 md:pb-16 font-bold">
             Fast, Friendly, and
             <br /> Satisfaction Guarantee
           </h3>
-          <div className="mt-8 grid gap-10 md:gap-30 gap-y-10 md:gap-y-[5rem] grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
+          <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 md:gap-12">
             {items.map((it) => (
               <div
                 key={it.title}
-                className=" p-5"
+                className="p-0 sm:p-2 md:p-4"
               >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 ">
                   <div className="flex w-[100px] h-[100px] items-center justify-center rounded-md ">
