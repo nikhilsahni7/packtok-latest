@@ -2,9 +2,9 @@
 import { PodcastStatus, Prisma, ReactionType, prisma } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 import logger from "../utils/logger";
+import { uploadPodcastVideoToS3 } from "../utils/podcastVideoStorage.service";
 import {
   uploadThumbnailImageToSupabase,
-  uploadVideoToSupabase,
 } from "../utils/storage.service";
 
 // ===== Types =====
@@ -38,6 +38,8 @@ type VideoUploadData = {
   mimetype: string;
 };
 
+type UploadTask = () => Promise<void>;
+
 // Upload status constants (matches Prisma enum after generation)
 const UPLOAD_STATUS = {
   PENDING: "PENDING",
@@ -45,6 +47,33 @@ const UPLOAD_STATUS = {
   COMPLETED: "COMPLETED",
   FAILED: "FAILED",
 } as const;
+
+const parsedUploadConcurrency = Number(process.env.PODCAST_UPLOAD_CONCURRENCY);
+const MAX_CONCURRENT_PODCAST_UPLOADS =
+  Number.isFinite(parsedUploadConcurrency) && parsedUploadConcurrency > 0
+    ? Math.floor(parsedUploadConcurrency)
+    : 3;
+let activePodcastUploads = 0;
+const pendingUploadTasks: UploadTask[] = [];
+
+const drainUploadQueue = () => {
+  while (
+    activePodcastUploads < MAX_CONCURRENT_PODCAST_UPLOADS &&
+    pendingUploadTasks.length > 0
+  ) {
+    const nextTask = pendingUploadTasks.shift();
+    if (!nextTask) return;
+    activePodcastUploads += 1;
+    nextTask()
+      .catch(() => {
+        // Upload task already persists failure state; no-op here.
+      })
+      .finally(() => {
+        activePodcastUploads = Math.max(0, activePodcastUploads - 1);
+        drainUploadQueue();
+      });
+  }
+};
 
 // ===== Series Service =====
 
@@ -122,8 +151,7 @@ const processVideoUploadInBackground = (
   videoData: VideoUploadData,
   thumbnailData?: VideoUploadData
 ) => {
-  // Use setImmediate to not block the response
-  setImmediate(async () => {
+  pendingUploadTasks.push(async () => {
     try {
       logger.info({ podcastId }, "Starting background video upload");
 
@@ -135,7 +163,7 @@ const processVideoUploadInBackground = (
 
       // Upload video and thumbnail in parallel for speed
       const uploadPromises: Promise<string>[] = [
-        uploadVideoToSupabase(videoData.buffer, videoData.mimetype, "podcasts"),
+        uploadPodcastVideoToS3(videoData.buffer, videoData.mimetype, "podcasts"),
       ];
 
       if (thumbnailData) {
@@ -186,6 +214,7 @@ const processVideoUploadInBackground = (
         });
     }
   });
+  setImmediate(drainUploadQueue);
 };
 
 // ===== Podcast Service =====

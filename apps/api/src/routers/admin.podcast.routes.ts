@@ -27,15 +27,14 @@ router.use(authMiddleware, hasRole(Role.ADMIN, Role.SUPER_ADMIN));
 // ===== Podcast CRUD =====
 router.get("/", listPodcasts);
 router.post("/", podcastMediaUpload, createPodcastHandler);
-router.get("/:id", getPodcast);
-router.patch("/:id", podcastMediaUpload, updatePodcastHandler);
-router.delete("/:id", deletePodcastHandler);
-router.post("/:id/retry-upload", podcastMediaUpload, retryUploadHandler);
-
-// ===== Series CRUD =====
 router.get("/series", listSeriesHandler);
 router.post("/series", seriesCoverUpload, createSeriesHandler);
 router.patch("/series/:id", seriesCoverUpload, updateSeriesHandler);
 router.delete("/series/:id", deleteSeriesHandler);
+
+router.get("/:id", getPodcast);
+router.patch("/:id", podcastMediaUpload, updatePodcastHandler);
+router.delete("/:id", deletePodcastHandler);
+router.post("/:id/retry-upload", podcastMediaUpload, retryUploadHandler);
 
 export default router;

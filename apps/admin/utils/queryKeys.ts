@@ -13,4 +13,6 @@ export const QK = {
   auctionEnrollments: ["auctionEnrollments"] as const,
   messages: ["messages"] as const,
   articles: ["articles"] as const,
+  podcasts: ["podcasts"] as const,
+  podcastSeries: ["podcastSeries"] as const,
 } as const;

@@ -1,21 +1,23 @@
 "use client";
 
 import PodcastCard from "@/components/podcasts/podcast-card";
-import { MOCK_PODCASTS } from "@/lib/podcast-data";
+import { usePodcasts } from "@/hooks/usePodcasts";
 import { Filter, Search, Sparkles, TrendingUp, X } from "lucide-react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 export default function PodcastsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const { data, isLoading } = usePodcasts({ limit: 50 });
+  const podcasts = data?.items ?? [];
 
   // Get all unique tags
   const allTags = Array.from(
-    new Set(MOCK_PODCASTS.flatMap((podcast) => podcast.tags))
+    new Set(podcasts.flatMap((podcast) => podcast.tags))
   );
 
   // Filter podcasts based on search term and selected tag
-  const filteredPodcasts = MOCK_PODCASTS.filter((podcast) => {
+  const filteredPodcasts = podcasts.filter((podcast) => {
     const matchesSearch =
       podcast.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       podcast.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -27,6 +29,77 @@ export default function PodcastsPage() {
 
     return matchesSearch && matchesTag;
   });
+
+  let content: ReactNode;
+  if (isLoading) {
+    content = (
+      <div className="text-center py-24 text-gray-500">Loading podcasts...</div>
+    );
+  } else if (filteredPodcasts.length > 0) {
+    content = (
+      <>
+        {!searchTerm && !selectedTag && (
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <TrendingUp className="w-6 h-6 text-orange-500" />
+              <h2 className="text-3xl font-bold text-gray-900">Latest Episodes</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredPodcasts.map((podcast) => (
+                <PodcastCard key={podcast.id} podcast={podcast} />
+              ))}
+            </div>
+          </div>
+        )}
+        {(searchTerm || selectedTag) && (
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+              {searchTerm ? "Search Results" : `${selectedTag} Podcasts`}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredPodcasts.map((podcast) => (
+                <PodcastCard key={podcast.id} podcast={podcast} />
+              ))}
+            </div>
+          </div>
+        )}
+      </>
+    );
+  } else {
+    content = (
+      <div className="text-center py-24">
+        <div className="flex justify-center mb-6">
+          <div className="relative">
+            <div className="absolute inset-0 bg-orange-500/20 blur-3xl rounded-full" />
+            <Search className="relative h-20 w-20 text-gray-300" />
+          </div>
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-3">No podcasts found</h3>
+        <p className="text-gray-500 text-lg mb-6 max-w-md mx-auto">
+          We couldn&apos;t find any podcasts matching your criteria. Try adjusting
+          your search or filters.
+        </p>
+        <div className="flex gap-4 justify-center">
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition-colors shadow-lg shadow-orange-500/30"
+            >
+              Clear search
+            </button>
+          )}
+          {selectedTag && (
+            <button
+              onClick={() => setSelectedTag(null)}
+              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-full transition-colors"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen">
@@ -42,9 +115,8 @@ export default function PodcastsPage() {
               Industry Podcasts
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 tracking-tight">
-              Packaging
+              Packaging{" "}
               <span className="bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent">
-                {" "}
                 Insights
               </span>
             </h1>
@@ -127,74 +199,7 @@ export default function PodcastsPage() {
 
       {/* Podcasts Grid Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {filteredPodcasts.length > 0 ? (
-          <>
-            {/* Featured/Latest Section */}
-            {!searchTerm && !selectedTag && (
-              <div className="mb-16">
-                <div className="flex items-center gap-3 mb-8">
-                  <TrendingUp className="w-6 h-6 text-orange-500" />
-                  <h2 className="text-3xl font-bold text-gray-900">
-                    Latest Episodes
-                  </h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredPodcasts.map((podcast) => (
-                    <PodcastCard key={podcast.id} podcast={podcast} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Search Results */}
-            {(searchTerm || selectedTag) && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-8">
-                  {searchTerm ? "Search Results" : `${selectedTag} Podcasts`}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredPodcasts.map((podcast) => (
-                    <PodcastCard key={podcast.id} podcast={podcast} />
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="text-center py-24">
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <div className="absolute inset-0 bg-orange-500/20 blur-3xl rounded-full" />
-                <Search className="relative h-20 w-20 text-gray-300" />
-              </div>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              No podcasts found
-            </h3>
-            <p className="text-gray-500 text-lg mb-6 max-w-md mx-auto">
-              We couldn&apos;t find any podcasts matching your criteria. Try
-              adjusting your search or filters.
-            </p>
-            <div className="flex gap-4 justify-center">
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition-colors shadow-lg shadow-orange-500/30"
-                >
-                  Clear search
-                </button>
-              )}
-              {selectedTag && (
-                <button
-                  onClick={() => setSelectedTag(null)}
-                  className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-full transition-colors"
-                >
-                  Clear filters
-                </button>
-              )}
-            </div>
-          </div>
-        )}
+        {content}
       </div>
 
       {/* CTA Section */}

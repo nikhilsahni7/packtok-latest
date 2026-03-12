@@ -8,6 +8,7 @@ import express, {
 } from "express";
 import helmet from "helmet";
 import http from "http";
+import multer from "multer";
 import pinoHttp from "pino-http";
 import config from "./config";
 import { initSocketServer } from "./realtime/socket";
@@ -103,6 +104,30 @@ app.use("/api/v1/contact", contactRouter);
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   if (err instanceof ApiError) {
     res.status((err as ApiError).statusCode).json({
+      success: false,
+      message: err.message,
+    });
+    return;
+  }
+
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      res.status(413).json({
+        success: false,
+        message:
+          "Upload too large. Podcast video max size is 800MB and series cover max size is 5MB.",
+      });
+      return;
+    }
+    res.status(400).json({
+      success: false,
+      message: err.message || "Invalid upload payload",
+    });
+    return;
+  }
+
+  if (err instanceof Error && /valid (video|image) file/i.test(err.message)) {
+    res.status(400).json({
       success: false,
       message: err.message,
     });

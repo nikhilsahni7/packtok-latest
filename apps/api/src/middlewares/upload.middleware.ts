@@ -33,6 +33,18 @@ export const profileImageUpload = multer({
 export const podcastMediaUpload = multer({
   storage,
   limits: { fileSize: 800 * 1024 * 1024 }, // 800MB for video
+  fileFilter: (req, file, cb) => {
+    if (file.fieldname === "video" && !file.mimetype.startsWith("video/")) {
+      return cb(new Error("video must be a valid video file"));
+    }
+    if (
+      file.fieldname === "thumbnail" &&
+      !file.mimetype.startsWith("image/")
+    ) {
+      return cb(new Error("thumbnail must be a valid image file"));
+    }
+    cb(null, true);
+  },
 }).fields([
   { name: "video", maxCount: 1 },
   { name: "thumbnail", maxCount: 1 },

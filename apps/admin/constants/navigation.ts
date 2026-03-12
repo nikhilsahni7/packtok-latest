@@ -7,6 +7,7 @@ import {
   LucideIcon,
   MessageSquare,
   Package,
+  Podcast,
   Tags,
   Truck,
   UserCheck,
@@ -93,6 +94,12 @@ export const navigation: NavigationItem[] = [
     name: "Articles",
     href: "/dashboard/articles",
     icon: BookOpenText,
+    current: false,
+  },
+  {
+    name: "Podcasts",
+    href: "/dashboard/podcasts",
+    icon: Podcast,
     current: false,
   },
 ];

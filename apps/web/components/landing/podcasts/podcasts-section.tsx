@@ -1,13 +1,13 @@
 "use client";
 
-import { MOCK_PODCASTS } from "@/lib/podcast-data";
+import { usePodcasts } from "@/hooks/usePodcasts";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PodcastCard from "../../podcasts/podcast-card";
 
 const PodcastsSection = () => {
-  // Show only first 3 podcasts on home page
-  const featuredPodcasts = MOCK_PODCASTS.slice(0, 3);
+  const { data, isLoading } = usePodcasts({ limit: 3 });
+  const featuredPodcasts = data?.items ?? [];
 
   return (
     <section className="py-6 sm:py-8 md:py-10 mx-auto w-[95%] sm:w-[90%] md:w-[80%]">
@@ -29,9 +29,13 @@ const PodcastsSection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {featuredPodcasts.map((podcast) => (
-          <PodcastCard key={podcast.id} podcast={podcast} />
-        ))}
+        {isLoading ? (
+          <p className="text-sm text-gray-500">Loading podcasts...</p>
+        ) : (
+          featuredPodcasts.map((podcast) => (
+            <PodcastCard key={podcast.id} podcast={podcast} />
+          ))
+        )}
       </div>
 
       {/* Call to Action */}

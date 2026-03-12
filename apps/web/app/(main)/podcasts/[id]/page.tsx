@@ -1,20 +1,33 @@
 "use client";
 
-import { MOCK_COMMENTS, MOCK_PODCASTS } from "@/lib/podcast-data";
 import {
-    ArrowLeft,
-    Calendar,
-    Clock,
-    Heart,
-    MessageCircle,
-    Play,
-    Send,
-    Share2,
-    ThumbsUp,
+  useAddPodcastComment,
+  usePodcast,
+  usePodcastComments,
+  usePodcasts,
+  useReactToPodcast,
+} from "@/hooks/usePodcasts";
+import { PodcastReactionType } from "@/types/podcast";
+import {
+  extractYouTubeId,
+  formatDate,
+  formatDuration,
+  getRelativeTime,
+} from "@/utils/podcast-utils";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Heart,
+  MessageCircle,
+  Play,
+  Send,
+  Share2,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface PodcastDetailPageProps {
   params: Promise<{
@@ -22,16 +35,37 @@ interface PodcastDetailPageProps {
   }>;
 }
 
-export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
+export default function PodcastDetailPage({
+  params,
+}: Readonly<PodcastDetailPageProps>) {
   const router = useRouter();
-  // Next.js 16: params is a Promise in client components, use React.use() to unwrap
   const resolvedParams = use(params);
-  const podcast = MOCK_PODCASTS.find((p) => p.id === resolvedParams.id);
+  const podcastId = resolvedParams.id;
+  const { data: podcast, isLoading } = usePodcast(podcastId);
+  const { data: commentsPage } = usePodcastComments(podcastId, 20);
+  const { data: relatedPage } = usePodcasts({ limit: 8 });
+  const reactToPodcast = useReactToPodcast(podcastId);
+  const addComment = useAddPodcastComment(podcastId);
 
-  const [isLiked, setIsLiked] = useState(false);
-  const [localLikes, setLocalLikes] = useState(podcast?.likes || 0);
   const [newComment, setNewComment] = useState("");
-  const [showAllComments, setShowAllComments] = useState(false);
+
+  const comments = commentsPage?.items ?? [];
+  const relatedPodcasts = (relatedPage?.items ?? [])
+    .filter((p) => p.id !== podcast?.id)
+    .slice(0, 4);
+
+  const youtubeVideoId = podcast?.videoUrl ? extractYouTubeId(podcast.videoUrl) : null;
+  const embedUrl = youtubeVideoId
+    ? `https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1`
+    : null;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Loading podcast...
+      </div>
+    );
+  }
 
   if (!podcast) {
     return (
@@ -51,39 +85,37 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
     );
   }
 
-  const handleLike = () => {
-    if (isLiked) {
-      setLocalLikes((prev) => prev - 1);
-    } else {
-      setLocalLikes((prev) => prev + 1);
-    }
-    setIsLiked(!isLiked);
+  const handleReaction = (type: PodcastReactionType) => {
+    reactToPodcast.mutate(type, {
+      onError: () => {
+        toast.error("Please login to react");
+      },
+    });
   };
 
-  const handleShare = () => {
-    const youtubeUrl = `https://www.youtube.com/watch?v=${podcast.videoId}`;
+  const handleShare = async () => {
+    const shareUrl = globalThis.window?.location?.href || podcast.videoUrl || "";
     if (navigator.share) {
-      navigator.share({
+      await navigator.share({
         title: podcast.title,
         text: podcast.description,
-        url: youtubeUrl,
+        url: shareUrl,
       });
-    } else {
-      window.open(youtubeUrl, "_blank");
+      return;
     }
+    await navigator.clipboard.writeText(shareUrl);
+    toast.success("Link copied");
   };
 
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      // TODO: Add comment via API
-      console.log("Adding comment:", newComment);
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+    try {
+      await addComment.mutateAsync({ content: newComment.trim() });
       setNewComment("");
+    } catch {
+      // handled in hook
     }
   };
-
-  const displayedComments = showAllComments
-    ? MOCK_COMMENTS
-    : MOCK_COMMENTS.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
@@ -106,13 +138,28 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
           <div className="lg:col-span-8">
             {/* Video Player with Modern Shadow */}
             <div className="relative aspect-video bg-gray-900 rounded-3xl overflow-hidden shadow-2xl mb-8 ring-1 ring-gray-900/5">
-              <iframe
-                src={`https://www.youtube.com/embed/${podcast.videoId}?rel=0&modestbranding=1`}
-                title={podcast.title}
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              {embedUrl ? (
+                <iframe
+                  src={embedUrl}
+                  title={podcast.title}
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <video
+                  src={podcast.videoUrl || undefined}
+                  controls
+                  className="absolute inset-0 w-full h-full object-cover"
+                >
+                  <track
+                    kind="captions"
+                    src="data:text/vtt,WEBVTT"
+                    srcLang="en"
+                    label="English captions"
+                  />
+                </video>
+              )}
             </div>
 
             {/* Podcast Info Card */}
@@ -127,13 +174,15 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
                 <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
                   <Calendar className="w-4 h-4 text-gray-600" />
                   <span className="text-sm font-medium text-gray-700">
-                    {podcast.publishedAt}
+                    {podcast.releaseDate ? formatDate(podcast.releaseDate) : "TBA"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
                   <Clock className="w-4 h-4 text-gray-600" />
                   <span className="text-sm font-medium text-gray-700">
-                    {podcast.duration}
+                    {typeof podcast.duration === "number"
+                      ? formatDuration(podcast.duration)
+                      : "--:--"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 bg-orange-100 px-4 py-2 rounded-full">
@@ -147,19 +196,19 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 mb-8 pb-8 border-b border-gray-200">
                 <button
-                  onClick={handleLike}
+                  onClick={() => handleReaction("LIKE")}
                   className={`group flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all ${
-                    isLiked
+                    podcast.userReaction === "LIKE"
                       ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   <Heart
                     className={`w-5 h-5 transition-transform group-hover:scale-110 ${
-                      isLiked ? "fill-current" : ""
+                      podcast.userReaction === "LIKE" ? "fill-current" : ""
                     }`}
                   />
-                  <span>{localLikes}</span>
+                  <span>{podcast.likeCount}</span>
                 </button>
 
                 <button
@@ -172,7 +221,7 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
 
                 <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gray-100 text-gray-700 font-semibold">
                   <MessageCircle className="w-5 h-5" />
-                  <span>{podcast.comments} Comments</span>
+                  <span>{podcast.commentCount} Comments</span>
                 </div>
               </div>
 
@@ -190,9 +239,9 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Topics</h3>
                 <div className="flex flex-wrap gap-2">
-                  {podcast.tags.map((tag, index) => (
+                  {podcast.tags.map((tag) => (
                     <span
-                      key={index}
+                      key={tag}
                       className="bg-gradient-to-r from-orange-50 to-purple-50 text-orange-700 border border-orange-200 px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-md transition-shadow cursor-pointer"
                     >
                       {tag}
@@ -205,9 +254,9 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
             {/* Comments Section */}
             <div className="bg-white rounded-3xl p-8 shadow-lg ring-1 ring-gray-900/5">
               <h2 className="text-3xl font-bold text-gray-900 mb-8">
-                Comments
+                Comments{" "}
                 <span className="ml-3 text-xl text-gray-500 font-normal">
-                  ({MOCK_COMMENTS.length})
+                  ({comments.length})
                 </span>
               </h2>
 
@@ -243,12 +292,12 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
 
               {/* Comments List */}
               <div className="space-y-6">
-                {displayedComments.map((comment) => (
+                {comments.map((comment) => (
                   <div key={comment.id} className="flex gap-4">
                     <div className="flex-shrink-0">
                       <Image
-                        src={comment.avatar}
-                        alt={comment.user}
+                        src={comment.user.profile_image || "/img/person-placeholder.jpg"}
+                        alt={comment.user.name}
                         width={48}
                         height={48}
                         className="rounded-full ring-2 ring-gray-100"
@@ -258,42 +307,25 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
                       <div className="bg-gray-50 rounded-2xl p-5 hover:bg-gray-100 transition-colors">
                         <div className="flex items-center justify-between mb-3">
                           <h4 className="font-bold text-gray-900">
-                            {comment.user}
+                            {comment.user.name}
                           </h4>
                           <span className="text-sm text-gray-500">
-                            {comment.timestamp}
+                            {getRelativeTime(comment.createdAt)}
                           </span>
                         </div>
                         <p className="text-gray-700 leading-relaxed">
-                          {comment.comment}
+                          {comment.content}
                         </p>
                       </div>
-                      <div className="mt-3 flex items-center gap-6">
-                        <button className="group flex items-center gap-2 text-sm text-gray-600 hover:text-orange-500 transition-colors font-medium">
-                          <ThumbsUp className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          <span>{comment.likes}</span>
-                        </button>
-                        <button className="text-sm text-gray-600 hover:text-orange-500 transition-colors font-medium">
-                          Reply
-                        </button>
-                      </div>
+                      {comment.replyCount ? (
+                        <p className="mt-2 text-sm text-gray-500">
+                          {comment.replyCount} replies
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 ))}
               </div>
-
-              {/* Show More Comments Button */}
-              {MOCK_COMMENTS.length > 3 && !showAllComments && (
-                <div className="mt-8 text-center">
-                  <button
-                    onClick={() => setShowAllComments(true)}
-                    className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-full transition-colors"
-                  >
-                    View {MOCK_COMMENTS.length - 3} more{" "}
-                    {MOCK_COMMENTS.length - 3 === 1 ? "comment" : "comments"}
-                  </button>
-                </div>
-              )}
             </div>
           </div>
 
@@ -305,41 +337,46 @@ export default function PodcastDetailPage({ params }: PodcastDetailPageProps) {
                   More Episodes
                 </h3>
                 <div className="space-y-4">
-                  {MOCK_PODCASTS.filter((p) => p.id !== podcast.id)
-                    .slice(0, 4)
-                    .map((relatedPodcast) => (
-                      <a
-                        key={relatedPodcast.id}
-                        href={`/podcasts/${relatedPodcast.id}`}
-                        className="block group"
-                      >
-                        <div className="bg-gray-50 rounded-2xl overflow-hidden hover:bg-gray-100 transition-all hover:shadow-lg">
-                          <div className="relative aspect-video">
-                            <Image
-                              src={relatedPodcast.thumbnail}
-                              alt={relatedPodcast.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <div className="bg-white/90 rounded-full p-3">
-                                <Play className="w-6 h-6 text-orange-500 fill-orange-500" />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="p-4">
-                            <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-500 transition-colors mb-2">
-                              {relatedPodcast.title}
-                            </h4>
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                              <Clock className="w-3.5 h-3.5" />
-                              <span>{relatedPodcast.duration}</span>
+                  {relatedPodcasts.map((relatedPodcast) => (
+                    <a
+                      key={relatedPodcast.id}
+                      href={`/podcasts/${relatedPodcast.id}`}
+                      className="block group"
+                    >
+                      <div className="bg-gray-50 rounded-2xl overflow-hidden hover:bg-gray-100 transition-all hover:shadow-lg">
+                        <div className="relative aspect-video">
+                          <Image
+                            src={
+                              relatedPodcast.thumbnailUrl ||
+                              "/placeholder-product.jpg"
+                            }
+                            alt={relatedPodcast.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="bg-white/90 rounded-full p-3">
+                              <Play className="w-6 h-6 text-orange-500 fill-orange-500" />
                             </div>
                           </div>
                         </div>
-                      </a>
-                    ))}
+                        <div className="p-4">
+                          <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-500 transition-colors mb-2">
+                            {relatedPodcast.title}
+                          </h4>
+                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>
+                              {typeof relatedPodcast.duration === "number"
+                                ? formatDuration(relatedPodcast.duration)
+                                : "--:--"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>

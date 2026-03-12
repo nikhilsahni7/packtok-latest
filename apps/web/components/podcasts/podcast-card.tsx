@@ -1,12 +1,13 @@
 "use client";
 
-import { Podcast } from "@/types/podcast";
+import { PodcastListItem } from "@/types/podcast";
+import { formatDate, formatDuration } from "@/utils/podcast-utils";
 import { Clock, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 interface PodcastCardProps {
-  podcast: Podcast;
+  podcast: PodcastListItem;
 }
 
 export default function PodcastCard({ podcast }: PodcastCardProps) {
@@ -16,7 +17,7 @@ export default function PodcastCard({ podcast }: PodcastCardProps) {
         {/* Thumbnail Container */}
         <div className="relative w-full aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
           <Image
-            src={podcast.thumbnail}
+            src={podcast.thumbnailUrl || "/placeholder-product.jpg"}
             alt={podcast.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -43,7 +44,11 @@ export default function PodcastCard({ podcast }: PodcastCardProps) {
           {/* Duration Badge */}
           <div className="absolute top-4 right-4 bg-black/90 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
             <Clock className="w-3.5 h-3.5" />
-            <span>{podcast.duration}</span>
+            <span>
+              {typeof podcast.duration === "number"
+                ? formatDuration(podcast.duration)
+                : "--:--"}
+            </span>
           </div>
 
           {/* Bottom Info Overlay */}
@@ -79,16 +84,16 @@ export default function PodcastCard({ podcast }: PodcastCardProps) {
           {/* Meta Info */}
           <div className="flex items-center justify-between pt-2">
             <span className="text-sm text-gray-500 font-medium">
-              {podcast.publishedAt}
+              {podcast.releaseDate ? formatDate(podcast.releaseDate) : "TBA"}
             </span>
             <div className="flex items-center gap-3 text-sm text-gray-500">
               <span className="flex items-center gap-1">
                 <span className="text-orange-500">❤</span>
-                <span className="font-medium">{podcast.likes}</span>
+                <span className="font-medium">{podcast.likeCount}</span>
               </span>
               <span className="flex items-center gap-1">
                 <span className="text-blue-500">💬</span>
-                <span className="font-medium">{podcast.comments}</span>
+                <span className="font-medium">{podcast.commentCount}</span>
               </span>
             </div>
           </div>
