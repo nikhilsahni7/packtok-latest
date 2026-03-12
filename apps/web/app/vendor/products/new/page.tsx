@@ -32,6 +32,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ChangeEvent } from "react";
 import { useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 
 const CURRENCIES = ["INR", "USD", "AED", "EUR", "GBP", "CNY", "TWD"];
 
@@ -191,10 +192,12 @@ export default function NewVendorProductPage() {
       }
 
       // Only redirect on success
+      toast.success("Draft created. Continue editing your product.");
       router.push(`/vendor/products/${id}`);
     } catch {
       // Draft was created; redirect to editor even on media failure so the
       // vendor can retry the upload from the editor page.
+      toast.success("Draft created. You can continue from the editor.");
       router.push(`/vendor/products/${id}`);
     }
   };
@@ -274,7 +277,7 @@ export default function NewVendorProductPage() {
   // ── Main form ─────────────────────────────────────────────────────────
 
   return (
-    <div className="p-4 sm:p-6 space-y-6 max-w-6xl mx-auto">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl mx-auto">
       {/* Subscription bar */}
       <div className="flex flex-wrap items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-3 sm:px-4 py-3">
         <div className="flex-1 text-sm text-blue-900">
@@ -297,7 +300,7 @@ export default function NewVendorProductPage() {
         <Button
           onClick={handleCreate}
           disabled={createDraft.isPending || !canContinue}
-          className="gap-2"
+          className="gap-2 w-full sm:w-auto"
         >
           {createDraft.isPending ? (
             <>
@@ -309,7 +312,7 @@ export default function NewVendorProductPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* ── Left: Form ──────────────────────────────────────────────── */}
         <div className="lg:col-span-2 space-y-6">
           {/* Basic info */}
@@ -335,7 +338,7 @@ export default function NewVendorProductPage() {
                   placeholder="Describe the product features, capabilities, and condition..."
                 />
               </div>
-              <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label>Manufacturer / Brand</Label>
                   <Input
@@ -374,7 +377,7 @@ export default function NewVendorProductPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Category & Classification
             </h2>
-            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Category *</Label>
                 <Select
@@ -479,7 +482,7 @@ export default function NewVendorProductPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Pricing & Stock
             </h2>
-            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Price</Label>
                 <Input
@@ -523,7 +526,7 @@ export default function NewVendorProductPage() {
             </h2>
             <div className="space-y-2">
               {specs.map((s, idx) => (
-                <div key={idx} className="flex gap-2 items-center">
+                <div key={idx} className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                   <Input
                     placeholder="Key (e.g. Speed)"
                     value={s.key}
@@ -554,7 +557,7 @@ export default function NewVendorProductPage() {
                       setSpecs((prev) => prev.filter((_, i) => i !== idx))
                     }
                     disabled={specs.length <= 1}
-                    className="p-2 text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors"
+                    className="p-2 self-end sm:self-auto text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

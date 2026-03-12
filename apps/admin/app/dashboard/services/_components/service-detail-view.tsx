@@ -14,7 +14,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
-import { ArrowLeft, Download, Edit, Trash2, UserPlus } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -33,6 +33,110 @@ import { UpdateStatusDialog } from "./update-status-dialog";
 
 interface ServiceDetailViewProps {
   service: ServiceRequest;
+}
+
+const INTERNAL_SERVICE_KEYS = new Set(["id", "serviceRequestId"]);
+
+const formatFieldLabel = (key: string) =>
+  key
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (ch) => ch.toUpperCase());
+
+const isLikelyUrl = (value: string) =>
+  value.startsWith("http://") || value.startsWith("https://");
+
+function SubmittedFields({
+  data,
+}: Readonly<{ data: Record<string, unknown> | null | undefined }>) {
+  if (!data) return <p className="text-sm text-muted-foreground">No details.</p>;
+
+  const entries = Object.entries(data).filter(
+    ([key]) => !INTERNAL_SERVICE_KEYS.has(key)
+  );
+
+  if (entries.length === 0) {
+    return <p className="text-sm text-muted-foreground">No details.</p>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {entries.map(([key, value]) => (
+        <div key={key} className="rounded-md border p-3 space-y-1">
+          <p className="text-xs font-medium text-muted-foreground">
+            {formatFieldLabel(key)}
+          </p>
+          {renderFieldValue(value)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function renderFieldValue(value: unknown) {
+  if (value === null || value === undefined || value === "") {
+    return <p className="text-sm">N/A</p>;
+  }
+
+  if (typeof value === "boolean") {
+    return <p className="text-sm">{value ? "Yes" : "No"}</p>;
+  }
+
+  if (typeof value === "number") {
+    return <p className="text-sm">{value}</p>;
+  }
+
+  if (typeof value === "string") {
+    if (isLikelyUrl(value)) {
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.open(value, "_blank")}
+          className="h-8"
+        >
+          Open Link
+        </Button>
+      );
+    }
+    const parsedDate = Date.parse(value);
+    if (!Number.isNaN(parsedDate) && value.includes("T")) {
+      return <p className="text-sm">{new Date(parsedDate).toLocaleString()}</p>;
+    }
+    return <p className="text-sm break-words">{value}</p>;
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return <p className="text-sm">N/A</p>;
+    }
+
+    if (value.every((item) => typeof item === "string" && isLikelyUrl(item))) {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {value.map((url, index) => (
+            <Button
+              key={`${String(url)}-${index}`}
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(String(url), "_blank")}
+              className="h-8"
+            >
+              File {index + 1}
+            </Button>
+          ))}
+        </div>
+      );
+    }
+
+    return <p className="text-sm break-words">{value.map(String).join(", ")}</p>;
+  }
+
+  return (
+    <pre className="text-xs whitespace-pre-wrap break-words">
+      {JSON.stringify(value, null, 2)}
+    </pre>
+  );
 }
 
 export function ServiceDetailView({ service }: ServiceDetailViewProps) {
@@ -101,6 +205,10 @@ export function ServiceDetailView({ service }: ServiceDetailViewProps) {
           `${service.jobSeekerProfile?.firstName} ${service.jobSeekerProfile?.lastName}` ||
           "Job Seeker"
         );
+      case ServiceType.MACHINERY_INSTALLER:
+        return (
+          service.machineryInstallerRequest?.companyName || "Machinery Installer"
+        );
       default:
         return "Service Request";
     }
@@ -141,6 +249,7 @@ export function ServiceDetailView({ service }: ServiceDetailViewProps) {
       [ServiceType.COMPANY_ACQUISITION]: "Company Acquisition",
       [ServiceType.MANPOWER_HIRING]: "Manpower Hiring",
       [ServiceType.JOB_SEEKER_SUBMISSION]: "Job Seeker",
+      [ServiceType.MACHINERY_INSTALLER]: "Machinery Installer",
     };
     return <Badge variant="outline">{typeLabels[type]}</Badge>;
   };
@@ -159,6 +268,8 @@ export function ServiceDetailView({ service }: ServiceDetailViewProps) {
         return <ManpowerDetails service={service} />;
       case ServiceType.JOB_SEEKER_SUBMISSION:
         return <JobSeekerDetails service={service} />;
+      case ServiceType.MACHINERY_INSTALLER:
+        return <MachineryInstallerDetails service={service} />;
       default:
         return null;
     }
@@ -344,317 +455,57 @@ export function ServiceDetailView({ service }: ServiceDetailViewProps) {
 // Individual service detail components
 function MaintenanceDetails({ service }: { service: ServiceRequest }) {
   const maintenance = service.maintenanceRequest;
-  if (!maintenance) return null;
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <h3 className="font-medium mb-3">Company Information</h3>
-        <div className="space-y-2 text-sm">
-          <div>
-            <strong>Company:</strong> {maintenance.companyName}
-          </div>
-          <div>
-            <strong>Address:</strong> {maintenance.address}
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-medium mb-3">Machine Details</h3>
-        <div className="space-y-2 text-sm">
-          <div>
-            <strong>Machine:</strong> {maintenance.machineName}
-          </div>
-          <div>
-            <strong>Serial Number:</strong>{" "}
-            {maintenance.machineIdOrSerialNumber}
-          </div>
-          <div>
-            <strong>Location:</strong> {maintenance.locationInFacility}
-          </div>
-          <div>
-            <strong>Manufacturer:</strong> {maintenance.manufacturer || "N/A"}
-          </div>
-        </div>
-      </div>
-    </div>
+    <SubmittedFields
+      data={maintenance as unknown as Record<string, unknown>}
+    />
   );
 }
 
 function ConsultancyDetails({ service }: { service: ServiceRequest }) {
   const consultancy = service.consultancyRequest;
-  if (!consultancy) return null;
-
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 className="font-medium mb-3">Company Information</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Company:</strong> {consultancy.companyName}
-            </div>
-            <div>
-              <strong>Contact:</strong> {consultancy.contactPerson}
-            </div>
-            <div>
-              <strong>Email:</strong> {consultancy.email}
-            </div>
-            <div>
-              <strong>Phone:</strong> {consultancy.phone}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-medium mb-3">Industry Details</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Industry:</strong> {consultancy.industryType}
-            </div>
-            <div>
-              <strong>Years in Operation:</strong>{" "}
-              {consultancy.yearsInOperation || "N/A"}
-            </div>
-            <div>
-              <strong>Employees:</strong>{" "}
-              {consultancy.employeesOperatingMachines || "N/A"}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-medium mb-3">Services Required</h3>
-        <div className="flex flex-wrap gap-2">
-          {consultancy.servicesRequired.map((service, index) => (
-            <Badge key={index} variant="secondary">
-              {service.replace(/_/g, " ")}
-            </Badge>
-          ))}
-        </div>
-      </div>
-    </div>
+    <SubmittedFields
+      data={consultancy as unknown as Record<string, unknown>}
+    />
   );
 }
 
 function TurnkeyDetails({ service }: { service: ServiceRequest }) {
   const turnkey = service.turnkeyProjectInquiry;
-  if (!turnkey) return null;
-
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 className="font-medium mb-3">Contact Information</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Company:</strong> {turnkey.companyName}
-            </div>
-            <div>
-              <strong>Contact:</strong> {turnkey.contactName}
-            </div>
-            <div>
-              <strong>Email:</strong> {turnkey.email}
-            </div>
-            <div>
-              <strong>Phone:</strong> {turnkey.phone}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-medium mb-3">Project Details</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Facility Type:</strong>{" "}
-              {turnkey.facilityType.replace(/_/g, " ")}
-            </div>
-            <div>
-              <strong>Timeline:</strong>{" "}
-              {turnkey.completionTimeline.replace(/_/g, " ")}
-            </div>
-            <div>
-              <strong>Budget:</strong>{" "}
-              {turnkey.estimatedBudget.replace(/_/g, " ")}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-medium mb-3">Project Description</h3>
-        <p className="text-sm">{turnkey.projectDescription}</p>
-      </div>
-    </div>
+    <SubmittedFields data={turnkey as unknown as Record<string, unknown>} />
   );
 }
 
 function AcquisitionDetails({ service }: { service: ServiceRequest }) {
   const acquisition = service.companyAcquisitionInquiry;
-  if (!acquisition) return null;
-
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 className="font-medium mb-3">Contact Information</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Company:</strong> {acquisition.companyName}
-            </div>
-            <div>
-              <strong>Contact:</strong> {acquisition.contactName}
-            </div>
-            <div>
-              <strong>Email:</strong> {acquisition.email}
-            </div>
-            <div>
-              <strong>Phone:</strong> {acquisition.phone}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-medium mb-3">Transaction Details</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Inquirer Type:</strong> {acquisition.inquirerType}
-            </div>
-            <div>
-              <strong>Transaction Type:</strong>{" "}
-              {acquisition.transactionType.replace(/_/g, " ")}
-            </div>
-            <div>
-              <strong>Legal Structure:</strong>{" "}
-              {acquisition.sellerLegalStructure?.replace(/_/g, " ") || "N/A"}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {acquisition.intendedOutcome && (
-        <div>
-          <h3 className="font-medium mb-3">Intended Outcome</h3>
-          <p className="text-sm">{acquisition.intendedOutcome}</p>
-        </div>
-      )}
-    </div>
+    <SubmittedFields
+      data={acquisition as unknown as Record<string, unknown>}
+    />
   );
 }
 
 function ManpowerDetails({ service }: { service: ServiceRequest }) {
   const manpower = service.manpowerHiringRequest;
-  if (!manpower) return null;
-
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 className="font-medium mb-3">Company Information</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Company:</strong> {manpower.companyName}
-            </div>
-            <div>
-              <strong>Contact:</strong> {manpower.contactPerson}
-            </div>
-            <div>
-              <strong>Email:</strong> {manpower.email}
-            </div>
-            <div>
-              <strong>Phone:</strong> {manpower.phone}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-medium mb-3">Requirements</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Skilled Workers:</strong>{" "}
-              {manpower.skilledWorkersRequired}
-            </div>
-            <div>
-              <strong>Semi-skilled:</strong>{" "}
-              {manpower.semiSkilledWorkersRequired}
-            </div>
-            <div>
-              <strong>Unskilled:</strong> {manpower.unskilledWorkersRequired}
-            </div>
-            <div>
-              <strong>Urgency:</strong> {manpower.hiringUrgency}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-medium mb-3">Manpower Types</h3>
-        <div className="flex flex-wrap gap-2">
-          {manpower.manpowerType.map((type, index) => (
-            <Badge key={index} variant="secondary">
-              {type.replace(/_/g, " ")}
-            </Badge>
-          ))}
-        </div>
-      </div>
-    </div>
+    <SubmittedFields data={manpower as unknown as Record<string, unknown>} />
   );
 }
 
 function JobSeekerDetails({ service }: { service: ServiceRequest }) {
   const jobSeeker = service.jobSeekerProfile;
-  if (!jobSeeker) return null;
-
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h3 className="font-medium mb-3">Personal Information</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Name:</strong> {jobSeeker.firstName} {jobSeeker.lastName}
-            </div>
-            <div>
-              <strong>Phone:</strong> {jobSeeker.phone}
-            </div>
-            <div>
-              <strong>Address:</strong> {jobSeeker.address}, {jobSeeker.city},{" "}
-              {jobSeeker.state} {jobSeeker.postalCode}
-            </div>
-          </div>
-        </div>
+    <SubmittedFields data={jobSeeker as unknown as Record<string, unknown>} />
+  );
+}
 
-        <div>
-          <h3 className="font-medium mb-3">Job Preferences</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Position Sought:</strong> {jobSeeker.positionSought}
-            </div>
-            <div>
-              <strong>Working Mode:</strong> {jobSeeker.preferredWorkingMode}
-            </div>
-            <div>
-              <strong>Previously Worked:</strong>{" "}
-              {jobSeeker.hasPreviouslyWorkedWithUs ? "Yes" : "No"}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-medium mb-3">Resume</h3>
-        <Button
-          variant="outline"
-          onClick={() => window.open(jobSeeker.cvUrl, "_blank")}
-          className="flex items-center gap-2"
-        >
-          <Download className="h-4 w-4" />
-          Download CV
-        </Button>
-      </div>
-    </div>
+function MachineryInstallerDetails({
+  service,
+}: Readonly<{ service: ServiceRequest }>) {
+  const installer = service.machineryInstallerRequest;
+  return (
+    <SubmittedFields data={installer as unknown as Record<string, unknown>} />
   );
 }

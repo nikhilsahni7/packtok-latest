@@ -2,7 +2,6 @@
 
 import api from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 
 export type VendorProductForm = {
   title: string;
@@ -34,7 +33,6 @@ export function useCreateVendorProductDraft() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vendor-products"] });
-      toast.success("Draft created. You can add media and submit for review.");
     },
   });
 }
@@ -51,7 +49,6 @@ export function useUpdateVendorProduct(productId: string) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vendor-products"] });
-      toast.success("Product saved");
     },
   });
 }
@@ -67,7 +64,6 @@ export function useSubmitVendorProduct(productId: string) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vendor-products"] });
-      toast.success("Submitted for review");
     },
   });
 }
@@ -85,7 +81,6 @@ export function useUploadVendorProductMedia(productId: string) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vendor-products"] });
-      toast.success("Media updated");
     },
   });
 }
@@ -102,7 +97,6 @@ export function useRemoveVendorProductImage(productId: string) {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vendor-products"] });
-      toast.success("Image removed");
     },
   });
 }

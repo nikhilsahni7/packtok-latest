@@ -22,7 +22,8 @@ type ServiceType =
   | "TURNKEY_PROJECT"
   | "COMPANY_ACQUISITION"
   | "MANPOWER_HIRING"
-  | "JOB_SEEKER_SUBMISSION";
+  | "JOB_SEEKER_SUBMISSION"
+  | "MACHINERY_INSTALLER";
 
 type ServiceStatus =
   | "SUBMITTED"
@@ -56,6 +57,7 @@ interface ServiceRequest {
   companyAcquisitionInquiry: Record<string, unknown> | null;
   manpowerHiringRequest: Record<string, unknown> | null;
   jobSeekerProfile: Record<string, unknown> | null;
+  machineryInstallerRequest: Record<string, unknown> | null;
 }
 
 // Service type display names
@@ -66,6 +68,7 @@ const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
   COMPANY_ACQUISITION: "Company Acquisition",
   MANPOWER_HIRING: "Manpower Hiring",
   JOB_SEEKER_SUBMISSION: "Job Seeker",
+  MACHINERY_INSTALLER: "Machinery Installer",
 };
 
 // Status config
@@ -118,7 +121,8 @@ function getFormDetails(request: ServiceRequest): Record<string, unknown> | null
     request.turnkeyProjectInquiry ||
     request.companyAcquisitionInquiry ||
     request.manpowerHiringRequest ||
-    request.jobSeekerProfile
+    request.jobSeekerProfile ||
+    request.machineryInstallerRequest
   );
 }
 

@@ -271,3 +271,22 @@ export const resetPasswordWithOtp = async (
   // Clean up OTP
   await (prisma as any).otp.delete({ where: { id: otpRecord.id } });
 };
+
+export const verifyPasswordResetOtp = async (
+  email: string,
+  otp: string
+): Promise<void> => {
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+  if (!user) throw new ApiError(404, "User not found");
+
+  const otpRecord = await (prisma as any).otp.findUnique({
+    where: { userId: user.id },
+  });
+  if (!otpRecord) throw new ApiError(400, "Invalid OTP request");
+
+  const isMatch = otpRecord.hashedOtp === hashOtp(otp);
+  if (!isMatch || otpRecord.expiresAt < new Date()) {
+    throw new ApiError(400, "Invalid or expired OTP");
+  }
+};

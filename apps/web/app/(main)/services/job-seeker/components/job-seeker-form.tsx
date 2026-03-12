@@ -118,7 +118,7 @@ export function JobSeekerForm() {
   return (
     <>
       <div className="form-bg">
-        <Card className="w-[85%] mx-auto">
+        <Card className="w-[95%] md:w-[85%] mx-auto">
           <CardHeader>
             <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
               <CardTitle className="text-2xl font-bold capitalize">Job Seeker Profile for corrugated and packaging industry</CardTitle>
@@ -126,7 +126,7 @@ export function JobSeekerForm() {
             </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] ">
+            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
                 <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">Section: 1 Personal Information</h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
@@ -361,7 +361,7 @@ export function JobSeekerForm() {
               <div className="space-y-4">
                 <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">Section: 3 Work History</h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-start gap-2">
                     <Checkbox
                       id="hasPreviouslyWorkedWithUs"
                       checked={hasPreviousWork}
@@ -466,11 +466,11 @@ export function JobSeekerForm() {
                 />
               </div>
 
-              <div className="flex my-6 mr-10 justify-end">
+              <div className="flex my-6 px-4 sm:px-10 justify-center sm:justify-end">
                 <Button
                   type="submit"
                   disabled={jobSeekerSubmission.isPending}
-                  className="bg-linear-to-t from-[#4A3AFF] to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto bg-linear-to-t from-[#4A3AFF] to-[#8C82FF] hover:bg-purple-700 text-white px-8 py-3 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {jobSeekerSubmission.isPending
                     ? "Submitting..."

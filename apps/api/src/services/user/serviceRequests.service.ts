@@ -12,6 +12,7 @@ const requestInclude = {
   companyAcquisitionInquiry: true,
   manpowerHiringRequest: true,
   jobSeekerProfile: true,
+  machineryInstallerRequest: true,
   actionLogs: {
     orderBy: { createdAt: "desc" as const },
   },
@@ -110,6 +111,22 @@ export const createJobSeekerProfile = async (
       jobSeekerProfile: { create: dbData },
     },
     include: requestInclude,
+  });
+};
+
+export const createMachineryInstallerRequest = async (
+  userId: string,
+  data: any
+) => {
+  const { agreeToTerms, ...dbData } = data;
+  return prisma.serviceRequest.create({
+    data: {
+      userId,
+      serviceType: "MACHINERY_INSTALLER" as ServiceType,
+      status: ServiceStatus.SUBMITTED,
+      machineryInstallerRequest: { create: dbData },
+    } as any,
+    include: requestInclude as any,
   });
 };
 

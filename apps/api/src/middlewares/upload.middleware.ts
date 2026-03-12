@@ -49,6 +49,40 @@ export const seriesCoverUpload = multer({
   },
 }).single("coverImage");
 
+export const machineryInstallerUpload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
+  fileFilter: (req, file, cb) => {
+    if (
+      file.fieldname === "machineImages" &&
+      !file.mimetype.startsWith("image/")
+    ) {
+      return cb(new Error("machineImages must be image files"));
+    }
+    if (
+      file.fieldname === "machineVideos" &&
+      !file.mimetype.startsWith("video/")
+    ) {
+      return cb(new Error("machineVideos must be video files"));
+    }
+    cb(null, true);
+  },
+}).fields([
+  { name: "machineImages", maxCount: 3 },
+  { name: "machineVideos", maxCount: 2 },
+]);
+
+export const articleCoverUpload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB for cover image
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed!"));
+    }
+    cb(null, true);
+  },
+}).single("coverImageFile");
+
 declare global {
   namespace Express {
     interface Request {

@@ -52,6 +52,24 @@ export default function ForgotPasswordForm() {
     },
   });
 
+  const verifyResetOtpMutation = useMutation({
+    mutationFn: async (payload: { email: string; otp: string }) => {
+      await api.post("/api/v1/auth/forgot-password/verify", {
+        email: payload.email.toLowerCase().trim(),
+        otp: payload.otp,
+      });
+    },
+    onSuccess: () => {
+      setStep("password");
+    },
+    onError: (err: Error) => {
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      const message =
+        axiosError?.response?.data?.message || "Invalid or expired OTP";
+      toast.error(message);
+    },
+  });
+
   const confirmMutation = useMutation({
     mutationFn: async (payload: {
       email: string;
@@ -101,7 +119,7 @@ export default function ForgotPasswordForm() {
     (index: number, value: string) => {
       if (value.length > 1) {
         // Handle paste
-        const digits = value.replace(/\D/g, "").slice(0, 6);
+        const digits = value.replaceAll(/\D/g, "").slice(0, 6);
         const newOtp = [...otp];
         for (let i = 0; i < digits.length && index + i < 6; i++) {
           newOtp[index + i] = digits[i];
@@ -140,7 +158,7 @@ export default function ForgotPasswordForm() {
       toast.error("Please enter the complete 6-digit OTP");
       return;
     }
-    setStep("password");
+    verifyResetOtpMutation.mutate({ email, otp: otpValue });
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -268,9 +286,14 @@ export default function ForgotPasswordForm() {
 
           <Button
             type="submit"
+            disabled={verifyResetOtpMutation.isPending}
             className="w-full h-14 bg-gray-900 hover:bg-gray-800 text-white text-lg font-medium rounded-full"
           >
-            Next
+            {verifyResetOtpMutation.isPending ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              "Next"
+            )}
           </Button>
 
           <p className="text-sm text-gray-500 text-center">

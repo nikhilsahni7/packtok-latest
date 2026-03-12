@@ -18,15 +18,16 @@ export const TermsAndConditionsCheckbox = ({
 }: TermsAndConditionsCheckboxProps) => {
   return (
     <div className={`space-y-2 ${className}`}>
-      <div className="flex items-center space-x-2">
+      <div className="flex items-start gap-3">
         <Checkbox
           id="terms"
           checked={checked}
           onCheckedChange={onCheckedChange}
+          className="mt-0.5 shrink-0"
         />
         <label
           htmlFor="terms"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          className="text-sm font-medium leading-relaxed break-words peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
           I accept the{" "}
           <Link

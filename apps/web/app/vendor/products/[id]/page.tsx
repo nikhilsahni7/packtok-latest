@@ -238,7 +238,8 @@ export default function VendorProductEditorPage() {
 
   // ── Handlers ───────────────────────────────────────────────────────────
 
-  const handleSave = async () => {
+  const handleSave = async (options?: { showSuccessToast?: boolean }) => {
+    const showSuccessToast = options?.showSuccessToast ?? true;
     const specObj: Record<string, string> = {};
     specs
       .filter((s) => s.key.trim())
@@ -284,8 +285,9 @@ export default function VendorProductEditorPage() {
       setPdf(null);
     }
     await fetchProduct(); // This will reset initialState and hasChanges
-
-    toast.success("Product saved");
+    if (showSuccessToast) {
+      toast.success("Product saved");
+    }
   };
 
   const handleDelete = async () => {
@@ -302,7 +304,7 @@ export default function VendorProductEditorPage() {
   };
 
   const handleSubmitForReview = async () => {
-    await handleSave();
+    await handleSave({ showSuccessToast: false });
     await submit.mutateAsync();
     toast.success("Submitted for review");
     router.push("/vendor/products");
@@ -336,11 +338,11 @@ export default function VendorProductEditorPage() {
 
   return (
     <>
-    <div className="p-4 sm:p-6 space-y-6 max-w-6xl mx-auto">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap w-full sm:w-auto">
           {submissionStatus !== "APPROVED" && (
             <Button
               variant="outline"
@@ -353,7 +355,7 @@ export default function VendorProductEditorPage() {
           <Button
             onClick={handleSave}
             disabled={update.isPending || uploadMedia.isPending}
-            className="bg-green-600 hover:bg-green-700 text-white gap-1.5"
+            className="bg-green-600 hover:bg-green-700 text-white gap-1.5 w-full sm:w-auto"
           >
             {update.isPending || uploadMedia.isPending ? (
               <span className="flex items-center gap-2">
@@ -368,6 +370,7 @@ export default function VendorProductEditorPage() {
           <Button
             onClick={handleSubmitForReview}
             disabled={submit.isPending}
+            className="w-full sm:w-auto"
           >
             Submit for Review
           </Button>
@@ -422,7 +425,7 @@ export default function VendorProductEditorPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* ── Left: Form ──────────────────────────────────────────────── */}
         <div className="lg:col-span-2 space-y-6">
           {/* Basic Information */}
@@ -446,7 +449,7 @@ export default function VendorProductEditorPage() {
                 rows={5}
               />
             </div>
-            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Manufacturer / Brand</Label>
                 <Input
@@ -484,7 +487,7 @@ export default function VendorProductEditorPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Category & Classification
             </h2>
-            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Category</Label>
                 <Select
@@ -589,7 +592,7 @@ export default function VendorProductEditorPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Pricing & Stock
             </h2>
-            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Price</Label>
                 <Input
@@ -632,7 +635,7 @@ export default function VendorProductEditorPage() {
             </h2>
             <div className="space-y-2">
               {specs.map((s, idx) => (
-                <div key={idx} className="flex gap-2 items-center">
+                <div key={idx} className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                   <Input
                     placeholder="Key"
                     value={s.key}
@@ -663,7 +666,7 @@ export default function VendorProductEditorPage() {
                       setSpecs((prev) => prev.filter((_, i) => i !== idx))
                     }
                     disabled={specs.length <= 1}
-                    className="p-2 text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors"
+                    className="p-2 self-end sm:self-auto text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -700,7 +703,7 @@ export default function VendorProductEditorPage() {
             <h2 className="text-base font-semibold text-gray-900">
               Inventory
             </h2>
-            <div className="grid grid-cols-1 grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Stock on Hand</Label>
                 <Input

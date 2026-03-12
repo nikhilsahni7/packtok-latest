@@ -347,10 +347,11 @@ export function VendorSidebar({
 
           /* Mobile: full-width drawer, off-screen by default */
           ${mobileOpen ? "left-0" : "-left-full"}
-          w-72
+          w-[86vw] max-w-xs shadow-xl lg:shadow-none
 
           /* Desktop: always visible, respects collapsed state */
           lg:left-0
+          lg:max-w-none
           ${collapsed ? "lg:w-16" : "lg:w-64"}
         `}
       >
@@ -365,10 +366,10 @@ export function VendorMobileMenuButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-6 right-6 z-30 lg:hidden w-14 h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg shadow-orange-200 flex items-center justify-center transition-all active:scale-95"
+      className="fixed bottom-5 right-4 z-30 lg:hidden w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg shadow-orange-200 flex items-center justify-center transition-all active:scale-95"
       aria-label="Open navigation"
     >
-      <Menu className="h-6 w-6" />
+      <Menu className="h-5 w-5" />
     </button>
   );
 }

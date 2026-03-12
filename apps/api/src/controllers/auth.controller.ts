@@ -8,6 +8,7 @@ import {
     resetPasswordWithOtp,
     sendPasswordResetOtp,
     sendVerificationOtp,
+    verifyPasswordResetOtp,
     verifyOtp
 } from "../services/auth.service";
 
@@ -268,6 +269,16 @@ export const resetPassword = asyncHandler(
       .json(
         new ApiResponse(200, null, "Password has been reset successfully.")
       );
+  }
+);
+
+export const verifyPasswordReset = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email, otp } = req.body;
+    await verifyPasswordResetOtp(email, otp);
+    res
+      .status(200)
+      .json(new ApiResponse(200, null, "Password reset OTP verified."));
   }
 );
 

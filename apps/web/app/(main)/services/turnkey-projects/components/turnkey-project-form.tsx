@@ -162,13 +162,13 @@ export function TurnkeyProjectForm() {
       <div className="w-[95%]   mx-auto">
         <div className="form-bg bg-white shadow-[0_10.8px_18px_3.6px_rgba(150,144,155,0.22)] rounded-[28.8px] py-10 w-full h-full">
           <div className="bg-white w-11/12 border-[1px] border-[rgba(255, 255, 255, 1)] shadow-[0_0_4px_1px_rgba(255, 255, 255, 1)]  mx-auto h-full rounded-3xl overflow-hidden">
-            <div className="px-14 py-4">
+            <div className="px-4 sm:px-10 py-4">
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
-                <h1 className=" bg-[#4A3AFF] capitalize inline-block text-[24px] font-bold text-white rounded-2xl px-20 py-5 mb-8">
+                <h1 className="bg-[#4A3AFF] capitalize inline-block text-base sm:text-2xl font-bold text-white rounded-2xl px-4 sm:px-8 py-4 sm:py-5 mb-8">
                   Turnkey Project Inquiry for corrugated and packaging industry
                 </h1>
               </div>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)]">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
                 <div className="m-0">
                   <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
                     Section 1: Contact Information
@@ -327,7 +327,7 @@ export function TurnkeyProjectForm() {
                         {industryOptions.map((industry) => (
                           <div
                             key={industry.value}
-                            className="flex items-center justify-center space-x-2 border p-4 border-[#D3D3D3]"
+                            className="flex items-start justify-start gap-2 border p-4 border-[#D3D3D3]"
                           >
                             <Checkbox
                               id={industry.value}
@@ -648,7 +648,7 @@ export function TurnkeyProjectForm() {
                     {serviceOptions.map((service) => (
                       <div
                         key={service.value}
-                        className="flex items-center space-x-2 border p-4 border-[#D3D3D3] justify-center"
+                        className="flex items-start gap-2 border p-4 border-[#D3D3D3] justify-start"
                       >
                         <Checkbox
                           id={service.value}
@@ -694,7 +694,7 @@ export function TurnkeyProjectForm() {
                     </div>
                     <div className="grid py-10 grid-cols-1 grid-cols-1 md:grid-cols-3  gap-4">
 
-                      <div className="flex items-center border p-4 border-[#D3D3D3] justify-center space-x-2">
+                      <div className="flex items-start border p-4 border-[#D3D3D3] justify-start gap-2">
                         <Checkbox
                           id="utilitiesAvailable"
                           onCheckedChange={(checked) =>
@@ -709,7 +709,7 @@ export function TurnkeyProjectForm() {
                         </Label>
                       </div>
 
-                      <div className="flex items-center border p-4 border-[#D3D3D3] justify-center space-x-2">
+                      <div className="flex items-start border p-4 border-[#D3D3D3] justify-start gap-2">
                         <Checkbox
                           id="requiresOngoingSupport"
                           onCheckedChange={(checked) =>
@@ -724,7 +724,7 @@ export function TurnkeyProjectForm() {
                         </Label>
                       </div>
 
-                      <div className="flex items-center border p-4 border-[#D3D3D3] justify-center space-x-2">
+                      <div className="flex items-start border p-4 border-[#D3D3D3] justify-start gap-2">
                         <Checkbox
                           id="interestedInFutureUpgrades"
                           onCheckedChange={(checked) =>
@@ -792,11 +792,11 @@ export function TurnkeyProjectForm() {
                   />
                 </div>
 
-                <div className="flex mb-6 mr-10 justify-end ">
+                <div className="flex mb-6 px-4 sm:px-10 justify-center sm:justify-end">
                   <Button
                     type="submit"
                     disabled={turnkeySubmission.isPending}
-                    className="bg-linear-to-t from-[#4A3AFF]  to-[#8C82FF] hover:bg-purple-700 text-white px-12 py-6 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto bg-linear-to-t from-[#4A3AFF] to-[#8C82FF] hover:bg-purple-700 text-white px-8 py-3 rounded-full font-bold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {turnkeySubmission.isPending
                       ? "Submitting..."

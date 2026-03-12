@@ -153,41 +153,41 @@ export function FloatingCartBar() {
           <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
 
           {/* Content */}
-          <div className="relative flex items-center justify-between px-5 py-4 rounded-2xl">
+          <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-3 sm:px-5 py-3 sm:py-4 rounded-2xl">
             {/* Left side - Cart info */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 w-full sm:w-auto">
               {/* Animated bag icon */}
               <div className="relative">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <ShoppingBag className="h-6 w-6 text-white" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <ShoppingBag className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 {/* Item count badge with pulse animation */}
-                <span className="absolute -top-2 -right-2 bg-white text-emerald-600 text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-lg animate-pulse">
+                <span className="absolute -top-2 -right-2 bg-white text-emerald-600 text-[10px] sm:text-xs font-bold rounded-full h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center shadow-lg animate-pulse">
                   {itemCount}
                 </span>
               </div>
 
               {/* Text content */}
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="font-bold text-white text-lg tracking-tight">
+                  <p className="font-bold text-white text-base sm:text-lg tracking-tight">
                     {itemCount} {itemCount === 1 ? "item" : "items"}
                   </p>
-                  <Sparkles className="h-4 w-4 text-amber-300 animate-pulse" />
+                  <Sparkles className="hidden sm:block h-4 w-4 text-amber-300 animate-pulse" />
                 </div>
-                <p className="text-emerald-100 text-sm font-medium">
+                <p className="text-emerald-100 text-xs sm:text-sm font-medium break-words pr-1">
                   Total:{" "}
                   {Object.entries(totalsByCurrency)
                     .map(([cur, amount]) => `${cur} ${amount.toLocaleString()}`)
-                    .join(" + ")}
+                    .join(" • ")}
                 </p>
               </div>
             </div>
 
             {/* Right side - View Cart + actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
               {/* View Cart button */}
-              <div className="flex items-center gap-2 bg-white text-emerald-600 px-6 py-3 rounded-xl font-bold text-sm shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+              <div className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-white text-emerald-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
                 <span>View Cart</span>
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -226,7 +226,7 @@ export function FloatingCartBar() {
         {/* Checkout Quick Link - Floating pill below */}
         <Link
           href="/checkout"
-          className="mt-3 mx-auto block w-fit text-center bg-white/90 backdrop-blur-md text-gray-800 px-8 py-3 rounded-full shadow-xl font-semibold text-sm hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-gray-100"
+          className="mt-3 mx-auto block w-full sm:w-fit text-center bg-white/90 backdrop-blur-md text-gray-800 px-8 py-3 rounded-full shadow-xl font-semibold text-sm hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-gray-100"
         >
           <span className="flex items-center gap-2">
             <span>Proceed to Checkout</span>

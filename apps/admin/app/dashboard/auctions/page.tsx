@@ -6,13 +6,15 @@ import {
   CardContent
 } from "@packtok/ui/components/card";
 import { cn } from "@packtok/ui/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   Calendar,
   CheckCircle2,
   Gavel,
   LayoutDashboard,
-  Plus
+  Plus,
+  RefreshCw
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,14 +22,17 @@ import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useAdminAuctions, useFinalizeAuction } from "../../../hooks";
 import { Auction } from "../../../types/auction";
+import { QK } from "../../../utils/queryKeys";
 import { AuctionCard } from "./components/auction-card";
 
 type TabType = "LIVE" | "UPCOMING" | "CLOSED" | "OVERVIEW";
 
 export default function AuctionsPage() {
+  const queryClient = useQueryClient();
   const { data: auctions = [], isLoading, error } = useAdminAuctions();
   const finalizeAuction = useFinalizeAuction();
   const [activeTab, setActiveTab] = useState<TabType>("LIVE");
+  const [refreshing, setRefreshing] = useState(false);
 
   const counts = useMemo(() => ({
     LIVE: auctions.filter(a => a.status === "LIVE").length,
@@ -68,6 +73,12 @@ export default function AuctionsPage() {
     } catch (err) {
       toast.error("Failed to finalize auction");
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: QK.auctions });
+    setRefreshing(false);
   };
 
   if (isLoading) {
@@ -152,6 +163,15 @@ export default function AuctionsPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="h-12 px-5 rounded-2xl gap-2 font-bold text-slate-700"
+          >
+            <RefreshCw className={cn("w-4 h-4", refreshing && "animate-spin")} />
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </Button>
            <Button asChild className="shadow-2xl shadow-primary-200 h-12 px-8 font-black rounded-2xl gap-3 text-base hover:scale-105 active:scale-95 transition-all">
             <Link href="/dashboard/products">
               <Plus className="w-5 h-5" />

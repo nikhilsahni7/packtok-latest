@@ -208,7 +208,7 @@ export default function VendorSubscriptionPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-8">
+    <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-6 md:space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -319,7 +319,7 @@ export default function VendorSubscriptionPage() {
       )}
 
       {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
         {(plans ?? []).map((plan) => {
           const isCurrent = currentPlanSlug === plan.slug && isActive;
           const isProcessing = processingPlanId === plan.id;
@@ -338,7 +338,7 @@ export default function VendorSubscriptionPage() {
           return (
             <Card
               key={plan.id}
-              className={`relative flex flex-col p-5 transition-all duration-200 hover:shadow-lg ${
+              className={`relative flex flex-col p-4 sm:p-5 transition-all duration-200 hover:shadow-lg ${
                 planColors[plan.slug] ?? "border-gray-200 bg-white"
               } ${isCurrent ? "ring-2 ring-orange-500 shadow-md" : ""}`}
             >

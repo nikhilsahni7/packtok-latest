@@ -11,6 +11,7 @@ import {
     signup,
     signupVendor,
     updateUserProfile,
+    verifyPasswordReset,
     verifyUserOtp,
 } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
@@ -27,6 +28,7 @@ router.post("/refresh", refresh);
 router.post("/verify-otp", verifyUserOtp);
 router.post("/resend-otp", resendOtp);
 router.post("/forgot-password/request", requestPasswordReset);
+router.post("/forgot-password/verify", verifyPasswordReset);
 router.post("/forgot-password/confirm", resetPassword);
 
 router.get("/me", authMiddleware, getCurrentUser);

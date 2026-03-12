@@ -296,7 +296,7 @@ export default function ServicesPage() {
                       asChild
                       className="bg-black text-white hover:bg-gray-800 px-10 py-6 rounded-md font-bold w-fit text-lg shadow-lg"
                     >
-                      <Link href="/services/machinery-installer">Request</Link>
+                      <Link href="/services/machinery-installer/form">Request</Link>
                     </Button>
                   </div>
                 </div>

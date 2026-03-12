@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getRequestById } from "../services/admin/serviceRequests.service";
 import {
   cancelUserServiceRequest,
+  createMachineryInstallerRequest,
   createCompanyAcquisitionInquiry,
   createConsultancyRequest,
   createJobSeekerProfile,
@@ -12,7 +13,11 @@ import {
 } from "../services/user/serviceRequests.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
-import { uploadDocumentToSupabase } from "../utils/storage.service";
+import {
+  uploadDocumentToSupabase,
+  uploadImageToSupabase,
+  uploadVideoToSupabase,
+} from "../utils/storage.service";
 
 export const submitMaintenance = asyncHandler(
   async (req: Request, res: Response) => {
@@ -99,6 +104,67 @@ export const submitJobSeeker = asyncHandler(
     res
       .status(201)
       .json(new ApiResponse(201, request, "Job seeker profile submitted"));
+  }
+);
+
+export const submitMachineryInstaller = asyncHandler(
+  async (req: Request, res: Response) => {
+    const files = (req.files || {}) as {
+      [key: string]: Express.Multer.File[];
+    };
+    const machineImages = files.machineImages || [];
+    const machineVideos = files.machineVideos || [];
+
+    const machineImageUrls = await Promise.all(
+      machineImages.map((file) =>
+        uploadImageToSupabase(
+          file.buffer,
+          file.mimetype,
+          "services/machinery-installer/images"
+        )
+      )
+    );
+
+    const machineVideoUrls = await Promise.all(
+      machineVideos.map((file) =>
+        uploadVideoToSupabase(
+          file.buffer,
+          file.mimetype,
+          "services/machinery-installer/videos"
+        )
+      )
+    );
+
+    const body = req.body as Record<string, string | undefined>;
+    const request = await createMachineryInstallerRequest(req.user!.id, {
+      companyName: body.companyName,
+      contactPerson: body.contactPerson,
+      phone: body.phone,
+      email: body.email,
+      companyAddress: body.companyAddress,
+      installationTypeRequired: body.installationTypeRequired,
+      expectedTimeline: body.expectedTimeline,
+      specificInstructions: body.specificInstructions,
+      machineImageUrls,
+      machineVideoUrls,
+      machineTypeModel: body.machineTypeModel,
+      capacitySpecifications: body.capacitySpecifications,
+      fromLocation: body.fromLocation,
+      preferredInstallationDateTime: body.preferredInstallationDateTime
+        ? new Date(body.preferredInstallationDateTime)
+        : undefined,
+      whereLocation: body.whereLocation,
+      additionalDescription: body.additionalDescription,
+      teamMembersRequired: Number.parseInt(body.teamMembersRequired || "0", 10),
+      skillsExpertiseNeeded: body.skillsExpertiseNeeded,
+      onSiteSupportProvidedByClient: body.onSiteSupportProvidedByClient,
+    });
+
+    res
+      .status(201)
+      .json(
+        new ApiResponse(201, request, "Machinery installer request submitted")
+      );
   }
 );
 

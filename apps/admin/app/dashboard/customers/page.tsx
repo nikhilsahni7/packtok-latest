@@ -11,7 +11,8 @@ import {
     AlertDialogTitle,
 } from "@packtok/ui/components/alert-dialog";
 import { Button } from "@packtok/ui/components/button";
-import { Activity, AlertTriangle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Activity, AlertTriangle, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { productTabs } from "../../../constants/navigation";
@@ -21,12 +22,15 @@ import {
     useAdminUsers,
     useDeleteUser,
 } from "../../../hooks/useUsers";
+import { QK } from "../../../utils/queryKeys";
 import { CustomerSidebar } from "./_components/customer-sidebar";
 import { CustomersTable } from "./_components/customers-table";
 import { EditCustomerDialog } from "./_components/edit-customer-dialog";
 
 export default function CustomersPage() {
+  const queryClient = useQueryClient();
   const { data: customers = [], isLoading, isError } = useAdminUsers();
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const { data: userDetail, isLoading: isDetailLoading } =
     useAdminUser(selectedUserId);
@@ -54,6 +58,12 @@ export default function CustomersPage() {
       setSelectedUserId(null);
     }
     setDeletingCustomer(null);
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: QK.customers });
+    setRefreshing(false);
   };
 
   if (isError) {
@@ -96,21 +106,32 @@ export default function CustomersPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
-          {productTabs.map((tab) => (
-            <Link key={tab.value} href={tab.href}>
-              <Button
-                variant={tab.value === "customers" ? "default" : "ghost"}
-                className={
-                  tab.value === "customers"
-                    ? "bg-slate-900 text-white hover:bg-slate-800 rounded-xl px-6"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-xl px-6"
-                }
-              >
-                {tab.name}
-              </Button>
-            </Link>
-          ))}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="rounded-xl gap-2 bg-white"
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </Button>
+          <div className="flex items-center gap-2 bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
+            {productTabs.map((tab) => (
+              <Link key={tab.value} href={tab.href}>
+                <Button
+                  variant={tab.value === "customers" ? "default" : "ghost"}
+                  className={
+                    tab.value === "customers"
+                      ? "bg-slate-900 text-white hover:bg-slate-800 rounded-xl px-6"
+                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-xl px-6"
+                  }
+                >
+                  {tab.name}
+                </Button>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 

@@ -173,8 +173,8 @@ export default function VendorDraftsPage() {
 
                   {/* Actions */}
                   <div className="shrink-0 flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
-                    <Link href={`/vendor/products/${product.id}`}>
-                      <Button variant="outline" size="sm" className="gap-1.5">
+                    <Link href={`/vendor/products/${product.id}`} className="flex-1 sm:flex-none">
+                      <Button variant="outline" size="sm" className="gap-1.5 w-full sm:w-auto">
                         <Pencil className="h-3.5 w-3.5" /> Edit
                       </Button>
                     </Link>

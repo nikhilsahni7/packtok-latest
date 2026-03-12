@@ -336,7 +336,7 @@ export default function Navbar() {
                   scrolled ? "border-gray-200" : "border-gray-700"
                 )}
               >
-                {accessToken && user ? (
+                {accessToken ? (
                   <div className="space-y-2">
                     <div className="px-3 py-2">
                       <Link
@@ -349,10 +349,10 @@ export default function Navbar() {
                             : "text-white hover:text-gray-300"
                         )}
                       >
-                        Welcome, {user.name?.split(" ")[0] || user.email}
+                        Welcome, {user?.name?.split(" ")[0] || user?.email || "My Account"}
                       </Link>
                     </div>
-                    {user.role === "VENDOR" && (
+                    {user?.role === "VENDOR" && (
                       <div className="px-3">
                         <Button asChild variant="outline" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
                           <Link href="/vendor/dashboard" onClick={handleLinkClick}>
@@ -362,7 +362,15 @@ export default function Navbar() {
                       </div>
                     )}
                     <div className="px-3">
-                      <LogoutButton />
+                      <LogoutButton
+                        onLoggedOut={handleLinkClick}
+                        className={cn(
+                          "w-full rounded-md font-semibold",
+                          scrolled
+                            ? "bg-red-500 text-white hover:bg-red-600 hover:text-white"
+                            : "bg-red-600 text-white hover:bg-red-700 hover:text-white"
+                        )}
+                      />
                     </div>
                   </div>
                 ) : (

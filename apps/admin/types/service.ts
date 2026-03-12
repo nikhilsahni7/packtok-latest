@@ -6,6 +6,7 @@ export enum ServiceType {
   COMPANY_ACQUISITION = "COMPANY_ACQUISITION",
   MANPOWER_HIRING = "MANPOWER_HIRING",
   JOB_SEEKER_SUBMISSION = "JOB_SEEKER_SUBMISSION",
+  MACHINERY_INSTALLER = "MACHINERY_INSTALLER",
 }
 
 export enum ServiceStatus {
@@ -305,6 +306,29 @@ export interface JobSeekerProfile {
   cvUrl: string;
 }
 
+export interface MachineryInstallerRequest {
+  id: string;
+  companyName: string;
+  contactPerson: string;
+  phone: string;
+  email: string;
+  companyAddress: string;
+  installationTypeRequired: string;
+  expectedTimeline: string;
+  specificInstructions?: string;
+  machineImageUrls: string[];
+  machineVideoUrls: string[];
+  machineTypeModel: string;
+  capacitySpecifications: string;
+  fromLocation: string;
+  preferredInstallationDateTime?: string;
+  whereLocation: string;
+  additionalDescription?: string;
+  teamMembersRequired: number;
+  skillsExpertiseNeeded: string;
+  onSiteSupportProvidedByClient?: string;
+}
+
 export interface ServiceRequest {
   id: string;
   createdAt: string;
@@ -327,6 +351,7 @@ export interface ServiceRequest {
   companyAcquisitionInquiry?: CompanyAcquisitionInquiry;
   manpowerHiringRequest?: ManpowerHiringRequest;
   jobSeekerProfile?: JobSeekerProfile;
+  machineryInstallerRequest?: MachineryInstallerRequest;
   actionLogs: ServiceActionLog[];
 }
 

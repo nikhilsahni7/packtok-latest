@@ -125,6 +125,7 @@ enum ServiceType {
   COMPANY_ACQUISITION
   MANPOWER_HIRING
   JOB_SEEKER_SUBMISSION
+  MACHINERY_INSTALLER
 }
 
 enum ServiceStatus {
@@ -562,6 +563,7 @@ model ServiceRequest {
   companyAcquisitionInquiry CompanyAcquisitionInquiry?
   manpowerHiringRequest     ManpowerHiringRequest?
   jobSeekerProfile          JobSeekerProfile?
+  machineryInstallerRequest MachineryInstallerRequest?
 
   actionLogs                ServiceActionLog[]
 
@@ -753,6 +755,35 @@ model JobSeekerProfile {
   serviceRequestId            String         @unique
 
   @@map("job_seeker_profiles")
+}
+
+model MachineryInstallerRequest {
+  id                              String   @id @default(cuid())
+  companyName                     String
+  contactPerson                   String
+  phone                           String
+  email                           String
+  companyAddress                  String
+  installationTypeRequired        String
+  expectedTimeline                String
+  specificInstructions            String?  @db.Text
+  machineImageUrls                String[]
+  machineVideoUrls                String[]
+  machineTypeModel                String
+  capacitySpecifications          String
+  fromLocation                    String
+  preferredInstallationDateTime   DateTime?
+  whereLocation                   String
+  additionalDescription           String?  @db.Text
+  teamMembersRequired             Int
+  skillsExpertiseNeeded           String   @db.Text
+  onSiteSupportProvidedByClient   String?  @db.Text
+
+  // --- Relation to parent ---
+  serviceRequest                  ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  serviceRequestId                String         @unique
+
+  @@map("machinery_installer_requests")
 }
 
 // ===== Vendor Subscription / Plans =====

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@packtok/ui/components/select";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, Check, Loader2, MessageSquare, Plus, Trash2, X } from "lucide-react";
+import { Building2, Check, Loader2, MessageSquare, Plus, RefreshCw, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -50,6 +50,7 @@ export function InvestmentsView() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [formData, setFormData] = useState({ name: "", location: "" });
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Fetch properties
   const { data: properties = [], isLoading: loadingProperties } = useQuery<Property[]>({
@@ -122,14 +123,34 @@ export function InvestmentsView() {
     createMutation.mutate();
   };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin-investment-properties"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-investment-queries"] }),
+    ]);
+    setRefreshing(false);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Investment Properties</h1>
-        <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setShowAddDialog(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Property
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="gap-2"
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setShowAddDialog(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Property
+          </Button>
+        </div>
       </div>
 
       {/* Tabs */}

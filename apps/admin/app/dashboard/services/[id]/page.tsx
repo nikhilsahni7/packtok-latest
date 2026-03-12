@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@packtok/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useService } from "../../../../hooks/useServices";
@@ -9,7 +9,13 @@ import { ServiceDetailView } from "../_components/service-detail-view";
 
 export default function ServiceDetailPage() {
   const params = useParams<{ id: string }>();
-  const { data: service, isLoading, error } = useService(params.id);
+  const {
+    data: service,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useService(params.id);
 
   if (isLoading) {
     return (
@@ -82,5 +88,27 @@ export default function ServiceDetailPage() {
     );
   }
 
-  return <ServiceDetailView service={service} />;
+  return (
+    <div className="p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <Link href="/dashboard/services">
+          <Button variant="outline" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Services
+          </Button>
+        </Link>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+          {isFetching ? "Refreshing..." : "Refresh"}
+        </Button>
+      </div>
+      <ServiceDetailView service={service} />
+    </div>
+  );
 }

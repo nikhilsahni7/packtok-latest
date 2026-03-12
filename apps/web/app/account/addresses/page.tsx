@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-const POSTAL_CODE_REGEX = /^[0-9]{6}$/;
+const POSTAL_CODE_REGEX = /^\d{6}$/;
 
 interface Address {
   id: string;
@@ -75,7 +75,7 @@ export default function AddressesPage() {
     setIsSaving(true);
     try {
       if (editingId) {
-        await api.patch(`/api/v1/addresses/${editingId}`, formData);
+        await api.put(`/api/v1/addresses/${editingId}`, formData);
         toast.success("Address updated!");
       } else {
         await api.post("/api/v1/addresses", formData);
@@ -110,7 +110,7 @@ export default function AddressesPage() {
 
   const handleSetDefault = async (id: string) => {
     try {
-      await api.patch(`/api/v1/addresses/${id}/default`);
+      await api.patch(`/api/v1/addresses/${id}/set-default`);
       toast.success("Default address updated");
       fetchAddresses();
     } catch (error: any) {
@@ -235,7 +235,7 @@ export default function AddressesPage() {
                     required
                     value={formData.postalCode}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, "");
+                      const value = e.target.value.replaceAll(/\D/g, "");
                       setFormData({ ...formData, postalCode: value });
                     }}
                     placeholder="e.g. 110001"

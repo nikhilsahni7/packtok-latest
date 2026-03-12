@@ -143,6 +143,10 @@ export function ServicesTable({ initialServices = [] }: ServicesTableProps) {
           `${service.jobSeekerProfile?.firstName} ${service.jobSeekerProfile?.lastName}` ||
           "Job Seeker"
         );
+      case ServiceType.MACHINERY_INSTALLER:
+        return (
+          service.machineryInstallerRequest?.companyName || "Machinery Installer"
+        );
       default:
         return "Service Request";
     }
@@ -183,6 +187,7 @@ export function ServicesTable({ initialServices = [] }: ServicesTableProps) {
       [ServiceType.COMPANY_ACQUISITION]: "Acquisition",
       [ServiceType.MANPOWER_HIRING]: "Manpower",
       [ServiceType.JOB_SEEKER_SUBMISSION]: "Job Seeker",
+      [ServiceType.MACHINERY_INSTALLER]: "Machinery Installer",
     };
     return <Badge variant="outline">{typeLabels[type]}</Badge>;
   };
@@ -281,6 +286,9 @@ export function ServicesTable({ initialServices = [] }: ServicesTableProps) {
               </option>
               <option value={ServiceType.JOB_SEEKER_SUBMISSION}>
                 Job Seeker
+              </option>
+              <option value={ServiceType.MACHINERY_INSTALLER}>
+                Machinery Installer
               </option>
             </select>
           </div>

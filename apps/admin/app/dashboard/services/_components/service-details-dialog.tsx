@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@packtok/ui/badge";
 import { Button } from "@packtok/ui/button";
 import {
     Dialog,
@@ -11,7 +10,7 @@ import {
 } from "@packtok/ui/dialog";
 import { ScrollArea } from "@packtok/ui/scroll-area";
 import { Separator } from "@packtok/ui/separator";
-import { Clock, Download, User } from "lucide-react";
+import { Clock, User } from "lucide-react";
 import React from "react";
 import {
     ServiceRequest,
@@ -25,6 +24,106 @@ interface ServiceDetailsDialogProps {
   onStatusUpdate: (serviceId: string, status: ServiceStatus) => void;
   getStatusBadge: (status: ServiceStatus) => React.ReactNode;
   getServiceTypeBadge: (type: ServiceType) => React.ReactNode;
+}
+
+const INTERNAL_SERVICE_KEYS = new Set(["id", "serviceRequestId"]);
+
+const formatFieldLabel = (key: string) =>
+  key
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (ch) => ch.toUpperCase());
+
+const isLikelyUrl = (value: string) =>
+  value.startsWith("http://") || value.startsWith("https://");
+
+function SubmittedFields({
+  data,
+}: Readonly<{ data: Record<string, unknown> | null | undefined }>) {
+  if (!data) return <p className="text-sm text-muted-foreground">No details.</p>;
+
+  const entries = Object.entries(data).filter(
+    ([key]) => !INTERNAL_SERVICE_KEYS.has(key)
+  );
+
+  if (entries.length === 0) {
+    return <p className="text-sm text-muted-foreground">No details.</p>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {entries.map(([key, value]) => (
+        <div key={key} className="rounded-md border p-3 space-y-1">
+          <p className="text-xs font-medium text-gray-500">{formatFieldLabel(key)}</p>
+          {renderFieldValue(value)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function renderFieldValue(value: unknown) {
+  if (value === null || value === undefined || value === "") {
+    return <p className="text-sm">N/A</p>;
+  }
+
+  if (typeof value === "boolean") {
+    return <p className="text-sm">{value ? "Yes" : "No"}</p>;
+  }
+
+  if (typeof value === "number") {
+    return <p className="text-sm">{value}</p>;
+  }
+
+  if (typeof value === "string") {
+    if (isLikelyUrl(value)) {
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.open(value, "_blank")}
+          className="h-8"
+        >
+          Open Link
+        </Button>
+      );
+    }
+    const parsedDate = Date.parse(value);
+    if (!Number.isNaN(parsedDate) && value.includes("T")) {
+      return <p className="text-sm">{new Date(parsedDate).toLocaleString()}</p>;
+    }
+    return <p className="text-sm break-words">{value}</p>;
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return <p className="text-sm">N/A</p>;
+    }
+    if (value.every((item) => typeof item === "string" && isLikelyUrl(item))) {
+      return (
+        <div className="flex flex-wrap gap-2">
+          {value.map((url, index) => (
+            <Button
+              key={`${String(url)}-${index}`}
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(String(url), "_blank")}
+              className="h-8"
+            >
+              File {index + 1}
+            </Button>
+          ))}
+        </div>
+      );
+    }
+    return <p className="text-sm break-words">{value.map(String).join(", ")}</p>;
+  }
+
+  return (
+    <pre className="text-xs whitespace-pre-wrap break-words">
+      {JSON.stringify(value, null, 2)}
+    </pre>
+  );
 }
 
 export function ServiceDetailsDialog({
@@ -50,6 +149,8 @@ export function ServiceDetailsDialog({
         return renderManpowerDetails();
       case ServiceType.JOB_SEEKER_SUBMISSION:
         return renderJobSeekerDetails();
+      case ServiceType.MACHINERY_INSTALLER:
+        return renderMachineryInstallerDetails();
       default:
         return null;
     }
@@ -57,531 +158,56 @@ export function ServiceDetailsDialog({
 
   const renderMaintenanceDetails = () => {
     const maintenance = service.maintenanceRequest;
-    if (!maintenance) return null;
-
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Maintenance Type
-            </label>
-            <p className="text-sm">{maintenance.maintenanceType}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Company</label>
-            <p className="text-sm">{maintenance.companyName}</p>
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">Address</label>
-          <p className="text-sm">{maintenance.address}</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Machine Name
-            </label>
-            <p className="text-sm">{maintenance.machineName}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Serial Number
-            </label>
-            <p className="text-sm">{maintenance.machineIdOrSerialNumber}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Location
-            </label>
-            <p className="text-sm">{maintenance.locationInFacility}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Manufacturer
-            </label>
-            <p className="text-sm">{maintenance.manufacturer || "N/A"}</p>
-          </div>
-        </div>
-
-        {maintenance.installationDate && (
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Installation Date
-            </label>
-            <p className="text-sm">
-              {new Date(maintenance.installationDate).toLocaleDateString()}
-            </p>
-          </div>
-        )}
-
-        {maintenance.technicianNotes && (
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Technician Notes
-            </label>
-            <p className="text-sm">{maintenance.technicianNotes}</p>
-          </div>
-        )}
-
-        {maintenance.supervisorApprovalName && (
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Supervisor
-            </label>
-            <p className="text-sm">{maintenance.supervisorApprovalName}</p>
-          </div>
-        )}
-      </div>
+      <SubmittedFields
+        data={maintenance as unknown as Record<string, unknown>}
+      />
     );
   };
 
   const renderConsultancyDetails = () => {
     const consultancy = service.consultancyRequest;
-    if (!consultancy) return null;
-
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Company</label>
-            <p className="text-sm">{consultancy.companyName}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Contact Person
-            </label>
-            <p className="text-sm">{consultancy.contactPerson}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Designation
-            </label>
-            <p className="text-sm">{consultancy.designation}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Industry
-            </label>
-            <p className="text-sm">{consultancy.industryType}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Phone</label>
-            <p className="text-sm">{consultancy.phone}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Email</label>
-            <p className="text-sm">{consultancy.email}</p>
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">Address</label>
-          <p className="text-sm">{consultancy.companyAddress}</p>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Services Required
-          </label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {consultancy.servicesRequired.map((service, index) => (
-              <Badge key={index} variant="secondary">
-                {service.replace(/_/g, " ")}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Project Goals
-          </label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {consultancy.projectGoals.map((goal, index) => (
-              <Badge key={index} variant="outline">
-                {goal.replace(/_/g, " ")}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Current Challenges
-          </label>
-          <p className="text-sm">{consultancy.currentChallenges}</p>
-        </div>
-
-        {consultancy.estimatedBudget && (
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Estimated Budget
-            </label>
-            <p className="text-sm">{consultancy.estimatedBudget}</p>
-          </div>
-        )}
-      </div>
+      <SubmittedFields
+        data={consultancy as unknown as Record<string, unknown>}
+      />
     );
   };
 
   const renderTurnkeyDetails = () => {
     const turnkey = service.turnkeyProjectInquiry;
-    if (!turnkey) return null;
-
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Company</label>
-            <p className="text-sm">{turnkey.companyName}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Contact</label>
-            <p className="text-sm">{turnkey.contactName}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Role</label>
-            <p className="text-sm">{turnkey.role}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Email</label>
-            <p className="text-sm">{turnkey.email}</p>
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Industries
-          </label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {turnkey.industry.map((ind, index) => (
-              <Badge key={index} variant="secondary">
-                {ind.replace(/_/g, " ")}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Facility Type
-          </label>
-          <p className="text-sm">{turnkey.facilityType.replace(/_/g, " ")}</p>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Project Description
-          </label>
-          <p className="text-sm">{turnkey.projectDescription}</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Production Capacity
-            </label>
-            <p className="text-sm">{turnkey.targetProductionCapacity}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Timeline
-            </label>
-            <p className="text-sm">
-              {turnkey.completionTimeline.replace(/_/g, " ")}
-            </p>
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Services Needed
-          </label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {turnkey.servicesNeeded.map((service, index) => (
-              <Badge key={index} variant="outline">
-                {service.replace(/_/g, " ")}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Budget</label>
-            <p className="text-sm">
-              {turnkey.estimatedBudget.replace(/_/g, " ")}
-            </p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Funding Status
-            </label>
-            <p className="text-sm">
-              {turnkey.fundingStatus.replace(/_/g, " ")}
-            </p>
-          </div>
-        </div>
-      </div>
+      <SubmittedFields data={turnkey as unknown as Record<string, unknown>} />
     );
   };
 
   const renderAcquisitionDetails = () => {
     const acquisition = service.companyAcquisitionInquiry;
-    if (!acquisition) return null;
-
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Company</label>
-            <p className="text-sm">{acquisition.companyName}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Contact</label>
-            <p className="text-sm">{acquisition.contactName}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Role</label>
-            <p className="text-sm">{acquisition.role}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Inquirer Type
-            </label>
-            <p className="text-sm">{acquisition.inquirerType}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Transaction Type
-            </label>
-            <p className="text-sm">
-              {acquisition.transactionType.replace(/_/g, " ")}
-            </p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Legal Structure
-            </label>
-            <p className="text-sm">
-              {acquisition.sellerLegalStructure?.replace(/_/g, " ") || "N/A"}
-            </p>
-          </div>
-        </div>
-
-        {acquisition.intendedOutcome && (
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Intended Outcome
-            </label>
-            <p className="text-sm">{acquisition.intendedOutcome}</p>
-          </div>
-        )}
-
-        {acquisition.sellerAnnualRevenue && (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-500">
-                Annual Revenue
-              </label>
-              <p className="text-sm">{acquisition.sellerAnnualRevenue}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">
-                EBITDA
-              </label>
-              <p className="text-sm">{acquisition.sellerEbitda || "N/A"}</p>
-            </div>
-          </div>
-        )}
-
-        {acquisition.advisorsEngaged.length > 0 && (
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Advisors Engaged
-            </label>
-            <div className="flex flex-wrap gap-2 mt-1">
-              {acquisition.advisorsEngaged.map((advisor, index) => (
-                <Badge key={index} variant="secondary">
-                  {advisor}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <SubmittedFields
+        data={acquisition as unknown as Record<string, unknown>}
+      />
     );
   };
 
   const renderManpowerDetails = () => {
     const manpower = service.manpowerHiringRequest;
-    if (!manpower) return null;
-
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Company</label>
-            <p className="text-sm">{manpower.companyName}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Contact Person
-            </label>
-            <p className="text-sm">{manpower.contactPerson}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Industry
-            </label>
-            <p className="text-sm">{manpower.industryType}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Urgency</label>
-            <p className="text-sm">{manpower.hiringUrgency}</p>
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Manpower Types
-          </label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {manpower.manpowerType.map((type, index) => (
-              <Badge key={index} variant="secondary">
-                {type.replace(/_/g, " ")}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Skilled Workers
-            </label>
-            <p className="text-sm">{manpower.skilledWorkersRequired}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Semi-skilled
-            </label>
-            <p className="text-sm">{manpower.semiSkilledWorkersRequired}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Unskilled
-            </label>
-            <p className="text-sm">{manpower.unskilledWorkersRequired}</p>
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Work Location
-          </label>
-          <p className="text-sm">{manpower.workLocation}</p>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Expected Joining Date
-          </label>
-          <p className="text-sm">
-            {new Date(manpower.expectedJoiningDate).toLocaleDateString()}
-          </p>
-        </div>
-      </div>
+      <SubmittedFields data={manpower as unknown as Record<string, unknown>} />
     );
   };
 
   const renderJobSeekerDetails = () => {
     const jobSeeker = service.jobSeekerProfile;
-    if (!jobSeeker) return null;
-
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Name</label>
-            <p className="text-sm">
-              {jobSeeker.firstName} {jobSeeker.lastName}
-            </p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Phone</label>
-            <p className="text-sm">{jobSeeker.phone}</p>
-          </div>
-        </div>
+      <SubmittedFields data={jobSeeker as unknown as Record<string, unknown>} />
+    );
+  };
 
-        <div>
-          <label className="text-sm font-medium text-gray-500">Address</label>
-          <p className="text-sm">
-            {jobSeeker.address}, {jobSeeker.city}, {jobSeeker.state}{" "}
-            {jobSeeker.postalCode}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Position Sought
-            </label>
-            <p className="text-sm">{jobSeeker.positionSought}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">
-              Working Mode
-            </label>
-            <p className="text-sm">{jobSeeker.preferredWorkingMode}</p>
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">
-            Previously Worked With Us
-          </label>
-          <p className="text-sm">
-            {jobSeeker.hasPreviouslyWorkedWithUs ? "Yes" : "No"}
-          </p>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-gray-500">CV</label>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.open(jobSeeker.cvUrl, "_blank")}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Download CV
-          </Button>
-        </div>
-      </div>
+  const renderMachineryInstallerDetails = () => {
+    const installer = service.machineryInstallerRequest;
+    return (
+      <SubmittedFields data={installer as unknown as Record<string, unknown>} />
     );
   };
 
@@ -604,15 +230,11 @@ export function ServiceDetailsDialog({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    Status
-                  </label>
+                  <p className="text-sm font-medium text-gray-500">Status</p>
                   <div className="mt-1">{getStatusBadge(service.status)}</div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    Service ID
-                  </label>
+                  <p className="text-sm font-medium text-gray-500">Service ID</p>
                   <p className="text-sm font-mono">{service.id}</p>
                 </div>
               </div>
@@ -633,9 +255,7 @@ export function ServiceDetailsDialog({
                 </div>
                 {service.assignedTo && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Assigned To
-                    </label>
+                    <p className="text-sm font-medium text-gray-500">Assigned To</p>
                     <p className="text-sm">{service.assignedTo.name}</p>
                   </div>
                 )}

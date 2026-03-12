@@ -6,6 +6,7 @@ import { TurnkeyProjectFormData } from "@/schemas/turnkey-project-schema";
 import { CompanyAcquisitionFormData } from "@/schemas/company-acquisition-schema";
 import { ManpowerHiringFormData } from "@/schemas/manpower-hiring-schema";
 import { JobSeekerFormData } from "@/schemas/job-seeker-schema";
+import { MachineryInstallerFormData } from "@/schemas/machinery-installer-schema";
 
 // Service Types
 export type ServiceType =
@@ -14,7 +15,8 @@ export type ServiceType =
   | "TURNKEY_PROJECT"
   | "COMPANY_ACQUISITION"
   | "MANPOWER_HIRING"
-  | "JOB_SEEKER";
+  | "JOB_SEEKER"
+  | "MACHINERY_INSTALLER";
 
 export type ServiceStatus =
   | "SUBMITTED"
@@ -44,6 +46,7 @@ export interface ServiceRequest {
   companyAcquisitionInquiry?: any;
   manpowerHiringRequest?: any;
   jobSeekerProfile?: any;
+  machineryInstallerRequest?: any;
 }
 
 // Maintenance Service Hook
@@ -146,6 +149,64 @@ export const useJobSeekerSubmission = () => {
 
       const { data: response } = await api.post(
         "/api/v1/services/jobseeker",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    },
+  });
+};
+
+export const useMachineryInstallerSubmission = () => {
+  return useMutation({
+    mutationFn: async (data: MachineryInstallerFormData) => {
+      const formData = new FormData();
+
+      formData.append("companyName", data.companyName);
+      formData.append("contactPerson", data.contactPerson);
+      formData.append("phone", data.phone);
+      formData.append("email", data.email);
+      formData.append("companyAddress", data.companyAddress);
+      formData.append("installationTypeRequired", data.installationTypeRequired);
+      formData.append("expectedTimeline", data.expectedTimeline);
+      if (data.specificInstructions) {
+        formData.append("specificInstructions", data.specificInstructions);
+      }
+      formData.append("machineTypeModel", data.machineTypeModel);
+      formData.append("capacitySpecifications", data.capacitySpecifications);
+      formData.append("fromLocation", data.fromLocation);
+      if (data.preferredInstallationDateTime) {
+        formData.append(
+          "preferredInstallationDateTime",
+          data.preferredInstallationDateTime
+        );
+      }
+      formData.append("whereLocation", data.whereLocation);
+      if (data.additionalDescription) {
+        formData.append("additionalDescription", data.additionalDescription);
+      }
+      formData.append("teamMembersRequired", String(data.teamMembersRequired));
+      formData.append("skillsExpertiseNeeded", data.skillsExpertiseNeeded);
+      if (data.onSiteSupportProvidedByClient) {
+        formData.append(
+          "onSiteSupportProvidedByClient",
+          data.onSiteSupportProvidedByClient
+        );
+      }
+
+      data.machineImages.forEach((file) => {
+        formData.append("machineImages", file);
+      });
+      data.machineVideos.forEach((file) => {
+        formData.append("machineVideos", file);
+      });
+
+      const { data: response } = await api.post(
+        "/api/v1/services/machinery-installer",
         formData,
         {
           headers: {

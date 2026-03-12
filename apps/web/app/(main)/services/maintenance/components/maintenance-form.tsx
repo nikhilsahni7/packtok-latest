@@ -78,7 +78,7 @@ export function MaintenanceForm() {
     <>
 
       <div className="form-bg ">
-        <Card className="w-[85%] mx-auto p-5">
+        <Card className="w-[95%] md:w-[85%] mx-auto p-3 sm:p-5">
           <CardHeader>
 
             <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
@@ -88,7 +88,7 @@ export function MaintenanceForm() {
             </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] ">
+            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)] p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Label htmlFor="maintenanceType" className="text-[15.5px] pb-3">Maintenance Type</Label>
@@ -289,11 +289,11 @@ export function MaintenanceForm() {
                 />
               </div>
 
-              <div className="flex my-6 mr-10 justify-end">
+              <div className="flex my-6 px-4 sm:px-10 justify-center sm:justify-end">
                 <Button
                   type="submit"
                   disabled={maintenanceSubmission.isPending}
-                  className="px-8 h-[48px] bg-gradient-to-t from-[#4A3AFF] text-[1rem] to-[#8C82FF] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-8 h-12 bg-gradient-to-t from-[#4A3AFF] text-base to-[#8C82FF] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {maintenanceSubmission.isPending
                     ? "Submitting..."

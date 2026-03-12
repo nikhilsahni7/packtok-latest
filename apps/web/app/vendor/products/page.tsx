@@ -110,14 +110,14 @@ export default function VendorProductsPage() {
           </p>
         </div>
         {canCreate ? (
-          <Link href="/vendor/products/new">
-            <Button className="gap-2">
+          <Link href="/vendor/products/new" className="w-full sm:w-auto">
+            <Button className="gap-2 w-full sm:w-auto">
               <Plus className="h-4 w-4" /> New Product
             </Button>
           </Link>
         ) : (
-          <Link href="/vendor/subscription">
-            <Button className="gap-2 bg-orange-500 hover:bg-orange-600">
+          <Link href="/vendor/subscription" className="w-full sm:w-auto">
+            <Button className="gap-2 bg-orange-500 hover:bg-orange-600 w-full sm:w-auto">
               <Crown className="h-4 w-4" /> Upgrade to Add More
             </Button>
           </Link>
@@ -160,9 +160,103 @@ export default function VendorProductsPage() {
         </div>
       )}
 
-      {/* Products table */}
+      {/* Products list (mobile) */}
       {!isLoading && products.length > 0 && (
-        <div className="bg-white rounded-xl border overflow-hidden">
+        <div className="md:hidden space-y-3">
+          {products.map((product) => {
+            const st = statusConfig[product.status] || statusConfig.DRAFT;
+            const sub = product.submissionStatus
+              ? submissionConfig[product.submissionStatus]
+              : null;
+            return (
+              <div
+                key={product.id}
+                className="bg-white rounded-xl border p-3 space-y-3"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-14 h-14 bg-gray-100 rounded-lg overflow-hidden shrink-0 relative">
+                    {product.imagesThumbnail ? (
+                      <Image
+                        src={product.imagesThumbnail}
+                        alt={product.title}
+                        fill
+                        sizes="56px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="h-5 w-5 text-gray-300" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-gray-900 truncate">
+                      {product.title}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {product.currency}{" "}
+                      {Number.parseFloat(product.price).toLocaleString()}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Stock: {product.quantity}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  <Badge className={`${st.color} gap-1 text-xs font-medium`}>
+                    {st.icon} {st.label}
+                  </Badge>
+                  {sub && (
+                    <Badge className={`${sub.color} gap-1 text-xs font-medium`}>
+                      {sub.icon} {sub.label}
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Link href={`/vendor/products/${product.id}`} className="flex-1">
+                    <Button variant="outline" className="w-full gap-1.5" size="sm">
+                      <Pencil className="h-4 w-4" /> Edit
+                    </Button>
+                  </Link>
+                  {product.submissionStatus === "APPROVED" && (
+                    <a
+                      href={`/marketplace/all/${product.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2.5 rounded-md border hover:bg-gray-50 text-gray-500"
+                      title="View on marketplace"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  )}
+                  {product.submissionStatus !== "APPROVED" && (
+                    <button
+                      onClick={() =>
+                        setDeleteTarget({ id: product.id, title: product.title })
+                      }
+                      disabled={deletingId === product.id}
+                      className="p-2.5 rounded-md border border-red-200 hover:bg-red-50 text-red-500 disabled:opacity-50"
+                      title="Delete"
+                    >
+                      {deletingId === product.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Products table (desktop) */}
+      {!isLoading && products.length > 0 && (
+        <div className="hidden md:block bg-white rounded-xl border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>

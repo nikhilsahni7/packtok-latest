@@ -31,7 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from "@packtok/ui/components/table";
-import { Edit, Plus, Search, Tag, Trash2, X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Edit, Plus, RefreshCw, Search, Tag, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -42,6 +43,7 @@ import {
   useUpdateSubcategories,
 } from "../../../hooks";
 import { Category } from "../../../types/product";
+import { QK } from "../../../utils/queryKeys";
 
 export default function CategoriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,6 +54,8 @@ export default function CategoriesPage() {
   const [editCategoryName, setEditCategoryName] = useState("");
   const [editSubcategories, setEditSubcategories] = useState<string[]>([]);
   const [newSubcategory, setNewSubcategory] = useState("");
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
 
   // Use hooks for data fetching and mutations
   const { data: categories = [], isLoading, error } = useCategories();
@@ -138,6 +142,12 @@ export default function CategoriesPage() {
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: QK.categories });
+    setRefreshing(false);
+  };
+
   if (isLoading) {
     return (
       <div className="p-6 space-y-6 animate-pulse">
@@ -179,14 +189,27 @@ export default function CategoriesPage() {
             Manage product categories and subcategories
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Category
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="gap-2"
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </Button>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Category
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Category</DialogTitle>
               <DialogDescription>
@@ -216,8 +239,9 @@ export default function CategoriesPage() {
                   : "Create Category"}
               </Button>
             </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Edit Category Dialog */}

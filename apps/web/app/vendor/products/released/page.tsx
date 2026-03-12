@@ -37,14 +37,14 @@ export default function VendorReleasedPage() {
           </p>
         </div>
         {canCreate ? (
-          <Link href="/vendor/products/new">
-            <Button className="gap-2">
+          <Link href="/vendor/products/new" className="w-full sm:w-auto">
+            <Button className="gap-2 w-full sm:w-auto">
               <Plus className="h-4 w-4" /> New Product
             </Button>
           </Link>
         ) : (
-          <Link href="/vendor/subscription">
-            <Button className="gap-2 bg-orange-500 hover:bg-orange-600">
+          <Link href="/vendor/subscription" className="w-full sm:w-auto">
+            <Button className="gap-2 bg-orange-500 hover:bg-orange-600 w-full sm:w-auto">
               <Crown className="h-4 w-4" /> Upgrade to Add More
             </Button>
           </Link>

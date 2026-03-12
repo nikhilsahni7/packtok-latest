@@ -10,6 +10,7 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
+  Wrench,
 } from "lucide-react";
 import { useServices } from "../../../../hooks/useServices";
 
@@ -57,6 +58,8 @@ export function ServicesStats() {
         return <Users className="h-4 w-4" />;
       case ServiceType.JOB_SEEKER_SUBMISSION:
         return <Users className="h-4 w-4" />;
+      case ServiceType.MACHINERY_INSTALLER:
+        return <Wrench className="h-4 w-4" />;
       default:
         return <Settings className="h-4 w-4" />;
     }
@@ -76,6 +79,8 @@ export function ServicesStats() {
         return "Manpower Hiring";
       case ServiceType.JOB_SEEKER_SUBMISSION:
         return "Job Seeker";
+      case ServiceType.MACHINERY_INSTALLER:
+        return "Machinery Installer";
       default:
         return String(type).replace(/_/g, " ");
     }

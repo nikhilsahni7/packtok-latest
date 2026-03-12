@@ -1,4 +1,5 @@
 import {
+  BookOpenText,
   ClipboardList,
   Gavel,
   Landmark,
@@ -86,6 +87,12 @@ export const navigation: NavigationItem[] = [
     name: "Messages",
     href: "/dashboard/messages",
     icon: MessageSquare,
+    current: false,
+  },
+  {
+    name: "Articles",
+    href: "/dashboard/articles",
+    icon: BookOpenText,
     current: false,
   },
 ];

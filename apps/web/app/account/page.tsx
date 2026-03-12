@@ -6,11 +6,23 @@ import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
 import { useQueryClient } from "@tanstack/react-query";
+import countries from "i18n-iso-countries";
+import enLocale from "i18n-iso-countries/langs/en.json";
 import { Camera, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import ReactSelect from "react-select";
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+
+const COUNTRY_OPTIONS = (() => {
+  countries.registerLocale(enLocale);
+  const names = countries.getNames("en", { select: "official" });
+  return Object.entries(names).map(([code, name]) => ({
+    value: code,
+    label: `${name} (${code})`,
+  }));
+})();
 
 export default function AccountPage() {
   const { data: user, isLoading } = useCurrentUser();
@@ -18,6 +30,7 @@ export default function AccountPage() {
   const setUser = useAuthStore((s) => s.setUser);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const countryOptions = COUNTRY_OPTIONS;
 
   // Form state
   const [firstName, setFirstName] = useState("");
@@ -226,14 +239,32 @@ export default function AccountPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <label
+                htmlFor="account-country-select"
+                className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1"
+              >
                 Country
               </label>
-              <Input
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                placeholder="Country"
-                className="bg-white border-gray-200 focus:border-orange-400 focus:ring-orange-400"
+              <ReactSelect
+                classNamePrefix="react-select"
+                options={countryOptions}
+                value={
+                  countryOptions.find((opt) => opt.value === country) || null
+                }
+                onChange={(opt: { value: string } | null) =>
+                  setCountry(opt ? opt.value : "")
+                }
+                isSearchable
+                maxMenuHeight={250}
+                placeholder="Select country"
+                inputId="account-country-select"
+                aria-label="Select country"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    borderColor: "#e5e7eb",
+                  }),
+                }}
               />
             </div>
           </div>

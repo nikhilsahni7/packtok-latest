@@ -8,6 +8,7 @@ const includeBlock = {
   companyAcquisitionInquiry: true,
   manpowerHiringRequest: true,
   jobSeekerProfile: true,
+  machineryInstallerRequest: true,
   user: {
     select: {
       id: true,

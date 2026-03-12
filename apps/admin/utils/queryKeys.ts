@@ -12,4 +12,5 @@ export const QK = {
   auction: ["auction"] as const,
   auctionEnrollments: ["auctionEnrollments"] as const,
   messages: ["messages"] as const,
+  articles: ["articles"] as const,
 } as const;

@@ -14,6 +14,7 @@ export * from "./useMarketplaceFilters";
 export * from "./useProduct";
 export * from "./useProducts";
 export * from "./useSubmitProduct";
+export * from "./useArticles";
 export * from "./useVendorInventory";
 export * from "./useVendorProductEditor";
 export * from "./useVendorProducts";

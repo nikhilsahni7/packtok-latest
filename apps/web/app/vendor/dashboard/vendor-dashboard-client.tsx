@@ -150,7 +150,7 @@ function DashboardContent() {
   return (
     <div className="p-4 sm:p-6 space-y-6">
       {/* Subscription Banner */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-3 sm:p-4">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -165,8 +165,8 @@ function DashboardContent() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="w-40">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="w-full sm:w-40">
               <div className="w-full bg-blue-200 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full transition-all ${
@@ -185,7 +185,7 @@ function DashboardContent() {
             {planSlug === "free" && (
               <Link
                 href="/vendor/subscription"
-                className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
               >
                 Upgrade Plan
               </Link>
@@ -209,7 +209,7 @@ function DashboardContent() {
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <span className="text-sm text-gray-600">
-                Search or type a command
+                Vendor account active
               </span>
             </div>
           </div>
@@ -233,10 +233,10 @@ function DashboardContent() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Section - Sales Analytics */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Total Sales Card */}
           <div className="bg-white rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between gap-2 mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
                 Total Sales
               </h3>
@@ -259,7 +259,7 @@ function DashboardContent() {
             </div>
 
             {/* Sales Chart */}
-            <div className="h-48 relative">
+            <div className="h-40 sm:h-48 relative">
               <svg className="w-full h-full" viewBox="0 0 400 150">
                 <defs>
                   <linearGradient
@@ -339,7 +339,7 @@ function DashboardContent() {
 
           {/* Product Views Chart */}
           <div className="bg-white rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between gap-2 mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
                 Product views
               </h3>
@@ -351,7 +351,7 @@ function DashboardContent() {
             </div>
 
             {/* Bar Chart */}
-            <div className="h-64 flex items-end justify-between gap-1 sm:gap-4 mb-4 overflow-x-auto">
+            <div className="h-56 sm:h-64 flex items-end justify-between gap-1 sm:gap-4 mb-4 overflow-x-auto">
               {[
                 { month: "Jan", lifetime: 85, customer: 60 },
                 { month: "Feb", lifetime: 72, customer: 45 },
