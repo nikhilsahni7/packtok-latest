@@ -353,7 +353,7 @@ export default function VendorProductEditorPage() {
             </Button>
           )}
           <Button
-            onClick={handleSave}
+            onClick={() => void handleSave()}
             disabled={update.isPending || uploadMedia.isPending}
             className="bg-green-600 hover:bg-green-700 text-white gap-1.5 w-full sm:w-auto"
           >
