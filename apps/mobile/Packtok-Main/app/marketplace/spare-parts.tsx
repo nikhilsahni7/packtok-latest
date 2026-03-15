@@ -1,7 +1,10 @@
 import FilterModal, { FilterState } from "@/components/FilterModal";
+import PageHeader from "@/components/PageHeader";
+import ProductRating from "@/components/ProductRating";
 import { useProducts } from "@/hooks/useProducts";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useMemo, useState } from "react";
 import {
@@ -10,7 +13,6 @@ import {
   Image,
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -100,79 +102,23 @@ export default function SparePartsScreen() {
   const products = data?.products || [];
   const isError = !!error;
 
-  const renderStars = (rating: number = 5) => {
-    return (
-      <View className="flex-row">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <MaterialIcons
-            key={star}
-            name="star"
-            size={14}
-            color={star <= rating ? "#000" : "#D1D5DB"}
-          />
-        ))}
-      </View>
-    );
-  };
+
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative" edges={["top"]}>
       <StatusBar style="dark" />
 
-      {/* Header - White with logo */}
-      <View className="bg-white px-4 pt-12 pb-3 border-b border-gray-100">
-        <View className="flex-row items-center justify-between">
-          {/* Menu Icon */}
-          <TouchableOpacity
-            className="w-10 h-10 bg-[#F2F2F2] rounded-full items-center justify-center"
-            onPress={() => router.back()}
-          >
-            <Feather name="arrow-left" size={24} color="#000" />
-          </TouchableOpacity>
-
-          {/* Logo */}
-          <Image
-            source={require("@/assets/images/logo-removebg.png")}
-            style={{ width: 200, height: 100 }}
-            resizeMode="contain"
-          />
-
-          {/* Right Icons */}
-          <View className="flex-row items-center">
-            {/* Notification Bell */}
-            <TouchableOpacity className="relative w-10 h-10 items-center justify-center mr-1">
-              <Feather name="bell" size={22} color="#FF8C42" />
-              <View className="absolute top-2 right-2 bg-red-500 rounded-full w-2 h-2" />
-            </TouchableOpacity>
-
-            {/* Shopping Cart */}
-            <TouchableOpacity className="w-10 h-10 items-center justify-center">
-              <Feather name="shopping-cart" size={22} color="#FF8C42" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+      {/* Unified Header with bubbles, dynamic cart, notifications, voice search */}
+      <PageHeader
+        onSearchChange={setSearchTerm}
+        searchValue={searchTerm}
+        searchPlaceholder="Search spare parts..."
+      />
 
       <ScrollView
         className="flex-1 bg-gray-50"
         showsVerticalScrollIndicator={false}
       >
-        {/* Search Bar */}
-        <View className="px-4 pt-4 pb-3 bg-white">
-          <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
-            <Feather name="search" size={20} color="#9CA3AF" className="" />
-            <TextInput
-              placeholder="Search any Product..."
-              placeholderTextColor="#9CA3AF"
-              className="flex-1 ml-3 text-base text-gray-900"
-              value={searchTerm}
-              onChangeText={setSearchTerm}
-            />
-            <TouchableOpacity>
-              <Feather name="mic" size={20} color="#9CA3AF" />
-            </TouchableOpacity>
-          </View>
-        </View>
 
         {/* Category Tabs - Horizontal Scroll */}
         <View className="bg-white pt-3 pb-3">
@@ -329,8 +275,8 @@ export default function SparePartsScreen() {
 
                   {/* Product Details */}
                   <View className="p-2">
-                    {/* Star Rating */}
-                    <View className="mb-1">{renderStars()}</View>
+                    {/* Star Rating - Real from API */}
+                    <View className="mb-1"><ProductRating productId={product.id} /></View>
 
                     {/* Product Name */}
                     <Text
@@ -339,6 +285,13 @@ export default function SparePartsScreen() {
                     >
                       {product.title}
                     </Text>
+
+                    {/* Price */}
+                    {product.price && (
+                      <Text className="text-xs font-bold text-gray-900 mt-1">
+                        {product.currency || "INR"} {Number(product.price).toLocaleString()}
+                      </Text>
+                    )}
                   </View>
                 </TouchableOpacity>
               ))}
@@ -354,6 +307,6 @@ export default function SparePartsScreen() {
         filterState={filterState}
         onFilterChange={setFilterState}
       />
-    </View>
+    </SafeAreaView>
   );
 }

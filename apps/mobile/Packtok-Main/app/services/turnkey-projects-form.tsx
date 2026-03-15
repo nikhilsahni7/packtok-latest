@@ -129,6 +129,7 @@ export default function TurnkeyProjectFormScreen() {
   const turnkeySubmission = useTurnkeyProjectSubmission();
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Check authentication on mount
@@ -231,6 +232,11 @@ export default function TurnkeyProjectFormScreen() {
   };
 
   const onSubmit = async (data: TurnkeyProjectFormData) => {
+    if (!agreeToTerms) {
+      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      return;
+    }
+
     try {
       console.log("📝 Form data:", data);
       await turnkeySubmission.mutateAsync(data);
@@ -238,6 +244,7 @@ export default function TurnkeyProjectFormScreen() {
       reset();
       setSelectedIndustries([]);
       setSelectedServices([]);
+      setAgreeToTerms(false);
     } catch (error: any) {
       console.error("Form submission error:", error);
       let message = "Failed to submit turnkey project request";
@@ -821,6 +828,28 @@ export default function TurnkeyProjectFormScreen() {
               )}
             />
           </View>
+
+          {/* Terms & Conditions */}
+          <TouchableOpacity
+            className="flex-row items-start mb-8 px-2"
+            onPress={() => setAgreeToTerms(!agreeToTerms)}
+          >
+            <View
+              className={`w-5 h-5 rounded border items-center justify-center mt-0.5 mr-3 ${
+                agreeToTerms
+                  ? "bg-purple-600 border-purple-600"
+                  : "bg-white border-gray-300"
+              }`}
+            >
+              {agreeToTerms && (
+                <Feather name="check" size={14} color="white" />
+              )}
+            </View>
+            <Text className="text-sm text-gray-600 flex-1 leading-5">
+              I agree to the Terms & Conditions and Privacy Policy. I confirm
+              that the information provided is accurate.
+            </Text>
+          </TouchableOpacity>
 
           {/* Submit Button */}
           <TouchableOpacity

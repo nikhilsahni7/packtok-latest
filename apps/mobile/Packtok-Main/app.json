@@ -33,7 +33,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": ["expo-router", "expo-video", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-video",
+      "expo-font",
+      "expo-speech-recognition"
+    ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true

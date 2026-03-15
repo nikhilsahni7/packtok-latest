@@ -152,6 +152,7 @@ export default function SellMachineFormScreen() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [selectedProductType, setSelectedProductType] =
     useState<string>("MACHINERY");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   // Image states
   const [images, setImages] = useState<any[]>([]);
@@ -363,6 +364,11 @@ export default function SellMachineFormScreen() {
     })) || [];
 
   const onSubmit = async (data: SellMachineFormData) => {
+    if (!agreeToTerms) {
+      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      return;
+    }
+
     try {
       console.log("=== FORM SUBMISSION START ===");
       console.log("📝 Form data:", JSON.stringify(data, null, 2));
@@ -436,6 +442,7 @@ export default function SellMachineFormScreen() {
       setVideoThumbnail(null);
       setPdf(null);
       setSpecifications([{ key: "", value: "" }]);
+      setAgreeToTerms(false);
 
       console.log("=== FORM SUBMISSION END ===");
     } catch (error: any) {
@@ -1167,6 +1174,28 @@ export default function SellMachineFormScreen() {
               <Text className="text-gray-600 mt-2">Add Specification</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Terms & Conditions */}
+          <TouchableOpacity
+            className="flex-row items-start mb-6 px-1 mt-4"
+            onPress={() => setAgreeToTerms(!agreeToTerms)}
+          >
+            <View
+              className={`w-5 h-5 rounded border items-center justify-center mr-3 mt-0.5 ${
+                agreeToTerms
+                  ? "bg-black border-black"
+                  : "bg-white border-gray-300"
+              }`}
+            >
+              {agreeToTerms && (
+                <Feather name="check" size={14} color="white" />
+              )}
+            </View>
+            <Text className="text-sm text-gray-600 flex-1 leading-5">
+              I agree to the Terms & Conditions and Privacy Policy. I confirm
+              that the information provided is accurate.
+            </Text>
+          </TouchableOpacity>
 
           {/* Submit Button */}
           <TouchableOpacity

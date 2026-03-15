@@ -11,129 +11,56 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
-import { WebView } from "react-native-webview";
+import { useVideoPlayer, VideoView } from "expo-video";
+import {
+  usePodcast,
+  usePodcastComments,
+  useReactToPodcast,
+  useAddPodcastComment,
+  usePodcasts,
+} from "@/hooks/usePodcasts";
 
 const { width } = Dimensions.get("window");
-
-// Mock podcast data - will be replaced with API data later
-const MOCK_PODCASTS = [
-  {
-    id: "1",
-    title: "The Future of Packaging Technology",
-    description:
-      "Exploring innovations in sustainable packaging and automation. In this comprehensive discussion, we dive deep into the latest trends shaping the packaging industry, from biodegradable materials to smart packaging solutions that enhance product safety and consumer experience.",
-    videoId: "VXvblzAs6vM",
-    thumbnail: `https://img.youtube.com/vi/VXvblzAs6vM/maxresdefault.jpg`,
-    duration: "45:32",
-    likes: 245,
-    comments: 32,
-    tags: ["Technology", "Innovation", "Sustainability"],
-    publishedAt: "2024-03-15",
-  },
-  {
-    id: "2",
-    title: "Industry Insights: Manufacturing Excellence",
-    description:
-      "Best practices in modern manufacturing and quality control. Learn from industry experts about implementing quality management systems, optimizing production processes, and achieving excellence in manufacturing operations.",
-    videoId: "c8VcUnz3nVc",
-    thumbnail: `https://img.youtube.com/vi/c8VcUnz3nVc/maxresdefault.jpg`,
-    duration: "38:20",
-    likes: 189,
-    comments: 24,
-    tags: ["Manufacturing", "Quality", "Best Practices"],
-    publishedAt: "2024-03-10",
-  },
-  {
-    id: "3",
-    title: "Machinery Maintenance Best Practices",
-    description:
-      "Expert tips on maintaining industrial machinery for optimal performance. This episode covers preventive maintenance strategies, common issues, and solutions to extend the lifespan of your equipment.",
-    videoId: "yVTNge3sXpg",
-    thumbnail: `https://img.youtube.com/vi/yVTNge3sXpg/maxresdefault.jpg`,
-    duration: "42:15",
-    likes: 312,
-    comments: 45,
-    tags: ["Maintenance", "Machinery", "Tips"],
-    publishedAt: "2024-03-08",
-  },
-  {
-    id: "4",
-    title: "Sustainable Packaging Solutions",
-    description:
-      "How eco-friendly packaging is reshaping the industry. Discover innovative approaches to reduce environmental impact while maintaining product integrity and meeting consumer expectations.",
-    videoId: "r8pDXO6zRUg",
-    thumbnail: `https://img.youtube.com/vi/r8pDXO6zRUg/maxresdefault.jpg`,
-    duration: "35:48",
-    likes: 421,
-    comments: 56,
-    tags: ["Sustainability", "Packaging", "Environment"],
-    publishedAt: "2024-03-05",
-  },
-  {
-    id: "5",
-    title: "Digital Transformation in Manufacturing",
-    description:
-      "Leveraging AI and IoT for smarter production. Explore how cutting-edge technologies are revolutionizing manufacturing processes, improving efficiency, and creating new opportunities for growth.",
-    videoId: "QoAoefT3VJc",
-    thumbnail: `https://img.youtube.com/vi/QoAoefT3VJc/maxresdefault.jpg`,
-    duration: "50:12",
-    likes: 567,
-    comments: 78,
-    tags: ["Digital", "AI", "IoT", "Manufacturing"],
-    publishedAt: "2024-03-01",
-  },
-];
-
-// Mock comments - will be replaced with API data later
-const MOCK_COMMENTS = [
-  {
-    id: "1",
-    user: "John Smith",
-    avatar:
-      "https://ui-avatars.com/api/?name=John+Smith&background=FF8C42&color=fff",
-    comment: "Great insights! This really helped me understand the new trends.",
-    timestamp: "2 days ago",
-    likes: 12,
-  },
-  {
-    id: "2",
-    user: "Sarah Johnson",
-    avatar:
-      "https://ui-avatars.com/api/?name=Sarah+Johnson&background=4169E1&color=fff",
-    comment: "Would love to see more content like this. Very informative!",
-    timestamp: "5 days ago",
-    likes: 8,
-  },
-  {
-    id: "3",
-    user: "Michael Chen",
-    avatar:
-      "https://ui-avatars.com/api/?name=Michael+Chen&background=32CD32&color=fff",
-    comment: "The section about sustainability was particularly interesting.",
-    timestamp: "1 week ago",
-    likes: 15,
-  },
-];
 
 export default function PodcastDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const [isLiked, setIsLiked] = useState(false);
-  const [localLikes, setLocalLikes] = useState(0);
+
   const [newComment, setNewComment] = useState("");
   const [showAllComments, setShowAllComments] = useState(false);
 
-  // Find the podcast by ID
-  const podcast = MOCK_PODCASTS.find((p) => p.id === id);
+  const { data: podcast, isLoading, isError } = usePodcast(id);
+  const { data: commentsData } = usePodcastComments(id);
+  const comments = commentsData?.items ?? [];
 
-  React.useEffect(() => {
-    if (podcast) {
-      setLocalLikes(podcast.likes);
-    }
-  }, [podcast]);
+  const { data: relatedPodcastsData } = usePodcasts({ limit: 5 });
+  const relatedPodcasts =
+    relatedPodcastsData?.items?.filter((p) => p.id !== id) ?? [];
 
-  if (!podcast) {
+  const { mutate: reactToPodcast } = useReactToPodcast(id);
+  const { mutate: addComment, isPending: isAddingComment } =
+    useAddPodcastComment(id);
+
+  // Video Player - We assume the backend returns a direct video URL (e.g. from S3).
+  // Native expo-video handles playback seamlessly.
+  const videoSource = podcast?.videoUrl ? podcast.videoUrl : "";
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.loop = false;
+    // player.play(); // Auto-play can be enabled or disabled
+  });
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 bg-white items-center justify-center">
+        <ActivityIndicator size="large" color="#FF8C42" />
+        <Text className="text-gray-500 mt-4">Loading podcast...</Text>
+      </View>
+    );
+  }
+
+  if (isError || !podcast) {
     return (
       <View className="flex-1 bg-white items-center justify-center">
         <Text className="text-gray-500">Podcast not found</Text>
@@ -147,31 +74,34 @@ export default function PodcastDetailScreen() {
     );
   }
 
+  const isLiked = podcast.userReaction === "LIKE";
+
   const handleLike = () => {
-    if (isLiked) {
-      setLocalLikes((prev) => prev - 1);
-    } else {
-      setLocalLikes((prev) => prev + 1);
-    }
-    setIsLiked(!isLiked);
+    // If it is already liked, acting on 'LIKE' again will toggle (remove) the reaction.
+    // If it's not liked, it will set the reaction to 'LIKE'.
+    reactToPodcast("LIKE");
   };
 
   const handleShare = () => {
-    const youtubeUrl = `https://www.youtube.com/watch?v=${podcast.videoId}`;
-    Linking.openURL(youtubeUrl);
+    // Sharing just the Packtok backend web url or something similar
+    // We will just do a standard fallback to the packtok domain
+    Linking.openURL(`https://packtok.com/podcasts/${id}`);
   };
 
   const handleAddComment = () => {
-    if (newComment.trim()) {
-      // TODO: Add comment via API
-      console.log("Adding comment:", newComment);
-      setNewComment("");
+    if (newComment.trim() && !isAddingComment) {
+      addComment(
+        { content: newComment.trim() },
+        {
+          onSuccess: () => {
+             setNewComment("");
+          }
+        }
+      );
     }
   };
 
-  const displayedComments = showAllComments
-    ? MOCK_COMMENTS
-    : MOCK_COMMENTS.slice(0, 3);
+  const displayedComments = showAllComments ? comments : comments.slice(0, 3);
 
   return (
     <View className="flex-1 bg-white">
@@ -183,21 +113,24 @@ export default function PodcastDetailScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         {/* Video Player */}
-        <View className="relative" style={{ height: width * 0.56 }}>
-          <WebView
-            source={{
-              uri: `https://www.youtube.com/embed/${podcast.videoId}?rel=0&modestbranding=1`,
-            }}
-            style={{ flex: 1 }}
-            allowsFullscreenVideo
-            javaScriptEnabled
-            domStorageEnabled
-          />
+        <View className="relative bg-black" style={{ height: width * 0.56 }}>
+          {podcast.videoUrl ? (
+            <VideoView
+              style={{ flex: 1 }}
+              player={player}
+              allowsFullscreen
+              allowsPictureInPicture
+            />
+          ) : (
+             <View className="flex-1 items-center justify-center">
+                <Text className="text-white">Video not available</Text>
+             </View>
+          )}
 
           {/* Back Button Overlay */}
           <TouchableOpacity
             onPress={() => router.back()}
-            className="absolute top-12 left-5 w-10 h-10 items-center justify-center bg-black/60 rounded-full"
+            className="absolute top-12 left-5 w-10 h-10 items-center justify-center bg-black/60 rounded-full z-10"
             activeOpacity={0.7}
           >
             <Feather name="arrow-left" size={20} color="#FFF" />
@@ -216,22 +149,26 @@ export default function PodcastDetailScreen() {
             <View className="flex-row items-center">
               <Feather name="clock" size={16} color="#6B7280" />
               <Text className="text-sm text-gray-600 ml-2">
-                {podcast.duration}
+                 {podcast.duration ? `${Math.floor(podcast.duration / 60)}:${String(podcast.duration % 60).padStart(2, '0')}` : '--:--'}
               </Text>
             </View>
             <View className="flex-row items-center">
               <Feather name="calendar" size={16} color="#6B7280" />
               <Text className="text-sm text-gray-600 ml-2">
-                {new Date(podcast.publishedAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+                {podcast.releaseDate
+                  ? new Date(podcast.releaseDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : "Unknown date"}
               </Text>
             </View>
             <View className="flex-row items-center">
               <Feather name="eye" size={16} color="#6B7280" />
-              <Text className="text-sm text-gray-600 ml-2">1.2k views</Text>
+              <Text className="text-sm text-gray-600 ml-2">
+                {podcast.viewCount} views
+              </Text>
             </View>
           </View>
 
@@ -249,13 +186,15 @@ export default function PodcastDetailScreen() {
                 }`}
               >
                 <Feather
-                  name={isLiked ? "heart" : "heart"}
+                  name="heart"
                   size={24}
                   color={isLiked ? "#EF4444" : "#6B7280"}
                   fill={isLiked ? "#EF4444" : "none"}
                 />
               </View>
-              <Text className="text-sm text-gray-600 mt-2">{localLikes}</Text>
+              <Text className="text-sm text-gray-600 mt-2">
+                {podcast.likeCount}
+              </Text>
             </TouchableOpacity>
 
             {/* Comment Button */}
@@ -264,7 +203,7 @@ export default function PodcastDetailScreen() {
                 <Feather name="message-circle" size={24} color="#6B7280" />
               </View>
               <Text className="text-sm text-gray-600 mt-2">
-                {podcast.comments}
+                {podcast.commentCount}
               </Text>
             </TouchableOpacity>
 
@@ -280,13 +219,6 @@ export default function PodcastDetailScreen() {
               <Text className="text-sm text-gray-600 mt-2">Share</Text>
             </TouchableOpacity>
 
-            {/* Save Button */}
-            <TouchableOpacity className="items-center" activeOpacity={0.7}>
-              <View className="w-12 h-12 rounded-full bg-gray-100 items-center justify-center">
-                <Feather name="bookmark" size={24} color="#6B7280" />
-              </View>
-              <Text className="text-sm text-gray-600 mt-2">Save</Text>
-            </TouchableOpacity>
           </View>
 
           {/* Description */}
@@ -300,27 +232,29 @@ export default function PodcastDetailScreen() {
           </View>
 
           {/* Tags */}
-          <View className="mb-6">
-            <Text className="text-lg font-bold text-gray-900 mb-3">Tags</Text>
-            <View className="flex-row flex-wrap">
-              {podcast.tags.map((tag, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className="bg-orange-100 rounded-full px-4 py-2 mr-2 mb-2"
-                  activeOpacity={0.7}
-                >
-                  <Text className="text-sm text-orange-700 font-medium">
-                    #{tag}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+          {podcast.tags && podcast.tags.length > 0 && (
+            <View className="mb-6">
+              <Text className="text-lg font-bold text-gray-900 mb-3">Tags</Text>
+              <View className="flex-row flex-wrap">
+                {podcast.tags.map((tag, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    className="bg-orange-100 rounded-full px-4 py-2 mr-2 mb-2"
+                    activeOpacity={0.7}
+                  >
+                    <Text className="text-sm text-orange-700 font-medium">
+                      #{tag}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
-          </View>
+          )}
 
           {/* Comments Section */}
           <View className="mb-6">
             <Text className="text-lg font-bold text-gray-900 mb-4">
-              Comments ({podcast.comments})
+              Comments ({podcast.commentCount})
             </Text>
 
             {/* Add Comment */}
@@ -338,14 +272,20 @@ export default function PodcastDetailScreen() {
                 value={newComment}
                 onChangeText={setNewComment}
                 multiline
+                editable={!isAddingComment}
               />
               {newComment.trim().length > 0 && (
                 <TouchableOpacity
                   onPress={handleAddComment}
-                  className="ml-2 bg-orange-500 rounded-full px-4 py-2"
+                  disabled={isAddingComment}
+                  className={`ml-2 rounded-full px-4 py-2 ${isAddingComment ? "bg-orange-300" : "bg-orange-500"}`}
                   activeOpacity={0.7}
                 >
-                  <Text className="text-white font-semibold text-sm">Post</Text>
+                  {isAddingComment ? (
+                     <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                     <Text className="text-white font-semibold text-sm">Post</Text>
+                  )}
                 </TouchableOpacity>
               )}
             </View>
@@ -358,41 +298,33 @@ export default function PodcastDetailScreen() {
               >
                 <View className="flex-row">
                   <Image
-                    source={{ uri: comment.avatar }}
+                    source={{
+                       uri: comment.user.profile_image ??
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            comment.user.name
+                          )}&background=random&color=fff`
+                    }}
                     className="w-10 h-10 rounded-full mr-3"
                   />
                   <View className="flex-1">
                     <View className="flex-row items-center justify-between mb-1">
                       <Text className="text-sm font-semibold text-gray-900">
-                        {comment.user}
+                        {comment.user.name}
                       </Text>
                       <Text className="text-xs text-gray-500">
-                        {comment.timestamp}
+                        {new Date(comment.createdAt).toLocaleDateString()}
                       </Text>
                     </View>
                     <Text className="text-sm text-gray-700 leading-5 mb-2">
-                      {comment.comment}
+                      {comment.content}
                     </Text>
-                    <View className="flex-row items-center">
-                      <TouchableOpacity className="flex-row items-center mr-4">
-                        <Feather name="heart" size={14} color="#6B7280" />
-                        <Text className="text-xs text-gray-600 ml-1">
-                          {comment.likes}
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <Text className="text-xs text-gray-600 font-medium">
-                          Reply
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
                   </View>
                 </View>
               </View>
             ))}
 
             {/* Show More Comments Button */}
-            {MOCK_COMMENTS.length > 3 && (
+            {comments.length > 3 && (
               <TouchableOpacity
                 onPress={() => setShowAllComments(!showAllComments)}
                 className="items-center py-3"
@@ -401,32 +333,31 @@ export default function PodcastDetailScreen() {
                 <Text className="text-sm text-orange-600 font-semibold">
                   {showAllComments
                     ? "Show Less"
-                    : `View ${MOCK_COMMENTS.length - 3} More Comments`}
+                    : `View ${comments.length - 3} More Comments`}
                 </Text>
               </TouchableOpacity>
             )}
           </View>
 
           {/* Related Podcasts */}
-          <View className="mb-4">
-            <View className="flex-row items-center justify-between mb-4">
-              <Text className="text-lg font-bold text-gray-900">
-                Related Podcasts
-              </Text>
-              <TouchableOpacity
-                onPress={() => router.push("/podcasts" as any)}
-                activeOpacity={0.7}
-              >
-                <Text className="text-sm text-orange-600 font-semibold">
-                  View All
+          {relatedPodcasts.length > 0 && (
+            <View className="mb-4">
+              <View className="flex-row items-center justify-between mb-4">
+                <Text className="text-lg font-bold text-gray-900">
+                  Related Podcasts
                 </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  onPress={() => router.push("/podcasts" as any)}
+                  activeOpacity={0.7}
+                >
+                  <Text className="text-sm text-orange-600 font-semibold">
+                    View All
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {MOCK_PODCASTS.filter((p) => p.id !== id)
-                .slice(0, 3)
-                .map((relatedPodcast) => (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {relatedPodcasts.map((relatedPodcast) => (
                   <TouchableOpacity
                     key={relatedPodcast.id}
                     className="mr-4 w-64"
@@ -437,7 +368,7 @@ export default function PodcastDetailScreen() {
                   >
                     <View className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                       <Image
-                        source={{ uri: relatedPodcast.thumbnail }}
+                        source={relatedPodcast.thumbnailUrl ? { uri: relatedPodcast.thumbnailUrl } : require("@/assets/images/article1.png")}
                         style={{ width: "100%", height: 140 }}
                         resizeMode="cover"
                       />
@@ -452,15 +383,15 @@ export default function PodcastDetailScreen() {
                           className="text-xs text-gray-600"
                           numberOfLines={1}
                         >
-                          {relatedPodcast.duration} • {relatedPodcast.likes}{" "}
-                          likes
+                          {relatedPodcast.duration ? `${Math.floor(relatedPodcast.duration / 60)}:${String(relatedPodcast.duration % 60).padStart(2, '0')}` : '--:--'} • {relatedPodcast.likeCount} likes
                         </Text>
                       </View>
                     </View>
                   </TouchableOpacity>
                 ))}
-            </ScrollView>
-          </View>
+              </ScrollView>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>

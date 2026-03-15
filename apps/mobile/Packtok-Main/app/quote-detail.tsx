@@ -9,11 +9,12 @@ import {
   RefreshControl,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { QuoteStatus, useQuoteRequestDetails } from "../hooks/useQuoteRequests";
+import { QuoteStatus, useQuoteRequestDetails, useCancelQuoteRequest } from "../hooks/useQuoteRequests";
 import { useQuoteSocket } from "../hooks/useQuoteSocket";
 import { useAuthStore } from "../store/auth-store";
 
@@ -22,7 +23,24 @@ export default function QuoteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { data: quote, isLoading, refetch } = useQuoteRequestDetails(id || "");
+  const { mutate: cancelQuote, isPending: isCancelling } = useCancelQuoteRequest();
   const [refreshing, setRefreshing] = useState(false);
+  
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+
+  const handleCancelSubmit = () => {
+    if (!cancelReason.trim() || !quote?.id) return;
+    cancelQuote(
+      { id: quote.id, reason: cancelReason.trim() },
+      {
+        onSuccess: () => {
+          setCancellingId(null);
+          setCancelReason("");
+        },
+      }
+    );
+  };
 
   // Connect to socket for real-time updates
   useQuoteSocket(user?.id);
@@ -246,6 +264,28 @@ export default function QuoteDetailScreen() {
               </View>
             </View>
 
+            {/* Contact Details */}
+            {(quote.phone || quote.email) && (
+              <View className="mb-4 flex-row justify-between">
+                {quote.phone && (
+                  <View className="flex-1 mr-2">
+                    <Text className="text-sm text-gray-600 mb-2">Phone</Text>
+                    <View className="bg-gray-50 rounded-xl p-4">
+                      <Text className="text-base text-gray-900">{quote.phone}</Text>
+                    </View>
+                  </View>
+                )}
+                {quote.email && (
+                  <View className="flex-1 ml-2">
+                    <Text className="text-sm text-gray-600 mb-2">Email</Text>
+                    <View className="bg-gray-50 rounded-xl p-4">
+                      <Text className="text-base text-gray-900 text-xs">{quote.email}</Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            )}
+
             {/* Address */}
             <View className="mb-4">
               <Text className="text-sm text-gray-600 mb-2">Address</Text>
@@ -277,6 +317,96 @@ export default function QuoteDetailScreen() {
                 </View>
               </View>
             )}
+
+            {/* Cancellation Reason warning */}
+            {quote.status === "CANCELLED" && quote.cancellationReason && (
+              <View className="mt-2 bg-red-50 border border-red-100 rounded-xl p-4 flex-row items-start">
+                <Feather name="alert-triangle" size={16} color="#EF4444" className="mt-0.5 mr-3" />
+                <View className="flex-1">
+                  <Text className="text-[10px] font-bold text-red-700 uppercase tracking-wider mb-1">
+                    Cancellation Reason
+                  </Text>
+                  <Text className="text-sm text-red-600">
+                    {quote.cancellationReason}
+                  </Text>
+                </View>
+              </View>
+            )}
+            
+            {/* Admin Response Block */}
+            {quote.response && (
+              <View className="mt-4 bg-orange-50 border border-orange-100 rounded-xl p-4">
+                <View className="flex-row items-center justify-between mb-2">
+                  <Text className="text-[10px] font-bold text-orange-700 uppercase tracking-wider">
+                    Response from Packtok
+                  </Text>
+                  {quote.respondedAt && (
+                    <Text className="text-[10px] text-orange-400 font-bold">
+                      {new Date(quote.respondedAt).toLocaleDateString()}
+                    </Text>
+                  )}
+                </View>
+                <Text className="text-sm text-orange-900 leading-relaxed">
+                  {quote.response}
+                </Text>
+              </View>
+            )}
+
+            {/* Actions Row */}
+            {quote.status === "PENDING" && !cancellingId && (
+              <View className="mt-4 flex-row">
+                <TouchableOpacity
+                  onPress={() => setCancellingId(quote.id)}
+                  className="bg-red-50 px-5 py-3 rounded-xl flex-row items-center border border-red-100"
+                >
+                  <Feather name="x-circle" size={16} color="#DC2626" className="mr-2" />
+                  <Text className="text-red-600 font-bold">Withdraw Request</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Cancel Dialog */}
+            {cancellingId === quote.id && (
+              <View className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4 shadow-sm">
+                <Text className="text-xs font-bold text-red-700 uppercase tracking-wider mb-2">Reason for Withdrawal</Text>
+                <TextInput
+                  value={cancelReason}
+                  onChangeText={setCancelReason}
+                  placeholder="Please tell us why you're cancelling..."
+                  placeholderTextColor="#9CA3AF"
+                  multiline
+                  numberOfLines={3}
+                  className="bg-white border border-red-200 rounded-lg p-3 text-sm text-gray-900 font-medium mb-3 h-24 text-left items-start justify-start"
+                  textAlignVertical="top"
+                />
+                <View className="flex-row justify-end space-x-2">
+                  <TouchableOpacity
+                    onPress={() => {
+                      setCancellingId(null);
+                      setCancelReason("");
+                    }}
+                    className="px-4 py-3 bg-white border border-gray-200 rounded-lg mr-2"
+                  >
+                    <Text className="text-gray-600 text-xs font-bold">Keep Request</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleCancelSubmit}
+                    disabled={isCancelling || !cancelReason.trim()}
+                    className={`px-4 py-3 bg-red-600 rounded-lg flex-row items-center ${(!cancelReason.trim() || isCancelling) ? "opacity-50" : ""}`}
+                  >
+                    {isCancelling ? (
+                      <ActivityIndicator size="small" color="white" />
+                    ) : (
+                      <>
+                        <Feather name="send" size={14} color="white" className="mr-2" />
+                        <Text className="text-white text-xs font-bold">Confirm</Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            
           </View>
         </View>
 

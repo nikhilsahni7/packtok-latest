@@ -1,5 +1,7 @@
 import QuoteModal from "@/components/QuoteModal";
+import ReviewsSection from "@/components/ReviewsSection";
 import { useProduct } from "@/hooks/useProducts";
+import { useReviewStats } from "@/hooks/useReviews";
 import {
   useAddBookmark,
   useCheckBookmark,
@@ -26,10 +28,11 @@ import {
   View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import Toast from "react-native-toast-message";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-// Machine Type Badge Component - Shows MONO_CARTON, MASTER_CARTON, BOTH, OTHER
+// Machine Type Badge Component
 const MachineTypeBadge = ({ type }: { type: string }) => {
   const getTypeConfig = () => {
     switch (type) {
@@ -64,6 +67,23 @@ const MachineTypeBadge = ({ type }: { type: string }) => {
   );
 };
 
+// Currency symbol helper
+const getCurrencySymbol = (currency?: string) => {
+  switch (currency) {
+    case "USD":
+      return "$";
+    case "EUR":
+      return "€";
+    case "AED":
+      return "AED";
+    case "CNY":
+      return "¥";
+    case "INR":
+    default:
+      return "₹";
+  }
+};
+
 export default function MachineryDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -71,10 +91,12 @@ export default function MachineryDetailScreen() {
   const [imageViewerVisible, setImageViewerVisible] = useState(false);
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [quoteModalVisible, setQuoteModalVisible] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
   const viewStartTime = useRef(Date.now());
 
   const { data: product, isLoading, error } = useProduct(id!);
+  const { data: reviewStats } = useReviewStats(id!);
 
   // User tracking hooks
   const { data: bookmarkStatus } = useCheckBookmark(id!);
@@ -84,14 +106,16 @@ export default function MachineryDetailScreen() {
 
   const isBookmarked = bookmarkStatus?.isBookmarked || false;
 
-  // Track product view on mount and duration on unmount
+  // Cart settings
+  const isCartEnabled = !!product?.cartEnabled;
+  const shouldShowPrice = product?.displayPrice !== false;
+  const currency = product?.currency || "INR";
+
+  // Track product view
   useEffect(() => {
     if (id) {
-      // Track initial view
       trackView.mutate({ productId: id });
       viewStartTime.current = Date.now();
-
-      // Track duration on unmount
       return () => {
         const durationSeconds = Math.floor(
           (Date.now() - viewStartTime.current) / 1000
@@ -103,16 +127,17 @@ export default function MachineryDetailScreen() {
     }
   }, [id]);
 
-  // Initialize video player with the product video URL
   const videoPlayer = useVideoPlayer(product?.videoUrl || "", (player) => {
     player.loop = true;
   });
 
   const handleShare = async () => {
     try {
+      const url = `https://packtok.com/marketplace/machinery/${id}`;
       await Share.share({
-        message: `Check out this product: ${product?.title}\n${product?.description || ""}`,
+        message: `Check out this product: ${product?.title}\n${url}`,
         title: product?.title,
+        url: url,
       });
     } catch (error) {
       console.error("Error sharing:", error);
@@ -121,8 +146,6 @@ export default function MachineryDetailScreen() {
 
   const handleBookmarkToggle = () => {
     if (!id) return;
-
-    // Animate the button
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 1.3,
@@ -136,24 +159,16 @@ export default function MachineryDetailScreen() {
       }),
     ]).start();
 
-    // Toggle bookmark
     if (isBookmarked) {
       removeBookmark.mutate(id, {
-        onSuccess: () => {
-          Alert.alert("Removed", "Product removed from wishlist");
-        },
-        onError: () => {
-          Alert.alert("Error", "Failed to remove bookmark");
-        },
+        onSuccess: () =>
+          Alert.alert("Removed", "Product removed from wishlist"),
+        onError: () => Alert.alert("Error", "Failed to remove bookmark"),
       });
     } else {
       addBookmark.mutate(id, {
-        onSuccess: () => {
-          Alert.alert("Saved", "Product added to wishlist!");
-        },
-        onError: () => {
-          Alert.alert("Error", "Failed to add bookmark");
-        },
+        onSuccess: () => Alert.alert("Saved", "Product added to wishlist!"),
+        onError: () => Alert.alert("Error", "Failed to add bookmark"),
       });
     }
   };
@@ -206,6 +221,7 @@ export default function MachineryDetailScreen() {
   const hasVideo = !!product.videoUrl;
   const hasPdf = !!product.pdfUrl;
   const imageViewerData = images.map((url) => ({ url }));
+  const faqs = product.faqs || [];
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -235,7 +251,7 @@ export default function MachineryDetailScreen() {
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Premium Image Gallery with Zoom */}
+        {/* Image Gallery */}
         {images.length > 0 && (
           <View className="bg-white mb-2">
             <TouchableOpacity
@@ -290,6 +306,33 @@ export default function MachineryDetailScreen() {
           </View>
         )}
 
+        {/* Rating (dynamic) */}
+        {reviewStats && reviewStats.totalReviews > 0 && (
+          <View className="bg-white px-4 pt-3 pb-0">
+            <View className="flex-row items-center">
+              <View className="flex-row">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <MaterialIcons
+                    key={star}
+                    name="star"
+                    size={18}
+                    color={
+                      star <= Math.round(reviewStats.averageRating)
+                        ? "#F59E0B"
+                        : "#D1D5DB"
+                    }
+                  />
+                ))}
+              </View>
+              <Text className="text-sm text-gray-600 ml-2">
+                {reviewStats.averageRating.toFixed(1)} (
+                {reviewStats.totalReviews} review
+                {reviewStats.totalReviews !== 1 ? "s" : ""})
+              </Text>
+            </View>
+          </View>
+        )}
+
         {/* Product Title & Badges */}
         <View className="bg-white px-4 py-4 mb-2">
           <Text className="text-2xl font-bold text-gray-900 mb-3 leading-8">
@@ -316,55 +359,77 @@ export default function MachineryDetailScreen() {
             )}
 
             {product.category && (
-              <View className="bg-orange-50 px-3 py-1.5 rounded-full mb-2">
+              <View className="bg-orange-50 px-3 py-1.5 rounded-full mb-2 mr-2">
                 <Text className="text-xs font-semibold text-orange-700">
                   {product.category.name}
                 </Text>
               </View>
             )}
+
+            {product.subCategory && (
+              <View className="bg-amber-50 px-3 py-1.5 rounded-full mb-2">
+                <Text className="text-xs font-semibold text-amber-700">
+                  {product.subCategory}
+                </Text>
+              </View>
+            )}
           </View>
 
-          {product.price && (
-            <View className="flex-row items-end">
-              <Text className="text-3xl font-bold text-orange-500">
-                ₹{product.price.toLocaleString("en-IN")}
-              </Text>
-              <Text className="text-gray-500 text-base ml-2 mb-1">+ GST</Text>
-            </View>
-          )}
+          {/* Price — hidden for machinery unless cart is enabled */}
+          {shouldShowPrice &&
+            (product.productType !== "MACHINERY" || isCartEnabled) &&
+            product.price && (
+              <View className="flex-row items-end">
+                <Text className="text-3xl font-bold text-orange-500">
+                  {getCurrencySymbol(currency)}{" "}
+                  {Number(product.price).toLocaleString()}
+                </Text>
+                {(product.quantity ?? 0) > 0 ? (
+                  <Text className="text-green-600 text-sm font-medium ml-3 mb-1">
+                    In Stock
+                  </Text>
+                ) : (
+                  <Text className="text-red-600 text-sm font-bold ml-3 mb-1">
+                    Out of Stock
+                  </Text>
+                )}
+              </View>
+            )}
         </View>
 
         {/* Quick Actions - Video & PDF */}
-        <View className="bg-white px-4 py-3 mb-2">
-          <View className="flex-row justify-between">
-            {hasVideo && (
-              <TouchableOpacity
-                onPress={() => setVideoModalVisible(true)}
-                className="flex-1 flex-row items-center justify-center bg-red-50 border border-red-200 rounded-xl py-3 mr-2"
-                activeOpacity={0.7}
-                style={styles.shadow}
-              >
-                <Ionicons name="play-circle" size={22} color="#DC2626" />
-                <Text className="ml-2 text-red-600 font-bold text-sm">
-                  Watch Video
-                </Text>
-              </TouchableOpacity>
-            )}
-            {hasPdf && (
-              <TouchableOpacity
-                onPress={handleOpenPdf}
-                className="flex-1 flex-row items-center justify-center bg-blue-50 border border-blue-200 rounded-xl py-3 ml-2"
-                activeOpacity={0.7}
-                style={styles.shadow}
-              >
-                <Feather name="file-text" size={20} color="#2563EB" />
-                <Text className="ml-2 text-blue-600 font-bold text-sm">
-                  View PDF
-                </Text>
-              </TouchableOpacity>
-            )}
+        {(hasVideo || hasPdf) && (
+          <View className="bg-white px-4 py-3 mb-2">
+            <View className="flex-row justify-between">
+              {hasVideo && (
+                <TouchableOpacity
+                  onPress={() => setVideoModalVisible(true)}
+                  className="flex-1 flex-row items-center justify-center bg-red-50 border border-red-200 rounded-xl py-3 mr-2"
+                  activeOpacity={0.7}
+                  style={styles.shadow}
+                >
+                  <Ionicons name="play-circle" size={22} color="#DC2626" />
+                  <Text className="ml-2 text-red-600 font-bold text-sm">
+                    Watch Video
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {hasPdf && (
+                <TouchableOpacity
+                  onPress={handleOpenPdf}
+                  className="flex-1 flex-row items-center justify-center bg-blue-50 border border-blue-200 rounded-xl py-3 ml-2"
+                  activeOpacity={0.7}
+                  style={styles.shadow}
+                >
+                  <Feather name="file-text" size={20} color="#2563EB" />
+                  <Text className="ml-2 text-blue-600 font-bold text-sm">
+                    View PDF
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* Description */}
         {product.description && (
@@ -379,26 +444,27 @@ export default function MachineryDetailScreen() {
         )}
 
         {/* Product Information */}
-        {product.manufacturer && (
+        {(product.manufacturer || product.model || product.year) && (
           <View className="bg-white px-4 py-4 mb-2">
             <Text className="text-lg font-bold text-gray-900 mb-3">
               Product Information
             </Text>
             <View className="space-y-3">
-              <View className="flex-row items-center py-2">
-                <View className="w-10 h-10 bg-orange-50 rounded-full items-center justify-center mr-3">
-                  <Feather name="package" size={20} color="#FF6B2C" />
+              {product.manufacturer && (
+                <View className="flex-row items-center py-2">
+                  <View className="w-10 h-10 bg-orange-50 rounded-full items-center justify-center mr-3">
+                    <Feather name="package" size={20} color="#FF6B2C" />
+                  </View>
+                  <View className="flex-1">
+                    <Text className="text-xs text-gray-500 mb-0.5">
+                      Manufacturer
+                    </Text>
+                    <Text className="text-gray-900 font-semibold text-base">
+                      {product.manufacturer}
+                    </Text>
+                  </View>
                 </View>
-                <View className="flex-1">
-                  <Text className="text-xs text-gray-500 mb-0.5">
-                    Manufacturer
-                  </Text>
-                  <Text className="text-gray-900 font-semibold text-base">
-                    {product.manufacturer}
-                  </Text>
-                </View>
-              </View>
-
+              )}
               {product.model && (
                 <View className="flex-row items-center py-2">
                   <View className="w-10 h-10 bg-blue-50 rounded-full items-center justify-center mr-3">
@@ -414,7 +480,6 @@ export default function MachineryDetailScreen() {
                   </View>
                 </View>
               )}
-
               {product.year && (
                 <View className="flex-row items-center py-2">
                   <View className="w-10 h-10 bg-green-50 rounded-full items-center justify-center mr-3">
@@ -461,7 +526,7 @@ export default function MachineryDetailScreen() {
             </View>
           )}
 
-        {/* Additional Info */}
+        {/* Additional Details */}
         <View className="bg-white px-4 py-4 mb-2">
           <Text className="text-lg font-bold text-gray-900 mb-3">
             Additional Details
@@ -469,11 +534,31 @@ export default function MachineryDetailScreen() {
           <View className="space-y-2">
             <View className="flex-row items-center py-2">
               <Feather name="hash" size={16} color="#6B7280" />
-              <Text className="ml-2 text-sm text-gray-600">Product ID: </Text>
+              <Text className="ml-2 text-sm text-gray-600">SKU: </Text>
               <Text className="text-sm text-gray-900 font-semibold">
-                {product.id}
+                {product.id.slice(-8).toUpperCase()}
               </Text>
             </View>
+            {product.category && (
+              <View className="flex-row items-center py-2">
+                <Feather name="layers" size={16} color="#6B7280" />
+                <Text className="ml-2 text-sm text-gray-600">Category: </Text>
+                <Text className="text-sm text-gray-900 font-semibold">
+                  {product.category.name}
+                </Text>
+              </View>
+            )}
+            {product.subCategory && (
+              <View className="flex-row items-center py-2">
+                <Feather name="grid" size={16} color="#6B7280" />
+                <Text className="ml-2 text-sm text-gray-600">
+                  Subcategory:{" "}
+                </Text>
+                <Text className="text-sm text-gray-900 font-semibold">
+                  {product.subCategory}
+                </Text>
+              </View>
+            )}
             {product.createdAt && (
               <View className="flex-row items-center py-2">
                 <Feather name="clock" size={16} color="#6B7280" />
@@ -490,10 +575,74 @@ export default function MachineryDetailScreen() {
           </View>
         </View>
 
+        {/* Additional Info (collapsible) */}
+        {product.additionalInfo && (
+          <View className="bg-white px-4 py-4 mb-2">
+            <Text className="text-lg font-bold text-gray-900 mb-3">
+              Additional Info
+            </Text>
+            <Text className="text-gray-700 leading-6 text-sm">
+              {product.additionalInfo}
+            </Text>
+          </View>
+        )}
+
+        {/* FAQs */}
+        {faqs.length > 0 && (
+          <View className="bg-white px-4 py-4 mb-2">
+            <View className="flex-row items-center mb-4">
+              <Feather name="help-circle" size={22} color="#374151" />
+              <Text className="text-lg font-bold text-gray-900 ml-2">
+                Frequently Asked Questions
+              </Text>
+            </View>
+            {faqs.map(
+              (
+                faq: { question: string; answer: string },
+                index: number
+              ) => (
+                <View
+                  key={index}
+                  className="border border-gray-200 rounded-lg mb-2 overflow-hidden"
+                >
+                  <TouchableOpacity
+                    onPress={() =>
+                      setExpandedFaq(expandedFaq === index ? null : index)
+                    }
+                    className="flex-row items-center justify-between p-4"
+                    activeOpacity={0.7}
+                  >
+                    <Text className="font-medium text-gray-900 flex-1 mr-2">
+                      {faq.question}
+                    </Text>
+                    <Feather
+                      name={
+                        expandedFaq === index ? "chevron-up" : "chevron-down"
+                      }
+                      size={20}
+                      color="#6B7280"
+                    />
+                  </TouchableOpacity>
+                  {expandedFaq === index && (
+                    <View className="px-4 pb-4">
+                      <Text className="text-gray-600 leading-6">
+                        {faq.answer}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              )
+            )}
+          </View>
+        )}
+
+        {/* Reviews Section */}
+        <ReviewsSection productId={product.id} />
+
         <View className="h-24" />
       </ScrollView>
 
-      {/* Premium Bottom Action Bar */}
+      {/* Bottom Action Bar — Cart or Quote */}
       <View
         className="bg-white border-t border-gray-100 px-4 py-3"
         style={styles.bottomBarShadow}
@@ -524,7 +673,11 @@ export default function MachineryDetailScreen() {
             style={styles.quoteShadow}
           >
             <View className="flex-row items-center">
-              <MaterialIcons name="request-quote" size={24} color="white" />
+              <MaterialIcons
+                name="request-quote"
+                size={24}
+                color="white"
+              />
               <Text className="text-white text-lg font-bold ml-2">
                 Get Quote
               </Text>
@@ -604,7 +757,10 @@ export default function MachineryDetailScreen() {
             {hasVideo && product.videoUrl && (
               <VideoView
                 player={videoPlayer}
-                style={{ width: SCREEN_WIDTH, height: SCREEN_WIDTH * (9 / 16) }}
+                style={{
+                  width: SCREEN_WIDTH,
+                  height: SCREEN_WIDTH * (9 / 16),
+                }}
                 contentFit="contain"
                 fullscreenOptions={{ enable: true }}
                 allowsPictureInPicture

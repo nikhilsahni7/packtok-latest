@@ -5,10 +5,16 @@ import {
   Image,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
+import { useCartItemCount } from "@/hooks/useCart";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 
 const { width } = Dimensions.get("window");
 
@@ -90,6 +96,20 @@ const categories = [
 
 export default function CategoriesScreen() {
   const router = useRouter();
+  const itemCount = useCartItemCount();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { startListening, isListening, transcript } = useVoiceSearch();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push({
+        pathname: "/search",
+        params: { q: searchQuery },
+      } as any);
+      setSearchQuery("");
+    }
+  };
 
   const handleCategoryPress = (categoryId: string, categoryName: string) => {
     console.log(`🔍 Category pressed: ${categoryName} (ID: ${categoryId})`);
@@ -226,10 +246,79 @@ export default function CategoriesScreen() {
         pointerEvents="none"
       /> */}
 
-      {/* Header with Title */}
-      <View className="px-5 pt-44" style={{ zIndex: 10 }}>
-        {/* // heading will be from top and ceneter of page  */}
-        <View className="flex-row items-center *:justify-center mb-4 font-semibold: ">
+      {/* Header with Title and Search */}
+      <View className="px-5 pt-12 pb-2 relative" style={{ zIndex: 10 }}>
+        {/* Top Bar */}
+        <View className="flex-row items-center justify-between mb-4">
+          {/* Menu Icon */}
+          <TouchableOpacity 
+            className="p-2 relative z-20"
+            onPress={() => router.back()}
+          >
+            <Feather
+              name="arrow-left"
+              size={24}
+              color="black"
+              style={{ backgroundColor: "white" }}
+              className="p-2 rounded-full"
+            />
+          </TouchableOpacity>
+
+          <Image
+            source={require("@/assets/images/logo-removebg.png")}
+            style={{ width: 200, height: 100 }}
+            resizeMode="contain"
+          />
+
+          {/* Right Icons */}
+          <View className="flex-row items-center space-x-3">
+            {/* Notification Bell with Badge */}
+            <TouchableOpacity 
+              className="relative"
+              onPress={() => router.push("/notifications")}
+            >
+              <Feather name="bell" size={20} color="black" />
+              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full text-blac w-4 h-4 items-center justify-center">
+                <Text className="text-white text-[10px] font-bold">2</Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* Shopping Cart */}
+            <TouchableOpacity 
+              className="ml-3 relative"
+              onPress={() => router.push("/cart")}
+            >
+              <Feather name="shopping-cart" size={20} color="black" />
+              {itemCount > 0 && (
+                <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[14px] h-[14px] items-center justify-center px-0.5">
+                  <Text className="text-white text-[8px] font-bold">
+                    {itemCount > 99 ? "99+" : itemCount}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Search Bar */}
+        <View className="flex-row items-center bg-white border border-gray-200 rounded-full px-4 py-3 z-10 shadow-sm mb-4">
+          <Feather name="search" size={20} color="#9CA3AF" className="" />
+          <TextInput
+            placeholder={isListening ? "Listening..." : "Search any Product..."}
+            placeholderTextColor={isListening ? "#FF8C42" : "#9CA3AF"}
+            className="flex-1 ml-3 text-base text-gray-900"
+            value={isListening ? transcript : searchQuery}
+            onChangeText={setSearchQuery}
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
+          />
+          <TouchableOpacity onPress={startListening}>
+            <Feather name="mic" size={20} color={isListening ? "#FF8C42" : "#9CA3AF"} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Page Title */}
+        <View className="flex-row items-center justify-center mb-1 font-semibold: ">
           <Text className="text-2xl font-bold text-gray-900">
             All Categories
           </Text>

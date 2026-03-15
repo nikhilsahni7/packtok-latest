@@ -53,8 +53,12 @@ export default function LoginScreen() {
       return;
     }
 
-    // Call login API
-    login({ email: email.trim(), password: password.trim() });
+    // Call login API (normalize email to lowercase)
+    login({ email: email.trim().toLowerCase(), password: password.trim() });
+  };
+
+  const handleForgotPassword = () => {
+    router.push("/forgot-password" as any);
   };
 
   const handleCancel = () => {
@@ -183,6 +187,17 @@ export default function LoginScreen() {
                 />
               </TouchableOpacity>
             </View>
+
+            {/* Forgot Password */}
+            <TouchableOpacity
+              onPress={handleForgotPassword}
+              className="self-end mt-2"
+              activeOpacity={0.7}
+            >
+              <Text className="text-orange-500 text-sm font-medium">
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
           </View>
 
           {/* Next Button */}

@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Alert,
   Modal,
   ScrollView,
   Text,
@@ -165,6 +166,7 @@ export default function ManpowerHiringFormScreen() {
   const [selectedManpowerTypes, setSelectedManpowerTypes] = useState<string[]>(
     []
   );
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const {
     control,
@@ -225,10 +227,16 @@ export default function ManpowerHiringFormScreen() {
   };
 
   const onSubmit = async (data: ManpowerHiringFormData) => {
+    if (!agreeToTerms) {
+      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      return;
+    }
+
     try {
       await manpowerSubmission.mutateAsync(data);
       reset();
       setSelectedManpowerTypes([]);
+      setAgreeToTerms(false);
       router.back();
     } catch (error) {
       console.error("Submission error:", error);
@@ -733,6 +741,28 @@ export default function ManpowerHiringFormScreen() {
             )}
           />
         </View>
+
+        {/* Terms & Conditions */}
+        <TouchableOpacity
+          className="flex-row items-start mb-6 px-1 mt-4"
+          onPress={() => setAgreeToTerms(!agreeToTerms)}
+        >
+          <View
+            className={`w-5 h-5 rounded border items-center justify-center mr-3 mt-0.5 ${
+              agreeToTerms
+                ? "bg-blue-600 border-blue-600"
+                : "bg-white border-gray-300"
+            }`}
+          >
+            {agreeToTerms && (
+              <Feather name="check" size={14} color="white" />
+            )}
+          </View>
+          <Text className="text-sm text-gray-600 flex-1 leading-5">
+            I agree to the Terms & Conditions and Privacy Policy. I confirm
+            that the information provided is accurate.
+          </Text>
+        </TouchableOpacity>
 
         {/* Submit Button */}
         <TouchableOpacity

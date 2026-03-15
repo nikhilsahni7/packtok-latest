@@ -21,6 +21,7 @@ type PodcastListOptions = CursorPagination & {
   tags?: string[];
   seriesId?: string;
   status?: PodcastStatus;
+  search?: string;
 };
 
 type CreatePodcastInput = {
@@ -420,10 +421,10 @@ export const retryFailedUpload = async (
 };
 
 // ===== Public Podcast Service =====
-
 const publicPodcastSelect = {
   id: true,
   title: true,
+  description: true,
   thumbnailUrl: true,
   duration: true,
   releaseDate: true,
@@ -441,6 +442,12 @@ export const listPublicPodcasts = async (options: PodcastListOptions) => {
     NOT: { videoUrl: null },
     ...(options.tags?.length && { tags: { hasSome: options.tags } }),
     ...(options.seriesId && { seriesId: options.seriesId }),
+    ...(options.search && {
+      OR: [
+        { title: { contains: options.search, mode: "insensitive" } },
+        { description: { contains: options.search, mode: "insensitive" } },
+      ],
+    }),
   };
 
   const podcasts = await prisma.podcast.findMany({

@@ -85,6 +85,20 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="verify-otp"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="forgot-password"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="(tabs)"
             options={{
               headerShown: false,
@@ -92,14 +106,21 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
-            name="categories"
+            name="services"
             options={{
               headerShown: false,
               gestureEnabled: true,
             }}
           />
           <Stack.Screen
-            name="services"
+            name="articles"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="articles/[id]"
             options={{
               headerShown: false,
               gestureEnabled: true,
@@ -177,6 +198,13 @@ function RootLayoutNav() {
           />
           <Stack.Screen
             name="services/machinery-installer"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="services/machinery-installer-form"
             options={{
               headerShown: false,
               gestureEnabled: true,
@@ -387,6 +415,14 @@ function RootLayoutNav() {
           <Stack.Screen
             name="modal"
             options={{ presentation: "modal", title: "Modal" }}
+          />
+          <Stack.Screen
+            name="search"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
           />
         </Stack>
         <StatusBar style="auto" />

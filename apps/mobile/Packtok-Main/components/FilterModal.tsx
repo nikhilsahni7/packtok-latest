@@ -22,6 +22,7 @@ interface FilterModalProps {
   onClose: () => void;
   filterState: FilterState;
   onFilterChange: (filters: FilterState) => void;
+  hidePriceRange?: boolean;
 }
 
 const PRICE_RANGES = [
@@ -49,6 +50,7 @@ export default function FilterModal({
   onClose,
   filterState,
   onFilterChange,
+  hidePriceRange = false,
 }: FilterModalProps) {
   const [tempFilters, setTempFilters] = useState<FilterState>(filterState);
   const { data: categories, isLoading: categoriesLoading } = useCategories();
@@ -163,6 +165,7 @@ export default function FilterModal({
             </View>
 
             {/* Price Range Section */}
+            {!hidePriceRange && (
             <View className="mb-6">
               <Text className="text-base font-semibold text-gray-900 mb-3">
                 PRICE RANGE
@@ -199,6 +202,7 @@ export default function FilterModal({
                 ))}
               </View>
             </View>
+            )}
 
             {/* Condition Section */}
             <View className="mb-6">

@@ -134,6 +134,7 @@ const Select = ({
 export default function InvestmentTakeoverFormScreen() {
   const router = useRouter();
   const acquisitionSubmission = useCompanyAcquisitionSubmission();
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Check authentication on mount
@@ -205,6 +206,11 @@ export default function InvestmentTakeoverFormScreen() {
   ];
 
   const onSubmit = async (data: CompanyAcquisitionFormData) => {
+    if (!agreeToTerms) {
+      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      return;
+    }
+
     try {
       console.log("📝 Form data:", data);
 
@@ -225,6 +231,7 @@ export default function InvestmentTakeoverFormScreen() {
       await acquisitionSubmission.mutateAsync(transformedData as any);
       setShowSuccessModal(true);
       reset();
+      setAgreeToTerms(false);
     } catch (error: any) {
       console.error("Form submission error:", error);
       let message = "Failed to submit investment/takeover inquiry";
@@ -821,6 +828,28 @@ export default function InvestmentTakeoverFormScreen() {
               )}
             />
           </View>
+
+          {/* Terms & Conditions */}
+          <TouchableOpacity
+            className="flex-row items-start mb-8 px-2"
+            onPress={() => setAgreeToTerms(!agreeToTerms)}
+          >
+            <View
+              className={`w-5 h-5 rounded border items-center justify-center mt-0.5 mr-3 ${
+                agreeToTerms
+                  ? "bg-orange-600 border-orange-600"
+                  : "bg-white border-gray-300"
+              }`}
+            >
+              {agreeToTerms && (
+                <Feather name="check" size={14} color="white" />
+              )}
+            </View>
+            <Text className="text-sm text-gray-600 flex-1 leading-5">
+              I agree to the Terms & Conditions and Privacy Policy. I confirm
+              that the information provided is accurate.
+            </Text>
+          </TouchableOpacity>
 
           {/* Submit Button */}
           <TouchableOpacity

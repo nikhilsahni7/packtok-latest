@@ -81,6 +81,7 @@ export default function JobSeekerFormScreen() {
     name: string;
     type: string;
   } | null>(null);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const {
     control,
@@ -144,6 +145,11 @@ export default function JobSeekerFormScreen() {
   };
 
   const onSubmit = async (data: any) => {
+    if (!agreeToTerms) {
+      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      return;
+    }
+
     if (!cvFile) {
       Alert.alert("CV Required", "Please upload your CV/Resume to continue");
       return;
@@ -158,6 +164,7 @@ export default function JobSeekerFormScreen() {
       await jobSeekerSubmission.mutateAsync(submissionData);
       reset();
       setCvFile(null);
+      setAgreeToTerms(false);
       router.back();
     } catch (error) {
       console.error("Submission error:", error);
@@ -566,6 +573,28 @@ export default function JobSeekerFormScreen() {
             </View>
           )}
         </View>
+
+        {/* Terms & Conditions */}
+        <TouchableOpacity
+          className="flex-row items-start mb-6 px-1 mt-4"
+          onPress={() => setAgreeToTerms(!agreeToTerms)}
+        >
+          <View
+            className={`w-5 h-5 rounded border items-center justify-center mr-3 mt-0.5 ${
+              agreeToTerms
+                ? "bg-blue-600 border-blue-600"
+                : "bg-white border-gray-300"
+            }`}
+          >
+            {agreeToTerms && (
+              <Feather name="check" size={14} color="white" />
+            )}
+          </View>
+          <Text className="text-sm text-gray-600 flex-1 leading-5">
+            I agree to the Terms & Conditions and Privacy Policy. I confirm
+            that the information provided is accurate.
+          </Text>
+        </TouchableOpacity>
 
         {/* Submit Button */}
         <TouchableOpacity

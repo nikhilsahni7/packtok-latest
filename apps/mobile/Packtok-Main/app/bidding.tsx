@@ -4,10 +4,12 @@ import {
   RegularBiddingSection,
   ReverseBiddingSection,
 } from "@/components/bidding";
+import PageHeader from "@/components/PageHeader";
 import { usePublicAuctions } from "@/hooks/useAuctions";
 import { Auction } from "@/types/auction";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useMemo } from "react";
 import {
@@ -95,67 +97,11 @@ export default function BiddingScreen() {
   }, [liveAuctions, upcomingAuctions]);
 
   return (
-    <View className="flex-1 bg-gray-50 relative">
-      <StatusBar style="light" />
+    <SafeAreaView className="flex-1 bg-gray-50 relative" edges={["top"]}>
+      <StatusBar style="dark" />
 
-      {/* Blue Bubble - Top Right */}
-      <Image
-        source={require("@/assets/images/bubble 02.png")}
-        className="absolute"
-        style={{
-          top: -width * 0.1,
-          left: -width * 0.27,
-          width: width * 1,
-          height: width * 0.9,
-        }}
-        resizeMode="contain"
-      />
-
-      <Image
-        source={require("@/assets/images/bubble 01.png")}
-        className="absolute"
-        style={{
-          top: -width * 0.1,
-          left: -width * 0.27,
-          width: width * 0.7,
-          height: width * 0.9,
-        }}
-        resizeMode="contain"
-      />
-
-      {/* Header - Matching Marketplace */}
-      <View className="px-4 pt-12 relative z-50 pb-3">
-        <View className="flex-row items-center justify-between">
-          {/* Menu Icon */}
-          <TouchableOpacity
-            className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full justify-center relative z-20"
-            onPress={() => router.back()}
-          >
-            <Feather name="arrow-left" size={24} color="black" />
-          </TouchableOpacity>
-
-          {/* Center - Logo */}
-          <Image
-            source={require("@/assets/images/logo-removebg.png")}
-            style={{ width: 200, height: 100 }}
-            resizeMode="contain"
-          />
-
-          {/* Right Icons */}
-          <View className="flex-row items-center">
-            {/* Notification Bell */}
-            <TouchableOpacity className="relative w-10 h-10 items-center justify-center">
-              <Feather name="bell" size={22} color="black" />
-              <View className="absolute top-2 right-2 bg-red-500 rounded-full w-2 h-2" />
-            </TouchableOpacity>
-
-            {/* Shopping Cart */}
-            <TouchableOpacity className="w-10 h-10 items-center justify-center">
-              <Feather name="shopping-cart" size={22} color="black" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+      {/* Unified Header with bubbles, dynamic cart, notifications */}
+      <PageHeader showSearch={false} />
 
       {/* Main Content */}
       {isLoading ? (
@@ -243,6 +189,6 @@ export default function BiddingScreen() {
           />
         </ScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

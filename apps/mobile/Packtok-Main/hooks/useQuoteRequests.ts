@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Toast from "react-native-toast-message";
 import api from "../lib/api";
 
 export type QuoteStatus = "PENDING" | "REVIEWED" | "COMPLETED" | "CANCELLED";
@@ -13,10 +14,15 @@ export interface QuoteRequest {
   userId: string;
   productId: string;
   companyName: string;
+  phone?: string;
+  email?: string;
   address: string;
   message: string;
   additionalInfo?: string;
   status: QuoteStatus;
+  response?: string;
+  respondedAt?: string;
+  cancellationReason?: string;
   createdAt: string;
   updatedAt: string;
   product?: {
@@ -24,9 +30,13 @@ export interface QuoteRequest {
     title: string;
     description?: string;
     images?: string[];
+    imagesThumbnail?: string;
     price?: number;
     manufacturer?: string;
     productType?: ProductType;
+    category?: {
+      name: string;
+    };
   };
 }
 
@@ -60,5 +70,35 @@ export function useQuoteRequestDetails(quoteId: string) {
     },
     enabled: !!quoteId,
     staleTime: 1000 * 60 * 5, // 5 minutes - data stays fresh longer since we use socket updates
+  });
+}
+
+export function useCancelQuoteRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, reason }: { id: string; reason: string }) => {
+      const { data } = await api.put(`/api/v1/quotes/${id}/cancel`, { reason });
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      Toast.show({
+        type: "success",
+        text1: "Request Withdrawn",
+        text2: "Your quote request was successfully cancelled.",
+      });
+      // Invalidate both lists and detail
+      queryClient.invalidateQueries({ queryKey: ["my-quote-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["quote-request", variables.id] });
+    },
+    onError: (error: any) => {
+      console.error("Cancel quote error:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2:
+          error.response?.data?.message ||
+          "Failed to withdraw request. Please try again.",
+      });
+    },
   });
 }

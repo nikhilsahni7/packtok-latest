@@ -1,6 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
+import { View, Text } from "react-native";
+import { useCartItemCount } from "@/hooks/useCart";
 
 export default function TabLayout() {
   return (
@@ -60,9 +62,21 @@ export default function TabLayout() {
         name="cart"
         options={{
           title: "Cart",
-          tabBarIcon: ({ color, focused }) => (
-            <Feather name="shopping-cart" size={26} color={color} />
-          ),
+          tabBarIcon: ({ color, focused }) => {
+            const itemCount = useCartItemCount();
+            return (
+              <View>
+                <Feather name="shopping-cart" size={26} color={color} />
+                {itemCount > 0 && (
+                  <View className="absolute -top-2 -right-2 bg-red-500 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1">
+                    <Text className="text-white text-[10px] font-bold">
+                      {itemCount > 99 ? "99+" : itemCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            );
+          },
         }}
       />
 

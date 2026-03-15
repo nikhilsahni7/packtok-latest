@@ -17,7 +17,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 // ===== Podcast Endpoints =====
 
 export const listPodcasts = asyncHandler(async (req: Request, res: Response) => {
-  const { cursor, limit, tags, seriesId } = req.query;
+  const { cursor, limit, tags, seriesId, search } = req.query;
 
   const parsedTags = tags
     ? Array.isArray(tags)
@@ -30,6 +30,7 @@ export const listPodcasts = asyncHandler(async (req: Request, res: Response) => 
     limit: limit ? Number(limit) : undefined,
     tags: parsedTags,
     seriesId: seriesId as string,
+    search: search as string,
   });
 
   res.json(new ApiResponse(200, result, "Podcasts fetched"));

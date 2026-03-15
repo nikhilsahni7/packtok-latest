@@ -19,6 +19,7 @@ export interface Product {
   title: string;
   description: string;
   price?: number;
+  quantity?: number;
   condition: string;
   machineType?: string;
   productType: string;
@@ -39,6 +40,13 @@ export interface Product {
     id: string;
     name: string;
   };
+  subCategory?: string;
+  // Cart & display settings
+  cartEnabled?: boolean;
+  currency?: string;
+  displayPrice?: boolean;
+  // FAQs
+  faqs?: { question: string; answer: string }[];
   createdAt: string;
   updatedAt: string;
 }
@@ -132,6 +140,6 @@ export const useProduct = (productId: string) => {
       return response.data.data;
     },
     enabled: !!productId,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 0, // Disable caching so cartEnabled changes reflect immediately
   });
 };

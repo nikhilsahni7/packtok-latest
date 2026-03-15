@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
@@ -7,10 +8,10 @@ import {
   Image,
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import PageHeader from "@/components/PageHeader";
 
 const { width } = Dimensions.get("window");
 
@@ -70,88 +71,14 @@ export default function ServicesScreen() {
   const router = useRouter();
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative" edges={["top"]}>
       <StatusBar style="dark" />
 
-      {/* Header with Logo and Bubbles */}
-      <View className="px-5 pt-12 pb-6 relative">
-        {/* Background Bubbles */}
-        {/* Orange Bubble - Top Left */}
-        <Image
-          source={require("@/assets/images/bubble 01.png")}
-          className="absolute z-10"
-          style={{
-            top: -width * 0.1,
-            left: -width * 0.25,
-            width: width * 0.7,
-            height: width * 0.9,
-          }}
-          resizeMode="contain"
-        />
-
-        {/* Blue Bubble - Top Right */}
-        <Image
-          source={require("@/assets/images/bubble 02.png")}
-          className="absolute"
-          style={{
-            top: -width * 0.1,
-            left: -width * 0.25,
-            width: width * 1,
-            height: width * 0.9,
-          }}
-          resizeMode="contain"
-        />
-
-        {/* Top Bar */}
-        <View className="flex-row items-center justify-between mb-4">
-          {/* Menu Icon */}
-          <TouchableOpacity
-            className="w-10 h-10 items-center bg-[#F2F2F2] rounded-full justify-center relative z-20"
-            onPress={() => router.back()}
-          >
-            <Feather name="arrow-left" size={24} color="black" />
-          </TouchableOpacity>
-
-          <Image
-            source={require("@/assets/images/logo-removebg.png")}
-            style={{ width: 200, height: 100 }}
-            resizeMode="contain"
-            className="relative z-20"
-          />
-
-          {/* Right Icons */}
-          <View className="flex-row items-center space-x-3">
-            {/* Notification Bell with Badge */}
-            <TouchableOpacity className="relative">
-              <Feather name="bell" size={20} color="black" />
-              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full text-blac w-4 h-4 items-center justify-center">
-                <Text className="text-white text-xs font-bold">2</Text>
-              </View>
-            </TouchableOpacity>
-
-            {/* Shopping Cart */}
-            <TouchableOpacity className="ml-3">
-              <Feather name="shopping-cart" size={20} color="black" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Search Bar */}
-        <View className="flex-row items-center bg-white border  rounded-full px-4 py-3 z-10">
-          <Feather name="search" size={20} color="#9CA3AF" className="" />
-          <TextInput
-            placeholder="Search any Product..."
-            placeholderTextColor="#9CA3AF"
-            className="flex-1 ml-3 text-base text-gray-900"
-          />
-          <TouchableOpacity>
-            <Feather name="mic" size={20} color="#9CA3AF" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      {/* Unified Header with bubbles, dynamic cart, notifications, voice search */}
+      <PageHeader />
 
       {/* All Services Title */}
-      <View className="px-5 relative z-10 py-4">
+      <View className="px-5 py-4">
         <Text className="text-2xl font-bold text-gray-900">All Services</Text>
       </View>
 
@@ -168,10 +95,10 @@ export default function ServicesScreen() {
             activeOpacity={0.9}
             className="mb-5"
           >
-            <View className={`  rounded-xl `}>
+            <View className="rounded-xl">
               <View
                 style={{ backgroundColor: service.bgColor }}
-                className={` h-[160px] p-5 rounded-xl w-full flex-row col-gap-4   justify-between`}
+                className="h-[160px] p-5 rounded-xl w-full flex-row col-gap-4 justify-between"
               >
                 {/* Left Side - Category Name */}
                 <View className="w-[65%]">
@@ -207,6 +134,6 @@ export default function ServicesScreen() {
           </Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
