@@ -1,24 +1,24 @@
+import PageHeader from "@/components/PageHeader";
+import { usePodcasts } from "@/hooks/usePodcasts";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  ActivityIndicator,
 } from "react-native";
-import PageHeader from "@/components/PageHeader";
-import { usePodcasts } from "@/hooks/usePodcasts";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 
 const PODCAST_TAGS = [
-  "Technology",
+  "Sports",
   "Innovation",
   "Manufacturing",
   "Sustainability",
@@ -38,8 +38,8 @@ export default function PodcastsScreen() {
     }, 500);
     return () => clearTimeout(handler);
   }, [searchTerm]);
-  
-  const { data, isLoading, isError } = usePodcasts({ 
+
+  const { data, isLoading, isError } = usePodcasts({
     limit: 50,
     search: debouncedSearch || undefined,
     tags: selectedTag ? [selectedTag] : undefined
@@ -93,7 +93,7 @@ export default function PodcastsScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         <View className="px-5 pt-4">
-          
+
           {isLoading && (
             <View className="items-center justify-center py-20">
               <ActivityIndicator size="large" color="#FF8C42" />

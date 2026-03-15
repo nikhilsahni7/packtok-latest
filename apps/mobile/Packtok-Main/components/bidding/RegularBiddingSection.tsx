@@ -62,7 +62,11 @@ export function RegularBiddingSection({
                 )}
                 imageUrl={image}
                 statusLabel={auction.mode === "REVERSE" ? "Reverse" : "Forward"}
-                meta={`Starts ${formatDateTime(auction.startAt)}`}
+                meta={
+                  auction.status === "LIVE"
+                    ? `Ends ${formatDateTime(auction.endAt)}`
+                    : `Starts ${formatDateTime(auction.startAt)}`
+                }
                 ctaLabel="View details"
                 onPress={() => onSelectAuction(auction.id)}
               />

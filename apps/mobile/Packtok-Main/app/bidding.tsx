@@ -139,7 +139,7 @@ export default function BiddingScreen() {
                 Live Bidding
               </Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/bidding/list?type=live" as any)}>
               <Text className="text-sm font-medium text-gray-600">
                 View all <Text className="text-lg">›</Text>
               </Text>
@@ -157,7 +157,7 @@ export default function BiddingScreen() {
             <Text className="text-[18px] font-semibold text-gray-900">
               Regular Bidding
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/bidding/list?type=regular" as any)}>
               <Text className="text-sm font-medium text-gray-600">
                 View all <Text className="text-lg">›</Text>
               </Text>
@@ -175,7 +175,7 @@ export default function BiddingScreen() {
             <Text className="text-[18px] font-semibold text-gray-900">
               Reverse Bidding
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/bidding/list?type=reverse" as any)}>
               <Text className="text-sm font-medium text-gray-600">
                 View all <Text className="text-lg">›</Text>
               </Text>

@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
-import { Alert } from "react-native";
 import { useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { Alert } from "react-native";
 
 let SpeechRecognition: any = null;
 try {
@@ -18,7 +18,7 @@ export function useVoiceSearch() {
   // Conditionally hook events if the native module is actually present
   if (SpeechRecognition?.useSpeechRecognitionEvent) {
     SpeechRecognition.useSpeechRecognitionEvent("start", () => setIsListening(true));
-    
+
     SpeechRecognition.useSpeechRecognitionEvent("end", () => {
       setIsListening(false);
       // When finished, if we have a transcript, execute the search
@@ -47,7 +47,7 @@ export function useVoiceSearch() {
     // Graceful fallback if module isn't loaded (e.g. running inside standard Expo Go)
     if (!SpeechRecognition?.ExpoSpeechRecognitionModule) {
       Alert.alert(
-        "Voice Search", 
+        "Voice Search",
         "Voice search using this library requires a custom development client. Please build the app natively to use this feature."
       );
       return;
@@ -65,11 +65,11 @@ export function useVoiceSearch() {
         interimResults: true,
         continuous: false,
       });
-      
+
     } catch (error: any) {
       console.warn("Voice search init error:", error);
       Alert.alert(
-        "Voice Search", 
+        "Voice Search",
         "Native speech recognition module is not configured correctly. This feature requires a development build."
       );
       setIsListening(false);

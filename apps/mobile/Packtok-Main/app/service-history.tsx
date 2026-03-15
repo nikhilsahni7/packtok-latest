@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -16,6 +17,7 @@ import {
   ServiceRequest,
   ServiceStatus,
   ServiceType,
+  useCancelServiceRequest,
   useMyServiceRequests,
 } from "../hooks/useServiceRequests";
 import { useAuthStore } from "../store/auth-store";
@@ -24,13 +26,30 @@ export default function ServiceHistoryScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const { data: services, isLoading, refetch } = useMyServiceRequests();
+  const { mutate: cancelService, isPending: isCancelling } =
+    useCancelServiceRequest();
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
 
   const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
+  };
+
+  const handleCancelSubmit = (id: string) => {
+    if (!cancelReason.trim()) return;
+    cancelService(
+      { id, reason: cancelReason.trim() },
+      {
+        onSuccess: () => {
+          setCancellingId(null);
+          setCancelReason("");
+        },
+      }
+    );
   };
 
   const getServiceTypeDisplay = (serviceType: ServiceType) => {
@@ -41,6 +60,7 @@ export default function ServiceHistoryScreen() {
       COMPANY_ACQUISITION: "Company Acquisition",
       MANPOWER_HIRING: "Manpower Hiring",
       JOB_SEEKER_SUBMISSION: "Job Seeker",
+      MACHINERY_INSTALLER: "Machinery Installer",
     };
     return serviceTypeMap[serviceType] || serviceType;
   };
@@ -87,7 +107,11 @@ export default function ServiceHistoryScreen() {
         label: "COMPLETED",
       },
       CLOSED: { bg: "bg-gray-100", text: "text-gray-800", label: "CLOSED" },
-      CANCELLED: { bg: "bg-red-100", text: "text-red-800", label: "CANCELLED" },
+      CANCELLED: {
+        bg: "bg-red-100",
+        text: "text-red-800",
+        label: "CANCELLED",
+      },
     };
     return statusStyles[status] || statusStyles.SUBMITTED;
   };
@@ -215,100 +239,159 @@ export default function ServiceHistoryScreen() {
           <View className="px-5 py-4 gap-4">
             {filteredServices.map((service) => {
               const statusStyle = getStatusBadgeStyle(service.status);
+              const isWithdrawing = cancellingId === service.id;
+
               return (
-                <TouchableOpacity
+                <View
                   key={service.id}
-                  onPress={() =>
-                    router.push(`/service-detail?id=${service.id}`)
-                  }
-                  className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm"
-                  activeOpacity={0.7}
+                  className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
                 >
-                  {/* Header */}
-                  <View className="flex-row items-start justify-between mb-3">
-                    <View className="flex-1">
-                      <Text className="text-base font-semibold text-gray-900 mb-1">
-                        {getServiceTypeDisplay(service.serviceType)}
-                      </Text>
-                      <Text className="text-xs text-gray-500">
-                        Booking ID: {service.id.slice(0, 8).toUpperCase()}
-                      </Text>
-                    </View>
-                    <View
-                      className={`px-3 py-1 rounded-full ${statusStyle.bg}`}
-                    >
-                      <Text
-                        className={`text-xs font-semibold ${statusStyle.text}`}
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(`/service-detail?id=${service.id}`)
+                    }
+                    className="p-4"
+                    activeOpacity={0.7}
+                  >
+                    {/* Header */}
+                    <View className="flex-row items-start justify-between mb-3">
+                      <View className="flex-1">
+                        <Text className="text-base font-semibold text-gray-900 mb-1">
+                          {getServiceTypeDisplay(service.serviceType)}
+                        </Text>
+                        <Text className="text-xs text-gray-500">
+                          Booking ID: {service.id.slice(0, 8).toUpperCase()}
+                        </Text>
+                      </View>
+                      <View
+                        className={`px-3 py-1 rounded-full ${statusStyle.bg}`}
                       >
-                        {statusStyle.label}
+                        <Text
+                          className={`text-xs font-semibold ${statusStyle.text}`}
+                        >
+                          {statusStyle.label}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* Company Name */}
+                    {(service.maintenanceRequest?.companyName ||
+                      service.consultancyRequest?.companyName ||
+                      service.turnkeyProjectInquiry?.companyName ||
+                      service.companyAcquisitionInquiry?.companyName ||
+                      service.manpowerHiringRequest?.companyName ||
+                      service.machineryInstallerRequest?.companyName) && (
+                      <View className="flex-row items-center mb-2">
+                        <Feather name="briefcase" size={14} color="#6B7280" />
+                        <Text className="text-sm text-gray-700 ml-2">
+                          {service.maintenanceRequest?.companyName ||
+                            service.consultancyRequest?.companyName ||
+                            service.turnkeyProjectInquiry?.companyName ||
+                            service.companyAcquisitionInquiry?.companyName ||
+                            service.manpowerHiringRequest?.companyName ||
+                            service.machineryInstallerRequest?.companyName}
+                        </Text>
+                      </View>
+                    )}
+
+                    {/* Date */}
+                    <View className="flex-row items-center">
+                      <Feather name="calendar" size={14} color="#6B7280" />
+                      <Text className="text-sm text-gray-600 ml-2">
+                        {formatDate(service.createdAt)}
                       </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
 
-                  {/* Company Name (if available) */}
-                  {(service.maintenanceRequest?.companyName ||
-                    service.consultancyRequest?.companyName ||
-                    service.turnkeyProjectInquiry?.companyName ||
-                    service.companyAcquisitionInquiry?.companyName ||
-                    service.manpowerHiringRequest?.companyName) && (
-                    <View className="flex-row items-center mb-2">
-                      <Feather name="briefcase" size={14} color="#6B7280" />
-                      <Text className="text-sm text-gray-700 ml-2">
-                        {service.maintenanceRequest?.companyName ||
-                          service.consultancyRequest?.companyName ||
-                          service.turnkeyProjectInquiry?.companyName ||
-                          service.companyAcquisitionInquiry?.companyName ||
-                          service.manpowerHiringRequest?.companyName}
+                  {/* Action Buttons */}
+                  <View className="flex-row gap-2 px-4 pb-4 pt-1 border-t border-gray-100">
+                    <TouchableOpacity
+                      onPress={() =>
+                        router.push(`/service-detail?id=${service.id}`)
+                      }
+                      className="flex-1 py-2 border border-[#6366F1] rounded-lg"
+                      activeOpacity={0.7}
+                    >
+                      <Text className="text-[#6366F1] text-center font-semibold text-sm">
+                        VIEW DETAILS
                       </Text>
-                    </View>
-                  )}
+                    </TouchableOpacity>
 
-                  {/* Date */}
-                  <View className="flex-row items-center mb-3">
-                    <Feather name="calendar" size={14} color="#6B7280" />
-                    <Text className="text-sm text-gray-600 ml-2">
-                      {formatDate(service.createdAt)}
-                    </Text>
-                  </View>
-
-                  {/* Actions */}
-                  {activeTab === "past" && (
-                    <View className="flex-row gap-2 mt-3 pt-3 border-t border-gray-100">
+                    {activeTab === "upcoming" && (
                       <TouchableOpacity
                         onPress={() =>
-                          router.push(`/service-detail?id=${service.id}`)
+                          setCancellingId(isWithdrawing ? null : service.id)
                         }
-                        className="flex-1 py-2 border border-[#6366F1] rounded-lg"
+                        className="flex-1 py-2 bg-red-50 border border-red-200 rounded-lg"
                         activeOpacity={0.7}
                       >
-                        <Text className="text-[#6366F1] text-center font-semibold text-sm">
-                          VIEW DETAILS
+                        <Text className="text-red-600 text-center font-semibold text-sm">
+                          {isWithdrawing ? "CANCEL" : "WITHDRAW"}
                         </Text>
                       </TouchableOpacity>
-                    </View>
-                  )}
+                    )}
+                  </View>
 
-                  {activeTab === "upcoming" && (
-                    <View className="flex-row gap-2 mt-3 pt-3 border-t border-gray-100">
-                      <TouchableOpacity
-                        className="flex-1 py-2 border border-[#6366F1] rounded-lg"
-                        activeOpacity={0.7}
-                      >
-                        <Text className="text-[#6366F1] text-center font-semibold text-sm">
-                          CALL
+                  {/* Inline Withdraw Dialog */}
+                  {isWithdrawing && (
+                    <View className="px-4 pb-4">
+                      <View className="bg-red-50 border border-red-200 rounded-xl p-4">
+                        <Text className="text-xs font-bold text-red-700 uppercase tracking-wider mb-2">
+                          Why do you want to withdraw?
                         </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        className="flex-1 py-2 bg-red-500 rounded-lg"
-                        activeOpacity={0.7}
-                      >
-                        <Text className="text-white text-center font-semibold text-sm">
-                          CANCEL
-                        </Text>
-                      </TouchableOpacity>
+                        <TextInput
+                          value={cancelReason}
+                          onChangeText={setCancelReason}
+                          placeholder="Please provide a reason..."
+                          placeholderTextColor="#9CA3AF"
+                          multiline
+                          numberOfLines={3}
+                          className="bg-white border border-red-200 rounded-lg p-3 text-sm text-gray-900 mb-3 h-20"
+                          textAlignVertical="top"
+                        />
+                        <View className="flex-row justify-end gap-2">
+                          <TouchableOpacity
+                            onPress={() => {
+                              setCancellingId(null);
+                              setCancelReason("");
+                            }}
+                            className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg"
+                            activeOpacity={0.7}
+                          >
+                            <Text className="text-gray-600 text-xs font-bold">
+                              Keep Request
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => handleCancelSubmit(service.id)}
+                            disabled={isCancelling || !cancelReason.trim()}
+                            className={`px-4 py-2.5 bg-red-600 rounded-lg flex-row items-center ${
+                              !cancelReason.trim() || isCancelling
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            activeOpacity={0.7}
+                          >
+                            {isCancelling ? (
+                              <ActivityIndicator size="small" color="white" />
+                            ) : (
+                              <>
+                                <Feather
+                                  name="send"
+                                  size={14}
+                                  color="white"
+                                />
+                                <Text className="text-white text-xs font-bold ml-1">
+                                  Confirm
+                                </Text>
+                              </>
+                            )}
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </View>
                   )}
-                </TouchableOpacity>
+                </View>
               );
             })}
           </View>

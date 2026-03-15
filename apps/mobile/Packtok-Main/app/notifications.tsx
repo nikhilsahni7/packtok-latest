@@ -26,7 +26,10 @@ export default function NotificationsScreen() {
           <Text className="text-xl font-bold text-gray-900">Notifications</Text>
         </View>
         {/* Settings icon for notification preferences */}
-        <TouchableOpacity className="w-10 h-10 items-center justify-center">
+        <TouchableOpacity
+          className="w-10 h-10 items-center justify-center"
+          onPress={() => router.push("/(tabs)/settings")}
+        >
           <Feather name="settings" size={20} color="#6B7280" />
         </TouchableOpacity>
       </View>

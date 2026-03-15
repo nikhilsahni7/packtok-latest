@@ -1,16 +1,16 @@
+import { useCartItemCount } from "@/hooks/useCart";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Dimensions,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Dimensions,
+    Image,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
-import { useCartItemCount } from "@/hooks/useCart";
-import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 
 const { width } = Dimensions.get("window");
 
@@ -192,5 +192,3 @@ export default function PageHeader({
     </>
   );
 }
-
-

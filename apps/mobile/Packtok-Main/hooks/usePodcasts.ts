@@ -45,9 +45,14 @@ export const usePodcasts = (params: PodcastListQuery = {}) => {
   return useQuery({
     queryKey: [...QK.podcasts, params],
     queryFn: async (): Promise<CursorPage<PodcastListItem>> => {
+      const apiParams = { ...params } as any;
+      if (apiParams.tags && Array.isArray(apiParams.tags)) {
+        apiParams.tags = apiParams.tags.join(",");
+      }
+
       const { data } = await api.get<ApiEnvelope<CursorPage<PodcastListItem>>>(
         "/api/v1/podcasts",
-        { params }
+        { params: apiParams }
       );
       return data.data;
     },

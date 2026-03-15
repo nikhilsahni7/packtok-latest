@@ -281,6 +281,14 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="bidding/list"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
             name="packaging"
             options={{
               headerShown: false,

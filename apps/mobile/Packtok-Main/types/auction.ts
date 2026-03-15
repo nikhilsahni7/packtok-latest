@@ -27,6 +27,7 @@ export interface AuctionLeaderboardEntry {
   userId: string;
   name: string | null;
   email: string;
+  profile_image?: string | null;
   amount: string;
   sequence: number;
   createdAt: string;
@@ -49,8 +50,20 @@ export interface AuctionLeaderboard {
 export interface AuctionProductSummary {
   id: string;
   title: string;
+  description?: string;
   images?: string[];
   imagesThumbnail?: string;
+  manufacturer?: string;
+  model?: string;
+  year?: number | string;
+  condition?: string;
+  category?: { id: string; name: string } | null;
+  productType?: string;
+  pdfUrl?: string | null;
+  videoUrl?: string | null;
+  reviews?: Record<string, unknown>[];
+  specifications?: Record<string, unknown>;
+  faqs?: Array<{ question: string; answer: string }>;
 }
 
 export interface Auction {
@@ -61,8 +74,12 @@ export interface Auction {
   status: AuctionStatus;
   currency: string;
   startingAmount: string;
-  bidIncrement: string;
-  depositAmount: string;
+  earnestAmount: string;
+  minBidIncrement?: string | null;
+  minBidDecrement?: string | null;
+  reservePrice?: string | null;
+  maxWinners?: number;
+  notes?: string | null;
   startAt: string;
   endAt: string;
   leaderboard?: AuctionLeaderboard | null;
@@ -76,7 +93,7 @@ export interface AuctionEnrollment {
   auctionId: string;
   auction?: Auction;
   status: AuctionEnrollmentStatus;
-  depositAmount: string;
+  earnestAmount: string;
   currency: string;
   createdAt: string;
   updatedAt: string;

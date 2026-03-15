@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Toast from "react-native-toast-message";
 import api from "../lib/api";
 
 export type ServiceType =
@@ -7,7 +8,8 @@ export type ServiceType =
   | "TURNKEY_PROJECT"
   | "COMPANY_ACQUISITION"
   | "MANPOWER_HIRING"
-  | "JOB_SEEKER_SUBMISSION";
+  | "JOB_SEEKER_SUBMISSION"
+  | "MACHINERY_INSTALLER";
 
 export type ServiceStatus =
   | "SUBMITTED"
@@ -46,6 +48,7 @@ export interface ServiceRequest {
   companyAcquisitionInquiry?: any;
   manpowerHiringRequest?: any;
   jobSeekerProfile?: any;
+  machineryInstallerRequest?: any;
 }
 
 // Get My Service Requests Hook
@@ -73,3 +76,38 @@ export const useServiceRequestDetails = (id: string) => {
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
+
+// Cancel / Withdraw a Service Request
+export function useCancelServiceRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, reason }: { id: string; reason: string }) => {
+      const { data } = await api.put(`/api/v1/services/${id}/cancel`, {
+        reason,
+      });
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      Toast.show({
+        type: "success",
+        text1: "Request Withdrawn",
+        text2: "Your service request was successfully cancelled.",
+      });
+      // Invalidate both list and detail caches
+      queryClient.invalidateQueries({ queryKey: ["myServiceRequests"] });
+      queryClient.invalidateQueries({
+        queryKey: ["serviceRequest", variables.id],
+      });
+    },
+    onError: (error: any) => {
+      console.error("Cancel service request error:", error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2:
+          error.response?.data?.message ||
+          "Failed to withdraw request. Please try again.",
+      });
+    },
+  });
+}
