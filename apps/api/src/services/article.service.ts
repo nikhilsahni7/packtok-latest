@@ -1,5 +1,6 @@
 import { Prisma, prisma } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
+import { notifyArticlePublished } from "./notification.service";
 
 type ArticleCreateInput = {
   title: string;
@@ -42,7 +43,7 @@ export const createArticleForAdmin = async (
   authorId: string,
   data: ArticleCreateInput
 ) => {
-  return prisma.article.create({
+  const created = await prisma.article.create({
     data: {
       title: data.title.trim(),
       content: data.content.trim(),
@@ -51,13 +52,22 @@ export const createArticleForAdmin = async (
       authorId,
     },
   });
+
+  if (created.published) {
+    await notifyArticlePublished({
+      articleId: created.id,
+      title: created.title,
+    });
+  }
+
+  return created;
 };
 
 export const updateArticleForAdmin = async (
   id: string,
   data: ArticleUpdateInput
 ) => {
-  await getArticleByIdForAdmin(id);
+  const existing = await getArticleByIdForAdmin(id);
 
   const payload: Prisma.ArticleUpdateInput = {};
   if (data.title !== undefined) payload.title = data.title.trim();
@@ -67,10 +77,19 @@ export const updateArticleForAdmin = async (
   }
   if (data.published !== undefined) payload.published = data.published;
 
-  return prisma.article.update({
+  const updated = await prisma.article.update({
     where: { id },
     data: payload,
   });
+
+  if (!existing.published && updated.published) {
+    await notifyArticlePublished({
+      articleId: updated.id,
+      title: updated.title,
+    });
+  }
+
+  return updated;
 };
 
 export const deleteArticleForAdmin = async (id: string) => {

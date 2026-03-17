@@ -1,15 +1,16 @@
 import { useCartItemCount } from "@/hooks/useCart";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-    Dimensions,
-    Image,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -36,18 +37,37 @@ export default function PageHeader({
 }: PageHeaderProps) {
   const router = useRouter();
   const itemCount = useCartItemCount();
-  const { startListening, isListening, transcript } = useVoiceSearch();
-  const [localSearchQuery, setLocalSearchQuery] = useState("");
-
-  // Use controlled value if onSearchChange is provided, otherwise use local state
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
   const isControlled = onSearchChange !== undefined;
+  const { startListening, isListening, transcript } = useVoiceSearch(
+    isControlled ? { onResult: onSearchChange } : undefined
+  );
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
+  const prevTranscriptRef = useRef("");
+
   const displayValue = isControlled
     ? isListening
       ? transcript
-      : searchValue ?? ""
+      : (searchValue ?? "")
     : isListening
       ? transcript
       : localSearchQuery;
+
+  // When in controlled mode, pipe voice transcript into onSearchChange
+  // so voice search filters in-page (e.g. podcasts) instead of navigating to /search
+  useEffect(() => {
+    if (
+      isControlled &&
+      transcript &&
+      transcript !== prevTranscriptRef.current
+    ) {
+      prevTranscriptRef.current = transcript;
+      onSearchChange?.(transcript);
+    }
+    if (!isListening && prevTranscriptRef.current) {
+      prevTranscriptRef.current = "";
+    }
+  }, [transcript, isListening, isControlled, onSearchChange]);
 
   const handleTextChange = (text: string) => {
     if (isControlled) {
@@ -58,7 +78,7 @@ export default function PageHeader({
   };
 
   const handleSearch = () => {
-    const query = isControlled ? searchValue ?? "" : localSearchQuery;
+    const query = isControlled ? (searchValue ?? "") : localSearchQuery;
     if (!isControlled && query.trim()) {
       router.push({
         pathname: "/search",
@@ -144,9 +164,13 @@ export default function PageHeader({
               onPress={() => router.push("/notifications")}
             >
               <Feather name="bell" size={20} color="black" />
-              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 items-center justify-center">
-                <Text className="text-white text-[10px] font-bold">2</Text>
-              </View>
+              {unreadCount > 0 && (
+                <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[14px] h-[14px] items-center justify-center px-0.5">
+                  <Text className="text-white text-[8px] font-bold">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
 
             {/* Shopping Cart with Dynamic Badge */}

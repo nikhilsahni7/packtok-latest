@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Alert } from "react-native";
 
 let SpeechRecognition: any = null;
@@ -10,10 +10,17 @@ try {
   console.warn("expo-speech-recognition not found");
 }
 
-export function useVoiceSearch() {
+interface UseVoiceSearchOptions {
+  /** When provided, the final transcript is passed to this callback instead of navigating to /search */
+  onResult?: (transcript: string) => void;
+}
+
+export function useVoiceSearch(options?: UseVoiceSearchOptions) {
   const router = useRouter();
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const onResultRef = useRef(options?.onResult);
+  onResultRef.current = options?.onResult;
 
   // Conditionally hook events if the native module is actually present
   if (SpeechRecognition?.useSpeechRecognitionEvent) {
@@ -23,10 +30,16 @@ export function useVoiceSearch() {
       setIsListening(false);
       // When finished, if we have a transcript, execute the search
       if (transcript.trim()) {
-        router.push({
-          pathname: "/search",
-          params: { q: transcript.trim() },
-        } as any);
+        if (onResultRef.current) {
+          // Use custom callback (e.g. in-page podcast search)
+          onResultRef.current(transcript.trim());
+        } else {
+          // Default: navigate to product search
+          router.push({
+            pathname: "/search",
+            params: { q: transcript.trim() },
+          } as any);
+        }
         setTranscript(""); // clear it for next time
       }
     });

@@ -197,17 +197,17 @@ export default function AddressFormScreen() {
             rules={{
               required: "Phone number is required",
               pattern: {
-                value: /^[0-9]{10}$/,
-                message: "Please enter a valid 10-digit phone number",
+                value: /^[0-9]{7,15}$/,
+                message: "Please enter a valid phone number (7-15 digits)",
               },
             }}
             render={({ field: { onChange, value } }) => (
               <TextInput
                 value={value}
                 onChangeText={onChange}
-                placeholder="Enter 10-digit phone number"
+                placeholder="Enter phone number"
                 keyboardType="phone-pad"
-                maxLength={10}
+                maxLength={15}
                 className="border border-gray-300 rounded-xl px-4 py-3 text-base"
                 placeholderTextColor="#9CA3AF"
               />
@@ -330,17 +330,17 @@ export default function AddressFormScreen() {
             rules={{
               required: "Postal code is required",
               pattern: {
-                value: /^[0-9]{6}$/,
-                message: "Please enter a valid 6-digit postal code",
+                value: /^[a-zA-Z0-9\s-]{3,10}$/,
+                message: "Please enter a valid postal/zip code",
               },
             }}
             render={({ field: { onChange, value } }) => (
               <TextInput
                 value={value}
                 onChangeText={onChange}
-                placeholder="Enter 6-digit postal code"
-                keyboardType="number-pad"
-                maxLength={6}
+                placeholder="Enter postal/zip code"
+                keyboardType="default"
+                maxLength={10}
                 className="border border-gray-300 rounded-xl px-4 py-3 text-base"
                 placeholderTextColor="#9CA3AF"
               />

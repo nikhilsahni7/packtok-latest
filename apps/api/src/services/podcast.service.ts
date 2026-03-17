@@ -6,9 +6,8 @@ import {
   getSignedPodcastPlaybackUrl,
   uploadPodcastVideoToS3,
 } from "../utils/podcastVideoStorage.service";
-import {
-  uploadThumbnailImageToSupabase,
-} from "../utils/storage.service";
+import { uploadThumbnailImageToSupabase } from "../utils/storage.service";
+import { notifyPodcastLive } from "./notification.service";
 
 // ===== Types =====
 
@@ -167,7 +166,11 @@ const processVideoUploadInBackground = (
 
       // Upload video and thumbnail in parallel for speed
       const uploadPromises: Promise<string>[] = [
-        uploadPodcastVideoToS3(videoData.buffer, videoData.mimetype, "podcasts"),
+        uploadPodcastVideoToS3(
+          videoData.buffer,
+          videoData.mimetype,
+          "podcasts"
+        ),
       ];
 
       if (thumbnailData) {
@@ -185,7 +188,7 @@ const processVideoUploadInBackground = (
       const thumbnailUrl = thumbnailData ? results[1] : undefined;
 
       // Update podcast with URLs and mark as completed
-      await prisma.podcast.update({
+      const updatedPodcast = await prisma.podcast.update({
         where: { id: podcastId },
         data: {
           videoUrl,
@@ -194,6 +197,13 @@ const processVideoUploadInBackground = (
           uploadError: null,
         },
       });
+
+      if (updatedPodcast.status === PodcastStatus.PUBLISHED) {
+        await notifyPodcastLive({
+          podcastId: updatedPodcast.id,
+          title: updatedPodcast.title,
+        });
+      }
 
       logger.info({ podcastId, videoUrl }, "Background video upload completed");
     } catch (error) {
@@ -224,7 +234,7 @@ const processVideoUploadInBackground = (
 // ===== Podcast Service =====
 
 export const createPodcast = async (data: CreatePodcastInput) => {
-  return prisma.podcast.create({
+  const created = await prisma.podcast.create({
     data: {
       title: data.title,
       description: data.description,
@@ -241,6 +251,18 @@ export const createPodcast = async (data: CreatePodcastInput) => {
         : (UPLOAD_STATUS.PENDING as any),
     },
   });
+
+  if (
+    created.status === PodcastStatus.PUBLISHED &&
+    created.uploadStatus === (UPLOAD_STATUS.COMPLETED as any)
+  ) {
+    await notifyPodcastLive({
+      podcastId: created.id,
+      title: created.title,
+    });
+  }
+
+  return created;
 };
 
 /**
@@ -303,7 +325,20 @@ export const updatePodcast = async (
 ) => {
   const podcast = await prisma.podcast.findUnique({ where: { id } });
   if (!podcast) throw new ApiError(404, "Podcast not found");
-  return prisma.podcast.update({ where: { id }, data });
+  const updated = await prisma.podcast.update({ where: { id }, data });
+
+  if (
+    podcast.status !== PodcastStatus.PUBLISHED &&
+    updated.status === PodcastStatus.PUBLISHED &&
+    updated.uploadStatus === (UPLOAD_STATUS.COMPLETED as any)
+  ) {
+    await notifyPodcastLive({
+      podcastId: updated.id,
+      title: updated.title,
+    });
+  }
+
+  return updated;
 };
 
 /**
@@ -345,6 +380,18 @@ export const updatePodcastWithBackgroundUpload = async (
 
   // No video change, just update other fields
   const updated = await prisma.podcast.update({ where: { id }, data });
+
+  if (
+    podcast.status !== PodcastStatus.PUBLISHED &&
+    updated.status === PodcastStatus.PUBLISHED &&
+    updated.uploadStatus === (UPLOAD_STATUS.COMPLETED as any)
+  ) {
+    await notifyPodcastLive({
+      podcastId: updated.id,
+      title: updated.title,
+    });
+  }
+
   return { podcast: updated, uploading: false };
 };
 

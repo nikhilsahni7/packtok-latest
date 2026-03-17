@@ -118,6 +118,13 @@ export const submitProduct = asyncHandler(
         throw new Error("Invalid JSON in specifications field");
       }
     }
+    // Prisma schema expects Json for specifications; keep request backward-compatible.
+    if (!body.specifications) {
+      body.specifications = {};
+    }
+    if (!body.currency) {
+      body.currency = "INR";
+    }
     if (body.quantity) body.quantity = Number(body.quantity);
     if (body.year) body.year = Number(body.year);
     if (imagesThumbnail) body.imagesThumbnail = imagesThumbnail;

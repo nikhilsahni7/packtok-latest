@@ -1,5 +1,10 @@
+import { useCartItemCount } from "@/hooks/useCart";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import {
   Dimensions,
   Image,
@@ -8,13 +13,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
-import { useCartItemCount } from "@/hooks/useCart";
-import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 
 const { width } = Dimensions.get("window");
 
@@ -97,6 +97,7 @@ const categories = [
 export default function CategoriesScreen() {
   const router = useRouter();
   const itemCount = useCartItemCount();
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
   const [searchQuery, setSearchQuery] = useState("");
 
   const { startListening, isListening, transcript } = useVoiceSearch();
@@ -251,7 +252,7 @@ export default function CategoriesScreen() {
         {/* Top Bar */}
         <View className="flex-row items-center justify-between mb-4">
           {/* Menu Icon */}
-          <TouchableOpacity 
+          <TouchableOpacity
             className="p-2 relative z-20"
             onPress={() => router.back()}
           >
@@ -273,18 +274,22 @@ export default function CategoriesScreen() {
           {/* Right Icons */}
           <View className="flex-row items-center space-x-3">
             {/* Notification Bell with Badge */}
-            <TouchableOpacity 
+            <TouchableOpacity
               className="relative"
               onPress={() => router.push("/notifications")}
             >
               <Feather name="bell" size={20} color="black" />
-              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full text-blac w-4 h-4 items-center justify-center">
-                <Text className="text-white text-[10px] font-bold">2</Text>
-              </View>
+              {unreadCount > 0 && (
+                <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[14px] h-[14px] items-center justify-center px-0.5">
+                  <Text className="text-white text-[8px] font-bold">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
 
             {/* Shopping Cart */}
-            <TouchableOpacity 
+            <TouchableOpacity
               className="ml-3 relative"
               onPress={() => router.push("/cart")}
             >
@@ -313,7 +318,11 @@ export default function CategoriesScreen() {
             returnKeyType="search"
           />
           <TouchableOpacity onPress={startListening}>
-            <Feather name="mic" size={20} color={isListening ? "#FF8C42" : "#9CA3AF"} />
+            <Feather
+              name="mic"
+              size={20}
+              color={isListening ? "#FF8C42" : "#9CA3AF"}
+            />
           </TouchableOpacity>
         </View>
 

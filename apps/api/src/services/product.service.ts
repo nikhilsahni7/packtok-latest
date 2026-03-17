@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-    MarketplaceProductStatus,
-    Prisma,
-    prisma,
-    ProductType,
-    Role,
-    UserSubmissionStatus,
+  MarketplaceProductStatus,
+  Prisma,
+  prisma,
+  ProductType,
+  Role,
+  UserSubmissionStatus,
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
+import { notifyProductLive } from "./notification.service";
 
 /**
  * Helper function to build Prisma where clause for public visibility rule
@@ -77,7 +78,8 @@ const parseProductData = (data: any) => {
 };
 
 export const createProductAsAdmin = async (adminId: string, data: any) => {
-  const { categoryId, categoryName, category, ...rest } = parseProductData(data);
+  const { categoryId, categoryName, category, ...rest } =
+    parseProductData(data);
   const resolvedCategoryId = await ensureCategory(
     categoryId,
     categoryName ?? category
@@ -93,7 +95,8 @@ export const createProductAsAdmin = async (adminId: string, data: any) => {
 };
 
 export const createProductSubmission = async (userId: string, data: any) => {
-  const { categoryId, categoryName, category, ...rest } = parseProductData(data);
+  const { categoryId, categoryName, category, ...rest } =
+    parseProductData(data);
   const resolvedCategoryId = await ensureCategory(
     categoryId,
     categoryName ?? category
@@ -147,25 +150,52 @@ export const changeProductStatus = async (
   productId: string,
   newStatus: MarketplaceProductStatus
 ) => {
+  const existing = await prisma.marketplaceProduct.findUnique({
+    where: { id: productId },
+    select: {
+      id: true,
+      title: true,
+      productType: true,
+      status: true,
+      category: { select: { name: true } },
+      submissionStatus: true,
+    },
+  });
+
+  if (!existing) {
+    throw new ApiError(404, "Product not found");
+  }
+
   // Guard: cannot set AVAILABLE unless the product has been approved (or is admin-created with null submissionStatus)
   if (newStatus === MarketplaceProductStatus.AVAILABLE) {
-    const product = await prisma.marketplaceProduct.findUnique({
-      where: { id: productId },
-      select: { submissionStatus: true },
-    });
     if (
-      product?.submissionStatus !== null &&
-      product?.submissionStatus !== UserSubmissionStatus.APPROVED
+      existing.submissionStatus !== null &&
+      existing.submissionStatus !== UserSubmissionStatus.APPROVED
     ) {
       throw new Error(
         "Cannot mark product as AVAILABLE — it must be approved first. Please approve the submission before changing status."
       );
     }
   }
-  return prisma.marketplaceProduct.update({
+
+  const updated = await prisma.marketplaceProduct.update({
     where: { id: productId },
     data: { status: newStatus },
   });
+
+  if (
+    newStatus === MarketplaceProductStatus.AVAILABLE &&
+    existing.status !== MarketplaceProductStatus.AVAILABLE
+  ) {
+    await notifyProductLive({
+      productId: existing.id,
+      title: existing.title,
+      productType: existing.productType,
+      categoryName: existing.category?.name,
+    });
+  }
+
+  return updated;
 };
 
 export const listAllProductsForAdmin = async () => {
@@ -222,7 +252,7 @@ export const approveSubmission = async (
   reviewerId?: string,
   notes?: string
 ) => {
-  return prisma.marketplaceProduct.update({
+  const updated = await prisma.marketplaceProduct.update({
     where: { id: productId },
     data: {
       submissionStatus: UserSubmissionStatus.APPROVED,
@@ -231,7 +261,23 @@ export const approveSubmission = async (
       reviewedAt: new Date(),
       reviewNotes: notes,
     },
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
+
+  await notifyProductLive({
+    productId: updated.id,
+    title: updated.title,
+    productType: updated.productType,
+    categoryName: updated.category?.name,
+  });
+
+  return updated;
 };
 
 export const rejectSubmission = async (
@@ -388,7 +434,11 @@ export const getPublicProducts = async (options: PublicProductQueryOptions) => {
       reviews.length > 0
         ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
         : 0;
-    return { ...sanitizePriceForPublic(rest), averageRating, reviewCount: reviews.length };
+    return {
+      ...sanitizePriceForPublic(rest),
+      averageRating,
+      reviewCount: reviews.length,
+    };
   });
   return { items: sanitized, total, page, limit };
 };

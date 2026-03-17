@@ -1,7 +1,13 @@
+import { useArticles } from "@/hooks/useArticles";
+import { useCartItemCount } from "@/hooks/useCart";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
+import { usePodcasts } from "@/hooks/usePodcasts";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import { useAuthStore } from "@/store/auth-store";
 import { Feather } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import {
   Dimensions,
   Image,
@@ -10,15 +16,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Alert,
 } from "react-native";
-import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useBackHandler } from "../../hooks/useBackHandler";
-import { useCartItemCount } from "@/hooks/useCart";
-import { useVoiceSearch } from "@/hooks/useVoiceSearch";
-import { useAuthStore } from "@/store/auth-store";
-import { usePodcasts } from "@/hooks/usePodcasts";
-import { useArticles } from "@/hooks/useArticles";
 
 const { width } = Dimensions.get("window");
 
@@ -30,6 +30,7 @@ export default function HomeScreen() {
   const { data: articles = [] } = useArticles(3);
   const { data: podcastsData } = usePodcasts({ limit: 3 });
   const podcasts = podcastsData?.items ?? [];
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
 
   const { startListening, isListening, transcript } = useVoiceSearch();
 
@@ -89,26 +90,21 @@ export default function HomeScreen() {
 
       {/* Header with Title and Search */}
       <View className="px-5 pt-12 pb-2 relative" style={{ zIndex: 10 }}>
-
         {/* Top Bar */}
         <View className="flex-row items-center justify-between mb-4">
           {/* Menu Icon / User Profile */}
-          <TouchableOpacity 
+          <TouchableOpacity
             className="p-1 relative z-20 rounded-full border border-gray-100 shadow-sm bg-white"
             onPress={() => router.push("/settings" as any)}
           >
             {user?.profile_image ? (
-              <Image 
-                source={{ uri: user.profile_image }} 
+              <Image
+                source={{ uri: user.profile_image }}
                 className="w-10 h-10 rounded-full"
               />
             ) : (
               <View className="w-10 h-10 rounded-full items-center justify-center bg-orange-50">
-                <Feather
-                  name="user"
-                  size={20}
-                  color="#FF8C42"
-                />
+                <Feather name="user" size={20} color="#FF8C42" />
               </View>
             )}
           </TouchableOpacity>
@@ -122,18 +118,22 @@ export default function HomeScreen() {
           {/* Right Icons */}
           <View className="flex-row items-center space-x-3">
             {/* Notification Bell with Badge */}
-            <TouchableOpacity 
-               className="relative"
-               onPress={() => router.push("/notifications")}
+            <TouchableOpacity
+              className="relative"
+              onPress={() => router.push("/notifications")}
             >
               <Feather name="bell" size={20} color="black" />
-              <View className="absolute -top-1 -right-1 bg-red-500 rounded-full text-blac w-4 h-4 items-center justify-center">
-                <Text className="text-white text-[10px] font-bold">2</Text>
-              </View>
+              {unreadCount > 0 && (
+                <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[14px] h-[14px] items-center justify-center px-0.5">
+                  <Text className="text-white text-[8px] font-bold">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
 
             {/* Shopping Cart */}
-            <TouchableOpacity 
+            <TouchableOpacity
               className="ml-3 relative"
               onPress={() => router.push("/cart")}
             >
@@ -162,7 +162,11 @@ export default function HomeScreen() {
             returnKeyType="search"
           />
           <TouchableOpacity onPress={startListening}>
-            <Feather name="mic" size={20} color={isListening ? "#FF8C42" : "#9CA3AF"} />
+            <Feather
+              name="mic"
+              size={20}
+              color={isListening ? "#FF8C42" : "#9CA3AF"}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -177,7 +181,10 @@ export default function HomeScreen() {
             <Text className="text-[18px] font-medium mb-2 text-gray-900">
               Browse all categories
             </Text>
-            <TouchableOpacity onPress={() => router.push("/categories")} className="flex-row items-center pb-2">
+            <TouchableOpacity
+              onPress={() => router.push("/categories")}
+              className="flex-row items-center pb-2"
+            >
               <Text className="text-sm text-black font-medium">View all</Text>
               <Feather name="chevron-right" size={16} color="black" />
             </TouchableOpacity>
@@ -431,7 +438,9 @@ export default function HomeScreen() {
               ))}
             </ScrollView>
           ) : (
-            <Text className="text-gray-500 italic mb-4">No podcasts available yet.</Text>
+            <Text className="text-gray-500 italic mb-4">
+              No podcasts available yet.
+            </Text>
           )}
         </View>
 
@@ -481,13 +490,19 @@ export default function HomeScreen() {
               onPress={() => router.push("/services/consultancy")}
               activeOpacity={0.7}
             >
-              <View className="relative rounded-2xl overflow-hidden bg-gray-100" style={{ height: 120 }}>
+              <View
+                className="relative rounded-2xl overflow-hidden bg-gray-100"
+                style={{ height: 120 }}
+              >
                 {/* For Consultancy, if the image isn't perfect, it still fits the 120 height boundary */}
                 <Image
                   source={require("@/assets/images/consultancy.png")}
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
+                <TouchableOpacity className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
+                  <Feather name="heart" size={16} color="#4B5563" />
+                </TouchableOpacity>
               </View>
               <View className="pt-2 pb-1">
                 <Text className="text-sm font-semibold text-gray-900">
@@ -531,13 +546,20 @@ export default function HomeScreen() {
                 activeOpacity={0.7}
                 className="flex-row items-center border-b border-black pb-0.5"
               >
-                <Text className="text-sm text-black font-medium">More Articles</Text>
-                <Feather name="arrow-right" size={14} color="black" className="ml-1" />
+                <Text className="text-sm text-black font-medium">
+                  More Articles
+                </Text>
+                <Feather
+                  name="arrow-right"
+                  size={14}
+                  color="black"
+                  className="ml-1"
+                />
               </TouchableOpacity>
             </View>
 
-            <ScrollView 
-              horizontal 
+            <ScrollView
+              horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingRight: 20 }}
               className="-mx-5 px-5"
@@ -564,8 +586,15 @@ export default function HomeScreen() {
                     {article.title}
                   </Text>
                   <View className="flex-row items-center border-b border-black pb-0.5 self-start">
-                    <Text className="text-sm text-gray-900 font-medium">Read More</Text>
-                    <Feather name="arrow-right" size={14} color="black" className="ml-1" />
+                    <Text className="text-sm text-gray-900 font-medium">
+                      Read More
+                    </Text>
+                    <Feather
+                      name="arrow-right"
+                      size={14}
+                      color="black"
+                      className="ml-1"
+                    />
                   </View>
                 </TouchableOpacity>
               ))}

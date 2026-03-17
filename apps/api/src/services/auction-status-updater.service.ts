@@ -1,5 +1,6 @@
 import { AuctionStatus, PrismaClient } from "@prisma/client";
 import logger from "../utils/logger";
+import { notifyAuctionLive } from "./notification.service";
 
 const prisma = new PrismaClient();
 
@@ -38,8 +39,7 @@ export class AuctionStatusUpdater {
     const now = new Date();
 
     try {
-      // Update SCHEDULED auctions to LIVE if start time has passed
-      const scheduledToLive = await prisma.auction.updateMany({
+      const toGoLive = await prisma.auction.findMany({
         where: {
           status: AuctionStatus.SCHEDULED,
           startAt: {
@@ -47,6 +47,24 @@ export class AuctionStatusUpdater {
           },
           endAt: {
             gt: now,
+          },
+        },
+        select: {
+          id: true,
+          productId: true,
+          product: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      });
+
+      // Update SCHEDULED auctions to LIVE if start time has passed
+      const scheduledToLive = await prisma.auction.updateMany({
+        where: {
+          id: {
+            in: toGoLive.map((auction) => auction.id),
           },
         },
         data: {
@@ -57,6 +75,16 @@ export class AuctionStatusUpdater {
       if (scheduledToLive.count > 0) {
         logger.info(
           `Updated ${scheduledToLive.count} auctions from SCHEDULED to LIVE`
+        );
+
+        await Promise.allSettled(
+          toGoLive.map((auction) =>
+            notifyAuctionLive({
+              auctionId: auction.id,
+              productId: auction.productId,
+              productTitle: auction.product.title,
+            })
+          )
         );
       }
 

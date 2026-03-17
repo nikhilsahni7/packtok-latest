@@ -26,14 +26,7 @@ import {
 } from "@packtok/ui/components/select";
 import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
-import {
-  FileText,
-  FileVideo,
-  Minus,
-  Plus,
-  Upload,
-  X
-} from "lucide-react";
+import { FileText, FileVideo, Minus, Plus, Upload, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -77,6 +70,7 @@ export function ProductSubmissionForm() {
     defaultValues: {
       productType: "MACHINERY",
       condition: "USED",
+      currency: "INR",
       agreeToTerms: false,
     },
   });
@@ -87,7 +81,6 @@ export function ProductSubmissionForm() {
     setValue,
     formState: { errors, isSubmitting },
   } = form;
-
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -214,21 +207,22 @@ export function ProductSubmissionForm() {
       const specsString =
         validSpecs.length > 0
           ? JSON.stringify(
-            validSpecs.reduce(
-              (acc, spec) => {
-                acc[spec.key] = spec.value;
-                return acc;
-              },
-              {} as Record<string, string>
+              validSpecs.reduce(
+                (acc, spec) => {
+                  acc[spec.key] = spec.value;
+                  return acc;
+                },
+                {} as Record<string, string>
+              )
             )
-          )
-          : undefined;
+          : "{}";
 
       // Create the submission data matching backend API format
       const submissionData = {
         title: data.title,
         description: data.description,
         price: data.price,
+        currency: data.currency,
         productType: data.productType,
         condition: data.condition,
         categoryName: data.categoryName,
@@ -263,13 +257,10 @@ export function ProductSubmissionForm() {
       setVideoThumbnailPreview(null);
       setPdf(null);
       setSpecifications([{ key: "", value: "" }]);
-
     } catch (error) {
       console.error("Error submitting product:", error);
     }
   };
-
-
 
   return (
     <div className="form-bg">
@@ -283,11 +274,16 @@ export function ProductSubmissionForm() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
-            {(
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10"
+          >
+            {
               <>
                 <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
-                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 1 Information</h3>
+                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                    Section: 1 Information
+                  </h3>
 
                   <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                     <div className="grid grid-cols-1 gap-4">
@@ -296,7 +292,10 @@ export function ProductSubmissionForm() {
                         id="title"
                         placeholder="Ice Cream Machine"
                         {...register("title")}
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.title && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.title && "border-red-500"
+                        )}
                       />
                       {errors.title && (
                         <p className="text-red-500 text-sm mt-1">
@@ -305,13 +304,16 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="price">Price</Label>
                       <Input
                         id="price"
                         placeholder="1000.00"
                         {...register("price")}
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.price && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.price && "border-red-500"
+                        )}
                       />
                       {errors.price && (
                         <p className="text-red-500 text-sm mt-1">
@@ -320,7 +322,40 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
+                      <Label htmlFor="currency">Currency</Label>
+                      <Select
+                        onValueChange={(value) =>
+                          setValue(
+                            "currency",
+                            value as "INR" | "USD" | "EUR" | "AED" | "CNY"
+                          )
+                        }
+                        defaultValue="INR"
+                      >
+                        <SelectTrigger className="border-[#D3D3D3] px-4 h-[44px]">
+                          <SelectValue placeholder="Select currency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="INR">
+                            INR - Indian Rupee
+                          </SelectItem>
+                          <SelectItem value="USD">USD - US Dollar</SelectItem>
+                          <SelectItem value="EUR">EUR - Euro</SelectItem>
+                          <SelectItem value="AED">AED - UAE Dirham</SelectItem>
+                          <SelectItem value="CNY">
+                            CNY - Chinese Yuan
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.currency && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.currency.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="productType">Product Type</Label>
                       <Select
                         onValueChange={(value) => {
@@ -328,10 +363,10 @@ export function ProductSubmissionForm() {
                           setValue(
                             "productType",
                             value as
-                            | "MACHINERY"
-                            | "SPARE_PARTS"
-                            | "CONSUMABLES"
-                            | "RAW_MATERIALS"
+                              | "MACHINERY"
+                              | "SPARE_PARTS"
+                              | "CONSUMABLES"
+                              | "RAW_MATERIALS"
                           );
                           // Reset machineType when productType changes
                           if (value !== "MACHINERY") {
@@ -345,8 +380,12 @@ export function ProductSubmissionForm() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="MACHINERY">Machinery</SelectItem>
-                          <SelectItem value="SPARE_PARTS">Spare Parts</SelectItem>
-                          <SelectItem value="CONSUMABLES">Consumables</SelectItem>
+                          <SelectItem value="SPARE_PARTS">
+                            Spare Parts
+                          </SelectItem>
+                          <SelectItem value="CONSUMABLES">
+                            Consumables
+                          </SelectItem>
                           <SelectItem value="RAW_MATERIALS">
                             Raw Materials
                           </SelectItem>
@@ -361,20 +400,19 @@ export function ProductSubmissionForm() {
 
                     {/* Machine Type - Only show for MACHINERY products */}
                     {selectedProductType === "MACHINERY" && (
-                      <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                         <Label htmlFor="machineType">
                           Machine Type (Optional)
                         </Label>
                         <Select
-
                           onValueChange={(value) =>
                             setValue(
                               "machineType",
                               value as
-                              | "MONO_CARTON"
-                              | "MASTER_CARTON"
-                              | "BOTH"
-                              | "OTHER"
+                                | "MONO_CARTON"
+                                | "MASTER_CARTON"
+                                | "BOTH"
+                                | "OTHER"
                             )
                           }
                         >
@@ -400,7 +438,7 @@ export function ProductSubmissionForm() {
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="condition">Condition</Label>
                       <Select
                         onValueChange={(value) =>
@@ -423,10 +461,12 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="categoryName">Category</Label>
                       <Select
-                        onValueChange={(value) => setValue("categoryName", value)}
+                        onValueChange={(value) =>
+                          setValue("categoryName", value)
+                        }
                       >
                         <SelectTrigger className="border-[#D3D3D3] px-4 h-[44px]">
                           <SelectValue placeholder="Select category" />
@@ -446,7 +486,7 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="manufacturer">
                         Manufacturer (Optional)
                       </Label>
@@ -458,7 +498,7 @@ export function ProductSubmissionForm() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="model">Model (Optional)</Label>
                       <Input
                         id="model"
@@ -468,19 +508,27 @@ export function ProductSubmissionForm() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="year">Year (Optional)</Label>
-                      <Input id="year" placeholder="2024" {...register("year")} className="border-[#D3D3D3] px-4 h-[44px]" />
+                      <Input
+                        id="year"
+                        placeholder="2024"
+                        {...register("year")}
+                        className="border-[#D3D3D3] px-4 h-[44px]"
+                      />
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="description">Description</Label>
                       <Textarea
                         id="description"
                         placeholder="Write about this property..."
                         rows={4}
                         {...register("description")}
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.description && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.description && "border-red-500"
+                        )}
                       />
                       {errors.description && (
                         <p className="text-red-500 text-sm mt-1">
@@ -489,7 +537,7 @@ export function ProductSubmissionForm() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label className="text-sm font-medium mb-2 block">
                         Specifications (Optional)
                       </Label>
@@ -500,7 +548,11 @@ export function ProductSubmissionForm() {
                               placeholder="Key (e.g., power)"
                               value={spec.key}
                               onChange={(e) =>
-                                updateSpecification(index, "key", e.target.value)
+                                updateSpecification(
+                                  index,
+                                  "key",
+                                  e.target.value
+                                )
                               }
                               className="flex-1 border-[#D3D3D3] px-4 h-[44px]"
                             />
@@ -508,7 +560,11 @@ export function ProductSubmissionForm() {
                               placeholder="Value (e.g., 5kW)"
                               value={spec.value}
                               onChange={(e) =>
-                                updateSpecification(index, "value", e.target.value)
+                                updateSpecification(
+                                  index,
+                                  "value",
+                                  e.target.value
+                                )
                               }
                               className="flex-1 border-[#D3D3D3] px-4 h-[44px]"
                             />
@@ -536,7 +592,7 @@ export function ProductSubmissionForm() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 pt-4 grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                       <Label htmlFor="additionalInfo">
                         Additional Information (Optional)
                       </Label>
@@ -556,9 +612,9 @@ export function ProductSubmissionForm() {
                     Section: 2 Share Photos and Videos
                   </h3>
                   <div className="px-10 py-5 border-t-[1px] border-[#E0E0E0] text-[#828282]">
-                    <div className="grid grid-cols-1 md:grid-cols-2 grid-cols-1 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       {/* Thumbnail Upload */}
-                      <div >
+                      <div>
                         <Label className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
                           Thumbnail Image
                           <span className="text-red-500">*</span>
@@ -622,7 +678,7 @@ export function ProductSubmissionForm() {
                             (Max 5 images)
                           </span>
                         </Label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 grid-cols-1 md:grid-cols-6 gap-4 mb-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 mb-4">
                           {uploadedImages.length < 5 && (
                             <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
                               <label className="cursor-pointer text-center p-4">
@@ -669,8 +725,6 @@ export function ProductSubmissionForm() {
                     </div>
                   </div>
 
-
-
                   {/* Video Upload */}
                   <div className="px-10 py-5">
                     <div className="grid grid-cols-1 gap-8">
@@ -703,7 +757,8 @@ export function ProductSubmissionForm() {
                                   <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
                                     <video
                                       src={
-                                        videoPreview || URL.createObjectURL(video)
+                                        videoPreview ||
+                                        URL.createObjectURL(video)
                                       }
                                       className="w-full h-full object-cover"
                                       muted
@@ -783,7 +838,9 @@ export function ProductSubmissionForm() {
                                     size="sm"
                                     onClick={() => {
                                       if (videoThumbnailPreview) {
-                                        URL.revokeObjectURL(videoThumbnailPreview);
+                                        URL.revokeObjectURL(
+                                          videoThumbnailPreview
+                                        );
                                       }
                                       setVideoThumbnail(null);
                                       setVideoThumbnailPreview(null);
@@ -883,9 +940,7 @@ export function ProductSubmissionForm() {
                   </Button>
                 </div>
               </>
-            )}
-
-
+            }
           </form>
         </CardContent>
       </Card>

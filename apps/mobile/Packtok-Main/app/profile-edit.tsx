@@ -287,12 +287,8 @@ export default function ProfileEditScreen() {
         activeOpacity={0.7}
       >
         <Text style={{ fontSize: 24 }}>{item.flag}</Text>
-        <Text className="flex-1 ml-3 text-base text-gray-900">
-          {item.name}
-        </Text>
-        {showDial && (
-          <Text className="text-gray-500 text-sm">{item.dial}</Text>
-        )}
+        <Text className="flex-1 ml-3 text-base text-gray-900">{item.name}</Text>
+        {showDial && <Text className="text-gray-500 text-sm">{item.dial}</Text>}
         <Text className="text-gray-400 text-sm ml-2">({item.code})</Text>
       </TouchableOpacity>
     ),
@@ -312,13 +308,20 @@ export default function ProfileEditScreen() {
     <Modal
       visible={visible}
       animationType="slide"
-      presentationStyle="pageSheet"
+      presentationStyle={Platform.OS === "ios" ? "pageSheet" : "fullScreen"}
+      onRequestClose={onClose}
+      statusBarTranslucent
     >
-      <View className="flex-1 bg-white pt-4">
+      <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
         {/* Header */}
-        <View className="flex-row items-center justify-between px-5 pb-3 border-b border-gray-200">
+        <View className="flex-row items-center justify-between px-5 pt-2 pb-3 border-b border-gray-200">
           <Text className="text-xl font-bold text-gray-900">{title}</Text>
-          <TouchableOpacity onPress={onClose}>
+          <TouchableOpacity
+            onPress={onClose}
+            className="w-10 h-10 items-center justify-center"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            activeOpacity={0.7}
+          >
             <Feather name="x" size={24} color="#374151" />
           </TouchableOpacity>
         </View>
@@ -353,7 +356,7 @@ export default function ProfileEditScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         />
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 
@@ -509,9 +512,7 @@ export default function ProfileEditScreen() {
               >
                 {selectedCountry ? (
                   <>
-                    <Text style={{ fontSize: 20 }}>
-                      {selectedCountry.flag}
-                    </Text>
+                    <Text style={{ fontSize: 20 }}>{selectedCountry.flag}</Text>
                     <Text className="flex-1 text-base text-gray-900 ml-3">
                       {selectedCountry.name}
                     </Text>
@@ -531,7 +532,9 @@ export default function ProfileEditScreen() {
         <View className="px-5 pb-6 pt-4 border-t border-gray-100">
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
-            disabled={isPending || (!isDirty && !hasImageChanged && !localPhoneNumber)}
+            disabled={
+              isPending || (!isDirty && !hasImageChanged && !localPhoneNumber)
+            }
             className={`rounded-xl py-4 shadow-md ${
               isPending ? "bg-gray-400" : "bg-black"
             }`}

@@ -11,6 +11,9 @@ export const productSubmissionSchema = z.object({
   price: z.string().min(1, {
     message: "Price is required.",
   }),
+  currency: z.enum(["INR", "USD", "EUR", "AED", "CNY"], {
+    message: "Please select a currency.",
+  }),
   productType: z.enum(
     ["MACHINERY", "SPARE_PARTS", "CONSUMABLES", "RAW_MATERIALS"],
     {

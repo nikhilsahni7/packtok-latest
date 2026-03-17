@@ -6,9 +6,8 @@ import api from "../lib/api";
 
 interface SellMachineSubmissionData {
   title: string;
-  email: string;
-  phoneNumber: string;
   price: string;
+  currency: string;
   productType: string;
   machineType?: string;
   categoryName: string;
@@ -18,13 +17,6 @@ interface SellMachineSubmissionData {
   year?: string;
   description: string;
   additionalInfo?: string;
-  legalBusinessName: string;
-  addressLine1: string;
-  addressLine2?: string;
-  city: string;
-  postcodeZip: string;
-  country: string;
-  state: string;
   images: any[]; // Image URIs or File objects
   thumbnail?: any;
   video?: any;
@@ -40,8 +32,6 @@ export const useSellMachineSubmission = () => {
       console.log("🚀 Submitting sell machine data");
       console.log("📊 Data summary:", {
         title: data.title,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
         price: data.price,
         productType: data.productType,
         categoryName: data.categoryName,
@@ -62,6 +52,7 @@ export const useSellMachineSubmission = () => {
       console.log("📝 Adding text fields to FormData...");
       formData.append("title", data.title);
       formData.append("price", data.price);
+      formData.append("currency", (data.currency || "INR").toUpperCase());
       formData.append("productType", data.productType);
       formData.append("categoryName", data.categoryName);
       formData.append("condition", data.condition);
@@ -87,10 +78,12 @@ export const useSellMachineSubmission = () => {
         console.log("  + additionalInfo:", data.additionalInfo);
         formData.append("additionalInfo", data.additionalInfo);
       }
-      if (data.specifications) {
-        console.log("  + specifications:", data.specifications);
-        formData.append("specifications", data.specifications);
-      }
+      const normalizedSpecifications =
+        data.specifications && data.specifications.trim().length > 0
+          ? data.specifications
+          : "{}";
+      console.log("  + specifications:", normalizedSpecifications);
+      formData.append("specifications", normalizedSpecifications);
 
       // Add images
       console.log("🖼️ Adding images to FormData...");

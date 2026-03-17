@@ -203,6 +203,7 @@ export default function SellMachineFormScreen() {
     defaultValues: {
       productType: "MACHINERY",
       condition: "USED",
+      currency: "INR",
     },
   });
 
@@ -343,6 +344,14 @@ export default function SellMachineFormScreen() {
     { value: "SPARE_PARTS", label: "Spare Parts" },
     { value: "CONSUMABLES", label: "Consumables" },
     { value: "RAW_MATERIALS", label: "Raw Materials" },
+  ];
+
+  const currencyOptions = [
+    { value: "INR", label: "₹ INR - Indian Rupee" },
+    { value: "USD", label: "$ USD - US Dollar" },
+    { value: "EUR", label: "€ EUR - Euro" },
+    { value: "AED", label: "AED - UAE Dirham" },
+    { value: "CNY", label: "¥ CNY - Chinese Yuan" },
   ];
 
   const machineTypeOptions = [
@@ -529,7 +538,7 @@ export default function SellMachineFormScreen() {
               render={({ field: { onChange, value } }) => (
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Price (USD) *
+                    Price *
                   </Text>
                   <TextInput
                     value={value}
@@ -549,47 +558,22 @@ export default function SellMachineFormScreen() {
 
             <Controller
               control={control}
-              name="email"
+              name="currency"
               render={({ field: { onChange, value } }) => (
                 <View className="mb-4">
                   <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
+                    Currency *
                   </Text>
-                  <TextInput
+                  <Select
                     value={value}
-                    onChangeText={onChange}
-                    placeholder="contact@example.com"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    className="border border-gray-300 rounded-lg px-4 py-3"
+                    onValueChange={onChange}
+                    placeholder="Select currency"
+                    options={currencyOptions}
+                    error={errors.currency?.message}
                   />
-                  {errors.email && (
+                  {errors.currency && (
                     <Text className="text-red-500 text-xs mt-1">
-                      {errors.email.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="phoneNumber"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Phone Number *
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="(575) 336-4330"
-                    keyboardType="phone-pad"
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                  {errors.phoneNumber && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {errors.phoneNumber.message}
+                      {errors.currency.message}
                     </Text>
                   )}
                 </View>
@@ -790,166 +774,6 @@ export default function SellMachineFormScreen() {
               )}
             />
 
-            {/* Address Fields */}
-            <Text className="text-base font-semibold text-gray-900 mt-6 mb-4">
-              Business Address
-            </Text>
-
-            <Controller
-              control={control}
-              name="legalBusinessName"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Legal Business Name *
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="Company Name Ltd."
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                  {errors.legalBusinessName && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {errors.legalBusinessName.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="addressLine1"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Address Line 1 *
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="123 Main Street"
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                  {errors.addressLine1 && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {errors.addressLine1.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="addressLine2"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Address Line 2 (Optional)
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="Apartment, suite, etc."
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                </View>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="city"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    City *
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="New York"
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                  {errors.city && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {errors.city.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="state"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    State/Province *
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="New York"
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                  {errors.state && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {errors.state.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="postcodeZip"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Postcode/ZIP *
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="10001"
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                  {errors.postcodeZip && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {errors.postcodeZip.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="country"
-              render={({ field: { onChange, value } }) => (
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">
-                    Country *
-                  </Text>
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    placeholder="United States"
-                    className="border border-gray-300 rounded-lg px-4 py-3"
-                  />
-                  {errors.country && (
-                    <Text className="text-red-500 text-xs mt-1">
-                      {errors.country.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
           </View>
 
           {/* Section 2: Images */}

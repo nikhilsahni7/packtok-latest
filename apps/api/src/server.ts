@@ -16,6 +16,7 @@ import addressRouter from "./routers/address.routes";
 import adminArticleRouter from "./routers/admin.article.routes";
 import adminAuctionsRouter from "./routers/admin.auctions.routes";
 import adminInvestmentRouter from "./routers/admin.investment.routes";
+import adminNotificationRouter from "./routers/admin.notification.routes";
 import adminOrderRouter from "./routers/admin.order.routes";
 import adminPodcastRouter from "./routers/admin.podcast.routes";
 import adminRouter from "./routers/admin.routes";
@@ -23,13 +24,14 @@ import adminServiceRouter from "./routers/admin.services.routes";
 import adminSubscriptionRouter from "./routers/admin.subscription.routes";
 import adminUserRouter from "./routers/admin.user.routes";
 import adminVendorsRouter from "./routers/admin.vendors.routes";
-import auctionRouter from "./routers/auction.routes";
 import articleRouter from "./routers/article.routes";
+import auctionRouter from "./routers/auction.routes";
 import authRouter from "./routers/auth.routes";
 import cartRouter from "./routers/cart.routes";
 import categoryRouter from "./routers/category.routes";
 import contactRouter from "./routers/contact.routes";
 import investmentRouter from "./routers/investment.routes";
+import notificationRouter from "./routers/notification.routes";
 import orderRouter from "./routers/order.routes";
 import podcastRouter from "./routers/podcast.routes";
 import productRouter from "./routers/product.routes";
@@ -94,6 +96,8 @@ app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/investments", investmentRouter);
 app.use("/api/v1/admins/investments", adminInvestmentRouter);
+app.use("/api/v1/notifications", notificationRouter);
+app.use("/api/v1/admins/notifications", adminNotificationRouter);
 app.use("/api/v1", reviewRouter); // Review routes
 app.use("/api/v1/admins/reviews", adminReviewRouter); // Admin review routes
 app.use("/api/v1/subscriptions", subscriptionRouter); // Vendor subscription routes

@@ -117,8 +117,24 @@ export const useAddBookmark = () => {
       });
       return response.data.data;
     },
-    onSuccess: () => {
+    onMutate: async (productId: string) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["bookmark-check", productId] });
+      // Snapshot previous value
+      const previousStatus = queryClient.getQueryData(["bookmark-check", productId]);
+      // Optimistically update
+      queryClient.setQueryData(["bookmark-check", productId], { isBookmarked: true });
+      return { previousStatus, productId };
+    },
+    onError: (_err, productId, context) => {
+      // Rollback on error
+      if (context?.previousStatus !== undefined) {
+        queryClient.setQueryData(["bookmark-check", productId], context.previousStatus);
+      }
+    },
+    onSettled: (_data, _err, productId) => {
       queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+      queryClient.invalidateQueries({ queryKey: ["bookmark-check", productId] });
       queryClient.invalidateQueries({ queryKey: ["activity-summary"] });
     },
   });
@@ -134,8 +150,20 @@ export const useRemoveBookmark = () => {
       );
       return response.data.data;
     },
-    onSuccess: () => {
+    onMutate: async (productId: string) => {
+      await queryClient.cancelQueries({ queryKey: ["bookmark-check", productId] });
+      const previousStatus = queryClient.getQueryData(["bookmark-check", productId]);
+      queryClient.setQueryData(["bookmark-check", productId], { isBookmarked: false });
+      return { previousStatus, productId };
+    },
+    onError: (_err, productId, context) => {
+      if (context?.previousStatus !== undefined) {
+        queryClient.setQueryData(["bookmark-check", productId], context.previousStatus);
+      }
+    },
+    onSettled: (_data, _err, productId) => {
       queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+      queryClient.invalidateQueries({ queryKey: ["bookmark-check", productId] });
       queryClient.invalidateQueries({ queryKey: ["activity-summary"] });
     },
   });

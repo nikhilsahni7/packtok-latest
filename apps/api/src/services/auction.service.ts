@@ -20,6 +20,10 @@ import {
 } from "../realtime/auction.publisher";
 import { ApiError } from "../utils/apiError";
 import {
+  notifyAuctionLive,
+  notifyAuctionProductAdded,
+} from "./notification.service";
+import {
   createOrder as createRazorpayOrder,
   getRazorpayPublishableKey,
   RazorpayOrderSummary,
@@ -220,7 +224,7 @@ export const createAuction = async (
     throw new ApiError(400, "Live auctions must start immediately");
   }
 
-  return prisma.auction.create({
+  const created = await prisma.auction.create({
     data: {
       productId: input.productId,
       mode: input.mode,
@@ -247,6 +251,22 @@ export const createAuction = async (
       product: true,
     },
   });
+
+  await notifyAuctionProductAdded({
+    auctionId: created.id,
+    productId: created.productId,
+    productTitle: created.product.title,
+  });
+
+  if (created.status === AuctionStatus.LIVE) {
+    await notifyAuctionLive({
+      auctionId: created.id,
+      productId: created.productId,
+      productTitle: created.product.title,
+    });
+  }
+
+  return created;
 };
 
 export const updateAuction = async (
@@ -325,11 +345,31 @@ export const updateAuction = async (
     data.status = input.status;
   }
 
-  return prisma.auction.update({
+  const updated = await prisma.auction.update({
     where: { id: auctionId },
     data,
-    include: { product: true },
+    include: {
+      product: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
   });
+
+  if (
+    auction.status !== AuctionStatus.LIVE &&
+    updated.status === AuctionStatus.LIVE
+  ) {
+    await notifyAuctionLive({
+      auctionId: updated.id,
+      productId: updated.product.id,
+      productTitle: updated.product.title,
+    });
+  }
+
+  return updated;
 };
 
 export const getAuctionDetail = async (auctionId: string) => {
@@ -682,7 +722,10 @@ export const placeAuctionBid = async (
 
       if (maxAllowed.lte(0)) {
         if (!amount.lt(reference)) {
-          throw new ApiError(400, "Bid must be strictly lower than the current amount");
+          throw new ApiError(
+            400,
+            "Bid must be strictly lower than the current amount"
+          );
         }
       } else {
         if (!amount.lte(maxAllowed)) {

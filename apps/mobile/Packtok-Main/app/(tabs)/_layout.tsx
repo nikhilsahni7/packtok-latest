@@ -1,10 +1,14 @@
 import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { useCartItemCount } from "@/hooks/useCart";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+  const bottomInset = Math.max(insets.bottom, 16);
+
   return (
     <Tabs
       screenOptions={{
@@ -15,9 +19,9 @@ export default function TabLayout() {
           backgroundColor: "#FFFFFF",
           borderTopWidth: 1,
           borderTopColor: "#F3F4F6", // Lighter border
-          height: 70,
-          paddingBottom: 12,
-          paddingTop: 8,
+          height: 65 + bottomInset,
+          paddingBottom: bottomInset,
+          paddingTop: 10,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: -3 },
           shadowOpacity: 0.1,
@@ -27,7 +31,7 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "600",
-          marginTop: 6,
+          marginTop: 4,
           marginBottom: 2,
         },
         tabBarIconStyle: {

@@ -1,3 +1,4 @@
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -17,6 +18,7 @@ import { useAuthStore } from "../../store/auth-store";
 export default function SettingsScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
   const { mutate: logout, isPending } = useLogout();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -95,7 +97,16 @@ export default function SettingsScreen() {
                 Notifications
               </Text>
             </View>
-            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+            <View className="flex-row items-center">
+              {unreadCount > 0 && (
+                <View className="bg-red-500 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 mr-2">
+                  <Text className="text-white text-[10px] font-bold">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </Text>
+                </View>
+              )}
+              <Feather name="chevron-right" size={20} color="#9CA3AF" />
+            </View>
           </TouchableOpacity>
 
           {/* Orders */}

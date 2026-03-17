@@ -30,6 +30,7 @@ import {
   View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -63,6 +64,7 @@ export default function ConsumableDetailScreen() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
   const viewStartTime = useRef(Date.now());
+  const insets = useSafeAreaInsets();
 
   const { data: product, isLoading, error } = useProduct(id!);
   const { data: cart } = useCartQuery();
@@ -107,9 +109,15 @@ export default function ConsumableDetailScreen() {
       Animated.timing(scaleAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
     ]).start();
     if (isBookmarked) {
-      removeBookmark.mutate(id, { onSuccess: () => Alert.alert("Removed", "Product removed from wishlist"), onError: () => Alert.alert("Error", "Failed to remove bookmark") });
+      removeBookmark.mutate(id, {
+        onSuccess: () => Toast.show({ type: "success", text1: "Removed from Wishlist", text2: "This product has been removed from your wishlist 💔", visibilityTime: 2000 }),
+        onError: () => Toast.show({ type: "error", text1: "Error", text2: "Failed to remove from wishlist. Please try again.", visibilityTime: 2500 }),
+      });
     } else {
-      addBookmark.mutate(id, { onSuccess: () => Alert.alert("Saved", "Product added to wishlist!"), onError: () => Alert.alert("Error", "Failed to add bookmark") });
+      addBookmark.mutate(id, {
+        onSuccess: () => Toast.show({ type: "success", text1: "Added to Wishlist", text2: "This product has been saved to your wishlist ❤️", visibilityTime: 2000 }),
+        onError: () => Toast.show({ type: "error", text1: "Error", text2: "Failed to add to wishlist. Please try again.", visibilityTime: 2500 }),
+      });
     }
   };
 
@@ -350,7 +358,7 @@ export default function ConsumableDetailScreen() {
         <View className="h-24" />
       </ScrollView>
 
-      <View className="bg-white border-t border-gray-100 px-4 py-3" style={styles.bottomBarShadow}>
+      <View className="bg-white border-t border-gray-100 px-4 py-3" style={[styles.bottomBarShadow, { paddingBottom: Math.max(insets.bottom, 12) }]}>
         <View className="flex-row items-center">
           <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
             <TouchableOpacity onPress={handleBookmarkToggle} className={`w-14 h-14 items-center justify-center rounded-xl mr-3 ${isBookmarked ? "bg-red-50 border-2 border-red-500" : "bg-gray-100"}`} activeOpacity={0.7}>

@@ -299,6 +299,24 @@ enum UploadStatus {
   FAILED
 }
 
+enum NotificationType {
+  PRODUCT_LIVE
+  PODCAST_LIVE
+  ARTICLE_PUBLISHED
+  AUCTION_PRODUCT_ADDED
+  AUCTION_LIVE
+  SYSTEM
+  CUSTOM
+}
+
+enum NotificationAudience {
+  ALL_USERS
+  NORMAL_USERS
+  VENDORS
+  ADMINS
+  CUSTOM_USERS
+}
+
 model User {
   id                      String                   @id // Supabase auth.users UUID
   createdAt               DateTime                 @default(now())
@@ -353,6 +371,10 @@ model User {
 
   // Articles
   articles                Article[] @relation("articlesCreated")
+
+  // Notifications
+  notificationsRead       NotificationRead[]
+  notificationsCreated    AppNotification[] @relation("NotificationsCreatedBy")
 
   @@map("users")
 }
@@ -1038,6 +1060,52 @@ model PaymentRefund {
   @@map("payment_refunds")
   @@index([intentId])
   @@index([enrollmentId])
+}
+
+// ===== Notifications =====
+
+model AppNotification {
+  id            String               @id @default(cuid())
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  title         String
+  message       String               @db.Text
+  type          NotificationType
+  audience      NotificationAudience @default(ALL_USERS)
+  roleFilter    Role?
+  targetUserIds String[]             @default([])
+  payload       Json?
+  actionUrl     String?
+  isActive      Boolean              @default(true)
+  expiresAt     DateTime?
+
+  // Optional admin/system creator reference
+  createdBy     User?                @relation("NotificationsCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById   String?
+
+  reads         NotificationRead[]
+
+  @@map("app_notifications")
+  @@index([createdAt])
+  @@index([type, createdAt])
+  @@index([audience, isActive, createdAt])
+}
+
+model NotificationRead {
+  id             String          @id @default(cuid())
+  createdAt      DateTime        @default(now())
+  readAt         DateTime        @default(now())
+
+  notification   AppNotification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notificationId String
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+
+  @@unique([notificationId, userId])
+  @@map("notification_reads")
+  @@index([userId, readAt])
+  @@index([notificationId])
 }
 
 // ===== User Tracking Models =====

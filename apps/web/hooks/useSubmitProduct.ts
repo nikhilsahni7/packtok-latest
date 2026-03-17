@@ -9,6 +9,7 @@ interface SubmitProductPayload {
   title: string;
   description: string;
   price: string;
+  currency: string;
   productType: string;
   condition: string;
   categoryName: string;

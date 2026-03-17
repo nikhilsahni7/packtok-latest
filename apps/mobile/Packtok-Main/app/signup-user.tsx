@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useSignup } from "../hooks/useSignup";
 
@@ -261,9 +262,7 @@ export default function SignupUserScreen() {
       >
         <Text style={{ fontSize: 24 }}>{item.flag}</Text>
         <Text className="flex-1 ml-3 text-base text-gray-900">{item.name}</Text>
-        {showDial && (
-          <Text className="text-gray-500 text-sm">{item.dial}</Text>
-        )}
+        {showDial && <Text className="text-gray-500 text-sm">{item.dial}</Text>}
         <Text className="text-gray-400 text-sm ml-2">({item.code})</Text>
       </TouchableOpacity>
     ),
@@ -280,12 +279,23 @@ export default function SignupUserScreen() {
     onSelect: (c: (typeof COUNTRIES)[0]) => void,
     showDial: boolean
   ) => (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <View className="flex-1 bg-white pt-4">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle={Platform.OS === "ios" ? "pageSheet" : "fullScreen"}
+      onRequestClose={onClose}
+      statusBarTranslucent
+    >
+      <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom"]}>
         {/* Header */}
-        <View className="flex-row items-center justify-between px-5 pb-3 border-b border-gray-200">
+        <View className="flex-row items-center justify-between px-5 pt-2 pb-3 border-b border-gray-200">
           <Text className="text-xl font-bold text-gray-900">{title}</Text>
-          <TouchableOpacity onPress={onClose}>
+          <TouchableOpacity
+            onPress={onClose}
+            className="w-10 h-10 items-center justify-center"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            activeOpacity={0.7}
+          >
             <Feather name="x" size={24} color="#374151" />
           </TouchableOpacity>
         </View>
@@ -320,7 +330,7 @@ export default function SignupUserScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         />
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 
@@ -381,7 +391,11 @@ export default function SignupUserScreen() {
             <View className="items-center">
               <Image
                 source={require("@/assets/images/logo.png")}
-                style={{ width: width * 1.4, height: undefined, aspectRatio: 3 }}
+                style={{
+                  width: width * 1.4,
+                  height: undefined,
+                  aspectRatio: 3,
+                }}
                 resizeMode="contain"
               />
             </View>
@@ -497,9 +511,7 @@ export default function SignupUserScreen() {
               >
                 {selectedCountry ? (
                   <>
-                    <Text style={{ fontSize: 20 }}>
-                      {selectedCountry.flag}
-                    </Text>
+                    <Text style={{ fontSize: 20 }}>{selectedCountry.flag}</Text>
                     <Text className="flex-1 text-base text-gray-900 ml-3">
                       {selectedCountry.name}
                     </Text>
