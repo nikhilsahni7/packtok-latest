@@ -252,6 +252,18 @@ export const approveSubmission = async (
   reviewerId?: string,
   notes?: string
 ) => {
+  const existing = await prisma.marketplaceProduct.findUnique({
+    where: { id: productId },
+    select: {
+      submissionStatus: true,
+      status: true,
+    },
+  });
+
+  if (!existing) {
+    throw new ApiError(404, "Product not found");
+  }
+
   const updated = await prisma.marketplaceProduct.update({
     where: { id: productId },
     data: {
@@ -270,12 +282,18 @@ export const approveSubmission = async (
     },
   });
 
-  await notifyProductLive({
-    productId: updated.id,
-    title: updated.title,
-    productType: updated.productType,
-    categoryName: updated.category?.name,
-  });
+  const becameLive =
+    existing.status !== MarketplaceProductStatus.AVAILABLE ||
+    existing.submissionStatus !== UserSubmissionStatus.APPROVED;
+
+  if (becameLive) {
+    await notifyProductLive({
+      productId: updated.id,
+      title: updated.title,
+      productType: updated.productType,
+      categoryName: updated.category?.name,
+    });
+  }
 
   return updated;
 };
