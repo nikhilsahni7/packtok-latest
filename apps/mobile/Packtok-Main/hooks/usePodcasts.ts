@@ -1,4 +1,3 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import {
   CursorPage,
@@ -7,6 +6,7 @@ import {
   PodcastListItem,
   PodcastReactionType,
 } from "@/types/podcast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
 
 export const QK = {
@@ -101,7 +101,10 @@ export const useReactToPodcast = (podcastId: string) => {
       queryClient.invalidateQueries({ queryKey: QK.podcasts });
     },
     onError: (error) => {
-      Alert.alert("Error", parseErrorMessage(error, "Failed to update reaction"));
+      Alert.alert(
+        "Error",
+        parseErrorMessage(error, "Failed to update reaction")
+      );
     },
   });
 };
@@ -131,6 +134,62 @@ export const useAddPodcastComment = (podcastId: string) => {
     },
     onError: (error) => {
       Alert.alert("Error", parseErrorMessage(error, "Failed to add comment"));
+    },
+  });
+};
+
+export const useUpdatePodcastComment = (podcastId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      commentId,
+      content,
+    }: {
+      commentId: string;
+      content: string;
+    }) => {
+      const { data } = await api.put<ApiEnvelope<PodcastComment>>(
+        `/api/v1/podcasts/comments/${commentId}`,
+        { content }
+      );
+      return data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...QK.podcast, podcastId] });
+      queryClient.invalidateQueries({
+        queryKey: [...QK.podcastComments, podcastId],
+      });
+    },
+    onError: (error) => {
+      Alert.alert(
+        "Error",
+        parseErrorMessage(error, "Failed to update comment")
+      );
+    },
+  });
+};
+
+export const useDeletePodcastComment = (podcastId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (commentId: string) => {
+      await api.delete(`/api/v1/podcasts/comments/${commentId}`);
+      return commentId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...QK.podcast, podcastId] });
+      queryClient.invalidateQueries({
+        queryKey: [...QK.podcastComments, podcastId],
+      });
+      queryClient.invalidateQueries({ queryKey: QK.podcasts });
+    },
+    onError: (error) => {
+      Alert.alert(
+        "Error",
+        parseErrorMessage(error, "Failed to delete comment")
+      );
     },
   });
 };

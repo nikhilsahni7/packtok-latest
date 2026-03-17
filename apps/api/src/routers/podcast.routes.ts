@@ -9,6 +9,7 @@ import {
   listPodcasts,
   listSeriesHandler,
   reactToPodcast,
+  updateCommentHandler,
 } from "../controllers/podcast.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
@@ -27,6 +28,8 @@ router.post("/:id/react", authMiddleware, reactToPodcast);
 router.get("/:id/comments", getCommentsHandler);
 router.post("/:id/comments", authMiddleware, addCommentHandler);
 router.get("/comments/:commentId/replies", getRepliesHandler);
+router.patch("/comments/:commentId", authMiddleware, updateCommentHandler);
+router.put("/comments/:commentId", authMiddleware, updateCommentHandler);
 router.delete("/comments/:commentId", authMiddleware, deleteCommentHandler);
 
 export default router;

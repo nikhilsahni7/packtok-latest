@@ -5,12 +5,14 @@ import { usePodcasts } from "@/hooks/usePodcasts";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 import { useAuthStore } from "@/store/auth-store";
 import { Feather } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
+  RefreshControl,
   ScrollView,
   Text,
   TextInput,
@@ -26,11 +28,25 @@ export default function HomeScreen() {
   const router = useRouter();
   const itemCount = useCartItemCount();
   const [searchQuery, setSearchQuery] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const lastFocusRefreshAtRef = useRef(0);
   const user = useAuthStore((state) => state.user);
-  const { data: articles = [] } = useArticles(3);
-  const { data: podcastsData } = usePodcasts({ limit: 3 });
+  const {
+    data: articles = [],
+    refetch: refetchArticles,
+    isFetching: isFetchingArticles,
+  } = useArticles(3);
+  const {
+    data: podcastsData,
+    refetch: refetchPodcasts,
+    isFetching: isFetchingPodcasts,
+  } = usePodcasts({ limit: 3 });
   const podcasts = podcastsData?.items ?? [];
-  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
+  const {
+    data: unreadCount = 0,
+    refetch: refetchUnreadCount,
+    isFetching: isFetchingUnreadCount,
+  } = useUnreadNotificationsCount();
 
   const { startListening, isListening, transcript } = useVoiceSearch();
 
@@ -46,6 +62,38 @@ export default function HomeScreen() {
 
   // Handle Android back button
   useBackHandler("home");
+
+  const refreshHomeFeed = useCallback(async () => {
+    await Promise.allSettled([
+      refetchArticles(),
+      refetchPodcasts(),
+      refetchUnreadCount(),
+    ]);
+  }, [refetchArticles, refetchPodcasts, refetchUnreadCount]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refreshHomeFeed();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshHomeFeed]);
+
+  // Keep Home tab data fresh when user returns from detail/admin-triggered updates.
+  useFocusEffect(
+    useCallback(() => {
+      const now = Date.now();
+      // Avoid extra network bursts during quick tab toggles.
+      if (now - lastFocusRefreshAtRef.current > 15000) {
+        lastFocusRefreshAtRef.current = now;
+        refreshHomeFeed();
+      }
+    }, [refreshHomeFeed])
+  );
+
+  const isAnyFetching =
+    isFetchingArticles || isFetchingPodcasts || isFetchingUnreadCount;
 
   return (
     <SafeAreaView className="flex-1 bg-white relative" edges={["top"]}>
@@ -174,6 +222,14 @@ export default function HomeScreen() {
       <ScrollView
         className="flex-1 relative z-10"
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing || isAnyFetching}
+            onRefresh={onRefresh}
+            tintColor="#FF8C42"
+            colors={["#FF8C42", "#3B82F6"]}
+          />
+        }
       >
         {/* Browse All Categories */}
         <View className="px-5 mt-4">

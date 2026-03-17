@@ -758,3 +758,23 @@ export const deleteComment = async (commentId: string, userId: string) => {
   if (comment.userId !== userId) throw new ApiError(403, "Not authorized");
   return prisma.podcastComment.delete({ where: { id: commentId } });
 };
+
+export const updateComment = async (
+  commentId: string,
+  userId: string,
+  content: string
+) => {
+  const comment = await prisma.podcastComment.findUnique({
+    where: { id: commentId },
+  });
+  if (!comment) throw new ApiError(404, "Comment not found");
+  if (comment.userId !== userId) throw new ApiError(403, "Not authorized");
+
+  return prisma.podcastComment.update({
+    where: { id: commentId },
+    data: { content },
+    include: {
+      user: { select: { id: true, name: true, profile_image: true } },
+    },
+  });
+};

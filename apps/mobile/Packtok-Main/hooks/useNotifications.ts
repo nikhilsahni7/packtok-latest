@@ -54,6 +54,10 @@ export const useUnreadNotificationsCount = () => {
       return response.data.data.unreadCount || 0;
     },
     staleTime: 30 * 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchInterval: 30 * 1000,
   });
 };
 

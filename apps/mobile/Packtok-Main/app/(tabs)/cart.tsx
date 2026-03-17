@@ -146,6 +146,27 @@ export default function CartScreen() {
     );
   };
 
+  const openProductFromCart = (productId: string, productType?: string) => {
+    if (productType === "MACHINERY") {
+      router.push(`/marketplace/machinery/${productId}` as any);
+      return;
+    }
+    if (productType === "SPARE_PARTS") {
+      router.push(`/marketplace/spare-parts/${productId}` as any);
+      return;
+    }
+    if (productType === "CONSUMABLES") {
+      router.push(`/marketplace/consumables/${productId}` as any);
+      return;
+    }
+    if (productType === "RAW_MATERIALS") {
+      router.push(`/marketplace/raw-material/${productId}` as any);
+      return;
+    }
+
+    router.push("/marketplace");
+  };
+
   if (!user) {
     return (
       <View className="flex-1 bg-white items-center justify-center p-8">
@@ -238,7 +259,10 @@ export default function CartScreen() {
                   </Text>
                 </View>
               ) : (
-                <TouchableOpacity onPress={() => router.push("/addresses")} className="py-2">
+                <TouchableOpacity
+                  onPress={() => router.push("/addresses")}
+                  className="py-2"
+                >
                   <Text className="text-orange-500 font-semibold text-sm">
                     + Add a shipping address
                   </Text>
@@ -254,7 +278,16 @@ export default function CartScreen() {
                   className="bg-white px-4 py-4 rounded-2xl shadow-sm border border-gray-100 mb-2"
                 >
                   {/* Top: Image & Info */}
-                  <View className="flex-row mb-4">
+                  <TouchableOpacity
+                    className="flex-row mb-4"
+                    activeOpacity={0.8}
+                    onPress={() =>
+                      openProductFromCart(
+                        item.productId,
+                        item.product.productType
+                      )
+                    }
+                  >
                     <View className="w-24 h-24 bg-gray-50 rounded-xl overflow-hidden items-center justify-center mr-4">
                       {item.product.imagesThumbnail ? (
                         <Image
@@ -287,57 +320,82 @@ export default function CartScreen() {
 
                       {/* Fake Variations/Rating matching Figma (or real if available) */}
                       <View className="flex-row items-center mt-2">
-                         <Text className="text-xs text-gray-800 font-medium mr-2">Condition:</Text>
-                         <View className="border border-gray-300 rounded px-2 py-0.5 mr-1">
-                           <Text className="text-[10px] text-gray-600">{item.product.status}</Text>
-                         </View>
+                        <Text className="text-xs text-gray-800 font-medium mr-2">
+                          Condition:
+                        </Text>
+                        <View className="border border-gray-300 rounded px-2 py-0.5 mr-1">
+                          <Text className="text-[10px] text-gray-600">
+                            {item.product.status}
+                          </Text>
+                        </View>
                       </View>
 
                       {/* Pricing block matching Figma */}
                       <View className="flex-row items-center mt-3">
                         <View className="border border-gray-200 rounded-lg px-3 py-1.5 flex-row items-center">
-                           <Text className="font-bold text-lg text-gray-900">
-                             {getCurrencySymbol(item.product.currency)}{" "}
-                             {parseFloat(item.product.price).toLocaleString()}
-                           </Text>
+                          <Text className="font-bold text-lg text-gray-900">
+                            {getCurrencySymbol(item.product.currency)}{" "}
+                            {parseFloat(item.product.price).toLocaleString()}
+                          </Text>
                         </View>
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
 
                   {/* Bottom: Quantity & Total matching Figma style */}
                   <View className="border-t border-gray-100 pt-3 flex-row justify-between items-center">
                     <View className="flex-row items-center">
-                       <Text className="text-sm font-medium text-gray-800 mr-3">Total Order:</Text>
-                       {/* Embedded Quantity Controls */}
-                       <View className="flex-row items-center border border-gray-200 rounded-lg h-8">
-                          <TouchableOpacity
-                            onPress={() => updateQuantity.mutate({ productId: item.productId, quantity: item.quantity - 1 })}
-                            disabled={item.quantity <= 1 || updateQuantity.isPending}
-                            className={`w-8 h-full items-center justify-center ${item.quantity <= 1 ? "opacity-50" : ""}`}
-                          >
-                            <Feather name="minus" size={14} color="#374151" />
-                          </TouchableOpacity>
-                          <Text className="w-6 text-center font-semibold text-gray-900 text-sm">
-                            {item.quantity}
-                          </Text>
-                          <TouchableOpacity
-                            onPress={() => updateQuantity.mutate({ productId: item.productId, quantity: item.quantity + 1 })}
-                            disabled={item.quantity >= item.product.quantity || updateQuantity.isPending}
-                            className={`w-8 h-full items-center justify-center ${item.quantity >= item.product.quantity ? "opacity-30" : ""}`}
-                          >
-                            <Feather name="plus" size={14} color="#374151" />
-                          </TouchableOpacity>
-                       </View>
+                      <Text className="text-sm font-medium text-gray-800 mr-3">
+                        Total Order:
+                      </Text>
+                      {/* Embedded Quantity Controls */}
+                      <View className="flex-row items-center border border-gray-200 rounded-lg h-8">
+                        <TouchableOpacity
+                          onPress={() =>
+                            updateQuantity.mutate({
+                              productId: item.productId,
+                              quantity: item.quantity - 1,
+                            })
+                          }
+                          disabled={
+                            item.quantity <= 1 || updateQuantity.isPending
+                          }
+                          className={`w-8 h-full items-center justify-center ${item.quantity <= 1 ? "opacity-50" : ""}`}
+                        >
+                          <Feather name="minus" size={14} color="#374151" />
+                        </TouchableOpacity>
+                        <Text className="w-6 text-center font-semibold text-gray-900 text-sm">
+                          {item.quantity}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() =>
+                            updateQuantity.mutate({
+                              productId: item.productId,
+                              quantity: item.quantity + 1,
+                            })
+                          }
+                          disabled={
+                            item.quantity >= item.product.quantity ||
+                            updateQuantity.isPending
+                          }
+                          className={`w-8 h-full items-center justify-center ${item.quantity >= item.product.quantity ? "opacity-30" : ""}`}
+                        >
+                          <Feather name="plus" size={14} color="#374151" />
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                    
+
                     <View className="items-end">
                       {item.product.quantity <= 0 ? (
-                        <Text className="text-red-500 font-bold text-xs">Out of Stock</Text>
+                        <Text className="text-red-500 font-bold text-xs">
+                          Out of Stock
+                        </Text>
                       ) : (
                         <Text className="text-sm font-bold text-gray-900">
                           {getCurrencySymbol(item.product.currency)}{" "}
-                          {(parseFloat(item.product.price) * item.quantity).toLocaleString()}
+                          {(
+                            parseFloat(item.product.price) * item.quantity
+                          ).toLocaleString()}
                         </Text>
                       )}
                     </View>
@@ -358,7 +416,8 @@ export default function CartScreen() {
             <Text className="text-gray-900 text-xl font-bold mr-2">Total</Text>
             {Object.entries(totalsByCurrency).map(([cur, amount]) => (
               <Text key={cur} className="text-xl font-bold text-gray-900">
-                {getCurrencySymbol(cur)}{amount.toLocaleString()}
+                {getCurrencySymbol(cur)}
+                {amount.toLocaleString()}
               </Text>
             ))}
           </View>
@@ -367,7 +426,9 @@ export default function CartScreen() {
             onPress={handleCheckout}
             disabled={createOrder.isPending || verifyPayment.isPending}
             className={`py-4 px-10 rounded-2xl items-center justify-center flex-row shadow-sm ${
-              createOrder.isPending || verifyPayment.isPending ? "bg-gray-400" : "bg-black"
+              createOrder.isPending || verifyPayment.isPending
+                ? "bg-gray-400"
+                : "bg-black"
             }`}
           >
             {createOrder.isPending || verifyPayment.isPending ? (

@@ -1,8 +1,21 @@
+import {
+  useAddPodcastComment,
+  useDeletePodcastComment,
+  usePodcast,
+  usePodcastComments,
+  usePodcasts,
+  useReactToPodcast,
+  useUpdatePodcastComment,
+} from "@/hooks/usePodcasts";
+import { useAuthStore } from "@/store/auth-store";
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Dimensions,
   Image,
   Linking,
@@ -11,16 +24,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  ActivityIndicator,
 } from "react-native";
-import { useVideoPlayer, VideoView } from "expo-video";
-import {
-  usePodcast,
-  usePodcastComments,
-  useReactToPodcast,
-  useAddPodcastComment,
-  usePodcasts,
-} from "@/hooks/usePodcasts";
 
 const { width } = Dimensions.get("window");
 
@@ -30,6 +34,9 @@ export default function PodcastDetailScreen() {
 
   const [newComment, setNewComment] = useState("");
   const [showAllComments, setShowAllComments] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingCommentText, setEditingCommentText] = useState("");
+  const user = useAuthStore((state) => state.user);
 
   const { data: podcast, isLoading, isError } = usePodcast(id);
   const { data: commentsData } = usePodcastComments(id);
@@ -42,6 +49,10 @@ export default function PodcastDetailScreen() {
   const { mutate: reactToPodcast } = useReactToPodcast(id);
   const { mutate: addComment, isPending: isAddingComment } =
     useAddPodcastComment(id);
+  const { mutate: updateComment, isPending: isUpdatingComment } =
+    useUpdatePodcastComment(id);
+  const { mutate: deleteComment, isPending: isDeletingComment } =
+    useDeletePodcastComment(id);
 
   // Video Player - We assume the backend returns a direct video URL (e.g. from S3).
   // Native expo-video handles playback seamlessly.
@@ -94,14 +105,66 @@ export default function PodcastDetailScreen() {
         { content: newComment.trim() },
         {
           onSuccess: () => {
-             setNewComment("");
-          }
+            setNewComment("");
+          },
         }
       );
     }
   };
 
   const displayedComments = showAllComments ? comments : comments.slice(0, 3);
+
+  const startEditComment = (commentId: string, content: string) => {
+    setEditingCommentId(commentId);
+    setEditingCommentText(content);
+  };
+
+  const cancelEditComment = () => {
+    setEditingCommentId(null);
+    setEditingCommentText("");
+  };
+
+  const saveEditComment = () => {
+    if (!editingCommentId || !editingCommentText.trim() || isUpdatingComment) {
+      return;
+    }
+
+    updateComment(
+      {
+        commentId: editingCommentId,
+        content: editingCommentText.trim(),
+      },
+      {
+        onSuccess: () => {
+          cancelEditComment();
+        },
+      }
+    );
+  };
+
+  const confirmDeleteComment = (commentId: string) => {
+    if (isDeletingComment) return;
+    Alert.alert(
+      "Delete Comment",
+      "Are you sure you want to delete this comment?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            deleteComment(commentId, {
+              onSuccess: () => {
+                if (editingCommentId === commentId) {
+                  cancelEditComment();
+                }
+              },
+            });
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -122,9 +185,9 @@ export default function PodcastDetailScreen() {
               allowsPictureInPicture
             />
           ) : (
-             <View className="flex-1 items-center justify-center">
-                <Text className="text-white">Video not available</Text>
-             </View>
+            <View className="flex-1 items-center justify-center">
+              <Text className="text-white">Video not available</Text>
+            </View>
           )}
 
           {/* Back Button Overlay */}
@@ -149,7 +212,9 @@ export default function PodcastDetailScreen() {
             <View className="flex-row items-center">
               <Feather name="clock" size={16} color="#6B7280" />
               <Text className="text-sm text-gray-600 ml-2">
-                 {podcast.duration ? `${Math.floor(podcast.duration / 60)}:${String(podcast.duration % 60).padStart(2, '0')}` : '--:--'}
+                {podcast.duration
+                  ? `${Math.floor(podcast.duration / 60)}:${String(podcast.duration % 60).padStart(2, "0")}`
+                  : "--:--"}
               </Text>
             </View>
             <View className="flex-row items-center">
@@ -218,7 +283,6 @@ export default function PodcastDetailScreen() {
               </View>
               <Text className="text-sm text-gray-600 mt-2">Share</Text>
             </TouchableOpacity>
-
           </View>
 
           {/* Description */}
@@ -282,9 +346,11 @@ export default function PodcastDetailScreen() {
                   activeOpacity={0.7}
                 >
                   {isAddingComment ? (
-                     <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color="#fff" />
                   ) : (
-                     <Text className="text-white font-semibold text-sm">Post</Text>
+                    <Text className="text-white font-semibold text-sm">
+                      Post
+                    </Text>
                   )}
                 </TouchableOpacity>
               )}
@@ -299,10 +365,11 @@ export default function PodcastDetailScreen() {
                 <View className="flex-row">
                   <Image
                     source={{
-                       uri: comment.user.profile_image ??
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            comment.user.name
-                          )}&background=random&color=fff`
+                      uri:
+                        comment.user.profile_image ??
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                          comment.user.name
+                        )}&background=random&color=fff`,
                     }}
                     className="w-10 h-10 rounded-full mr-3"
                   />
@@ -311,13 +378,81 @@ export default function PodcastDetailScreen() {
                       <Text className="text-sm font-semibold text-gray-900">
                         {comment.user.name}
                       </Text>
-                      <Text className="text-xs text-gray-500">
-                        {new Date(comment.createdAt).toLocaleDateString()}
-                      </Text>
+                      <View className="flex-row items-center">
+                        <Text className="text-xs text-gray-500 mr-2">
+                          {new Date(comment.createdAt).toLocaleDateString()}
+                        </Text>
+                        {user?.id === comment.userId && (
+                          <View className="flex-row items-center">
+                            <TouchableOpacity
+                              onPress={() =>
+                                startEditComment(comment.id, comment.content)
+                              }
+                              className="p-1 mr-1"
+                              disabled={isUpdatingComment || isDeletingComment}
+                            >
+                              <Feather
+                                name="edit-2"
+                                size={14}
+                                color="#6B7280"
+                              />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => confirmDeleteComment(comment.id)}
+                              className="p-1"
+                              disabled={isUpdatingComment || isDeletingComment}
+                            >
+                              <Feather
+                                name="trash-2"
+                                size={14}
+                                color="#EF4444"
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View>
                     </View>
-                    <Text className="text-sm text-gray-700 leading-5 mb-2">
-                      {comment.content}
-                    </Text>
+                    {editingCommentId === comment.id ? (
+                      <View className="bg-gray-50 rounded-xl p-3 mt-1">
+                        <TextInput
+                          value={editingCommentText}
+                          onChangeText={setEditingCommentText}
+                          className="text-sm text-gray-800"
+                          multiline
+                          editable={!isUpdatingComment}
+                          placeholder="Edit comment"
+                          placeholderTextColor="#9CA3AF"
+                        />
+                        <View className="flex-row justify-end mt-2">
+                          <TouchableOpacity
+                            onPress={cancelEditComment}
+                            className="px-3 py-1.5 mr-2 rounded-full bg-gray-200"
+                            disabled={isUpdatingComment}
+                          >
+                            <Text className="text-xs font-semibold text-gray-700">
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={saveEditComment}
+                            className="px-3 py-1.5 rounded-full bg-orange-500"
+                            disabled={isUpdatingComment}
+                          >
+                            {isUpdatingComment ? (
+                              <ActivityIndicator size="small" color="#fff" />
+                            ) : (
+                              <Text className="text-xs font-semibold text-white">
+                                Save
+                              </Text>
+                            )}
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ) : (
+                      <Text className="text-sm text-gray-700 leading-5 mb-2">
+                        {comment.content}
+                      </Text>
+                    )}
                   </View>
                 </View>
               </View>
@@ -368,7 +503,11 @@ export default function PodcastDetailScreen() {
                   >
                     <View className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                       <Image
-                        source={relatedPodcast.thumbnailUrl ? { uri: relatedPodcast.thumbnailUrl } : require("@/assets/images/article1.png")}
+                        source={
+                          relatedPodcast.thumbnailUrl
+                            ? { uri: relatedPodcast.thumbnailUrl }
+                            : require("@/assets/images/article1.png")
+                        }
                         style={{ width: "100%", height: 140 }}
                         resizeMode="cover"
                       />
@@ -383,7 +522,10 @@ export default function PodcastDetailScreen() {
                           className="text-xs text-gray-600"
                           numberOfLines={1}
                         >
-                          {relatedPodcast.duration ? `${Math.floor(relatedPodcast.duration / 60)}:${String(relatedPodcast.duration % 60).padStart(2, '0')}` : '--:--'} • {relatedPodcast.likeCount} likes
+                          {relatedPodcast.duration
+                            ? `${Math.floor(relatedPodcast.duration / 60)}:${String(relatedPodcast.duration % 60).padStart(2, "0")}`
+                            : "--:--"}{" "}
+                          • {relatedPodcast.likeCount} likes
                         </Text>
                       </View>
                     </View>
