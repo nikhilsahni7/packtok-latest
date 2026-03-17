@@ -7,8 +7,8 @@ import {
 import { ApiError } from "../utils/apiError";
 import {
   createOrder as createRazorpayOrder,
-  verifyPaymentSignature,
   getRazorpayPublishableKey,
+  verifyPaymentSignature,
 } from "./payments/razorpay.service";
 
 // ─── Plan CRUD (Admin) ──────────────────────────────────────────────────────
@@ -26,9 +26,7 @@ export const getPlanById = async (id: string) => {
   return plan;
 };
 
-export const createPlan = async (
-  data: Prisma.VendorPlanCreateInput
-) => {
+export const createPlan = async (data: Prisma.VendorPlanCreateInput) => {
   return prisma.vendorPlan.create({ data });
 };
 
@@ -214,7 +212,9 @@ export const getActiveSubscription = async (userId: string) => {
  * Returns the product limit for a vendor.
  * If they have an active subscription, use that; otherwise default to 2 (free).
  */
-export const getVendorProductLimit = async (userId: string): Promise<number> => {
+export const getVendorProductLimit = async (
+  userId: string
+): Promise<number> => {
   const sub = await getActiveSubscription(userId);
   if (sub) return sub.maxProductsSnapshot;
 
@@ -228,7 +228,9 @@ export const getVendorProductLimit = async (userId: string): Promise<number> => 
 /**
  * Returns the current product count for a vendor (non-deleted products).
  */
-export const getVendorProductCount = async (userId: string): Promise<number> => {
+export const getVendorProductCount = async (
+  userId: string
+): Promise<number> => {
   return prisma.marketplaceProduct.count({
     where: { createdById: userId },
   });
@@ -285,7 +287,8 @@ export const subscribeToFreePlan = async (userId: string) => {
 export const initiateSubscription = async (userId: string, planId: string) => {
   const plan = await prisma.vendorPlan.findUnique({ where: { id: planId } });
   if (!plan) throw new ApiError(404, "Plan not found");
-  if (!plan.isActive) throw new ApiError(400, "This plan is no longer available");
+  if (!plan.isActive)
+    throw new ApiError(400, "This plan is no longer available");
   if (plan.isContactSales) {
     throw new ApiError(400, "Please contact sales for this plan");
   }
@@ -293,16 +296,22 @@ export const initiateSubscription = async (userId: string, planId: string) => {
   const priceUsd = Number(plan.priceUsd);
   if (priceUsd <= 0) {
     // Free plan – subscribe directly
-    return { type: "free" as const, subscription: await subscribeToFreePlan(userId) };
+    return {
+      type: "free" as const,
+      subscription: await subscribeToFreePlan(userId),
+    };
   }
 
-  // Check if already has an active paid subscription
+  // If vendor has an active paid subscription, require auto-renew to be disabled
+  // before allowing a plan switch/upgrade.
   const existing = await getActiveSubscription(userId);
   if (existing && existing.plan.slug !== "free") {
-    throw new ApiError(
-      400,
-      "You already have an active paid subscription. Wait for it to expire or cancel it first."
-    );
+    if (existing.autoRenew) {
+      throw new ApiError(
+        400,
+        "Auto-renew is enabled on your current paid subscription. Cancel renewal first, then upgrade."
+      );
+    }
   }
 
   // Create subscription record with PAYMENT_PENDING
@@ -482,14 +491,22 @@ export const getSubscriptionHistory = async (userId: string) => {
 
 // ─── Admin subscription management ─────────────────────────────────────────
 
-export const getAllSubscriptions = async (status?: VendorSubscriptionStatus) => {
+export const getAllSubscriptions = async (
+  status?: VendorSubscriptionStatus
+) => {
   return prisma.vendorSubscription.findMany({
     where: status ? { status } : {},
     include: {
       user: { select: { id: true, name: true, email: true } },
       plan: { select: { id: true, name: true, slug: true } },
       payments: {
-        select: { id: true, amount: true, currency: true, status: true, createdAt: true },
+        select: {
+          id: true,
+          amount: true,
+          currency: true,
+          status: true,
+          createdAt: true,
+        },
         orderBy: { createdAt: "desc" },
         take: 1,
       },

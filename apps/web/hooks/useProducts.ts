@@ -4,6 +4,25 @@ import api from "@/lib/axios";
 import { ProductFilters, ProductsResponse } from "@/types/marketplace";
 import { useQuery } from "@tanstack/react-query";
 
+export interface ProductSubmissionHistoryItem {
+  id: string;
+  title: string;
+  productType: string;
+  status: string;
+  submissionStatus: string;
+  imagesThumbnail?: string | null;
+  price?: string;
+  currency?: string;
+  createdAt: string;
+  updatedAt: string;
+  reviewedAt?: string | null;
+  reviewNotes?: string | null;
+  category?: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 export function useProducts(filters: ProductFilters = {}) {
   const queryKey = ["products", filters];
 
@@ -71,3 +90,14 @@ export function useProducts(filters: ProductFilters = {}) {
     refetchOnMount: false, // Don't refetch if data is already fresh
   });
 }
+
+export const useMyProductSubmissions = () => {
+  return useQuery<ProductSubmissionHistoryItem[]>({
+    queryKey: ["my-product-submissions"],
+    queryFn: async () => {
+      const response = await api.get("/api/v1/products/my-submissions");
+      return response.data.data ?? [];
+    },
+    staleTime: 1000 * 30,
+  });
+};

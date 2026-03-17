@@ -2,16 +2,15 @@ import { prisma, Role } from "@packtok/db";
 import { Request, Response } from "express";
 import config from "../config";
 import {
-    loginUser,
-    refreshAccessToken,
-    registerUser,
-    resetPasswordWithOtp,
-    sendPasswordResetOtp,
-    sendVerificationOtp,
-    verifyPasswordResetOtp,
-    verifyOtp
+  loginUser,
+  refreshAccessToken,
+  registerUser,
+  resetPasswordWithOtp,
+  sendPasswordResetOtp,
+  sendVerificationOtp,
+  verifyOtp,
+  verifyPasswordResetOtp,
 } from "../services/auth.service";
-
 
 import { applyForVendor } from "../services/vendor.service";
 import { ApiError } from "../utils/apiError";
@@ -30,9 +29,13 @@ export const signup = asyncHandler(async (req: Request, res: Response) => {
     vendorCompanyName,
     vendorNotes,
   } = req.body;
+  if (!name || !email || !password) {
+    throw new ApiError(400, "Name, email, and password are required");
+  }
+
   const user = await registerUser({
     name,
-    email,
+    email: String(email).trim().toLowerCase(),
     phone_number,
     country,
     password,
@@ -60,9 +63,16 @@ export const signupVendor = asyncHandler(
   async (req: Request, res: Response) => {
     const { name, email, phone_number, country, password, companyName, notes } =
       req.body;
+    if (!name || !email || !password || !companyName) {
+      throw new ApiError(
+        400,
+        "Name, email, password, and companyName are required"
+      );
+    }
+
     const user = await registerUser({
       name,
-      email,
+      email: String(email).trim().toLowerCase(),
       phone_number,
       country,
       password,
@@ -87,6 +97,10 @@ export const signupVendor = asyncHandler(
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
+  }
+
   const { accessToken, refreshToken, user } = await loginUser(email, password);
 
   // Enforce role routing: Vendors must use vendor login; allow Admins/Super Admins here
@@ -100,7 +114,9 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as
+      | "none"
+      | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
@@ -118,6 +134,10 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
 export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
+  }
+
   const { accessToken, refreshToken, user } = await loginUser(email, password);
 
   // Enforce role: only VENDOR can use vendor login (regardless of application status)
@@ -131,7 +151,9 @@ export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as
+      | "none"
+      | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
@@ -148,7 +170,8 @@ export const loginVendor = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const refresh = asyncHandler(async (req: Request, res: Response) => {
-  const incomingRefreshToken = req.cookies.refreshToken || req.body?.refreshToken;
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body?.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Refresh token missing");
   }
@@ -159,7 +182,9 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as
+      | "none"
+      | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
@@ -177,7 +202,9 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   const options = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
-    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
+    sameSite: (config.nodeEnv === "production" ? "none" : "lax") as
+      | "none"
+      | "lax",
     ...(config.cookieDomain ? { domain: config.cookieDomain } : {}),
   };
 
@@ -243,6 +270,9 @@ export const updateUserProfile = asyncHandler(
 export const verifyUserOtp = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, otp } = req.body;
+    if (!email || !otp) {
+      throw new ApiError(400, "Email and OTP are required");
+    }
     await verifyOtp(email, otp);
     res
       .status(200)
@@ -253,6 +283,9 @@ export const verifyUserOtp = asyncHandler(
 export const requestPasswordReset = asyncHandler(
   async (req: Request, res: Response) => {
     const { email } = req.body;
+    if (!email) {
+      throw new ApiError(400, "Email is required");
+    }
     await sendPasswordResetOtp(email);
     res
       .status(200)
@@ -263,6 +296,9 @@ export const requestPasswordReset = asyncHandler(
 export const resetPassword = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) {
+      throw new ApiError(400, "Email, OTP, and newPassword are required");
+    }
     await resetPasswordWithOtp(email, otp, newPassword);
     res
       .status(200)
@@ -275,6 +311,9 @@ export const resetPassword = asyncHandler(
 export const verifyPasswordReset = asyncHandler(
   async (req: Request, res: Response) => {
     const { email, otp } = req.body;
+    if (!email || !otp) {
+      throw new ApiError(400, "Email and OTP are required");
+    }
     await verifyPasswordResetOtp(email, otp);
     res
       .status(200)
@@ -289,7 +328,7 @@ export const resendOtp = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(400, "Email is required");
   }
 
-  await sendVerificationOtp(email);
+  await sendVerificationOtp(String(email).trim().toLowerCase());
 
   res
     .status(200)

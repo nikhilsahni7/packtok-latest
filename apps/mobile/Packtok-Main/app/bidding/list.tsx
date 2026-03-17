@@ -51,14 +51,11 @@ export default function BiddingListScreen() {
       case "live":
         return auctions.filter((a) => a.status === "LIVE");
       case "regular":
-        return auctions.filter((a) =>
-          ["SCHEDULED", "DRAFT"].includes(a.status)
-        );
+        return auctions.filter((a) => ["SCHEDULED"].includes(a.status));
       case "reverse":
         return auctions.filter(
           (a) =>
-            a.mode === "REVERSE" &&
-            ["SCHEDULED", "DRAFT", "LIVE"].includes(a.status)
+            a.mode === "REVERSE" && ["SCHEDULED", "LIVE"].includes(a.status),
         );
       default:
         return auctions;
@@ -90,20 +87,26 @@ export default function BiddingListScreen() {
 
     const amount =
       type === "live"
-        ? auction.leaderboard?.snapshot?.currentAmount ?? auction.startingAmount
+        ? (auction.leaderboard?.snapshot?.currentAmount ??
+          auction.startingAmount)
         : auction.startingAmount;
-        
+
     const priceLabel = type === "live" ? "Current amount" : "Starting price";
-    let statusLabel = auction.status === "LIVE" ? "Live" : (auction.mode === "REVERSE" ? "Reverse" : "Forward");
-    
+    let statusLabel =
+      auction.status === "LIVE"
+        ? "Live"
+        : auction.mode === "REVERSE"
+          ? "Reverse"
+          : "Forward";
+
     // Reverse auctions get specific label override
     if (type === "reverse" || auction.mode === "REVERSE") {
       statusLabel = "Reverse";
     }
-    
+
     // Live label gets priority if looking at "Live" list specifically
     if (type === "live") {
-        statusLabel = "Live";
+      statusLabel = "Live";
     }
 
     const meta =
@@ -120,7 +123,9 @@ export default function BiddingListScreen() {
           imageUrl={image}
           statusLabel={statusLabel}
           meta={meta}
-          ctaLabel={auction.status === "LIVE" ? "Enter auction" : "View details"}
+          ctaLabel={
+            auction.status === "LIVE" ? "Enter auction" : "View details"
+          }
           onPress={() => handleSelectAuction(auction.id)}
           style={{ width: "100%", marginRight: 0 }}
         />
@@ -131,7 +136,7 @@ export default function BiddingListScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50" edges={["top"]}>
       <StatusBar style="dark" />
-      
+
       {/* Search omitted for clarity, but header displays unified Bubble styling */}
       <PageHeader showSearch={false} />
 

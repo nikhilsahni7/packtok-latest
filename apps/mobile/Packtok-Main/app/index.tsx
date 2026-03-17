@@ -25,25 +25,17 @@ export default function SplashScreen() {
 
         // Check if user has completed onboarding (seen welcome screens)
         const hasCompletedOnboarding = await AsyncStorage.getItem(
-          ONBOARDING_COMPLETE_KEY
+          ONBOARDING_COMPLETE_KEY,
         );
-
-        console.log("🔍 Navigation Check:", {
-          isAuthenticated,
-          hasCompletedOnboarding: !!hasCompletedOnboarding,
-        });
 
         if (isAuthenticated) {
           // User is logged in, go directly to home
-          console.log("✅ Logged in user → Home");
           router.replace("/(tabs)");
         } else if (!hasCompletedOnboarding) {
           // First time user, show welcome screens
-          console.log("👋 New user → Welcome screens");
           router.replace("/welcome");
         } else {
           // Returning user but not logged in, skip to auth
-          console.log("🔄 Returning user → Auth selection");
           router.replace("/auth-selection");
         }
       } catch (error) {
@@ -66,7 +58,7 @@ export default function SplashScreen() {
         source={require("@/assets/images/bubble 01.png")}
         className="absolute z-10"
         style={{
-          top: -width * 0.10,
+          top: -width * 0.1,
           left: -width * 0.28,
           width: width * 0.9,
           height: width * 0.9,
@@ -79,7 +71,7 @@ export default function SplashScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.10,
+          top: -width * 0.1,
           left: -width * 0.18,
           width: width * 1,
           height: width * 0.9,
@@ -93,7 +85,7 @@ export default function SplashScreen() {
         className="absolute"
         style={{
           bottom: -width * 0.15,
-          right: -width * 0.10,
+          right: -width * 0.1,
           width: width * 0.7,
           height: width * 0.7,
         }}

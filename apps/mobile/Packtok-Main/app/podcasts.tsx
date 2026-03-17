@@ -3,7 +3,7 @@ import { usePodcasts } from "@/hooks/usePodcasts";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -16,15 +16,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
-
-const PODCAST_TAGS = [
-  "Sports",
-  "Innovation",
-  "Manufacturing",
-  "Sustainability",
-  "Materials",
-  "Engineering",
-];
 
 export default function PodcastsScreen() {
   const router = useRouter();
@@ -42,9 +33,21 @@ export default function PodcastsScreen() {
   const { data, isLoading, isError } = usePodcasts({
     limit: 50,
     search: debouncedSearch || undefined,
-    tags: selectedTag ? [selectedTag] : undefined
+    tags: selectedTag ? [selectedTag] : undefined,
   });
   const podcasts = data?.items ?? [];
+  const availableTags = useMemo(() => {
+    const tags = new Set<string>();
+    podcasts.forEach((podcast) => {
+      podcast.tags.forEach((tag) => {
+        if (tag) tags.add(tag);
+      });
+    });
+    if (selectedTag && !tags.has(selectedTag)) {
+      tags.add(selectedTag);
+    }
+    return Array.from(tags).sort((a, b) => a.localeCompare(b));
+  }, [podcasts, selectedTag]);
 
   const handlePodcastPress = (podcastId: string) => {
     router.push(`/podcasts/${podcastId}` as any);
@@ -62,29 +65,31 @@ export default function PodcastsScreen() {
       />
 
       {/* Tags Filter */}
-      <View className="bg-white px-5 py-3 border-b border-gray-100">
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {PODCAST_TAGS.map((tag) => (
-            <TouchableOpacity
-              key={tag}
-              onPress={() => setSelectedTag(selectedTag === tag ? null : tag)}
-              className={`px-4 py-2 rounded-full mr-3 border ${
-                selectedTag === tag
-                  ? "bg-orange-500 border-orange-500"
-                  : "bg-white border-gray-200"
-              }`}
-            >
-              <Text
-                className={`text-sm font-medium ${
-                  selectedTag === tag ? "text-white" : "text-gray-700"
+      {availableTags.length > 0 && (
+        <View className="bg-white px-5 py-3 border-b border-gray-100">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {availableTags.map((tag) => (
+              <TouchableOpacity
+                key={tag}
+                onPress={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                className={`px-4 py-2 rounded-full mr-3 border ${
+                  selectedTag === tag
+                    ? "bg-orange-500 border-orange-500"
+                    : "bg-white border-gray-200"
                 }`}
               >
-                {tag}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+                <Text
+                  className={`text-sm font-medium ${
+                    selectedTag === tag ? "text-white" : "text-gray-700"
+                  }`}
+                >
+                  {tag}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       {/* Podcasts List */}
       <ScrollView
@@ -93,18 +98,21 @@ export default function PodcastsScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         <View className="px-5 pt-4">
-
           {isLoading && (
             <View className="items-center justify-center py-20">
               <ActivityIndicator size="large" color="#FF8C42" />
-              <Text className="text-gray-500 text-base mt-4">Loading podcasts...</Text>
+              <Text className="text-gray-500 text-base mt-4">
+                Loading podcasts...
+              </Text>
             </View>
           )}
 
           {isError && !isLoading && (
             <View className="items-center justify-center py-20">
               <Feather name="alert-circle" size={48} color="#EF4444" />
-              <Text className="text-gray-500 text-base mt-4">Failed to load podcasts</Text>
+              <Text className="text-gray-500 text-base mt-4">
+                Failed to load podcasts
+              </Text>
             </View>
           )}
 
@@ -127,7 +135,11 @@ export default function PodcastsScreen() {
                   {/* Thumbnail */}
                   <View className="relative">
                     <Image
-                      source={podcast.thumbnailUrl ? { uri: podcast.thumbnailUrl } : require("@/assets/images/article1.png")}
+                      source={
+                        podcast.thumbnailUrl
+                          ? { uri: podcast.thumbnailUrl }
+                          : require("@/assets/images/article1.png")
+                      }
                       style={{ width: "100%", height: 200 }}
                       resizeMode="cover"
                     />
@@ -135,7 +147,8 @@ export default function PodcastsScreen() {
                     {podcast.duration && (
                       <View className="absolute bottom-3 right-3 bg-black/80 rounded-lg px-2 py-1">
                         <Text className="text-white text-xs font-semibold">
-                           {Math.floor(podcast.duration / 60)}:{String(podcast.duration % 60).padStart(2, '0')}
+                          {Math.floor(podcast.duration / 60)}:
+                          {String(podcast.duration % 60).padStart(2, "0")}
                         </Text>
                       </View>
                     )}
@@ -158,7 +171,10 @@ export default function PodcastsScreen() {
                     </Text>
 
                     {/* Description */}
-                    <Text className="text-sm text-gray-600 mb-3" numberOfLines={2}>
+                    <Text
+                      className="text-sm text-gray-600 mb-3"
+                      numberOfLines={2}
+                    >
                       {podcast.description}
                     </Text>
 
@@ -187,18 +203,25 @@ export default function PodcastsScreen() {
                         </Text>
                       </View>
                       <View className="flex-row items-center">
-                        <Feather name="message-circle" size={16} color="#3B82F6" />
+                        <Feather
+                          name="message-circle"
+                          size={16}
+                          color="#3B82F6"
+                        />
                         <Text className="text-sm text-gray-600 ml-1">
                           {podcast.commentCount}
                         </Text>
                       </View>
                       {podcast.releaseDate && (
                         <Text className="text-xs text-gray-500">
-                          {new Date(podcast.releaseDate).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
+                          {new Date(podcast.releaseDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          )}
                         </Text>
                       )}
                     </View>

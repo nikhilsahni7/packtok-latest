@@ -1,6 +1,5 @@
-import { Feather } from "@expo/vector-icons";
+import PageHeader from "@/components/PageHeader";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
@@ -11,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import PageHeader from "@/components/PageHeader";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 
@@ -34,7 +33,7 @@ const servicesData = [
   },
   {
     id: 3,
-    title: "Tunkery Projects",
+    title: "Turnkey Projects",
     image: require("@/assets/images/Turnkey.png"),
     route: "/services/turnkey-projects",
     bgColor: "#3B82F6",

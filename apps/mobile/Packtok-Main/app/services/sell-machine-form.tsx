@@ -184,7 +184,7 @@ export default function SellMachineFormScreen() {
               onPress: () => router.back(),
               style: "cancel",
             },
-          ]
+          ],
         );
       }
     };
@@ -220,7 +220,7 @@ export default function SellMachineFormScreen() {
     if (status !== "granted") {
       Alert.alert(
         "Permission Required",
-        "Please grant camera roll permissions to upload images."
+        "Please grant camera roll permissions to upload images.",
       );
       return;
     }
@@ -251,7 +251,7 @@ export default function SellMachineFormScreen() {
     if (status !== "granted") {
       Alert.alert(
         "Permission Required",
-        "Please grant camera roll permissions to upload thumbnail."
+        "Please grant camera roll permissions to upload thumbnail.",
       );
       return;
     }
@@ -272,7 +272,7 @@ export default function SellMachineFormScreen() {
     if (status !== "granted") {
       Alert.alert(
         "Permission Required",
-        "Please grant camera roll permissions to upload video."
+        "Please grant camera roll permissions to upload video.",
       );
       return;
     }
@@ -332,7 +332,7 @@ export default function SellMachineFormScreen() {
   const updateSpecification = (
     index: number,
     field: "key" | "value",
-    value: string
+    value: string,
   ) => {
     const updated = [...specifications];
     updated[index][field] = value;
@@ -374,33 +374,24 @@ export default function SellMachineFormScreen() {
 
   const onSubmit = async (data: SellMachineFormData) => {
     if (!agreeToTerms) {
-      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      Alert.alert(
+        "Error",
+        "You must agree to the Terms and Conditions to proceed.",
+      );
       return;
     }
 
     try {
-      console.log("=== FORM SUBMISSION START ===");
-      console.log("📝 Form data:", JSON.stringify(data, null, 2));
-      console.log("🖼️ Images count:", images.length);
-      console.log("🖼️ Images:", images);
-      console.log("📸 Thumbnail:", thumbnail);
-      console.log("🎥 Video:", video);
-      console.log("🖼️ Video Thumbnail:", videoThumbnail);
-      console.log("📄 PDF:", pdf);
-      console.log("⚙️ Specifications:", specifications);
-
       // Validate images
       if (images.length === 0 && !thumbnail) {
-        console.log("❌ Validation failed: No images");
         Alert.alert("Images Required", "Please upload at least one image.");
         return;
       }
 
       // Prepare specifications
       const validSpecs = specifications.filter(
-        (spec) => spec.key.trim() && spec.value.trim()
+        (spec) => spec.key.trim() && spec.value.trim(),
       );
-      console.log("✅ Valid specifications:", validSpecs);
 
       const specsString =
         validSpecs.length > 0
@@ -410,12 +401,10 @@ export default function SellMachineFormScreen() {
                   acc[spec.key] = spec.value;
                   return acc;
                 },
-                {} as Record<string, string>
-              )
+                {} as Record<string, string>,
+              ),
             )
           : undefined;
-
-      console.log("📋 Specifications string:", specsString);
 
       // Prepare submission data
       const submissionData = {
@@ -427,19 +416,7 @@ export default function SellMachineFormScreen() {
         pdf: pdf,
         specifications: specsString,
       };
-
-      console.log("📤 Submission data prepared:", {
-        ...submissionData,
-        images: `${submissionData.images.length} images`,
-        thumbnail: submissionData.thumbnail ? "✓" : "✗",
-        video: submissionData.video ? "✓" : "✗",
-        videoThumbnail: submissionData.videoThumbnail ? "✓" : "✗",
-        pdf: submissionData.pdf ? "✓" : "✗",
-      });
-
-      console.log("🚀 Calling mutation...");
       await sellMachineSubmission.mutateAsync(submissionData as any);
-      console.log("✅ Mutation successful!");
 
       setShowSuccessModal(true);
 
@@ -452,16 +429,7 @@ export default function SellMachineFormScreen() {
       setPdf(null);
       setSpecifications([{ key: "", value: "" }]);
       setAgreeToTerms(false);
-
-      console.log("=== FORM SUBMISSION END ===");
-    } catch (error: any) {
-      console.error("❌❌❌ FORM SUBMISSION ERROR ❌❌❌");
-      console.error("Error object:", error);
-      console.error("Error message:", error?.message);
-      console.error("Error response:", error?.response);
-      console.error("Error response data:", error?.response?.data);
-      console.error("Error response status:", error?.response?.status);
-      console.error("Error config:", error?.config);
+    } catch {
       // Error handling is done in the mutation
     }
   };
@@ -773,7 +741,6 @@ export default function SellMachineFormScreen() {
                 </View>
               )}
             />
-
           </View>
 
           {/* Section 2: Images */}
@@ -1011,9 +978,7 @@ export default function SellMachineFormScreen() {
                   : "bg-white border-gray-300"
               }`}
             >
-              {agreeToTerms && (
-                <Feather name="check" size={14} color="white" />
-              )}
+              {agreeToTerms && <Feather name="check" size={14} color="white" />}
             </View>
             <Text className="text-sm text-gray-600 flex-1 leading-5">
               I agree to the Terms & Conditions and Privacy Policy. I confirm

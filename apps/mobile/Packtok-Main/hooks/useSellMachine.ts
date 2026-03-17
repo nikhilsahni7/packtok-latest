@@ -28,28 +28,11 @@ interface SellMachineSubmissionData {
 export const useSellMachineSubmission = () => {
   return useMutation({
     mutationFn: async (data: SellMachineSubmissionData) => {
-      console.log("=== MUTATION START ===");
-      console.log("🚀 Submitting sell machine data");
-      console.log("📊 Data summary:", {
-        title: data.title,
-        price: data.price,
-        productType: data.productType,
-        categoryName: data.categoryName,
-        condition: data.condition,
-        imagesCount: data.images?.length || 0,
-        hasThumbnail: !!data.thumbnail,
-        hasVideo: !!data.video,
-        hasVideoThumbnail: !!data.videoThumbnail,
-        hasPdf: !!data.pdf,
-        specifications: data.specifications,
-      });
-
       // Create FormData for file uploads
       const formData = new FormData();
 
       // Add ONLY the fields that web sends (no email/phone/address)
       // These fields are collected for validation but NOT sent to backend
-      console.log("📝 Adding text fields to FormData...");
       formData.append("title", data.title);
       formData.append("price", data.price);
       formData.append("currency", (data.currency || "INR").toUpperCase());
@@ -59,41 +42,28 @@ export const useSellMachineSubmission = () => {
       formData.append("description", data.description);
 
       if (data.machineType) {
-        console.log("  + machineType:", data.machineType);
         formData.append("machineType", data.machineType);
       }
       if (data.manufacturer) {
-        console.log("  + manufacturer:", data.manufacturer);
         formData.append("manufacturer", data.manufacturer);
       }
       if (data.model) {
-        console.log("  + model:", data.model);
         formData.append("model", data.model);
       }
       if (data.year) {
-        console.log("  + year:", data.year);
         formData.append("year", data.year);
       }
       if (data.additionalInfo) {
-        console.log("  + additionalInfo:", data.additionalInfo);
         formData.append("additionalInfo", data.additionalInfo);
       }
       const normalizedSpecifications =
         data.specifications && data.specifications.trim().length > 0
           ? data.specifications
           : "{}";
-      console.log("  + specifications:", normalizedSpecifications);
       formData.append("specifications", normalizedSpecifications);
 
       // Add images
-      console.log("🖼️ Adding images to FormData...");
       data.images.forEach((image, index) => {
-        console.log(`  Image ${index}:`, {
-          uri: image.uri,
-          type: image.type,
-          mimeType: image.mimeType,
-          fileName: image.fileName,
-        });
         const imageFile = {
           uri: image.uri,
           type: image.mimeType || image.type || "image/jpeg",
@@ -104,12 +74,6 @@ export const useSellMachineSubmission = () => {
 
       // Add thumbnail
       if (data.thumbnail) {
-        console.log("📸 Adding thumbnail:", {
-          uri: data.thumbnail.uri,
-          type: data.thumbnail.type,
-          mimeType: data.thumbnail.mimeType,
-          fileName: data.thumbnail.fileName,
-        });
         const thumbnailFile = {
           uri: data.thumbnail.uri,
           type: data.thumbnail.mimeType || data.thumbnail.type || "image/jpeg",
@@ -120,12 +84,6 @@ export const useSellMachineSubmission = () => {
 
       // Add video
       if (data.video) {
-        console.log("🎥 Adding video:", {
-          uri: data.video.uri,
-          type: data.video.type,
-          mimeType: data.video.mimeType,
-          fileName: data.video.fileName,
-        });
         const videoFile = {
           uri: data.video.uri,
           type: data.video.mimeType || data.video.type || "video/mp4",
@@ -136,12 +94,6 @@ export const useSellMachineSubmission = () => {
 
       // Add video thumbnail
       if (data.videoThumbnail) {
-        console.log("🖼️ Adding video thumbnail:", {
-          uri: data.videoThumbnail.uri,
-          type: data.videoThumbnail.type,
-          mimeType: data.videoThumbnail.mimeType,
-          fileName: data.videoThumbnail.fileName,
-        });
         const videoThumbnailFile = {
           uri: data.videoThumbnail.uri,
           type:
@@ -155,62 +107,31 @@ export const useSellMachineSubmission = () => {
 
       // Add PDF
       if (data.pdf) {
-        console.log("📄 Adding PDF:", {
-          uri: data.pdf.uri,
-          type: data.pdf.type,
-          mimeType: data.pdf.mimeType,
-          name: data.pdf.name,
-          fileName: data.pdf.fileName,
-        });
         // DocumentPicker returns 'name' and 'mimeType', not 'fileName' and 'type'
         const pdfFile = {
           uri: data.pdf.uri,
           type: data.pdf.mimeType || data.pdf.type || "application/pdf",
           name: data.pdf.name || data.pdf.fileName || "document.pdf",
         };
-        console.log("📄 PDF file object:", pdfFile);
         formData.append("pdf", pdfFile as any);
       }
 
-      console.log("📤 Making API request to /api/v1/products/submit");
-      console.log("🔑 Headers: Content-Type: multipart/form-data");
+      const response = await api.post("/api/v1/products/submit", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      try {
-        const response = await api.post("/api/v1/products/submit", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        console.log("✅ API Response received");
-        console.log("Response status:", response.status);
-        console.log("Response data:", response.data);
-        console.log("=== MUTATION END ===");
-
-        return response.data;
-      } catch (error: any) {
-        console.error("❌ API Request failed");
-        console.error("Error:", error);
-        console.error("Error message:", error?.message);
-        console.error("Error response:", error?.response);
-        console.error("Error response data:", error?.response?.data);
-        console.error("Error response status:", error?.response?.status);
-        console.error("Error request:", error?.request);
-        console.error("Error config:", error?.config);
-        throw error;
-      }
+      return response.data;
     },
     onSuccess: () => {
-      console.log("✅ Product submitted successfully!");
       Alert.alert(
         "Success",
         "Your product has been submitted for review. We'll notify you once it's approved.",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
     },
     onError: (error: any) => {
-      console.error("❌ Product submission error:", error);
-      console.error("Error response:", error?.response?.data);
-
       let errorMessage = "Failed to submit product. Please try again.";
 
       if (isAxiosError(error)) {

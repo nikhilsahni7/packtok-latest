@@ -1,6 +1,7 @@
 import { useCartItemCount } from "@/hooks/useCart";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import { useAuthStore } from "@/store/auth-store";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -36,11 +37,14 @@ export default function PageHeader({
   searchValue,
 }: PageHeaderProps) {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const itemCount = useCartItemCount();
-  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount({
+    enabled: !!user,
+  });
   const isControlled = onSearchChange !== undefined;
   const { startListening, isListening, transcript } = useVoiceSearch(
-    isControlled ? { onResult: onSearchChange } : undefined
+    isControlled ? { onResult: onSearchChange } : undefined,
   );
   const [localSearchQuery, setLocalSearchQuery] = useState("");
   const prevTranscriptRef = useRef("");

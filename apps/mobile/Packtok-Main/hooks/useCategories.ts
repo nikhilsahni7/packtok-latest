@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 export interface Category {
   id: string;
   name: string;
+  subcategories?: string[];
   slug?: string;
   description?: string;
   createdAt: string;

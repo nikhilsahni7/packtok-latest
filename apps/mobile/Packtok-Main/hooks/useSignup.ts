@@ -33,11 +33,15 @@ export function useSignup() {
       });
       router.push({
         pathname: "/verify-otp" as any,
-        params: { email: variables.email.toLowerCase().trim() },
+        params: {
+          email: variables.email.toLowerCase().trim(),
+          type: "user",
+        },
       });
     },
     onError: (err: any) => {
-      const message = err?.response?.data?.message || "Signup failed. Please try again.";
+      const message =
+        err?.response?.data?.message || "Signup failed. Please try again.";
       Toast.show({
         type: "error",
         text1: "Signup Failed",

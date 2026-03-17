@@ -7,6 +7,7 @@ export * from "./useSignup";
 export * from "./useBookmarks";
 
 // Marketplace hooks
+export * from "./useArticles";
 export * from "./useCategories";
 export * from "./useCreateCategory";
 export * from "./useCreateQuote";
@@ -14,7 +15,6 @@ export * from "./useMarketplaceFilters";
 export * from "./useProduct";
 export * from "./useProducts";
 export * from "./useSubmitProduct";
-export * from "./useArticles";
 export * from "./useVendorInventory";
 export * from "./useVendorProductEditor";
 export * from "./useVendorProducts";
@@ -28,3 +28,4 @@ export * from "./useServiceSubmission";
 // Auction hooks
 export * from "./useAuctionRealtime";
 export * from "./useAuctions";
+export * from "./useNotifications";

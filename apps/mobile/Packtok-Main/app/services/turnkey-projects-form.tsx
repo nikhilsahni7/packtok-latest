@@ -150,7 +150,7 @@ export default function TurnkeyProjectFormScreen() {
               onPress: () => router.back(),
               style: "cancel",
             },
-          ]
+          ],
         );
       }
     };
@@ -233,12 +233,14 @@ export default function TurnkeyProjectFormScreen() {
 
   const onSubmit = async (data: TurnkeyProjectFormData) => {
     if (!agreeToTerms) {
-      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      Alert.alert(
+        "Error",
+        "You must agree to the Terms and Conditions to proceed.",
+      );
       return;
     }
 
     try {
-      console.log("📝 Form data:", data);
       await turnkeySubmission.mutateAsync(data);
       setShowSuccessModal(true);
       reset();
@@ -246,7 +248,6 @@ export default function TurnkeyProjectFormScreen() {
       setSelectedServices([]);
       setAgreeToTerms(false);
     } catch (error: any) {
-      console.error("Form submission error:", error);
       let message = "Failed to submit turnkey project request";
 
       if (error?.response?.status === 401) {
@@ -841,9 +842,7 @@ export default function TurnkeyProjectFormScreen() {
                   : "bg-white border-gray-300"
               }`}
             >
-              {agreeToTerms && (
-                <Feather name="check" size={14} color="white" />
-              )}
+              {agreeToTerms && <Feather name="check" size={14} color="white" />}
             </View>
             <Text className="text-sm text-gray-600 flex-1 leading-5">
               I agree to the Terms & Conditions and Privacy Policy. I confirm

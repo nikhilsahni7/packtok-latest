@@ -15,7 +15,7 @@ export default function AboutScreen() {
   const router = useRouter();
 
   const handleContactPress = async () => {
-    const email = "hello@PackTok.com";
+    const email = "Packtok01@gmail.com";
     const url = `mailto:${email}`;
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {

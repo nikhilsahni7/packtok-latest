@@ -155,7 +155,7 @@ export default function InvestmentTakeoverFormScreen() {
               onPress: () => router.back(),
               style: "cancel",
             },
-          ]
+          ],
         );
       }
     };
@@ -207,13 +207,14 @@ export default function InvestmentTakeoverFormScreen() {
 
   const onSubmit = async (data: CompanyAcquisitionFormData) => {
     if (!agreeToTerms) {
-      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      Alert.alert(
+        "Error",
+        "You must agree to the Terms and Conditions to proceed.",
+      );
       return;
     }
 
     try {
-      console.log("📝 Form data:", data);
-
       // Transform string values to integers for the API and set defaults
       const transformedData = {
         ...data,
@@ -233,7 +234,6 @@ export default function InvestmentTakeoverFormScreen() {
       reset();
       setAgreeToTerms(false);
     } catch (error: any) {
-      console.error("Form submission error:", error);
       let message = "Failed to submit investment/takeover inquiry";
 
       if (error?.response?.status === 401) {
@@ -841,9 +841,7 @@ export default function InvestmentTakeoverFormScreen() {
                   : "bg-white border-gray-300"
               }`}
             >
-              {agreeToTerms && (
-                <Feather name="check" size={14} color="white" />
-              )}
+              {agreeToTerms && <Feather name="check" size={14} color="white" />}
             </View>
             <Text className="text-sm text-gray-600 flex-1 leading-5">
               I agree to the Terms & Conditions and Privacy Policy. I confirm

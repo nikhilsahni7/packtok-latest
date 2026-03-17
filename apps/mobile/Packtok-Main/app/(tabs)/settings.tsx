@@ -18,7 +18,9 @@ import { useAuthStore } from "../../store/auth-store";
 export default function SettingsScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount({
+    enabled: !!user,
+  });
   const { mutate: logout, isPending } = useLogout();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -121,6 +123,52 @@ export default function SettingsScreen() {
             </View>
             <Feather name="chevron-right" size={20} color="#9CA3AF" />
           </TouchableOpacity>
+
+          {user?.role === "VENDOR" && (
+            <>
+              <TouchableOpacity
+                onPress={() => router.push("/vendor/dashboard" as any)}
+                className="flex-row items-center justify-between py-4 border-b border-gray-100"
+                activeOpacity={0.7}
+              >
+                <View className="flex-row items-center">
+                  <Feather name="briefcase" size={20} color="#374151" />
+                  <Text className="text-base text-gray-900 ml-3">
+                    Vendor Dashboard
+                  </Text>
+                </View>
+                <Feather name="chevron-right" size={20} color="#9CA3AF" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push("/vendor/products" as any)}
+                className="flex-row items-center justify-between py-4 border-b border-gray-100"
+                activeOpacity={0.7}
+              >
+                <View className="flex-row items-center">
+                  <Feather name="package" size={20} color="#374151" />
+                  <Text className="text-base text-gray-900 ml-3">
+                    Vendor Products
+                  </Text>
+                </View>
+                <Feather name="chevron-right" size={20} color="#9CA3AF" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push("/vendor/subscription" as any)}
+                className="flex-row items-center justify-between py-4 border-b border-gray-100"
+                activeOpacity={0.7}
+              >
+                <View className="flex-row items-center">
+                  <Feather name="award" size={20} color="#374151" />
+                  <Text className="text-base text-gray-900 ml-3">
+                    Vendor Subscription
+                  </Text>
+                </View>
+                <Feather name="chevron-right" size={20} color="#9CA3AF" />
+              </TouchableOpacity>
+            </>
+          )}
 
           {/* Service Form History */}
           <TouchableOpacity

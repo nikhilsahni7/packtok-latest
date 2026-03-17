@@ -1,3 +1,8 @@
+import {
+  openSupportLocation,
+  openSupportPhone,
+  shareServiceDetails,
+} from "@/utils/serviceSupport";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -5,7 +10,6 @@ import React from "react";
 import {
   Dimensions,
   Image,
-  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -18,15 +22,19 @@ export default function ManpowerScreen() {
   const router = useRouter();
 
   const handleCall = () => {
-    Linking.openURL("tel:+1234567890");
+    void openSupportPhone();
   };
 
   const handleLocation = () => {
-    Linking.openURL("https://maps.google.com");
+    void openSupportLocation();
   };
 
   const handleShare = () => {
-    // Handle share functionality
+    void shareServiceDetails({
+      title: "Manpower",
+      description:
+        "Packtok connects employers with qualified industrial talent and helps job seekers find manufacturing and warehouse opportunities.",
+    });
   };
 
   const handleHiringPartnerForm = () => {
@@ -74,7 +82,7 @@ export default function ManpowerScreen() {
           </Text>
 
           {/* Action Buttons */}
-          <View className="flex-row items-start justify-between mb-6">
+          <View className="flex-row items-start mb-6">
             <View className="flex-row items-start gap-x-4">
               {/* Call Button */}
               <View className="items-center">
@@ -110,20 +118,6 @@ export default function ManpowerScreen() {
                   <Feather name="share-2" size={18} color="#000" />
                 </TouchableOpacity>
                 <Text className="text-xs text-gray-600">Share</Text>
-              </View>
-            </View>
-
-            {/* Rating */}
-            <View className="flex-column items-center">
-              <View className="flex-row items-center border border-[#0063F7] px-3 py-1.5 rounded-[10px]">
-                <Feather name="star" size={14} color="#2563EB" />
-                <Text className="text-blue-600 text-xs ml-1 font-medium">
-                  4.8
-                </Text>
-              </View>
-
-              <View className="mt-1">
-                <Text className="text-blue-600 text-xs ml-1">45 ratings</Text>
               </View>
             </View>
           </View>

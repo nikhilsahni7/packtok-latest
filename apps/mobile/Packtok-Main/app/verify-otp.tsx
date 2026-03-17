@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useMutation } from "@tanstack/react-query";
 import {
   ActivityIndicator,
   Dimensions,
@@ -15,7 +16,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useMutation } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import api from "../lib/api";
 
@@ -26,7 +26,12 @@ const RESEND_COOLDOWN = 60;
 
 export default function VerifyOtpScreen() {
   const router = useRouter();
-  const { email } = useLocalSearchParams<{ email: string }>();
+  const { email, type } = useLocalSearchParams<{
+    email: string;
+    type?: string;
+  }>();
+  const normalizedEmail = (email || "").toLowerCase().trim();
+  const authType = type === "vendor" ? "vendor" : "user";
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -41,11 +46,29 @@ export default function VerifyOtpScreen() {
     return () => clearInterval(timer);
   }, [resendCooldown]);
 
+  useEffect(() => {
+    if (
+      !normalizedEmail ||
+      !/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/.test(normalizedEmail)
+    ) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Request",
+        text2: "Please sign up again to verify your email.",
+        position: "top",
+        visibilityTime: 3000,
+      });
+      router.replace(
+        (authType === "vendor" ? "/signup-vendor" : "/signup-user") as any,
+      );
+    }
+  }, [normalizedEmail, router, authType]);
+
   // Verify OTP mutation
   const verifyMutation = useMutation({
     mutationFn: async (otpValue: string) => {
       await api.post("/api/v1/auth/verify-otp", {
-        email: (email || "").toLowerCase().trim(),
+        email: normalizedEmail,
         otp: otpValue,
       });
     },
@@ -57,11 +80,14 @@ export default function VerifyOtpScreen() {
         position: "top",
         visibilityTime: 3000,
       });
-      router.replace("/login" as any);
+      router.replace(
+        (authType === "vendor" ? "/vendor/signin" : "/login") as any,
+      );
     },
     onError: (err: any) => {
       const message =
-        err?.response?.data?.message || "Verification failed. Please try again.";
+        err?.response?.data?.message ||
+        "Verification failed. Please try again.";
       Toast.show({
         type: "error",
         text1: "Verification Failed",
@@ -76,7 +102,7 @@ export default function VerifyOtpScreen() {
   const resendMutation = useMutation({
     mutationFn: async () => {
       await api.post("/api/v1/auth/resend-otp", {
-        email: (email || "").toLowerCase().trim(),
+        email: normalizedEmail,
       });
     },
     onSuccess: () => {
@@ -92,8 +118,7 @@ export default function VerifyOtpScreen() {
       inputRefs.current[0]?.focus();
     },
     onError: (err: any) => {
-      const message =
-        err?.response?.data?.message || "Failed to resend OTP.";
+      const message = err?.response?.data?.message || "Failed to resend OTP.";
       Toast.show({
         type: "error",
         text1: "Error",
@@ -129,7 +154,7 @@ export default function VerifyOtpScreen() {
         inputRefs.current[index + 1]?.focus();
       }
     },
-    [otp]
+    [otp],
   );
 
   const handleKeyPress = useCallback(
@@ -138,7 +163,7 @@ export default function VerifyOtpScreen() {
         inputRefs.current[index - 1]?.focus();
       }
     },
-    [otp]
+    [otp],
   );
 
   const handleVerify = useCallback(() => {
@@ -162,9 +187,9 @@ export default function VerifyOtpScreen() {
   }, [resendCooldown, resendMutation]);
 
   const maskedEmail =
-    email && email.length > 5
-      ? `${email.slice(0, 3)}...${email.slice(email.indexOf("@"))}`
-      : email || "";
+    normalizedEmail && normalizedEmail.length > 5
+      ? `${normalizedEmail.slice(0, 3)}...${normalizedEmail.slice(normalizedEmail.indexOf("@"))}`
+      : normalizedEmail || "";
 
   return (
     <KeyboardAvoidingView
@@ -266,9 +291,7 @@ export default function VerifyOtpScreen() {
                 maxLength={1}
                 editable={!verifyMutation.isPending}
                 className={`w-12 h-14 text-center text-xl font-semibold rounded-xl border-2 bg-white ${
-                  digit
-                    ? "border-orange-400"
-                    : "border-gray-200"
+                  digit ? "border-orange-400" : "border-gray-200"
                 }`}
                 style={{ fontSize: 20 }}
                 selectTextOnFocus
@@ -304,9 +327,7 @@ export default function VerifyOtpScreen() {
             >
               <Text
                 className={`text-sm font-medium ${
-                  resendCooldown > 0
-                    ? "text-gray-400"
-                    : "text-orange-500"
+                  resendCooldown > 0 ? "text-gray-400" : "text-orange-500"
                 }`}
               >
                 {resendMutation.isPending

@@ -46,18 +46,15 @@ api.interceptors.request.use(
       const token = await TokenStorage.getAccessToken();
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log("🔑 Token added to request:", config.url);
-      } else {
-        console.log("⚠️ No token found for request:", config.url);
       }
-    } catch (error) {
-      console.error("❌ Error getting token:", error);
+    } catch {
+      // Swallow token retrieval errors and let request proceed unauthenticated.
     }
     return config;
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor for token refresh
@@ -88,6 +85,7 @@ api.interceptors.response.use(
     // when the refresh token itself is expired
     const unauthenticatedEndpoints = [
       "/api/v1/auth/login",
+      "/api/v1/auth/login-vendor",
       "/api/v1/auth/signup",
       "/api/v1/auth/signup-vendor",
       "/api/v1/auth/verify-otp",
@@ -98,7 +96,7 @@ api.interceptors.response.use(
     ];
 
     const isUnauthenticatedEndpoint = unauthenticatedEndpoints.some(
-      (endpoint) => originalRequest?.url?.includes(endpoint)
+      (endpoint) => originalRequest?.url?.includes(endpoint),
     );
 
     if (
@@ -127,14 +125,14 @@ api.interceptors.response.use(
 
         if (!refreshToken) {
           console.warn(
-            "⚠️ No refresh token available - clearing tokens and redirecting to login"
+            "⚠️ No refresh token available - clearing tokens and redirecting to login",
           );
           await TokenStorage.clearTokens();
           processQueue(new Error("Session expired. Please login again."), null);
           isRefreshing = false;
           // Don't throw error, just reject the request
           return Promise.reject(
-            new Error("Session expired. Please login again.")
+            new Error("Session expired. Please login again."),
           );
         }
 
@@ -146,7 +144,7 @@ api.interceptors.response.use(
             headers: {
               Authorization: `Bearer ${refreshToken}`,
             },
-          }
+          },
         );
 
         const newAccessToken =
@@ -172,7 +170,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

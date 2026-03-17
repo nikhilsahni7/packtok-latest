@@ -6,7 +6,7 @@ export function useProtectedRoute() {
   const segments = useSegments();
   const router = useRouter();
   const navigationState = useRootNavigationState();
-  const { isAuthenticated, hasHydrated } = useAuthStore();
+  const { isAuthenticated, hasHydrated, user } = useAuthStore();
 
   useEffect(() => {
     // Wait for both hydration and navigation state to be ready
@@ -28,6 +28,10 @@ export function useProtectedRoute() {
     // Define protected pages (logged in users only)
     const protectedPages = ["(tabs)", "modal"];
     const isProtectedPage = protectedPages.includes(segments[0] as string);
+    const isVendorPage = segments[0] === "vendor";
+    const vendorPublicPages = ["signin"];
+    const isVendorPublicPage =
+      isVendorPage && vendorPublicPages.includes(currentSegment as string);
     const isAuthPage = authOnlyPages.includes(currentSegment as string);
 
     // Logged out user trying to access protected pages
@@ -37,11 +41,31 @@ export function useProtectedRoute() {
       return;
     }
 
+    // Logged out user trying to access vendor pages
+    if (!isAuthenticated && isVendorPage && !isVendorPublicPage) {
+      console.log("🔒 Unauthenticated user blocked from:", segments.join("/"));
+      router.replace("/auth-selection");
+      return;
+    }
+
+    // Authenticated non-vendor user trying to access vendor pages
+    if (isAuthenticated && isVendorPage && user?.role !== "VENDOR") {
+      router.replace("/(tabs)");
+      return;
+    }
+
     // Logged in user trying to access auth-only pages
     if (isAuthenticated && isAuthPage) {
       console.log("✅ Authenticated user redirected from:", segments.join("/"));
       router.replace("/(tabs)");
       return;
     }
-  }, [isAuthenticated, segments, hasHydrated, navigationState?.key, router]);
+  }, [
+    isAuthenticated,
+    segments,
+    hasHydrated,
+    navigationState?.key,
+    router,
+    user?.role,
+  ]);
 }

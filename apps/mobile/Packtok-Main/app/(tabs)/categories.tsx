@@ -1,6 +1,7 @@
 import { useCartItemCount } from "@/hooks/useCart";
 import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import { useAuthStore } from "@/store/auth-store";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -96,8 +97,11 @@ const categories = [
 
 export default function CategoriesScreen() {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const itemCount = useCartItemCount();
-  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount({
+    enabled: !!user,
+  });
   const [searchQuery, setSearchQuery] = useState("");
 
   const { startListening, isListening, transcript } = useVoiceSearch();
@@ -112,65 +116,51 @@ export default function CategoriesScreen() {
     }
   };
 
-  const handleCategoryPress = (categoryId: string, categoryName: string) => {
-    console.log(`🔍 Category pressed: ${categoryName} (ID: ${categoryId})`);
-
+  const handleCategoryPress = (_categoryId: string, categoryName: string) => {
     // Navigate to appropriate screen based on category
     try {
       switch (categoryName) {
         case "Machinery":
-          console.log("→ Navigating to Machinery");
           router.push("/marketplace/machinery");
           break;
         case "Spare Parts":
-          console.log("→ Navigating to Spare Parts");
           router.push("/marketplace/spare-parts");
           break;
         case "Raw Materials":
-          console.log("→ Navigating to Raw Materials");
           router.push("/marketplace/raw-material");
           break;
         case "Consumables":
-          console.log("→ Navigating to Consumables");
           router.push("/marketplace/consumables");
           break;
         case "Bidding":
-          console.log("→ Navigating to Bidding");
           router.push("/bidding");
           break;
         case "Consultancy":
-          console.log("→ Navigating to Consultancy");
           router.push("/services/consultancy");
           break;
         case "Maintenance":
-          console.log("→ Navigating to Maintenance");
           router.push("/services/maintenance");
           break;
         case "Turnkey":
-          console.log("→ Navigating to Turnkey Projects");
           router.push("/services/turnkey-projects");
           break;
         case "Machinery Installer":
-          console.log("→ Navigating to Machinery Installer");
           router.push("/services/machinery-installer");
           break;
         case "Sell Old Machine":
-          console.log("→ Navigating to Sell Old Machine");
           router.push("/services/sell-old-machine");
           break;
         case "Investment/Takeover":
-          console.log("→ Navigating to Investment/Takeover");
           router.push("/services/investment-takeover");
           break;
         case "Man Power":
-          console.log("→ Navigating to Man Power");
           router.push("/services/manpower");
           break;
         default:
-          console.log(`❌ Unknown category: ${categoryName}`);
+          return;
       }
-    } catch (error) {
-      console.error("❌ Navigation error:", error);
+    } catch {
+      // Ignore navigation failures to avoid crashing the categories screen.
     }
   };
 

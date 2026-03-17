@@ -35,7 +35,7 @@ export default function LoginScreen() {
       Toast.show({
         type: "error",
         text1: "Validation Error",
-        text2: "Please enter your email or phone number",
+        text2: "Please enter your email",
         position: "top",
         visibilityTime: 3000,
       });
@@ -65,6 +65,10 @@ export default function LoginScreen() {
     router.back();
   };
 
+  const handleVendorSignin = () => {
+    router.push("/vendor/signin" as any);
+  };
+
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-white"
@@ -81,7 +85,7 @@ export default function LoginScreen() {
         source={require("@/assets/images/bubble 01.png")}
         className="absolute z-[3]"
         style={{
-          top: -width * 0.10,
+          top: -width * 0.1,
           left: -width * 0.25,
           width: width * 0.7,
           height: width * 0.9,
@@ -94,7 +98,7 @@ export default function LoginScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.10,
+          top: -width * 0.1,
           left: -width * 0.25,
           width: width * 1,
           height: width * 0.9,
@@ -142,7 +146,7 @@ export default function LoginScreen() {
               source={require("@/assets/images/hero_bg.png")}
               style={{
                 width: width * 2,
-                height: height * 0.30,
+                height: height * 0.3,
               }}
               resizeMode="contain"
             />
@@ -155,9 +159,9 @@ export default function LoginScreen() {
 
           {/* Input Fields */}
           <View className="space-y-4">
-            {/* Email/Phone Input */}
+            {/* Email Input */}
             <TextInput
-              placeholder="Email or Phone Number"
+              placeholder="Email"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -204,8 +208,9 @@ export default function LoginScreen() {
           <TouchableOpacity
             onPress={handleLogin}
             disabled={isPending}
-            className={`w-full rounded-2xl py-4 items-center justify-center mt-8 ${isPending ? "bg-gray-400" : "bg-black"
-              }`}
+            className={`w-full rounded-2xl py-4 items-center justify-center mt-8 ${
+              isPending ? "bg-gray-400" : "bg-black"
+            }`}
             activeOpacity={0.8}
           >
             {isPending ? (
@@ -222,6 +227,19 @@ export default function LoginScreen() {
             activeOpacity={0.8}
           >
             <Text className="text-gray-600 text-base font-medium">Cancel</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleVendorSignin}
+            className="self-center"
+            activeOpacity={0.7}
+          >
+            <Text className="text-sm text-gray-600">
+              Are you a vendor?{" "}
+              <Text className="text-orange-500 font-semibold">
+                Sign In as Vendor
+              </Text>
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

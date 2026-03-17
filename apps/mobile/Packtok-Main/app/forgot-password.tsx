@@ -46,6 +46,7 @@ export default function ForgotPasswordScreen() {
   const requestMutation = useRequestPasswordReset();
   const verifyMutation = useVerifyPasswordResetOtp();
   const confirmMutation = useConfirmPasswordReset();
+  const normalizedEmail = email.trim().toLowerCase();
 
   // Cooldown timer
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function ForgotPasswordScreen() {
 
   // Email step
   const handleEmailSubmit = useCallback(() => {
-    if (!email.trim()) {
+    if (!normalizedEmail) {
       Toast.show({
         type: "error",
         text1: "Validation Error",
@@ -69,7 +70,7 @@ export default function ForgotPasswordScreen() {
       return;
     }
     const emailRegex = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email.trim())) {
+    if (!emailRegex.test(normalizedEmail)) {
       Toast.show({
         type: "error",
         text1: "Validation Error",
@@ -79,13 +80,13 @@ export default function ForgotPasswordScreen() {
       });
       return;
     }
-    requestMutation.mutate(email, {
+    requestMutation.mutate(normalizedEmail, {
       onSuccess: () => {
         setStep("otp");
         setResendCooldown(RESEND_COOLDOWN);
       },
     });
-  }, [email, requestMutation]);
+  }, [normalizedEmail, requestMutation]);
 
   // OTP handling
   const handleOtpChange = useCallback(
@@ -109,7 +110,7 @@ export default function ForgotPasswordScreen() {
         otpRefs.current[index + 1]?.focus();
       }
     },
-    [otp]
+    [otp],
   );
 
   const handleOtpKeyPress = useCallback(
@@ -118,7 +119,7 @@ export default function ForgotPasswordScreen() {
         otpRefs.current[index - 1]?.focus();
       }
     },
-    [otp]
+    [otp],
   );
 
   const handleOtpSubmit = useCallback(() => {
@@ -134,25 +135,25 @@ export default function ForgotPasswordScreen() {
       return;
     }
     verifyMutation.mutate(
-      { email, otp: otpValue },
+      { email: normalizedEmail, otp: otpValue },
       {
         onSuccess: () => {
           setStep("password");
         },
-      }
+      },
     );
-  }, [otp, email, verifyMutation]);
+  }, [otp, normalizedEmail, verifyMutation]);
 
   const handleResend = useCallback(() => {
     if (resendCooldown > 0 || requestMutation.isPending) return;
-    requestMutation.mutate(email, {
+    requestMutation.mutate(normalizedEmail, {
       onSuccess: () => {
         setResendCooldown(RESEND_COOLDOWN);
         setOtp(["", "", "", "", "", ""]);
         otpRefs.current[0]?.focus();
       },
     });
-  }, [resendCooldown, requestMutation, email]);
+  }, [resendCooldown, requestMutation, normalizedEmail]);
 
   // Password step
   const handlePasswordSubmit = useCallback(() => {
@@ -227,14 +228,13 @@ export default function ForgotPasswordScreen() {
       return;
     }
     confirmMutation.mutate(
-      { email, otp: otp.join(""), newPassword },
+      { email: normalizedEmail, otp: otp.join(""), newPassword },
       {
         onSuccess: () => {
           router.replace("/login" as any);
         },
         onError: (err: any) => {
-          const message =
-            err?.response?.data?.message || "";
+          const message = err?.response?.data?.message || "";
           if (
             message.toLowerCase().includes("otp") ||
             message.toLowerCase().includes("invalid") ||
@@ -244,14 +244,21 @@ export default function ForgotPasswordScreen() {
             setStep("otp");
           }
         },
-      }
+      },
     );
-  }, [newPassword, confirmPassword, email, otp, confirmMutation, router]);
+  }, [
+    newPassword,
+    confirmPassword,
+    normalizedEmail,
+    otp,
+    confirmMutation,
+    router,
+  ]);
 
   const maskedEmail =
-    email.length > 5
-      ? `${email.slice(0, 3)}...${email.slice(email.indexOf("@"))}`
-      : email;
+    normalizedEmail.length > 5
+      ? `${normalizedEmail.slice(0, 3)}...${normalizedEmail.slice(normalizedEmail.indexOf("@"))}`
+      : normalizedEmail;
 
   // Shared header with logo and image
   const renderHeader = (showImage: boolean = true) => (
@@ -289,9 +296,7 @@ export default function ForgotPasswordScreen() {
         Please enter your email to reset the password
       </Text>
 
-      <Text className="text-sm font-medium text-gray-700 mb-2">
-        Your Email
-      </Text>
+      <Text className="text-sm font-medium text-gray-700 mb-2">Your Email</Text>
       <TextInput
         placeholder="Enter your email"
         value={email}

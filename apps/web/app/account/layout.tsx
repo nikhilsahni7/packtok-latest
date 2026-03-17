@@ -2,9 +2,23 @@
 
 import Protected from "@/components/auth/protected";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@packtok/ui/components/button";
-import { ClipboardList, FileText, Heart, LogOut, MapPin, Package, ShoppingCart, User, X } from "lucide-react";
+import {
+  Bell,
+  ClipboardList,
+  FileText,
+  Gavel,
+  Heart,
+  LogOut,
+  MapPin,
+  Package,
+  ShoppingCart,
+  Truck,
+  User,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,11 +27,22 @@ import { toast } from "react-hot-toast";
 
 const navItems = [
   { href: "/account", label: "Account", icon: User, exact: true },
+  { href: "/account/notifications", label: "Notifications", icon: Bell },
   { href: "/account/addresses", label: "Address", icon: MapPin },
   { href: "/account/orders", label: "Orders", icon: Package },
   { href: "/cart", label: "Cart", icon: ShoppingCart },
-  { href: "/account/form-tracking", label: "Form Tracking", icon: ClipboardList },
+  {
+    href: "/account/form-tracking",
+    label: "Form Tracking",
+    icon: ClipboardList,
+  },
   { href: "/account/quotes", label: "Quote Requests", icon: FileText },
+  {
+    href: "/account/sell-items-history",
+    label: "Sell Old Items Status",
+    icon: Truck,
+  },
+  { href: "/account/bidding-history", label: "Bidding History", icon: Gavel },
   { href: "/account/wishlist", label: "Wishlist", icon: Heart },
 ];
 
@@ -29,6 +54,7 @@ export default function AccountLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { data: user, isLoading } = useCurrentUser();
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
   const logout = useAuthStore((s) => s.logout);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -67,11 +93,17 @@ export default function AccountLayout({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? "U"
+                  (user?.name?.[0]?.toUpperCase() ??
+                  user?.email?.[0]?.toUpperCase() ??
+                  "U")
                 )}
               </div>
-              <h2 className="font-semibold text-gray-900">{user?.name || "User"}</h2>
-              <p className="text-sm text-gray-500 truncate max-w-full">{user?.email}</p>
+              <h2 className="font-semibold text-gray-900">
+                {user?.name || "User"}
+              </h2>
+              <p className="text-sm text-gray-500 truncate max-w-full">
+                {user?.email}
+              </p>
             </div>
             <nav className="space-y-1">
               {navItems.map((item) => {
@@ -90,7 +122,21 @@ export default function AccountLayout({
                     }`}
                   >
                     <Icon className="h-4 w-4" />
-                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-sm font-medium flex-1">
+                      {item.label}
+                    </span>
+                    {item.href === "/account/notifications" &&
+                    unreadCount > 0 ? (
+                      <span
+                        className={`ml-2 min-w-5 h-5 px-1 rounded-full text-[10px] font-bold flex items-center justify-center ${
+                          isActive || (item.exact && pathname === item.href)
+                            ? "bg-white text-orange-600"
+                            : "bg-orange-100 text-orange-700"
+                        }`}
+                      >
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    ) : null}
                   </Link>
                 );
               })}
@@ -127,7 +173,9 @@ export default function AccountLayout({
                     </button>
                   </div>
                   <div className="p-5">
-                    <p className="text-gray-600">Are you sure you want to log out?</p>
+                    <p className="text-gray-600">
+                      Are you sure you want to log out?
+                    </p>
                   </div>
                   <div className="flex gap-3 p-5 pt-0">
                     <Button

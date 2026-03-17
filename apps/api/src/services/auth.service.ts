@@ -13,6 +13,39 @@ const hashOtp = (otp: string) =>
     .update(otp + config.supabase.jwtSecret)
     .digest("hex");
 
+const assertStrongPassword = (password: string) => {
+  if (!password || password.length < 8) {
+    throw new ApiError(400, "Password must be at least 8 characters long");
+  }
+  if (!/[a-z]/.test(password)) {
+    throw new ApiError(
+      400,
+      "Password must contain at least one lowercase letter"
+    );
+  }
+  if (!/[A-Z]/.test(password)) {
+    throw new ApiError(
+      400,
+      "Password must contain at least one uppercase letter"
+    );
+  }
+  if (!/[0-9]/.test(password)) {
+    throw new ApiError(400, "Password must contain at least one number");
+  }
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    throw new ApiError(
+      400,
+      "Password must contain at least one special character"
+    );
+  }
+};
+
+const assertValidOtp = (otp: string) => {
+  if (!/^\d{6}$/.test(otp?.trim() || "")) {
+    throw new ApiError(400, "OTP must be a valid 6-digit code");
+  }
+};
+
 /**
  * Registers a user in Supabase auth and in the local Prisma `User` table for metadata.
  */
@@ -23,6 +56,8 @@ export const registerUser = async (userData: {
   country?: string;
   password: string;
 }): Promise<User> => {
+  assertStrongPassword(userData.password);
+
   const normalizedEmail = userData.email.toLowerCase().trim();
   const existingUser = await prisma.user.findUnique({
     where: { email: normalizedEmail },
@@ -177,7 +212,9 @@ export const sendVerificationOtp = async (email: string) => {
   const hashedOtp = hashOtp(otp);
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 min
 
-  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
   if (!user) throw new ApiError(404, "User not found");
 
   await (prisma as any).otp.upsert({
@@ -195,8 +232,11 @@ export const sendVerificationOtp = async (email: string) => {
 };
 
 export const verifyOtp = async (email: string, otp: string): Promise<void> => {
+  assertValidOtp(otp);
   const normalizedEmail = email.toLowerCase().trim();
-  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
   if (!user) throw new ApiError(404, "User not found");
 
   const otpRecord = await (prisma as any).otp.findUnique({
@@ -221,7 +261,9 @@ export const verifyOtp = async (email: string, otp: string): Promise<void> => {
 // ------------------ PASSWORD RESET FLOW ------------------
 export const sendPasswordResetOtp = async (email: string): Promise<void> => {
   const normalizedEmail = email.toLowerCase().trim();
-  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
   if (!user) throw new ApiError(404, "User not found");
 
   const otp = crypto.randomInt(100000, 999999).toString();
@@ -248,8 +290,13 @@ export const resetPasswordWithOtp = async (
   otp: string,
   newPassword: string
 ): Promise<void> => {
+  assertValidOtp(otp);
+  assertStrongPassword(newPassword);
+
   const normalizedEmail = email.toLowerCase().trim();
-  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
   if (!user) throw new ApiError(404, "User not found");
 
   const otpRecord = await (prisma as any).otp.findUnique({
@@ -276,8 +323,11 @@ export const verifyPasswordResetOtp = async (
   email: string,
   otp: string
 ): Promise<void> => {
+  assertValidOtp(otp);
   const normalizedEmail = email.toLowerCase().trim();
-  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+  const user = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
   if (!user) throw new ApiError(404, "User not found");
 
   const otpRecord = await (prisma as any).otp.findUnique({

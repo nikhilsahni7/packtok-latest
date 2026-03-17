@@ -437,6 +437,54 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="vendor/signin"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="vendor/dashboard"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="vendor/products"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="vendor/products/new"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="vendor/products/[id]"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="vendor/subscription"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
             name="modal"
             options={{ presentation: "modal", title: "Modal" }}
           />

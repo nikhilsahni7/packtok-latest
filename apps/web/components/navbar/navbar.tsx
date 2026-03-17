@@ -5,11 +5,12 @@ import LogoutButton from "@/components/auth/logout-button";
 import { navbarLinks } from "@/constant/index";
 import { useCart } from "@/contexts/cart-context";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@packtok/ui/components/button";
 import { Input } from "@packtok/ui/components/input";
 import { cn } from "@packtok/ui/lib/utils";
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Bell, Menu, Search, ShoppingBag, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,9 @@ export default function Navbar() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const { data: user } = useCurrentUser();
   const { itemCount } = useCart();
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount({
+    enabled: Boolean(accessToken),
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -96,7 +100,10 @@ export default function Navbar() {
         "top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out",
         scrolled
           ? "shadow-md bg-white fixed"
-          : cn("bg-black border-b-3 border-orange-500", toggle ? "fixed w-full" : "relative")
+          : cn(
+              "bg-black border-b-3 border-orange-500",
+              toggle ? "fixed w-full" : "relative"
+            )
       )}
     >
       <div className="w-[80%] mx-auto ">
@@ -194,6 +201,21 @@ export default function Navbar() {
 
             {accessToken && user ? (
               <div className="flex items-center gap-4">
+                <Link href="/account/notifications" className="relative group">
+                  <Bell
+                    className={cn(
+                      "h-5 w-5 cursor-pointer transition-colors duration-500 ease-in-out",
+                      scrolled
+                        ? "text-gray-700 hover:text-gray-900"
+                        : "text-white hover:text-gray-300"
+                    )}
+                  />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold rounded-full min-w-4 h-4 px-1 flex items-center justify-center border-2 border-white">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </Link>
                 {user.role === "VENDOR" && (
                   <Link
                     href="/vendor/dashboard"
@@ -312,7 +334,11 @@ export default function Navbar() {
 
               {/* Mobile Icons */}
               <div className="flex items-center justify-center space-x-6 pt-2 pb-2">
-                <Link href="/cart" onClick={handleLinkClick} className="relative group">
+                <Link
+                  href="/cart"
+                  onClick={handleLinkClick}
+                  className="relative group"
+                >
                   <ShoppingBag
                     className={cn(
                       "h-6 w-6 cursor-pointer transition-colors duration-500 ease-in-out",
@@ -327,6 +353,27 @@ export default function Navbar() {
                     </span>
                   )}
                 </Link>
+                {accessToken && user ? (
+                  <Link
+                    href="/account/notifications"
+                    onClick={handleLinkClick}
+                    className="relative group"
+                  >
+                    <Bell
+                      className={cn(
+                        "h-6 w-6 cursor-pointer transition-colors duration-500 ease-in-out",
+                        scrolled
+                          ? "text-gray-700 hover:text-gray-900"
+                          : "text-white hover:text-gray-300"
+                      )}
+                    />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center border-2 border-white">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                ) : null}
               </div>
 
               {/* Mobile Authentication */}
@@ -349,13 +396,23 @@ export default function Navbar() {
                             : "text-white hover:text-gray-300"
                         )}
                       >
-                        Welcome, {user?.name?.split(" ")[0] || user?.email || "My Account"}
+                        Welcome,{" "}
+                        {user?.name?.split(" ")[0] ||
+                          user?.email ||
+                          "My Account"}
                       </Link>
                     </div>
                     {user?.role === "VENDOR" && (
                       <div className="px-3">
-                        <Button asChild variant="outline" className="w-full border-orange-500 text-orange-600 hover:bg-orange-50">
-                          <Link href="/vendor/dashboard" onClick={handleLinkClick}>
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="w-full border-orange-500 text-orange-600 hover:bg-orange-50"
+                        >
+                          <Link
+                            href="/vendor/dashboard"
+                            onClick={handleLinkClick}
+                          >
                             Vendor Dashboard
                           </Link>
                         </Button>

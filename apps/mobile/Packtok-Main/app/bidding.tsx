@@ -9,18 +9,17 @@ import { usePublicAuctions } from "@/hooks/useAuctions";
 import { Auction } from "@/types/auction";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useMemo } from "react";
 import {
   ActivityIndicator,
   Dimensions,
-  Image,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 
@@ -43,15 +42,12 @@ export default function BiddingScreen() {
 
   const liveAuctions = useMemo(
     () => auctions.filter((auction) => auction.status === "LIVE"),
-    [auctions]
+    [auctions],
   );
 
   const upcomingAuctions = useMemo(
-    () =>
-      auctions.filter((auction) =>
-        ["SCHEDULED", "DRAFT"].includes(auction.status)
-      ),
-    [auctions]
+    () => auctions.filter((auction) => ["SCHEDULED"].includes(auction.status)),
+    [auctions],
   );
 
   const reverseAuctions = useMemo(
@@ -59,9 +55,9 @@ export default function BiddingScreen() {
       auctions.filter(
         (auction) =>
           auction.mode === "REVERSE" &&
-          ["SCHEDULED", "DRAFT", "LIVE"].includes(auction.status)
+          ["SCHEDULED", "LIVE"].includes(auction.status),
       ),
-    [auctions]
+    [auctions],
   );
 
   const handleSelectAuction = (auctionId: string) => {
@@ -73,7 +69,7 @@ export default function BiddingScreen() {
 
   const pickNextAuction = (
     candidates: Auction[],
-    extractor: (auction: Auction) => string
+    extractor: (auction: Auction) => string,
   ) => {
     if (candidates.length === 0) {
       return null;
@@ -139,7 +135,9 @@ export default function BiddingScreen() {
                 Live Bidding
               </Text>
             </View>
-            <TouchableOpacity onPress={() => router.push("/bidding/list?type=live" as any)}>
+            <TouchableOpacity
+              onPress={() => router.push("/bidding/list?type=live" as any)}
+            >
               <Text className="text-sm font-medium text-gray-600">
                 View all <Text className="text-lg">›</Text>
               </Text>
@@ -157,7 +155,9 @@ export default function BiddingScreen() {
             <Text className="text-[18px] font-semibold text-gray-900">
               Regular Bidding
             </Text>
-            <TouchableOpacity onPress={() => router.push("/bidding/list?type=regular" as any)}>
+            <TouchableOpacity
+              onPress={() => router.push("/bidding/list?type=regular" as any)}
+            >
               <Text className="text-sm font-medium text-gray-600">
                 View all <Text className="text-lg">›</Text>
               </Text>
@@ -175,7 +175,9 @@ export default function BiddingScreen() {
             <Text className="text-[18px] font-semibold text-gray-900">
               Reverse Bidding
             </Text>
-            <TouchableOpacity onPress={() => router.push("/bidding/list?type=reverse" as any)}>
+            <TouchableOpacity
+              onPress={() => router.push("/bidding/list?type=reverse" as any)}
+            >
               <Text className="text-sm font-medium text-gray-600">
                 View all <Text className="text-lg">›</Text>
               </Text>

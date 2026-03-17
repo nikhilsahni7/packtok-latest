@@ -12,14 +12,14 @@ import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useVideoPlayer, VideoView } from "expo-video";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Dimensions,
   Image,
-  Linking,
   ScrollView,
+  Share,
   Text,
   TextInput,
   TouchableOpacity,
@@ -36,6 +36,8 @@ export default function PodcastDetailScreen() {
   const [showAllComments, setShowAllComments] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingCommentText, setEditingCommentText] = useState("");
+  const scrollViewRef = useRef<ScrollView>(null);
+  const commentsSectionYRef = useRef(0);
   const user = useAuthStore((state) => state.user);
 
   const { data: podcast, isLoading, isError } = usePodcast(id);
@@ -93,10 +95,24 @@ export default function PodcastDetailScreen() {
     reactToPodcast("LIKE");
   };
 
-  const handleShare = () => {
-    // Sharing just the Packtok backend web url or something similar
-    // We will just do a standard fallback to the packtok domain
-    Linking.openURL(`https://packtok.com/podcasts/${id}`);
+  const handleShare = async () => {
+    try {
+      const shareUrl = `https://packtok.com/podcasts/${id}`;
+      await Share.share({
+        title: podcast.title,
+        message: `${podcast.title}\n${shareUrl}`,
+        url: shareUrl,
+      });
+    } catch {
+      Alert.alert("Error", "Unable to share this podcast right now.");
+    }
+  };
+
+  const scrollToComments = () => {
+    scrollViewRef.current?.scrollTo({
+      y: Math.max(commentsSectionYRef.current - 16, 0),
+      animated: true,
+    });
   };
 
   const handleAddComment = () => {
@@ -107,7 +123,7 @@ export default function PodcastDetailScreen() {
           onSuccess: () => {
             setNewComment("");
           },
-        }
+        },
       );
     }
   };
@@ -138,7 +154,7 @@ export default function PodcastDetailScreen() {
         onSuccess: () => {
           cancelEditComment();
         },
-      }
+      },
     );
   };
 
@@ -162,7 +178,7 @@ export default function PodcastDetailScreen() {
             });
           },
         },
-      ]
+      ],
     );
   };
 
@@ -171,6 +187,7 @@ export default function PodcastDetailScreen() {
       <StatusBar style="light" />
 
       <ScrollView
+        ref={scrollViewRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
@@ -263,7 +280,11 @@ export default function PodcastDetailScreen() {
             </TouchableOpacity>
 
             {/* Comment Button */}
-            <TouchableOpacity className="items-center" activeOpacity={0.7}>
+            <TouchableOpacity
+              className="items-center"
+              activeOpacity={0.7}
+              onPress={scrollToComments}
+            >
               <View className="w-12 h-12 rounded-full bg-gray-100 items-center justify-center">
                 <Feather name="message-circle" size={24} color="#6B7280" />
               </View>
@@ -286,7 +307,12 @@ export default function PodcastDetailScreen() {
           </View>
 
           {/* Description */}
-          <View className="mb-6">
+          <View
+            className="mb-6"
+            onLayout={(event) => {
+              commentsSectionYRef.current = event.nativeEvent.layout.y;
+            }}
+          >
             <Text className="text-lg font-bold text-gray-900 mb-3">
               Description
             </Text>
@@ -368,7 +394,7 @@ export default function PodcastDetailScreen() {
                       uri:
                         comment.user.profile_image ??
                         `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          comment.user.name
+                          comment.user.name,
                         )}&background=random&color=fff`,
                     }}
                     className="w-10 h-10 rounded-full mr-3"

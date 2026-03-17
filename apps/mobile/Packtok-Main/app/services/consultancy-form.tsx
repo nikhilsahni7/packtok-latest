@@ -230,7 +230,7 @@ export default function ConsultancyFormScreen() {
               onPress: () => router.back(),
               style: "cancel",
             },
-          ]
+          ],
         );
       }
     };
@@ -331,13 +331,14 @@ export default function ConsultancyFormScreen() {
 
   const onSubmit = async (data: ConsultancyFormData) => {
     if (!agreeToTerms) {
-      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      Alert.alert(
+        "Error",
+        "You must agree to the Terms and Conditions to proceed.",
+      );
       return;
     }
 
     try {
-      console.log("📝 Form data:", data);
-
       // Transform string values to integers and dates to ISO strings for the API
       const transformedData = {
         ...data,
@@ -365,7 +366,6 @@ export default function ConsultancyFormScreen() {
       setSelectedGoals([]);
       setAgreeToTerms(false);
     } catch (error: any) {
-      console.error("Form submission error:", error);
       let message = "Failed to submit consultancy request";
 
       if (error?.response?.status === 401) {
@@ -860,9 +860,7 @@ export default function ConsultancyFormScreen() {
                   : "bg-white border-gray-300"
               }`}
             >
-              {agreeToTerms && (
-                <Feather name="check" size={14} color="white" />
-              )}
+              {agreeToTerms && <Feather name="check" size={14} color="white" />}
             </View>
             <Text className="text-sm text-gray-600 flex-1 leading-5">
               I agree to the Terms & Conditions and Privacy Policy. I confirm

@@ -30,7 +30,7 @@ export default function AuthSelectionScreen() {
         source={require("@/assets/images/bubble 01.png")}
         className="absolute z-10"
         style={{
-          top: -width * 0.10,
+          top: -width * 0.1,
           left: -width * 0.25,
           width: width * 0.8,
           height: width * 0.9,
@@ -43,8 +43,8 @@ export default function AuthSelectionScreen() {
         source={require("@/assets/images/bubble 02.png")}
         className="absolute"
         style={{
-          top: -width * 0.10,
-          left: -width * 0.20,
+          top: -width * 0.1,
+          left: -width * 0.2,
           width: width * 1,
           height: width * 0.9,
         }}

@@ -46,9 +46,10 @@ export default function HomeScreen() {
     data: unreadCount = 0,
     refetch: refetchUnreadCount,
     isFetching: isFetchingUnreadCount,
-  } = useUnreadNotificationsCount();
+  } = useUnreadNotificationsCount({ enabled: !!user });
 
   const { startListening, isListening, transcript } = useVoiceSearch();
+  const isVendor = user?.role === "VENDOR";
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -89,7 +90,7 @@ export default function HomeScreen() {
         lastFocusRefreshAtRef.current = now;
         refreshHomeFeed();
       }
-    }, [refreshHomeFeed])
+    }, [refreshHomeFeed]),
   );
 
   const isAnyFetching =
@@ -138,6 +139,19 @@ export default function HomeScreen() {
 
       {/* Header with Title and Search */}
       <View className="px-5 pt-12 pb-2 relative" style={{ zIndex: 10 }}>
+        {isVendor && (
+          <TouchableOpacity
+            onPress={() => router.push("/vendor/dashboard" as any)}
+            className="self-start mb-3 px-3.5 py-2 rounded-full bg-black flex-row items-center"
+            activeOpacity={0.85}
+          >
+            <Feather name="briefcase" size={12} color="white" />
+            <Text className="text-white text-xs font-semibold">
+              {"  "}Open Vendor Dashboard
+            </Text>
+          </TouchableOpacity>
+        )}
+
         {/* Top Bar */}
         <View className="flex-row items-center justify-between mb-4">
           {/* Menu Icon / User Profile */}
@@ -153,6 +167,16 @@ export default function HomeScreen() {
             ) : (
               <View className="w-10 h-10 rounded-full items-center justify-center bg-orange-50">
                 <Feather name="user" size={20} color="#FF8C42" />
+              </View>
+            )}
+            {isVendor && (
+              <View className="absolute -right-1 -top-1 h-5 min-w-[20px] px-1 rounded-full bg-[#22C55E] border border-white items-center justify-center">
+                <Feather name="briefcase" size={10} color="white" />
+              </View>
+            )}
+            {isVendor && (
+              <View className="absolute -right-1 top-4 h-5 min-w-[20px] px-1 rounded-full bg-[#2563EB] border border-white items-center justify-center">
+                <Feather name="check" size={10} color="white" />
               </View>
             )}
           </TouchableOpacity>
@@ -371,9 +395,9 @@ export default function HomeScreen() {
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                <TouchableOpacity className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
+                <View className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
                   <Feather name="heart" size={16} color="#4B5563" />
-                </TouchableOpacity>
+                </View>
               </View>
 
               <View className="pt-2 pb-1">
@@ -395,9 +419,9 @@ export default function HomeScreen() {
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                <TouchableOpacity className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
+                <View className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
                   <Feather name="heart" size={16} color="#4B5563" />
-                </TouchableOpacity>
+                </View>
               </View>
 
               <View className="pt-2 pb-1">
@@ -529,9 +553,9 @@ export default function HomeScreen() {
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                <TouchableOpacity className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
+                <View className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
                   <Feather name="heart" size={16} color="#4B5563" />
-                </TouchableOpacity>
+                </View>
               </View>
               <View className="pt-2 pb-1">
                 <Text className="text-sm font-semibold text-gray-900">
@@ -556,9 +580,9 @@ export default function HomeScreen() {
                   style={{ width: "100%", height: 120 }}
                   resizeMode="cover"
                 />
-                <TouchableOpacity className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
+                <View className="absolute top-2 right-2 bg-white/80 rounded-full p-1.5 shadow-sm">
                   <Feather name="heart" size={16} color="#4B5563" />
-                </TouchableOpacity>
+                </View>
               </View>
               <View className="pt-2 pb-1">
                 <Text className="text-sm font-semibold text-gray-900">

@@ -38,7 +38,7 @@ export const useNotifications = (tab: "all" | "unread") => {
     queryKey: ["notifications", tab],
     queryFn: async () => {
       const response = await api.get(
-        `/api/v1/notifications?tab=${tab}&page=1&limit=50`
+        `/api/v1/notifications?tab=${tab}&page=1&limit=50`,
       );
       return response.data.data;
     },
@@ -46,13 +46,16 @@ export const useNotifications = (tab: "all" | "unread") => {
   });
 };
 
-export const useUnreadNotificationsCount = () => {
+export const useUnreadNotificationsCount = (options?: {
+  enabled?: boolean;
+}) => {
   return useQuery<number>({
     queryKey: ["notifications-unread-count"],
     queryFn: async () => {
       const response = await api.get("/api/v1/notifications/unread-count");
       return response.data.data.unreadCount || 0;
     },
+    enabled: options?.enabled ?? true,
     staleTime: 30 * 1000,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
