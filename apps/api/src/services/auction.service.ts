@@ -898,6 +898,175 @@ export const listUserEnrollments = async (userId: string) => {
   });
 };
 
+export const getUserBidHistoryStats = async (userId: string) => {
+  const bids = await prisma.auctionBid.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      auction: {
+        select: {
+          id: true,
+          status: true,
+          mode: true,
+          currency: true,
+          startAt: true,
+          endAt: true,
+          product: {
+            select: {
+              id: true,
+              title: true,
+              imagesThumbnail: true,
+              productType: true,
+            },
+          },
+          result: {
+            select: {
+              winners: true,
+              settledAt: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  type HistoryItem = {
+    auctionId: string;
+    auctionStatus: AuctionStatus;
+    mode: AuctionBidType;
+    currency: string;
+    auctionStartAt: Date;
+    auctionEndAt: Date;
+    auctionSettledAt: Date | null;
+    product: {
+      id: string;
+      title: string;
+      imagesThumbnail: string | null;
+      productType: string;
+    };
+    bidCount: number;
+    totalBidAmount: number;
+    highestBidAmount: Prisma.Decimal;
+    lowestBidAmount: Prisma.Decimal;
+    latestBidAmount: Prisma.Decimal;
+    latestBidAt: Date;
+    won: boolean;
+    winningAmount: string | null;
+    finalClosingAmount: string | null;
+  };
+
+  const grouped = new Map<string, HistoryItem>();
+
+  for (const bid of bids) {
+    const key = bid.auctionId;
+    const existing = grouped.get(key);
+
+    const winners = Array.isArray(bid.auction.result?.winners)
+      ? (bid.auction.result?.winners as Array<Record<string, unknown>>)
+      : [];
+    const winnerForUser = winners.find((winner) => winner.userId === userId);
+    const topWinner = winners[0];
+
+    if (!existing) {
+      grouped.set(key, {
+        auctionId: bid.auction.id,
+        auctionStatus: bid.auction.status,
+        mode: bid.auction.mode,
+        currency: bid.auction.currency,
+        auctionStartAt: bid.auction.startAt,
+        auctionEndAt: bid.auction.endAt,
+        auctionSettledAt: bid.auction.result?.settledAt ?? null,
+        product: {
+          id: bid.auction.product.id,
+          title: bid.auction.product.title,
+          imagesThumbnail: bid.auction.product.imagesThumbnail,
+          productType: bid.auction.product.productType,
+        },
+        bidCount: 1,
+        totalBidAmount: bid.amount.toNumber(),
+        highestBidAmount: bid.amount,
+        lowestBidAmount: bid.amount,
+        latestBidAmount: bid.amount,
+        latestBidAt: bid.createdAt,
+        won: Boolean(winnerForUser),
+        winningAmount: (winnerForUser?.amount as string | undefined) ?? null,
+        finalClosingAmount: (topWinner?.amount as string | undefined) ?? null,
+      });
+      continue;
+    }
+
+    existing.bidCount += 1;
+    existing.totalBidAmount += bid.amount.toNumber();
+
+    if (bid.amount.gt(existing.highestBidAmount)) {
+      existing.highestBidAmount = bid.amount;
+    }
+    if (bid.amount.lt(existing.lowestBidAmount)) {
+      existing.lowestBidAmount = bid.amount;
+    }
+    if (bid.createdAt > existing.latestBidAt) {
+      existing.latestBidAt = bid.createdAt;
+      existing.latestBidAmount = bid.amount;
+    }
+  }
+
+  const items = Array.from(grouped.values())
+    .sort((a, b) => b.latestBidAt.getTime() - a.latestBidAt.getTime())
+    .map((item) => ({
+      auctionId: item.auctionId,
+      auctionStatus: item.auctionStatus,
+      mode: item.mode,
+      currency: item.currency,
+      auctionStartAt: item.auctionStartAt,
+      auctionEndAt: item.auctionEndAt,
+      auctionSettledAt: item.auctionSettledAt,
+      product: item.product,
+      bidCount: item.bidCount,
+      totalBidAmount: Number(item.totalBidAmount.toFixed(2)),
+      highestBidAmount: item.highestBidAmount.toString(),
+      lowestBidAmount: item.lowestBidAmount.toString(),
+      latestBidAmount: item.latestBidAmount.toString(),
+      latestBidAt: item.latestBidAt,
+      won: item.won,
+      winningAmount: item.winningAmount,
+      finalClosingAmount: item.finalClosingAmount,
+    }));
+
+  const stats = items.reduce(
+    (acc, item) => {
+      acc.auctionsBid += 1;
+      acc.totalBids += item.bidCount;
+      acc.totalBidAmount += item.totalBidAmount;
+      if (item.won) {
+        acc.totalWins += 1;
+        if (item.winningAmount) {
+          const parsed = Number(item.winningAmount);
+          if (Number.isFinite(parsed)) {
+            acc.totalWinningAmount += parsed;
+          }
+        }
+      }
+      return acc;
+    },
+    {
+      auctionsBid: 0,
+      totalBids: 0,
+      totalWins: 0,
+      totalBidAmount: 0,
+      totalWinningAmount: 0,
+    }
+  );
+
+  return {
+    stats: {
+      ...stats,
+      totalBidAmount: Number(stats.totalBidAmount.toFixed(2)),
+      totalWinningAmount: Number(stats.totalWinningAmount.toFixed(2)),
+    },
+    items,
+  };
+};
+
 export const recordRefund = async (
   enrollmentId: string,
   amount: Prisma.Decimal | number | string,

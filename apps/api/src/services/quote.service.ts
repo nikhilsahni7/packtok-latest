@@ -3,7 +3,6 @@ import {
   Prisma,
   QuoteStatus,
   StockMovementReason,
-  
   prisma,
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
@@ -34,6 +33,8 @@ export const getMyQuoteRequests = async (userId: string) => {
           description: true,
           images: true,
           price: true,
+          status: true,
+          quantity: true,
           manufacturer: true,
           productType: true,
           category: {
@@ -59,6 +60,8 @@ export const getQuoteRequestById = async (quoteId: string, userId: string) => {
           description: true,
           images: true,
           price: true,
+          status: true,
+          quantity: true,
           manufacturer: true,
           productType: true,
           category: {
@@ -147,7 +150,9 @@ export const updateQuoteStatus = async (
 ) => {
   const quote = await prisma.quoteRequest.findUnique({
     where: { id: quoteId },
-    include: { product: { select: { id: true, quantity: true, status: true } } },
+    include: {
+      product: { select: { id: true, quantity: true, status: true } },
+    },
   });
   if (!quote) {
     throw new ApiError(404, "Quote request not found");
@@ -156,7 +161,10 @@ export const updateQuoteStatus = async (
   const previousStatus = quote.status;
 
   // ── COMPLETED: decrement product quantity ──────────────────────────
-  if (status === QuoteStatus.COMPLETED && previousStatus !== QuoteStatus.COMPLETED) {
+  if (
+    status === QuoteStatus.COMPLETED &&
+    previousStatus !== QuoteStatus.COMPLETED
+  ) {
     return prisma.$transaction(async (tx) => {
       // Decrement product quantity by 1
       const updatedProduct = await tx.marketplaceProduct.update({
@@ -192,7 +200,10 @@ export const updateQuoteStatus = async (
   }
 
   // ── CANCELLED from COMPLETED: restore product quantity ─────────────
-  if (status === QuoteStatus.CANCELLED && previousStatus === QuoteStatus.COMPLETED) {
+  if (
+    status === QuoteStatus.CANCELLED &&
+    previousStatus === QuoteStatus.COMPLETED
+  ) {
     return prisma.$transaction(async (tx) => {
       // Restore product quantity by 1
       const updatedProduct = await tx.marketplaceProduct.update({

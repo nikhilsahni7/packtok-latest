@@ -14,7 +14,11 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { QuoteStatus, useQuoteRequestDetails, useCancelQuoteRequest } from "../hooks/useQuoteRequests";
+import {
+  QuoteStatus,
+  useCancelQuoteRequest,
+  useQuoteRequestDetails,
+} from "../hooks/useQuoteRequests";
 import { useQuoteSocket } from "../hooks/useQuoteSocket";
 import { useAuthStore } from "../store/auth-store";
 
@@ -23,9 +27,10 @@ export default function QuoteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { data: quote, isLoading, refetch } = useQuoteRequestDetails(id || "");
-  const { mutate: cancelQuote, isPending: isCancelling } = useCancelQuoteRequest();
+  const { mutate: cancelQuote, isPending: isCancelling } =
+    useCancelQuoteRequest();
   const [refreshing, setRefreshing] = useState(false);
-  
+
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
 
@@ -156,6 +161,21 @@ export default function QuoteDetailScreen() {
 
   const statusStyle = getStatusBadgeStyle(quote.status);
   const productImage = quote.product?.images?.[0];
+  const productTypeMap: Record<string, string> = {
+    MACHINERY: "machinery",
+    SPARE_PARTS: "spare-parts",
+    CONSUMABLES: "consumables",
+    RAW_MATERIALS: "raw-material",
+  };
+  const hasRoutableProduct =
+    Boolean(quote.productId) &&
+    Boolean(quote.product?.productType) &&
+    Boolean(productTypeMap[quote.product.productType]);
+  const unavailableStatuses = new Set(["OUT_OF_STOCK", "DRAFT", "SOLD"]);
+  const isExplicitlyUnavailable = quote.product?.status
+    ? unavailableStatuses.has(quote.product.status)
+    : false;
+  const isProductAvailable = hasRoutableProduct && !isExplicitlyUnavailable;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -235,15 +255,29 @@ export default function QuoteDetailScreen() {
               </View>
             </View>
             <TouchableOpacity
-              onPress={handleViewProduct}
-              className="bg-[#FF8C42] py-3 rounded-xl flex-row items-center justify-center"
+              onPress={isProductAvailable ? handleViewProduct : undefined}
+              disabled={!isProductAvailable}
+              className={`py-3 rounded-xl flex-row items-center justify-center ${
+                isProductAvailable ? "bg-[#FF8C42]" : "bg-gray-300"
+              }`}
               activeOpacity={0.7}
             >
-              <Feather name="external-link" size={18} color="#FFF" />
+              <Feather
+                name={isProductAvailable ? "external-link" : "slash"}
+                size={18}
+                color="#FFF"
+              />
               <Text className="text-white font-semibold ml-2">
-                View Product in App
+                {isProductAvailable
+                  ? "View Product in App"
+                  : "Product Not Available"}
               </Text>
             </TouchableOpacity>
+            {!isProductAvailable && (
+              <Text className="text-xs text-red-500 mt-2">
+                This product is currently unavailable.
+              </Text>
+            )}
           </View>
         </View>
 
@@ -271,7 +305,9 @@ export default function QuoteDetailScreen() {
                   <View className="flex-1 mr-2">
                     <Text className="text-sm text-gray-600 mb-2">Phone</Text>
                     <View className="bg-gray-50 rounded-xl p-4">
-                      <Text className="text-base text-gray-900">{quote.phone}</Text>
+                      <Text className="text-base text-gray-900">
+                        {quote.phone}
+                      </Text>
                     </View>
                   </View>
                 )}
@@ -279,7 +315,9 @@ export default function QuoteDetailScreen() {
                   <View className="flex-1 ml-2">
                     <Text className="text-sm text-gray-600 mb-2">Email</Text>
                     <View className="bg-gray-50 rounded-xl p-4">
-                      <Text className="text-base text-gray-900 text-xs">{quote.email}</Text>
+                      <Text className="text-xs text-gray-900">
+                        {quote.email}
+                      </Text>
                     </View>
                   </View>
                 )}
@@ -321,7 +359,12 @@ export default function QuoteDetailScreen() {
             {/* Cancellation Reason warning */}
             {quote.status === "CANCELLED" && quote.cancellationReason && (
               <View className="mt-2 bg-red-50 border border-red-100 rounded-xl p-4 flex-row items-start">
-                <Feather name="alert-triangle" size={16} color="#EF4444" className="mt-0.5 mr-3" />
+                <Feather
+                  name="alert-triangle"
+                  size={16}
+                  color="#EF4444"
+                  className="mt-0.5 mr-3"
+                />
                 <View className="flex-1">
                   <Text className="text-[10px] font-bold text-red-700 uppercase tracking-wider mb-1">
                     Cancellation Reason
@@ -332,7 +375,7 @@ export default function QuoteDetailScreen() {
                 </View>
               </View>
             )}
-            
+
             {/* Admin Response Block */}
             {quote.response && (
               <View className="mt-4 bg-orange-50 border border-orange-100 rounded-xl p-4">
@@ -359,8 +402,15 @@ export default function QuoteDetailScreen() {
                   onPress={() => setCancellingId(quote.id)}
                   className="bg-red-50 px-5 py-3 rounded-xl flex-row items-center border border-red-100"
                 >
-                  <Feather name="x-circle" size={16} color="#DC2626" className="mr-2" />
-                  <Text className="text-red-600 font-bold">Withdraw Request</Text>
+                  <Feather
+                    name="x-circle"
+                    size={16}
+                    color="#DC2626"
+                    className="mr-2"
+                  />
+                  <Text className="text-red-600 font-bold">
+                    Withdraw Request
+                  </Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -368,7 +418,9 @@ export default function QuoteDetailScreen() {
             {/* Cancel Dialog */}
             {cancellingId === quote.id && (
               <View className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4 shadow-sm">
-                <Text className="text-xs font-bold text-red-700 uppercase tracking-wider mb-2">Reason for Withdrawal</Text>
+                <Text className="text-xs font-bold text-red-700 uppercase tracking-wider mb-2">
+                  Reason for Withdrawal
+                </Text>
                 <TextInput
                   value={cancelReason}
                   onChangeText={setCancelReason}
@@ -387,26 +439,34 @@ export default function QuoteDetailScreen() {
                     }}
                     className="px-4 py-3 bg-white border border-gray-200 rounded-lg mr-2"
                   >
-                    <Text className="text-gray-600 text-xs font-bold">Keep Request</Text>
+                    <Text className="text-gray-600 text-xs font-bold">
+                      Keep Request
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleCancelSubmit}
                     disabled={isCancelling || !cancelReason.trim()}
-                    className={`px-4 py-3 bg-red-600 rounded-lg flex-row items-center ${(!cancelReason.trim() || isCancelling) ? "opacity-50" : ""}`}
+                    className={`px-4 py-3 bg-red-600 rounded-lg flex-row items-center ${!cancelReason.trim() || isCancelling ? "opacity-50" : ""}`}
                   >
                     {isCancelling ? (
                       <ActivityIndicator size="small" color="white" />
                     ) : (
                       <>
-                        <Feather name="send" size={14} color="white" className="mr-2" />
-                        <Text className="text-white text-xs font-bold">Confirm</Text>
+                        <Feather
+                          name="send"
+                          size={14}
+                          color="white"
+                          className="mr-2"
+                        />
+                        <Text className="text-white text-xs font-bold">
+                          Confirm
+                        </Text>
                       </>
                     )}
                   </TouchableOpacity>
                 </View>
               </View>
             )}
-            
           </View>
         </View>
 

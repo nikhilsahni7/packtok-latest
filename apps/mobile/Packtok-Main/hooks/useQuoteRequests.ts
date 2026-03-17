@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import api from "../lib/api";
 
@@ -32,6 +32,8 @@ export interface QuoteRequest {
     images?: string[];
     imagesThumbnail?: string;
     price?: number;
+    status?: string;
+    quantity?: number;
     manufacturer?: string;
     productType?: ProductType;
     category?: {
@@ -88,7 +90,9 @@ export function useCancelQuoteRequest() {
       });
       // Invalidate both lists and detail
       queryClient.invalidateQueries({ queryKey: ["my-quote-requests"] });
-      queryClient.invalidateQueries({ queryKey: ["quote-request", variables.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["quote-request", variables.id],
+      });
     },
     onError: (error: any) => {
       console.error("Cancel quote error:", error);

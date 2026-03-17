@@ -152,6 +152,36 @@ export default function SettingsScreen() {
             <Feather name="chevron-right" size={20} color="#9CA3AF" />
           </TouchableOpacity>
 
+          {/* Sell Old Items Status */}
+          <TouchableOpacity
+            onPress={() => router.push("/sell-items-history")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="truck" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Sell Old Items Status
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
+          {/* Bidding History */}
+          <TouchableOpacity
+            onPress={() => router.push("/bidding-history")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="bar-chart-2" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Bidding History
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
           {/* Address */}
           <TouchableOpacity
             onPress={() => router.push("/addresses")}

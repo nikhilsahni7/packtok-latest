@@ -3,6 +3,7 @@ import {
   createProductSubmission,
   getPublicProductById,
   getPublicProducts,
+  listMyProductSubmissions,
 } from "../services/product.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -133,5 +134,14 @@ export const submitProduct = asyncHandler(
     res
       .status(201)
       .json(new ApiResponse(201, product, "Product submitted for approval"));
+  }
+);
+
+export const getMySubmissions = asyncHandler(
+  async (req: Request, res: Response) => {
+    const submissions = await listMyProductSubmissions(req.user!.id);
+    res
+      .status(200)
+      .json(new ApiResponse(200, submissions, "Your submissions fetched"));
   }
 );

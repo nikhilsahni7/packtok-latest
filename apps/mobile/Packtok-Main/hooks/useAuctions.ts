@@ -226,3 +226,51 @@ export const usePlaceBid = () => {
     },
   });
 };
+
+export type UserBidHistoryItem = {
+  auctionId: string;
+  auctionStatus: string;
+  mode: string;
+  currency: string;
+  auctionStartAt: string;
+  auctionEndAt: string;
+  auctionSettledAt?: string | null;
+  product: {
+    id: string;
+    title: string;
+    imagesThumbnail?: string | null;
+    productType?: string;
+  };
+  bidCount: number;
+  totalBidAmount: number;
+  highestBidAmount: string;
+  lowestBidAmount: string;
+  latestBidAmount: string;
+  latestBidAt: string;
+  won: boolean;
+  winningAmount?: string | null;
+  finalClosingAmount?: string | null;
+};
+
+export type UserBidHistoryResponse = {
+  stats: {
+    auctionsBid: number;
+    totalBids: number;
+    totalWins: number;
+    totalBidAmount: number;
+    totalWinningAmount: number;
+  };
+  items: UserBidHistoryItem[];
+};
+
+export const useMyBidHistory = (options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ["my-bid-history"],
+    queryFn: async (): Promise<UserBidHistoryResponse> => {
+      const { data } = await api.get("/api/v1/auctions/me/bid-history");
+      return data.data ?? data;
+    },
+    enabled: options?.enabled ?? true,
+    staleTime: 1000 * 20,
+  });
+};

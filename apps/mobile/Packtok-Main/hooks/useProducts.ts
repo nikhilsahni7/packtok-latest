@@ -51,6 +51,25 @@ export interface Product {
   updatedAt: string;
 }
 
+export interface ProductSubmissionHistoryItem {
+  id: string;
+  title: string;
+  productType: string;
+  status: string;
+  submissionStatus: string;
+  imagesThumbnail?: string | null;
+  price?: string;
+  currency?: string;
+  createdAt: string;
+  updatedAt: string;
+  reviewedAt?: string | null;
+  reviewNotes?: string | null;
+  category?: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 export interface ProductsResponse {
   products: Product[];
   total: number;
@@ -141,5 +160,16 @@ export const useProduct = (productId: string) => {
     },
     enabled: !!productId,
     staleTime: 0, // Disable caching so cartEnabled changes reflect immediately
+  });
+};
+
+export const useMyProductSubmissions = () => {
+  return useQuery<ProductSubmissionHistoryItem[]>({
+    queryKey: ["my-product-submissions"],
+    queryFn: async () => {
+      const response = await api.get("/api/v1/products/my-submissions");
+      return response.data.data ?? [];
+    },
+    staleTime: 1000 * 30,
   });
 };

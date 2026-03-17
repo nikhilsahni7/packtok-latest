@@ -3,6 +3,7 @@ import {
   confirmEnrollmentPayment,
   createAuctionEnrollment,
   getAuctionDetail,
+  getUserBidHistoryStats,
   listPublicAuctions,
   listUserEnrollments,
   placeAuctionBid,
@@ -87,6 +88,16 @@ export const getMyAuctionEnrollments = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, enrollments, "Enrollments fetched"));
+  }
+);
+
+export const getMyBidHistory = asyncHandler(
+  async (req: Request, res: Response) => {
+    if (!req.user) {
+      throw new ApiError(401, "Authentication required");
+    }
+    const history = await getUserBidHistoryStats(req.user.id);
+    res.status(200).json(new ApiResponse(200, history, "Bid history fetched"));
   }
 );
 

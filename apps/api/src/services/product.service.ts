@@ -247,6 +247,42 @@ export const getPendingSubmissions = async () => {
   });
 };
 
+export const listMyProductSubmissions = async (userId: string) => {
+  return prisma.marketplaceProduct.findMany({
+    where: {
+      createdById: userId,
+      submissionStatus: {
+        in: [
+          UserSubmissionStatus.PENDING_APPROVAL,
+          UserSubmissionStatus.APPROVED,
+          UserSubmissionStatus.REJECTED,
+        ],
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      productType: true,
+      status: true,
+      submissionStatus: true,
+      imagesThumbnail: true,
+      price: true,
+      currency: true,
+      createdAt: true,
+      updatedAt: true,
+      reviewedAt: true,
+      reviewNotes: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
 export const approveSubmission = async (
   productId: string,
   reviewerId?: string,

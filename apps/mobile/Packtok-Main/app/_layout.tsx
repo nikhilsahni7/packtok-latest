@@ -365,6 +365,22 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="sell-items-history"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="bidding-history"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
             name="quote-detail"
             options={{
               headerShown: false,
