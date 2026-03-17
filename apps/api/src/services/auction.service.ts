@@ -805,14 +805,15 @@ export const finalizeAuction = async (auctionId: string) => {
         const existingResult = await tx.auctionResult.findUnique({
           where: { auctionId },
         });
-        if (!existingResult) {
-          return null;
+        if (existingResult) {
+          return {
+            result: existingResult,
+            snapshot: null,
+            wasAlreadyClosed: true,
+          } as FinalizeTxOutcome;
         }
-        return {
-          result: existingResult,
-          snapshot: null,
-          wasAlreadyClosed: true,
-        } as FinalizeTxOutcome;
+        // Auction was auto-closed (status set to CLOSED) but winners were never
+        // computed — fall through below to calculate and persist them now.
       }
 
       const topBids = await tx.auctionBid.findMany({
@@ -925,6 +926,11 @@ export const getUserBidHistoryStats = async (userId: string) => {
               settledAt: true,
             },
           },
+          leaderboard: {
+            select: {
+              snapshot: true,
+            },
+          },
         },
       },
     },
@@ -967,6 +973,13 @@ export const getUserBidHistoryStats = async (userId: string) => {
     const winnerForUser = winners.find((winner) => winner.userId === userId);
     const topWinner = winners[0];
 
+    // Fallback: use leaderboard snapshot currentAmount when no settled result yet
+    const leaderboardSnapshot = bid.auction.leaderboard?.snapshot as
+      | Record<string, unknown>
+      | undefined;
+    const leaderboardClosingAmount =
+      (leaderboardSnapshot?.currentAmount as string | undefined) ?? null;
+
     if (!existing) {
       grouped.set(key, {
         auctionId: bid.auction.id,
@@ -990,7 +1003,8 @@ export const getUserBidHistoryStats = async (userId: string) => {
         latestBidAt: bid.createdAt,
         won: Boolean(winnerForUser),
         winningAmount: (winnerForUser?.amount as string | undefined) ?? null,
-        finalClosingAmount: (topWinner?.amount as string | undefined) ?? null,
+        finalClosingAmount:
+          (topWinner?.amount as string | undefined) ?? leaderboardClosingAmount,
       });
       continue;
     }

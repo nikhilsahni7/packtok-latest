@@ -189,19 +189,21 @@ export default function SellItemsHistoryScreen() {
                     </View>
                   ) : null}
 
-                  <TouchableOpacity
-                    onPress={() =>
-                      router.push(
-                        getProductRoute(item.id, item.productType) as any
-                      )
-                    }
-                    className="py-2.5 rounded-lg border border-[#FF8C42]"
-                    activeOpacity={0.7}
-                  >
-                    <Text className="text-center text-[#FF8C42] font-semibold">
-                      View Product
-                    </Text>
-                  </TouchableOpacity>
+                  {item.submissionStatus !== "PENDING_APPROVAL" && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        router.push(
+                          getProductRoute(item.id, item.productType) as any
+                        )
+                      }
+                      className="py-2.5 rounded-lg border border-[#FF8C42]"
+                      activeOpacity={0.7}
+                    >
+                      <Text className="text-center text-[#FF8C42] font-semibold">
+                        View Product
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               );
             })}

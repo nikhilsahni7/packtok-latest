@@ -1,5 +1,6 @@
 import { AuctionStatus, PrismaClient } from "@prisma/client";
 import logger from "../utils/logger";
+import { finalizeAuction } from "./auction.service";
 import { notifyAuctionLive } from "./notification.service";
 
 const prisma = new PrismaClient();
@@ -88,23 +89,40 @@ export class AuctionStatusUpdater {
         );
       }
 
-      // Update LIVE auctions to CLOSED if end time has passed
-      const liveToClosed = await prisma.auction.updateMany({
+      // Finalize LIVE auctions whose end time has passed.
+      // finalizeAuction() computes winners, creates AuctionResult, and sets
+      // status to CLOSED in one transaction — so we no longer need a separate
+      // updateMany here.
+      const toFinalize = await prisma.auction.findMany({
         where: {
           status: AuctionStatus.LIVE,
-          endAt: {
-            lte: now,
-          },
+          endAt: { lte: now },
         },
-        data: {
-          status: AuctionStatus.CLOSED,
-        },
+        select: { id: true },
       });
 
-      if (liveToClosed.count > 0) {
-        logger.info(
-          `Updated ${liveToClosed.count} auctions from LIVE to CLOSED`
+      if (toFinalize.length > 0) {
+        logger.info(`Finalizing ${toFinalize.length} expired auction(s)…`);
+
+        const results = await Promise.allSettled(
+          toFinalize.map((a) => finalizeAuction(a.id))
         );
+
+        const succeeded = results.filter(
+          (r) => r.status === "fulfilled"
+        ).length;
+        const failed = results.filter((r) => r.status === "rejected");
+
+        if (succeeded > 0) {
+          logger.info(
+            `Auto-finalized ${succeeded} auction(s) with winners computed`
+          );
+        }
+        for (const f of failed) {
+          if (f.status === "rejected") {
+            logger.error("Failed to finalize auction:", f.reason);
+          }
+        }
       }
     } catch (error) {
       logger.error("Failed to update auction statuses:", error);
