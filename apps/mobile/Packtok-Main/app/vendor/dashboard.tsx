@@ -372,50 +372,6 @@ export default function VendorDashboardScreen() {
               </View>
 
               <View className="mt-4 bg-white border border-gray-200 rounded-2xl p-4">
-                <View className="flex-row items-center justify-between mb-4">
-                  <Text className="text-base font-semibold text-gray-900">
-                    Product Views
-                  </Text>
-                  <TouchableOpacity className="px-3 py-1.5 rounded-full bg-gray-100">
-                    <Text className="text-[11px] text-gray-600">This week</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <View className="flex-row items-end justify-between h-24">
-                  {[
-                    usagePercent * 0.55,
-                    usagePercent * 0.7,
-                    usagePercent * 0.45,
-                    usagePercent * 0.85,
-                    usagePercent * 0.6,
-                    usagePercent * 0.9,
-                  ].map((bar, idx) => (
-                    <View key={idx} className="items-center">
-                      <View className="w-4 h-20 rounded-md bg-gray-100 justify-end overflow-hidden">
-                        <View
-                          className={`${idx % 2 === 0 ? "bg-[#0EA5E9]" : "bg-[#FB923C]"} rounded-md`}
-                          style={{
-                            height: `${Math.max(8, Math.min(100, bar))}%`,
-                          }}
-                        />
-                      </View>
-                    </View>
-                  ))}
-                </View>
-
-                <View className="flex-row items-center mt-3">
-                  <View className="w-3 h-3 rounded-sm bg-[#0EA5E9]" />
-                  <Text className="text-xs text-gray-500 ml-1.5">
-                    Lifetime Value
-                  </Text>
-                  <View className="w-3 h-3 rounded-sm bg-[#FB923C] ml-4" />
-                  <Text className="text-xs text-gray-500 ml-1.5">
-                    Customer Cost
-                  </Text>
-                </View>
-              </View>
-
-              <View className="mt-4 bg-white border border-gray-200 rounded-2xl p-4">
                 <Text className="text-base font-semibold text-gray-900 mb-3">
                   Notifications
                 </Text>

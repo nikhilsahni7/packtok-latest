@@ -7,6 +7,26 @@ import supabase from "../utils/supabaseClient";
 
 const resend = new Resend(config.resend.apiKey);
 
+const sendEmailOrThrow = async (payload: {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+}) => {
+  const result = await resend.emails.send(payload);
+  if (result.error) {
+    console.error("Resend delivery failed", {
+      to: payload.to,
+      subject: payload.subject,
+      error: result.error,
+    });
+    throw new ApiError(
+      502,
+      "Unable to send email right now. Please try again shortly."
+    );
+  }
+};
+
 const hashOtp = (otp: string) =>
   crypto
     .createHash("sha256")
@@ -223,7 +243,7 @@ export const sendVerificationOtp = async (email: string) => {
     create: { userId: user.id, hashedOtp, expiresAt },
   });
 
-  await resend.emails.send({
+  await sendEmailOrThrow({
     from: config.resend.fromEmail,
     to: normalizedEmail,
     subject: "Your Packtok verification code",
@@ -277,7 +297,7 @@ export const sendPasswordResetOtp = async (email: string): Promise<void> => {
     create: { userId: user.id, hashedOtp, expiresAt },
   });
 
-  await resend.emails.send({
+  await sendEmailOrThrow({
     from: config.resend.fromEmail,
     to: normalizedEmail,
     subject: "Your Packtok password reset code",

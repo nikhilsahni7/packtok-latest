@@ -306,6 +306,10 @@ export const initiateSubscription = async (userId: string, planId: string) => {
   // before allowing a plan switch/upgrade.
   const existing = await getActiveSubscription(userId);
   if (existing && existing.plan.slug !== "free") {
+    if (existing.planId === plan.id) {
+      throw new ApiError(400, "You are already subscribed to this plan.");
+    }
+
     if (existing.autoRenew) {
       throw new ApiError(
         400,
@@ -393,6 +397,9 @@ export const verifySubscriptionPayment = async (
   if (!payment) throw new ApiError(404, "Payment not found");
   if (payment.subscription.userId !== userId) {
     throw new ApiError(403, "Unauthorized");
+  }
+  if (payment.subscriptionId !== data.subscriptionId) {
+    throw new ApiError(400, "Subscription mismatch for this payment order");
   }
   if (payment.status === PaymentIntentStatus.CAPTURED) {
     // Already processed – return existing subscription

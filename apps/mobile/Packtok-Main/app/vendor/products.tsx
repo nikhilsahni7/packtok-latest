@@ -350,11 +350,6 @@ export default function VendorProductsScreen() {
                 const isPending =
                   product.submissionStatus === "PENDING_APPROVAL";
                 const isSelected = selected.includes(product.id);
-                const pseudoSales = Math.max(
-                  0,
-                  product.quantity * 12 + index * 7,
-                );
-                const pseudoViews = pseudoSales * 2;
                 const showSelectionControls =
                   activeTab === "drafts" || activeTab === "released";
 
@@ -452,27 +447,6 @@ export default function VendorProductsScreen() {
                         </View>
                       )}
                     </View>
-
-                    {isApproved && (
-                      <View className="mt-3 pt-3 border-t border-gray-100">
-                        <View className="flex-row items-center justify-between">
-                          <Text className="text-xs text-gray-500">Rating</Text>
-                          <Text className="text-xs text-gray-900">4.8 (7)</Text>
-                        </View>
-                        <View className="flex-row items-center justify-between mt-1.5">
-                          <Text className="text-xs text-gray-500">Sales</Text>
-                          <Text className="text-xs text-gray-900">
-                            {pseudoSales.toLocaleString()}
-                          </Text>
-                        </View>
-                        <View className="flex-row items-center justify-between mt-1.5">
-                          <Text className="text-xs text-gray-500">Views</Text>
-                          <Text className="text-xs text-gray-900">
-                            {pseudoViews.toLocaleString()}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
 
                     <View className="flex-row gap-2 mt-4">
                       <VendorButton

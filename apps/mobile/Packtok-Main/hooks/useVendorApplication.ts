@@ -14,7 +14,6 @@ export type VendorApplication = {
 
 export function useVendorApplication() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const role = useAuthStore((s) => s.user?.role);
 
   return useQuery<VendorApplication>({
     queryKey: ["vendor-application"],
@@ -22,14 +21,14 @@ export function useVendorApplication() {
       const { data } = await api.get("/api/v1/vendors/me/application");
       return data.data as VendorApplication;
     },
-    enabled: isAuthenticated && role === "VENDOR",
+    enabled: isAuthenticated,
     retry: false,
     staleTime: 60_000,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
-    refetchInterval: 15_000,
-    refetchIntervalInBackground: true,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
   });
 }
 

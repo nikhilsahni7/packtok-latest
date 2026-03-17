@@ -77,8 +77,8 @@ export function useMyVendorSubscription() {
     staleTime: 30_000,
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
-    refetchInterval: 15_000,
-    refetchIntervalInBackground: true,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
   });
 }
 

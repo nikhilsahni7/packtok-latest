@@ -176,9 +176,7 @@ export default function VendorProductEditorScreen() {
     setCondition(product.condition || "NEW");
     setMachineType(product.machineType || "NONE");
     setQuantity(String(product.quantity ?? 1));
-    setCategoryName(
-      product.categoryName || product.category?.name || "MACHINERY",
-    );
+    setCategoryName(product.categoryName || product.category?.name || "");
     setSubCategory(product.subCategory || "");
     setManufacturer(product.manufacturer || "");
     setModel(product.model || "");
