@@ -196,6 +196,7 @@ export const getActiveSubscription = async (userId: string) => {
           id: true,
           name: true,
           slug: true,
+          sortOrder: true,
           maxProducts: true,
           priceUsd: true,
           isContactSales: true,
@@ -308,6 +309,13 @@ export const initiateSubscription = async (userId: string, planId: string) => {
   if (existing && existing.plan.slug !== "free") {
     if (existing.planId === plan.id) {
       throw new ApiError(400, "You are already subscribed to this plan.");
+    }
+
+    if (plan.sortOrder < existing.plan.sortOrder) {
+      throw new ApiError(
+        400,
+        "Downgrading to a lower plan while your higher plan is active is not allowed."
+      );
     }
 
     if (existing.autoRenew) {
