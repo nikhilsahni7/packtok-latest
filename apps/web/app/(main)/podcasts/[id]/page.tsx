@@ -18,17 +18,18 @@ import {
   getRelativeTime,
 } from "@/utils/podcast-utils";
 import {
+  AlertTriangle,
   ArrowLeft,
   Calendar,
+  Check,
   Clock,
-  Pencil,
   Heart,
   MessageCircle,
+  Pencil,
   Play,
   Send,
   Share2,
   Trash2,
-  Check,
   X,
 } from "lucide-react";
 import Image from "next/image";
@@ -60,13 +61,18 @@ export default function PodcastDetailPage({
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedCommentText, setEditedCommentText] = useState("");
+  const [deleteTargetCommentId, setDeleteTargetCommentId] = useState<
+    string | null
+  >(null);
 
   const comments = commentsPage?.items ?? [];
   const relatedPodcasts = (relatedPage?.items ?? [])
     .filter((p) => p.id !== podcast?.id)
     .slice(0, 4);
 
-  const youtubeVideoId = podcast?.videoUrl ? extractYouTubeId(podcast.videoUrl) : null;
+  const youtubeVideoId = podcast?.videoUrl
+    ? extractYouTubeId(podcast.videoUrl)
+    : null;
   const embedUrl = youtubeVideoId
     ? `https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1`
     : null;
@@ -106,7 +112,8 @@ export default function PodcastDetailPage({
   };
 
   const handleShare = async () => {
-    const shareUrl = globalThis.window?.location?.href || podcast.videoUrl || "";
+    const shareUrl =
+      globalThis.window?.location?.href || podcast.videoUrl || "";
     if (navigator.share) {
       await navigator.share({
         title: podcast.title,
@@ -154,21 +161,28 @@ export default function PodcastDetailPage({
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    const confirmed = globalThis.window?.confirm(
-      "Delete this comment? This action cannot be undone."
-    );
-    if (!confirmed) return;
+  const handleDeleteComment = (commentId: string) => {
+    setDeleteTargetCommentId(commentId);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTargetCommentId) return;
 
     try {
-      await deleteComment.mutateAsync(commentId);
-      if (editingCommentId === commentId) {
+      await deleteComment.mutateAsync(deleteTargetCommentId);
+      if (editingCommentId === deleteTargetCommentId) {
         setEditingCommentId(null);
         setEditedCommentText("");
       }
+      setDeleteTargetCommentId(null);
     } catch {
       // Mutation handles errors.
     }
+  };
+
+  const handleDeleteCancel = () => {
+    if (deleteComment.isPending) return;
+    setDeleteTargetCommentId(null);
   };
 
   return (
@@ -228,7 +242,9 @@ export default function PodcastDetailPage({
                 <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
                   <Calendar className="w-4 h-4 text-gray-600" />
                   <span className="text-sm font-medium text-gray-700">
-                    {podcast.releaseDate ? formatDate(podcast.releaseDate) : "TBA"}
+                    {podcast.releaseDate
+                      ? formatDate(podcast.releaseDate)
+                      : "TBA"}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
@@ -350,81 +366,86 @@ export default function PodcastDetailPage({
                   <div key={comment.id} className="flex gap-4">
                     <div className="flex-shrink-0">
                       <Image
-                        src={comment.user.profile_image || "/img/person-placeholder.jpg"}
+                        src={
+                          comment.user.profile_image ||
+                          "/img/person-placeholder.jpg"
+                        }
                         alt={comment.user.name}
                         width={48}
-                            <div className="flex items-center gap-3">
-                              <h4 className="font-bold text-gray-900">
-                                {comment.user.name}
-                              </h4>
-                              <span className="text-sm text-gray-500">
-                                {getRelativeTime(comment.createdAt)}
-                              </span>
-                            </div>
-
-                            {currentUser?.id === comment.userId ? (
-                              <div className="flex items-center gap-2">
-                                <button
-                                  onClick={() =>
-                                    handleEditStart(comment.id, comment.content)
-                                  }
-                                  className="p-2 rounded-lg text-gray-500 hover:text-orange-600 hover:bg-orange-50 transition-colors"
-                                  aria-label="Edit comment"
-                                >
-                                  <Pencil className="w-4 h-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteComment(comment.id)}
-                                  className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
-                                  aria-label="Delete comment"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </div>
-                            ) : null}
+                        height={48}
+                        className="rounded-full ring-2 ring-gray-100"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="bg-gray-50 rounded-2xl p-5 hover:bg-gray-100 transition-colors">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <h4 className="font-bold text-gray-900">
+                              {comment.user.name}
+                            </h4>
+                            <span className="text-sm text-gray-500">
+                              {getRelativeTime(comment.createdAt)}
+                            </span>
                           </div>
 
-                          {editingCommentId === comment.id ? (
-                            <div className="space-y-3">
-                              <textarea
-                                value={editedCommentText}
-                                onChange={(e) => setEditedCommentText(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 resize-none"
-                                rows={3}
-                              />
-                              <div className="flex items-center justify-end gap-2">
-                                <button
-                                  onClick={handleEditCancel}
-                                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
-                                >
-                                  <X className="w-4 h-4" />
-                                  Cancel
-                                </button>
-                                <button
-                                  onClick={() => handleEditSave(comment.id)}
-                                  disabled={
-                                    !editedCommentText.trim() || updateComment.isPending
-                                  }
-                                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                                >
-                                  <Check className="w-4 h-4" />
-                                  Save
-                                </button>
-                              </div>
+                          {currentUser?.id === comment.userId ? (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() =>
+                                  handleEditStart(comment.id, comment.content)
+                                }
+                                className="p-2 rounded-lg text-gray-500 hover:text-orange-600 hover:bg-orange-50 transition-colors"
+                                aria-label="Edit comment"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteComment(comment.id)}
+                                className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                aria-label="Delete comment"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
                             </div>
-                          ) : (
-                            <p className="text-gray-700 leading-relaxed">
-                              {comment.content}
-                            </p>
-                          )}
-                          </h4>
-                          <span className="text-sm text-gray-500">
-                            {getRelativeTime(comment.createdAt)}
-                          </span>
+                          ) : null}
                         </div>
-                        <p className="text-gray-700 leading-relaxed">
-                          {comment.content}
-                        </p>
+
+                        {editingCommentId === comment.id ? (
+                          <div className="space-y-3">
+                            <textarea
+                              value={editedCommentText}
+                              onChange={(e) =>
+                                setEditedCommentText(e.target.value)
+                              }
+                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 resize-none"
+                              rows={3}
+                            />
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={handleEditCancel}
+                                className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                              >
+                                <X className="w-4 h-4" />
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => handleEditSave(comment.id)}
+                                disabled={
+                                  !editedCommentText.trim() ||
+                                  updateComment.isPending
+                                }
+                                className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                              >
+                                <Check className="w-4 h-4" />
+                                Save
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-gray-700 leading-relaxed">
+                            {comment.content}
+                          </p>
+                        )}
                       </div>
                       {comment.replyCount ? (
                         <p className="mt-2 text-sm text-gray-500">
@@ -492,6 +513,46 @@ export default function PodcastDetailPage({
           </div>
         </div>
       </div>
+
+      {deleteTargetCommentId ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <button
+            onClick={handleDeleteCancel}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            aria-label="Close delete confirmation"
+          />
+          <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl ring-1 ring-black/5">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900">
+                Delete comment?
+              </h3>
+            </div>
+            <p className="text-sm leading-relaxed text-gray-600">
+              This action cannot be undone and the comment will be removed
+              permanently.
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                onClick={handleDeleteCancel}
+                disabled={deleteComment.isPending}
+                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={deleteComment.isPending}
+                className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+              >
+                {deleteComment.isPending ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
