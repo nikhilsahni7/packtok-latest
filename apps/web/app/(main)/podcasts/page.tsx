@@ -1,15 +1,43 @@
 "use client";
 
 import PodcastCard from "@/components/podcasts/podcast-card";
+import { useSubscribeEmail } from "@/hooks/useEmailSubscriptions";
 import { usePodcasts } from "@/hooks/usePodcasts";
+import { useAuthStore } from "@/store/auth-store";
 import { Filter, Search, Sparkles, TrendingUp, X } from "lucide-react";
-import { ReactNode, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useState } from "react";
 
 export default function PodcastsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [podcastEmail, setPodcastEmail] = useState("");
+  const [podcastSubscribed, setPodcastSubscribed] = useState(false);
+  const currentUser = useAuthStore((s) => s.user);
+  const subscribeEmail = useSubscribeEmail();
   const { data, isLoading } = usePodcasts({ limit: 50 });
   const podcasts = data?.items ?? [];
+
+  useEffect(() => {
+    if (!currentUser?.email || podcastEmail) return;
+    setPodcastEmail(currentUser.email);
+  }, [currentUser?.email, podcastEmail]);
+
+  const handlePodcastSubscription = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!podcastEmail.trim() || podcastSubscribed) return;
+
+    try {
+      const result = await subscribeEmail.mutateAsync({
+        email: podcastEmail.trim(),
+        type: "PODCAST",
+      });
+      if (result.subscribed || result.alreadySubscribed) {
+        setPodcastSubscribed(true);
+      }
+    } catch {
+      // Handled by mutation toasts.
+    }
+  };
 
   // Get all unique tags
   const allTags = Array.from(
@@ -42,7 +70,9 @@ export default function PodcastsPage() {
           <div className="mb-16">
             <div className="flex items-center gap-3 mb-8">
               <TrendingUp className="w-6 h-6 text-orange-500" />
-              <h2 className="text-3xl font-bold text-gray-900">Latest Episodes</h2>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Latest Episodes
+              </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPodcasts.map((podcast) => (
@@ -74,10 +104,12 @@ export default function PodcastsPage() {
             <Search className="relative h-20 w-20 text-gray-300" />
           </div>
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-3">No podcasts found</h3>
+        <h3 className="text-2xl font-bold text-gray-900 mb-3">
+          No podcasts found
+        </h3>
         <p className="text-gray-500 text-lg mb-6 max-w-md mx-auto">
-          We couldn&apos;t find any podcasts matching your criteria. Try adjusting
-          your search or filters.
+          We couldn&apos;t find any podcasts matching your criteria. Try
+          adjusting your search or filters.
         </p>
         <div className="flex gap-4 justify-center">
           {searchTerm && (
@@ -215,16 +247,30 @@ export default function PodcastsPage() {
                 Subscribe to get notified about new episodes, exclusive content,
                 and industry insights delivered straight to your inbox.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <form
+                onSubmit={handlePodcastSubscription}
+                className="flex flex-col sm:flex-row gap-4 justify-center"
+              >
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  value={podcastEmail}
+                  onChange={(e) => setPodcastEmail(e.target.value)}
+                  disabled={podcastSubscribed}
                   className="px-6 py-4 rounded-full text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/30 text-lg flex-1 max-w-md"
                 />
-                <button className="px-8 py-4 bg-white text-orange-600 font-bold rounded-full hover:bg-orange-50 transition-colors shadow-xl text-lg whitespace-nowrap">
-                  Subscribe Now
+                <button
+                  type="submit"
+                  disabled={podcastSubscribed || subscribeEmail.isPending}
+                  className="px-8 py-4 bg-white text-orange-600 font-bold rounded-full hover:bg-orange-50 transition-colors shadow-xl text-lg whitespace-nowrap disabled:bg-orange-100 disabled:text-orange-800 disabled:cursor-not-allowed"
+                >
+                  {podcastSubscribed
+                    ? "Subscribed"
+                    : subscribeEmail.isPending
+                      ? "Subscribing..."
+                      : "Subscribe Now"}
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>

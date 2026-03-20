@@ -126,3 +126,53 @@ export const useAddPodcastComment = (podcastId: string) => {
     },
   });
 };
+
+export const useUpdatePodcastComment = (podcastId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      commentId,
+      content,
+    }: {
+      commentId: string;
+      content: string;
+    }) => {
+      const { data } = await api.patch<ApiEnvelope<PodcastComment>>(
+        `/api/v1/podcasts/comments/${commentId}`,
+        { content }
+      );
+      return data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...QK.podcast, podcastId] });
+      queryClient.invalidateQueries({
+        queryKey: [...QK.podcastComments, podcastId],
+      });
+      toast.success("Comment updated");
+    },
+    onError: (error) => {
+      toast.error(parseErrorMessage(error, "Failed to update comment"));
+    },
+  });
+};
+
+export const useDeletePodcastComment = (podcastId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (commentId: string) => {
+      await api.delete(`/api/v1/podcasts/comments/${commentId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...QK.podcast, podcastId] });
+      queryClient.invalidateQueries({
+        queryKey: [...QK.podcastComments, podcastId],
+      });
+      toast.success("Comment deleted");
+    },
+    onError: (error) => {
+      toast.error(parseErrorMessage(error, "Failed to delete comment"));
+    },
+  });
+};

@@ -317,6 +317,11 @@ enum NotificationAudience {
   CUSTOM_USERS
 }
 
+enum EmailSubscriptionType {
+  PODCAST
+  NEWSLETTER
+}
+
 model User {
   id                      String                   @id // Supabase auth.users UUID
   createdAt               DateTime                 @default(now())
@@ -1499,4 +1504,16 @@ model ContactInquiry {
   @@map("contact_inquiries")
   @@index([createdAt])
   @@index([isHandled])
+}
+
+model EmailSubscription {
+  id        String                @id @default(cuid())
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  email     String
+  type      EmailSubscriptionType
+
+  @@map("email_subscriptions")
+  @@unique([email, type])
+  @@index([type, createdAt])
 }

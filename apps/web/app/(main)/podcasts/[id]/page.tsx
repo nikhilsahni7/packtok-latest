@@ -2,11 +2,14 @@
 
 import {
   useAddPodcastComment,
+  useDeletePodcastComment,
   usePodcast,
   usePodcastComments,
   usePodcasts,
   useReactToPodcast,
+  useUpdatePodcastComment,
 } from "@/hooks/usePodcasts";
+import { useAuthStore } from "@/store/auth-store";
 import { PodcastReactionType } from "@/types/podcast";
 import {
   extractYouTubeId,
@@ -18,11 +21,15 @@ import {
   ArrowLeft,
   Calendar,
   Clock,
+  Pencil,
   Heart,
   MessageCircle,
   Play,
   Send,
   Share2,
+  Trash2,
+  Check,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -46,8 +53,13 @@ export default function PodcastDetailPage({
   const { data: relatedPage } = usePodcasts({ limit: 8 });
   const reactToPodcast = useReactToPodcast(podcastId);
   const addComment = useAddPodcastComment(podcastId);
+  const updateComment = useUpdatePodcastComment(podcastId);
+  const deleteComment = useDeletePodcastComment(podcastId);
+  const currentUser = useAuthStore((s) => s.user);
 
   const [newComment, setNewComment] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editedCommentText, setEditedCommentText] = useState("");
 
   const comments = commentsPage?.items ?? [];
   const relatedPodcasts = (relatedPage?.items ?? [])
@@ -114,6 +126,48 @@ export default function PodcastDetailPage({
       setNewComment("");
     } catch {
       // handled in hook
+    }
+  };
+
+  const handleEditStart = (commentId: string, content: string) => {
+    setEditingCommentId(commentId);
+    setEditedCommentText(content);
+  };
+
+  const handleEditCancel = () => {
+    setEditingCommentId(null);
+    setEditedCommentText("");
+  };
+
+  const handleEditSave = async (commentId: string) => {
+    if (!editedCommentText.trim()) return;
+
+    try {
+      await updateComment.mutateAsync({
+        commentId,
+        content: editedCommentText.trim(),
+      });
+      setEditingCommentId(null);
+      setEditedCommentText("");
+    } catch {
+      // Mutation handles errors.
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    const confirmed = globalThis.window?.confirm(
+      "Delete this comment? This action cannot be undone."
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteComment.mutateAsync(commentId);
+      if (editingCommentId === commentId) {
+        setEditingCommentId(null);
+        setEditedCommentText("");
+      }
+    } catch {
+      // Mutation handles errors.
     }
   };
 
@@ -299,15 +353,70 @@ export default function PodcastDetailPage({
                         src={comment.user.profile_image || "/img/person-placeholder.jpg"}
                         alt={comment.user.name}
                         width={48}
-                        height={48}
-                        className="rounded-full ring-2 ring-gray-100"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="bg-gray-50 rounded-2xl p-5 hover:bg-gray-100 transition-colors">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-bold text-gray-900">
-                            {comment.user.name}
+                            <div className="flex items-center gap-3">
+                              <h4 className="font-bold text-gray-900">
+                                {comment.user.name}
+                              </h4>
+                              <span className="text-sm text-gray-500">
+                                {getRelativeTime(comment.createdAt)}
+                              </span>
+                            </div>
+
+                            {currentUser?.id === comment.userId ? (
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() =>
+                                    handleEditStart(comment.id, comment.content)
+                                  }
+                                  className="p-2 rounded-lg text-gray-500 hover:text-orange-600 hover:bg-orange-50 transition-colors"
+                                  aria-label="Edit comment"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteComment(comment.id)}
+                                  className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                  aria-label="Delete comment"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ) : null}
+                          </div>
+
+                          {editingCommentId === comment.id ? (
+                            <div className="space-y-3">
+                              <textarea
+                                value={editedCommentText}
+                                onChange={(e) => setEditedCommentText(e.target.value)}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 resize-none"
+                                rows={3}
+                              />
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={handleEditCancel}
+                                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+                                >
+                                  <X className="w-4 h-4" />
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={() => handleEditSave(comment.id)}
+                                  disabled={
+                                    !editedCommentText.trim() || updateComment.isPending
+                                  }
+                                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                >
+                                  <Check className="w-4 h-4" />
+                                  Save
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-gray-700 leading-relaxed">
+                              {comment.content}
+                            </p>
+                          )}
                           </h4>
                           <span className="text-sm text-gray-500">
                             {getRelativeTime(comment.createdAt)}

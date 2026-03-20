@@ -30,6 +30,7 @@ import authRouter from "./routers/auth.routes";
 import cartRouter from "./routers/cart.routes";
 import categoryRouter from "./routers/category.routes";
 import contactRouter from "./routers/contact.routes";
+import emailSubscriptionRouter from "./routers/email-subscription.routes";
 import investmentRouter from "./routers/investment.routes";
 import notificationRouter from "./routers/notification.routes";
 import orderRouter from "./routers/order.routes";
@@ -103,6 +104,7 @@ app.use("/api/v1/admins/reviews", adminReviewRouter); // Admin review routes
 app.use("/api/v1/subscriptions", subscriptionRouter); // Vendor subscription routes
 app.use("/api/v1/admins/subscriptions", adminSubscriptionRouter); // Admin plan management
 app.use("/api/v1/contact", contactRouter);
+app.use("/api/v1/email-subscriptions", emailSubscriptionRouter);
 
 // Global Error Handler
 const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
