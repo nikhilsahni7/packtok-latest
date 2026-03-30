@@ -32,7 +32,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   // Determine the image source - use thumbnail if available, otherwise first image
   const imageSrc =
-    product.imagesThumbnail || product.images[0] || "/placeholder-image.png";
+    product.imagesThumbnail || product.images?.[0] || "/placeholder-image.png";
 
   return (
     <div
