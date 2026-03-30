@@ -12,6 +12,14 @@ interface LoginPayload {
   password: string;
 }
 
+interface ApiErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export function useLogin() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setRefreshToken = useAuthStore((s) => s.setRefreshToken);
@@ -27,7 +35,11 @@ export function useLogin() {
         email: payload.email.toLowerCase().trim(),
       };
       const { data } = await api.post("/api/v1/auth/login", normalizedPayload);
-      return data.data as { accessToken: string; refreshToken: string; user: User };
+      return data.data as {
+        accessToken: string;
+        refreshToken: string;
+        user: User;
+      };
     },
     onSuccess: ({ accessToken, refreshToken, user }) => {
       setAccessToken(accessToken);
@@ -41,9 +53,19 @@ export function useLogin() {
         callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/"
       );
     },
-    onError: (err: Error) => {
-      const axiosError = err as any;
+    onError: (err: Error, variables) => {
+      const axiosError = err as ApiErrorResponse;
       const message = axiosError?.response?.data?.message || "Login failed";
+
+      if (message.toLowerCase().includes("account not verified")) {
+        const email = encodeURIComponent(variables.email.toLowerCase().trim());
+        const callbackUrl = searchParams?.get("callbackUrl");
+        const href = callbackUrl
+          ? `/auth/verify-otp?email=${email}&callbackUrl=${encodeURIComponent(callbackUrl)}`
+          : `/auth/verify-otp?email=${email}`;
+        router.push(href);
+      }
+
       toast.error(message);
     },
   });

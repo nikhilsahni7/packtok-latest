@@ -1,75 +1,107 @@
 "use client";
 
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@packtok/ui/components/button";
 import {
-  LineChart,
+  CartesianGrid,
+  Cell,
   Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 
-const salesData = [
-  { name: "Jan", value: 4000 },
-  { name: "Feb", value: 3000 },
-  { name: "Mar", value: 5000 },
-  { name: "Apr", value: 2780 },
-  { name: "May", value: 1890 },
-  { name: "Jun", value: 2390 },
-  { name: "Jul", value: 3490 },
-];
+interface SalesPoint {
+  name: string;
+  [currency: string]: string | number;
+}
 
-const analyticsData = [
-  { name: "Sale", value: 65, color: "#3B82F6" },
-  { name: "Distribute", value: 20, color: "#10B981" },
-  { name: "Return", value: 15, color: "#EC4899" },
-];
+interface AnalyticsPoint {
+  name: string;
+  value: number;
+  color: string;
+}
 
-const COLORS = ["#3B82F6", "#10B981", "#EC4899"];
+interface DashboardChartsProps {
+  salesData: SalesPoint[];
+  salesCurrencies: string[];
+  analyticsData: AnalyticsPoint[];
+}
 
-export function DashboardCharts() {
+export function DashboardCharts({
+  salesData,
+  salesCurrencies,
+  analyticsData,
+}: DashboardChartsProps) {
+  const totalAnalytics = analyticsData.reduce(
+    (sum, item) => sum + item.value,
+    0,
+  );
+
+  const SALES_COLORS = ["#4f46e5", "#0f766e", "#dc2626", "#a16207", "#7c3aed"];
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Sales Chart */}
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Sales</h3>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/70">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-slate-900">Sales Trend</h3>
+          <p className="text-xs text-slate-500 mt-1">
+            Monthly paid revenue split by currency (no cross-currency mixing)
+          </p>
         </div>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={salesData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#8B5CF6"
-                strokeWidth={2}
-                dot={{ fill: "#8B5CF6" }}
+              <Tooltip
+                formatter={(value, key) => [
+                  `${Number(value).toLocaleString()}`,
+                  `${String(key)} revenue`,
+                ]}
+                contentStyle={{ borderRadius: 12, borderColor: "#cbd5e1" }}
               />
+              {salesCurrencies.map((currency, index) => (
+                <Line
+                  key={currency}
+                  type="monotone"
+                  dataKey={currency}
+                  stroke={SALES_COLORS[index % SALES_COLORS.length]}
+                  strokeWidth={2}
+                  dot={{
+                    fill: SALES_COLORS[index % SALES_COLORS.length],
+                    r: 3,
+                  }}
+                  activeDot={{ r: 6 }}
+                />
+              ))}
             </LineChart>
           </ResponsiveContainer>
         </div>
+        <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 mt-4">
+          {salesCurrencies.map((currency, index) => (
+            <div key={currency} className="flex items-center">
+              <div
+                className="w-3 h-3 rounded-full mr-2"
+                style={{
+                  backgroundColor: SALES_COLORS[index % SALES_COLORS.length],
+                }}
+              />
+              <span className="text-sm text-slate-600">{currency}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Analytics Donut */}
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Analytics</h3>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/70">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-slate-900">Order Mix</h3>
+          <p className="text-xs text-slate-500 mt-1">
+            Distribution of completed, pending, and cancelled orders
+          </p>
         </div>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
@@ -83,30 +115,33 @@ export function DashboardCharts() {
                 paddingAngle={5}
                 dataKey="value"
               >
-                {analyticsData.map((_, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
+                {analyticsData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                contentStyle={{ borderRadius: 12, borderColor: "#cbd5e1" }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex justify-center space-x-4 mt-4">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-            <span className="text-sm text-gray-600">Sale (65%)</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-            <span className="text-sm text-gray-600">Distribute (20%)</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-pink-500 rounded-full mr-2"></div>
-            <span className="text-sm text-gray-600">Return (15%)</span>
-          </div>
+        <div className="flex justify-center flex-wrap gap-x-4 gap-y-2 mt-4">
+          {analyticsData.map((entry) => {
+            const percentage = totalAnalytics
+              ? Math.round((entry.value / totalAnalytics) * 100)
+              : 0;
+            return (
+              <div key={entry.name} className="flex items-center">
+                <div
+                  className="w-3 h-3 rounded-full mr-2"
+                  style={{ backgroundColor: entry.color }}
+                />
+                <span className="text-sm text-slate-600">
+                  {entry.name} ({percentage}%)
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

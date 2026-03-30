@@ -5,27 +5,36 @@ import { Checkbox } from "@packtok/ui/components/checkbox";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@packtok/ui/components/popover";
 import { ScrollArea } from "@packtok/ui/components/scroll-area";
 import { Separator } from "@packtok/ui/components/separator";
 import { useQueryClient } from "@tanstack/react-query";
-import { Filter, Grid3X3, List, Package, Plus, RefreshCw, Search } from "lucide-react";
+import type { AxiosError } from "axios";
+import {
+  Filter,
+  Grid3X3,
+  List,
+  Package,
+  Plus,
+  RefreshCw,
+  Search,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { productTabs } from "../../../../constants/navigation";
 import {
-    useDeleteProduct,
-    useProducts,
-    useUpdateProductStatus,
+  useDeleteProduct,
+  useProducts,
+  useUpdateProductStatus,
 } from "../../../../hooks";
 import {
-    MarketplaceProduct,
-    MarketplaceProductStatus,
+  MarketplaceProduct,
+  MarketplaceProductStatus,
 } from "../../../../types/product";
 import { QK } from "../../../../utils/queryKeys";
 import { CreateAuctionDialog } from "./create-auction-dialog";
@@ -59,7 +68,12 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
 
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: products = initialProducts, isLoading, isFetching, error } = useProducts();
+  const {
+    data: products = initialProducts,
+    isLoading,
+    isFetching,
+    error,
+  } = useProducts();
   const updateStatusMutation = useUpdateProductStatus();
   const deleteProductMutation = useDeleteProduct();
 
@@ -86,6 +100,10 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
     router.push(`/dashboard/products/edit/${product.id}`);
   };
 
+  const handleView = (product: MarketplaceProduct) => {
+    router.push(`/dashboard/products/view/${product.id}`);
+  };
+
   const handleDelete = async (productId: string) => {
     try {
       await deleteProductMutation.mutateAsync(productId);
@@ -102,13 +120,17 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
 
   const handleStatusChange = async (
     productId: string,
-    newStatus: MarketplaceProductStatus
+    newStatus: MarketplaceProductStatus,
   ) => {
     try {
       await updateStatusMutation.mutateAsync({ productId, status: newStatus });
       toast.success("Product status updated successfully");
     } catch (error) {
-      toast.error("Failed to update product status");
+      const message =
+        (error as AxiosError<{ message?: string }>)?.response?.data?.message ||
+        (error as Error)?.message ||
+        "Failed to update product status";
+      toast.error(message);
     }
   };
 
@@ -120,25 +142,38 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
         product.description.toLowerCase().includes(searchTerm.toLowerCase());
 
       // Type
-      const matchesType = selectedTypes.length === 0 || selectedTypes.includes(product.productType);
+      const matchesType =
+        selectedTypes.length === 0 ||
+        selectedTypes.includes(product.productType);
 
       // Condition
-      const matchesCondition = selectedConditions.length === 0 || selectedConditions.includes(product.condition);
+      const matchesCondition =
+        selectedConditions.length === 0 ||
+        selectedConditions.includes(product.condition);
 
       // Status (checks both marketplace status and submission status)
-      const matchesStatus = selectedStatuses.length === 0 ||
-                            selectedStatuses.includes(product.status) ||
-                            (product.submissionStatus && selectedStatuses.includes(product.submissionStatus));
+      const matchesStatus =
+        selectedStatuses.length === 0 ||
+        selectedStatuses.includes(product.status) ||
+        (product.submissionStatus &&
+          selectedStatuses.includes(product.submissionStatus));
 
       // Creator Role
       const creatorRole = product.createdByUser?.role;
       const isAdmin = creatorRole === "ADMIN" || creatorRole === "SUPER_ADMIN";
-      const matchesCreator = selectedCreators.length === 0 ||
-                             (selectedCreators.includes("ADMIN") && isAdmin) ||
-                             (selectedCreators.includes("VENDOR") && creatorRole === "VENDOR") ||
-                             (selectedCreators.includes("USER") && creatorRole === "NORMAL_USER");
+      const matchesCreator =
+        selectedCreators.length === 0 ||
+        (selectedCreators.includes("ADMIN") && isAdmin) ||
+        (selectedCreators.includes("VENDOR") && creatorRole === "VENDOR") ||
+        (selectedCreators.includes("USER") && creatorRole === "NORMAL_USER");
 
-      return matchesSearch && matchesType && matchesCondition && matchesStatus && matchesCreator;
+      return (
+        matchesSearch &&
+        matchesType &&
+        matchesCondition &&
+        matchesStatus &&
+        matchesCreator
+      );
     });
 
     if (viewMode === "list") {
@@ -162,10 +197,25 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
     }
 
     return filtered;
-  }, [searchTerm, selectedTypes, selectedConditions, selectedStatuses, selectedCreators, sortField, sortDirection, viewMode, products]);
+  }, [
+    searchTerm,
+    selectedTypes,
+    selectedConditions,
+    selectedStatuses,
+    selectedCreators,
+    sortField,
+    sortDirection,
+    viewMode,
+    products,
+  ]);
 
-  const toggleFilter = (stateSetter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
-    stateSetter(prev => prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]);
+  const toggleFilter = (
+    stateSetter: React.Dispatch<React.SetStateAction<string[]>>,
+    value: string,
+  ) => {
+    stateSetter((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    );
   };
 
   const clearAllFilters = () => {
@@ -175,7 +225,11 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
     setSelectedCreators([]);
   };
 
-  const activeFilterCount = selectedTypes.length + selectedConditions.length + selectedStatuses.length + selectedCreators.length;
+  const activeFilterCount =
+    selectedTypes.length +
+    selectedConditions.length +
+    selectedStatuses.length +
+    selectedCreators.length;
 
   if (isLoading) {
     return (
@@ -188,7 +242,10 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
         {/* Tabs skeleton */}
         <div className="flex space-x-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-10 w-24 rounded-md bg-gray-200 animate-pulse" />
+            <div
+              key={i}
+              className="h-10 w-24 rounded-md bg-gray-200 animate-pulse"
+            />
           ))}
         </div>
         {/* Filter bar skeleton */}
@@ -207,7 +264,10 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
         {/* Product grid skeleton */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-lg shadow-sm p-4 animate-pulse">
+            <div
+              key={i}
+              className="bg-white rounded-lg shadow-sm p-4 animate-pulse"
+            >
               <div className="aspect-square w-full rounded-lg bg-gray-200" />
               <div className="mt-4 space-y-2">
                 <div className="h-4 w-3/4 rounded bg-gray-200" />
@@ -236,12 +296,15 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
             disabled={isFetching}
             className="gap-2"
           >
-            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-            {isFetching ? 'Refreshing...' : 'Refresh'}
+            <RefreshCw
+              className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
+            />
+            {isFetching ? "Refreshing..." : "Refresh"}
           </Button>
           <Button
             onClick={() => router.push("/dashboard/products/add")}
-            className="bg-blue-600 hover:bg-blue-700">
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Add Product
           </Button>
@@ -299,7 +362,12 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
                 <div className="flex items-center justify-between p-4 border-b">
                   <h4 className="font-semibold text-sm">Filters</h4>
                   {activeFilterCount > 0 && (
-                    <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-auto p-0 text-xs text-blue-600 hover:text-blue-700 hover:bg-transparent">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={clearAllFilters}
+                      className="h-auto p-0 text-xs text-blue-600 hover:text-blue-700 hover:bg-transparent"
+                    >
                       Clear all
                     </Button>
                   )}
@@ -308,7 +376,9 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
                   <div className="space-y-6">
                     {/* Types */}
                     <div className="space-y-3">
-                      <h5 className="font-medium text-gray-900">Product Type</h5>
+                      <h5 className="font-medium text-gray-900">
+                        Product Type
+                      </h5>
                       <div className="space-y-2">
                         {[
                           { id: "MACHINERY", label: "Machinery" },
@@ -316,13 +386,23 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
                           { id: "CONSUMABLES", label: "Consumables" },
                           { id: "RAW_MATERIALS", label: "Raw Materials" },
                         ].map((type) => (
-                          <div key={type.id} className="flex items-center space-x-2">
+                          <div
+                            key={type.id}
+                            className="flex items-center space-x-2"
+                          >
                             <Checkbox
                               id={`type-${type.id}`}
                               checked={selectedTypes.includes(type.id)}
-                              onCheckedChange={() => toggleFilter(setSelectedTypes, type.id)}
+                              onCheckedChange={() =>
+                                toggleFilter(setSelectedTypes, type.id)
+                              }
                             />
-                            <Label htmlFor={`type-${type.id}`} className="font-normal cursor-pointer">{type.label}</Label>
+                            <Label
+                              htmlFor={`type-${type.id}`}
+                              className="font-normal cursor-pointer"
+                            >
+                              {type.label}
+                            </Label>
                           </div>
                         ))}
                       </div>
@@ -331,20 +411,32 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
 
                     {/* Creator Role */}
                     <div className="space-y-3">
-                      <h5 className="font-medium text-gray-900">Submitted By</h5>
+                      <h5 className="font-medium text-gray-900">
+                        Submitted By
+                      </h5>
                       <div className="space-y-2">
                         {[
                           { id: "ADMIN", label: "Admins & Staff" },
                           { id: "VENDOR", label: "Vendors" },
                           { id: "USER", label: "Normal Users" },
                         ].map((role) => (
-                          <div key={role.id} className="flex items-center space-x-2">
+                          <div
+                            key={role.id}
+                            className="flex items-center space-x-2"
+                          >
                             <Checkbox
                               id={`role-${role.id}`}
                               checked={selectedCreators.includes(role.id)}
-                              onCheckedChange={() => toggleFilter(setSelectedCreators, role.id)}
+                              onCheckedChange={() =>
+                                toggleFilter(setSelectedCreators, role.id)
+                              }
                             />
-                            <Label htmlFor={`role-${role.id}`} className="font-normal cursor-pointer">{role.label}</Label>
+                            <Label
+                              htmlFor={`role-${role.id}`}
+                              className="font-normal cursor-pointer"
+                            >
+                              {role.label}
+                            </Label>
                           </div>
                         ))}
                       </div>
@@ -364,13 +456,23 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
                           { id: "APPROVED", label: "Approved" },
                           { id: "REJECTED", label: "Rejected" },
                         ].map((status) => (
-                          <div key={status.id} className="flex items-center space-x-2">
+                          <div
+                            key={status.id}
+                            className="flex items-center space-x-2"
+                          >
                             <Checkbox
                               id={`status-${status.id}`}
                               checked={selectedStatuses.includes(status.id)}
-                              onCheckedChange={() => toggleFilter(setSelectedStatuses, status.id)}
+                              onCheckedChange={() =>
+                                toggleFilter(setSelectedStatuses, status.id)
+                              }
                             />
-                            <Label htmlFor={`status-${status.id}`} className="font-normal cursor-pointer">{status.label}</Label>
+                            <Label
+                              htmlFor={`status-${status.id}`}
+                              className="font-normal cursor-pointer"
+                            >
+                              {status.label}
+                            </Label>
                           </div>
                         ))}
                       </div>
@@ -385,13 +487,28 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
                           { id: "NEW", label: "New" },
                           { id: "USED", label: "Used" },
                         ].map((condition) => (
-                          <div key={condition.id} className="flex items-center space-x-2">
+                          <div
+                            key={condition.id}
+                            className="flex items-center space-x-2"
+                          >
                             <Checkbox
                               id={`condition-${condition.id}`}
-                              checked={selectedConditions.includes(condition.id)}
-                              onCheckedChange={() => toggleFilter(setSelectedConditions, condition.id)}
+                              checked={selectedConditions.includes(
+                                condition.id,
+                              )}
+                              onCheckedChange={() =>
+                                toggleFilter(
+                                  setSelectedConditions,
+                                  condition.id,
+                                )
+                              }
                             />
-                            <Label htmlFor={`condition-${condition.id}`} className="font-normal cursor-pointer">{condition.label}</Label>
+                            <Label
+                              htmlFor={`condition-${condition.id}`}
+                              className="font-normal cursor-pointer"
+                            >
+                              {condition.label}
+                            </Label>
                           </div>
                         ))}
                       </div>
@@ -426,6 +543,7 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
       {viewMode === "grid" ? (
         <ProductGrid
           products={filteredAndSortedProducts}
+          onView={handleView}
           onEdit={handleEdit}
           onDelete={handleDelete}
           onStatusChange={handleStatusChange}
@@ -435,6 +553,7 @@ export function ProductsView({ initialProducts = [] }: ProductsViewProps) {
       ) : (
         <ProductTable
           products={filteredAndSortedProducts}
+          onView={handleView}
           onEdit={handleEdit}
           onDelete={handleDelete}
           onStatusChange={handleStatusChange}

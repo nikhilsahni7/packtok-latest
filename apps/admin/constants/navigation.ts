@@ -1,4 +1,5 @@
 import {
+  Bell,
   BookOpenText,
   ClipboardList,
   Gavel,
@@ -8,6 +9,7 @@ import {
   MessageSquare,
   Package,
   Podcast,
+  Rss,
   Tags,
   Truck,
   UserCheck,
@@ -100,6 +102,18 @@ export const navigation: NavigationItem[] = [
     name: "Podcasts",
     href: "/dashboard/podcasts",
     icon: Podcast,
+    current: false,
+  },
+  {
+    name: "Subscriptions",
+    href: "/dashboard/subscriptions",
+    icon: Rss,
+    current: false,
+  },
+  {
+    name: "Notifications",
+    href: "/dashboard/notifications",
+    icon: Bell,
     current: false,
   },
 ];

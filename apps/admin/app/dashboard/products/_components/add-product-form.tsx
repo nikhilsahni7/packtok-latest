@@ -3,59 +3,70 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-    ComboboxOption,
-    CustomCombobox,
+  ComboboxOption,
+  CustomCombobox,
 } from "@packtok/ui/components/custom-combobox";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@packtok/ui/components/select";
 import { Switch } from "@packtok/ui/components/switch";
 import { Textarea } from "@packtok/ui/components/textarea";
 import {
-    FileText,
-    FileVideo,
-    Minus,
-    Plus,
-    Save,
-    Upload,
-    X,
+  FileText,
+  FileVideo,
+  Minus,
+  Plus,
+  Save,
+  Upload,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import {
-    useCategories,
-    useCreateCategory,
-    useCreateProduct,
+  useCategories,
+  useCreateCategory,
+  useCreateProduct,
 } from "../../../../hooks";
 import {
-    productSchema,
-    type ProductFormData,
+  productSchema,
+  type ProductFormData,
 } from "../../../../schemas/product-schema";
 import MediaPreviewModal from "./media-preview-modal";
 
 export default function AddProductForm() {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [isImageDragActive, setIsImageDragActive] = useState(false);
+  const [isThumbnailDragActive, setIsThumbnailDragActive] = useState(false);
+  const [isVideoDragActive, setIsVideoDragActive] = useState(false);
+  const [isVideoThumbnailDragActive, setIsVideoThumbnailDragActive] =
+    useState(false);
+  const [isPdfDragActive, setIsPdfDragActive] = useState(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
   const [videoThumbnail, setVideoThumbnail] = useState<File | null>(null);
   const [pdf, setPdf] = useState<File | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
+  const thumbnailInputRef = useRef<HTMLInputElement | null>(null);
+  const videoInputRef = useRef<HTMLInputElement | null>(null);
+  const videoThumbnailInputRef = useRef<HTMLInputElement | null>(null);
+  const pdfInputRef = useRef<HTMLInputElement | null>(null);
   const [specifications, setSpecifications] = useState<
     { key: string; value: string }[]
   >([{ key: "", value: "" }]);
@@ -148,7 +159,7 @@ export default function AddProductForm() {
       });
 
       const validSpecs = specifications.filter(
-        (spec) => spec.key.trim() && spec.value.trim()
+        (spec) => spec.key.trim() && spec.value.trim(),
       );
       if (validSpecs.length > 0) {
         const specsObj = validSpecs.reduce(
@@ -156,7 +167,7 @@ export default function AddProductForm() {
             acc[spec.key] = spec.value;
             return acc;
           },
-          {} as Record<string, string>
+          {} as Record<string, string>,
         );
         formData.append("specifications", JSON.stringify(specsObj));
       }
@@ -210,7 +221,7 @@ export default function AddProductForm() {
       });
 
       const validSpecs = specifications.filter(
-        (spec) => spec.key.trim() && spec.value.trim()
+        (spec) => spec.key.trim() && spec.value.trim(),
       );
       if (validSpecs.length > 0) {
         const specsObj = validSpecs.reduce(
@@ -218,7 +229,7 @@ export default function AddProductForm() {
             acc[spec.key] = spec.value;
             return acc;
           },
-          {} as Record<string, string>
+          {} as Record<string, string>,
         );
         formData.append("specifications", JSON.stringify(specsObj));
       }
@@ -264,23 +275,63 @@ export default function AddProductForm() {
     }
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && uploadedImages.length + files.length <= 5) {
-      const newImages = Array.from(files);
-      setUploadedImages([...uploadedImages, ...newImages]);
-    } else if (files && uploadedImages.length + files.length > 5) {
+  const addImages = (files: File[]) => {
+    if (uploadedImages.length + files.length <= 5) {
+      setUploadedImages([...uploadedImages, ...files]);
+    } else {
       toast.error("Maximum 5 images allowed");
     }
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    addImages(Array.from(files));
+    event.target.value = "";
+  };
+
+  const handleGalleryDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsImageDragActive(false);
+
+    const files = Array.from(event.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/"),
+    );
+
+    if (!files.length) {
+      toast.error("Please drop image files only");
+      return;
+    }
+
+    addImages(files);
+  };
+
   const handleThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (file) {
       setThumbnail(file);
     }
+
+    event.target.value = "";
+  };
+
+  const handleThumbnailDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsThumbnailDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find((candidate) =>
+      candidate.type.startsWith("image/"),
+    );
+
+    if (!file) {
+      toast.error("Please drop an image file");
+      return;
+    }
+
+    setThumbnail(file);
   };
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -288,15 +339,51 @@ export default function AddProductForm() {
     if (file) {
       setVideo(file);
     }
+
+    event.target.value = "";
+  };
+
+  const handleVideoDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsVideoDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find((candidate) =>
+      candidate.type.startsWith("video/"),
+    );
+
+    if (!file) {
+      toast.error("Please drop a video file");
+      return;
+    }
+
+    setVideo(file);
   };
 
   const handleVideoThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (file) {
       setVideoThumbnail(file);
     }
+
+    event.target.value = "";
+  };
+
+  const handleVideoThumbnailDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsVideoThumbnailDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find((candidate) =>
+      candidate.type.startsWith("image/"),
+    );
+
+    if (!file) {
+      toast.error("Please drop an image file");
+      return;
+    }
+
+    setVideoThumbnail(file);
   };
 
   const handlePdfUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -304,6 +391,26 @@ export default function AddProductForm() {
     if (file) {
       setPdf(file);
     }
+
+    event.target.value = "";
+  };
+
+  const handlePdfDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsPdfDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find(
+      (candidate) =>
+        candidate.type === "application/pdf" ||
+        candidate.name.toLowerCase().endsWith(".pdf"),
+    );
+
+    if (!file) {
+      toast.error("Please drop a PDF file");
+      return;
+    }
+
+    setPdf(file);
   };
 
   const removeImage = (index: number) => {
@@ -323,7 +430,7 @@ export default function AddProductForm() {
   const updateSpecification = (
     index: number,
     field: "key" | "value",
-    value: string
+    value: string,
   ) => {
     const updated = [...specifications];
     updated[index][field] = value;
@@ -340,7 +447,7 @@ export default function AddProductForm() {
 
   // Get subcategories for the selected category
   const selectedCategoryData = categories.find(
-    (cat) => cat.name === watchedCategory
+    (cat) => cat.name === watchedCategory,
   );
   const availableSubcategories = selectedCategoryData?.subcategories || [];
 
@@ -404,19 +511,50 @@ export default function AddProductForm() {
                 </span>
               </Label>
               <div className="flex items-start gap-6">
-                <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
-                  <label className="cursor-pointer text-center p-4">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => thumbnailInputRef.current?.click()}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      thumbnailInputRef.current?.click();
+                    }
+                  }}
+                  onDragEnter={(event) => {
+                    event.preventDefault();
+                    setIsThumbnailDragActive(true);
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setIsThumbnailDragActive(true);
+                  }}
+                  onDragLeave={(event) => {
+                    event.preventDefault();
+                    setIsThumbnailDragActive(false);
+                  }}
+                  onDrop={handleThumbnailDrop}
+                  className={`w-32 h-32 border-2 border-dashed rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer group ${
+                    isThumbnailDragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                  }`}
+                >
+                  <div className="text-center p-4">
                     <Upload className="h-8 w-8 text-gray-400 group-hover:text-blue-500 mx-auto mb-2 transition-colors" />
                     <span className="text-sm text-gray-600 group-hover:text-blue-600 font-medium">
-                      Upload Thumbnail
+                      {isThumbnailDragActive
+                        ? "Drop Thumbnail"
+                        : "Upload Thumbnail"}
                     </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleThumbnailUpload}
-                      className="hidden"
-                    />
-                  </label>
+                  </div>
+                  <input
+                    ref={thumbnailInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailUpload}
+                    className="hidden"
+                  />
                 </div>
                 {thumbnail && (
                   <div className="flex items-start gap-4">
@@ -472,20 +610,49 @@ export default function AddProductForm() {
               </Label>
               <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
                 {uploadedImages.length < 5 && (
-                  <div className="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
-                    <label className="cursor-pointer text-center p-4">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => galleryInputRef.current?.click()}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        galleryInputRef.current?.click();
+                      }
+                    }}
+                    onDragEnter={(event) => {
+                      event.preventDefault();
+                      setIsImageDragActive(true);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setIsImageDragActive(true);
+                    }}
+                    onDragLeave={(event) => {
+                      event.preventDefault();
+                      setIsImageDragActive(false);
+                    }}
+                    onDrop={handleGalleryDrop}
+                    className={`aspect-square border-2 border-dashed rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer group ${
+                      isImageDragActive
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                    }`}
+                  >
+                    <div className="text-center p-4">
                       <Upload className="h-6 w-6 text-gray-400 group-hover:text-blue-500 mx-auto mb-2 transition-colors" />
                       <span className="text-xs text-gray-600 group-hover:text-blue-600 font-medium">
-                        Add Images
+                        {isImageDragActive ? "Drop Images" : "Add Images"}
                       </span>
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    </div>
+                    <input
+                      ref={galleryInputRef}
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
                   </div>
                 )}
 
@@ -537,19 +704,48 @@ export default function AddProductForm() {
                   </span>
                 </Label>
                 <div className="space-y-4">
-                  <div className="w-full h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
-                    <label className="cursor-pointer text-center p-4">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => videoInputRef.current?.click()}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        videoInputRef.current?.click();
+                      }
+                    }}
+                    onDragEnter={(event) => {
+                      event.preventDefault();
+                      setIsVideoDragActive(true);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setIsVideoDragActive(true);
+                    }}
+                    onDragLeave={(event) => {
+                      event.preventDefault();
+                      setIsVideoDragActive(false);
+                    }}
+                    onDrop={handleVideoDrop}
+                    className={`w-full h-32 border-2 border-dashed rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer group ${
+                      isVideoDragActive
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                    }`}
+                  >
+                    <div className="text-center p-4">
                       <FileVideo className="h-8 w-8 text-gray-400 group-hover:text-blue-500 mx-auto mb-2 transition-colors" />
                       <span className="text-sm text-gray-600 group-hover:text-blue-600 font-medium">
-                        Upload Video
+                        {isVideoDragActive ? "Drop Video" : "Upload Video"}
                       </span>
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={handleVideoUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    </div>
+                    <input
+                      ref={videoInputRef}
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoUpload}
+                      className="hidden"
+                    />
                   </div>
                   {video && (
                     <div className="bg-gray-50 rounded-xl p-4 border">
@@ -604,19 +800,50 @@ export default function AddProductForm() {
                   </span>
                 </Label>
                 <div className="space-y-4">
-                  <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
-                    <label className="cursor-pointer text-center p-4">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => videoThumbnailInputRef.current?.click()}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        videoThumbnailInputRef.current?.click();
+                      }
+                    }}
+                    onDragEnter={(event) => {
+                      event.preventDefault();
+                      setIsVideoThumbnailDragActive(true);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setIsVideoThumbnailDragActive(true);
+                    }}
+                    onDragLeave={(event) => {
+                      event.preventDefault();
+                      setIsVideoThumbnailDragActive(false);
+                    }}
+                    onDrop={handleVideoThumbnailDrop}
+                    className={`w-full h-24 border-2 border-dashed rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer group ${
+                      isVideoThumbnailDragActive
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                    }`}
+                  >
+                    <div className="text-center p-4">
                       <Upload className="h-6 w-6 text-gray-400 group-hover:text-blue-500 mx-auto mb-2 transition-colors" />
                       <span className="text-sm text-gray-600 group-hover:text-blue-600 font-medium">
-                        Upload Thumbnail
+                        {isVideoThumbnailDragActive
+                          ? "Drop Thumbnail"
+                          : "Upload Thumbnail"}
                       </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleVideoThumbnailUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    </div>
+                    <input
+                      ref={videoThumbnailInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleVideoThumbnailUpload}
+                      className="hidden"
+                    />
                   </div>
                   {videoThumbnail && (
                     <div className="bg-gray-50 rounded-xl p-4 border">
@@ -678,19 +905,48 @@ export default function AddProductForm() {
                 </span>
               </Label>
               <div className="space-y-4">
-                <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
-                  <label className="cursor-pointer text-center p-4">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => pdfInputRef.current?.click()}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      pdfInputRef.current?.click();
+                    }
+                  }}
+                  onDragEnter={(event) => {
+                    event.preventDefault();
+                    setIsPdfDragActive(true);
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setIsPdfDragActive(true);
+                  }}
+                  onDragLeave={(event) => {
+                    event.preventDefault();
+                    setIsPdfDragActive(false);
+                  }}
+                  onDrop={handlePdfDrop}
+                  className={`w-full h-24 border-2 border-dashed rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer group ${
+                    isPdfDragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                  }`}
+                >
+                  <div className="text-center p-4">
                     <FileText className="h-6 w-6 text-gray-400 group-hover:text-blue-500 mx-auto mb-2 transition-colors" />
                     <span className="text-sm text-gray-600 group-hover:text-blue-600 font-medium">
-                      Upload PDF
+                      {isPdfDragActive ? "Drop PDF" : "Upload PDF"}
                     </span>
-                    <input
-                      type="file"
-                      accept=".pdf"
-                      onChange={handlePdfUpload}
-                      className="hidden"
-                    />
-                  </label>
+                  </div>
+                  <input
+                    ref={pdfInputRef}
+                    type="file"
+                    accept=".pdf"
+                    onChange={handlePdfUpload}
+                    className="hidden"
+                  />
                 </div>
                 {pdf && (
                   <div className="bg-gray-50 rounded-xl p-4 border">
@@ -815,7 +1071,9 @@ export default function AddProductForm() {
                               placeholder="Enter price"
                               {...field}
                               onChange={(e) =>
-                                field.onChange(Number.parseFloat(e.target.value) || 0)
+                                field.onChange(
+                                  Number.parseFloat(e.target.value) || 0,
+                                )
                               }
                             />
                           </FormControl>
@@ -842,13 +1100,25 @@ export default function AddProductForm() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
-                            <SelectItem value="USD">🇺🇸 USD - US Dollar</SelectItem>
-                            <SelectItem value="AED">🇦🇪 AED - UAE Dirham</SelectItem>
+                            <SelectItem value="INR">
+                              🇮🇳 INR - Indian Rupee
+                            </SelectItem>
+                            <SelectItem value="USD">
+                              🇺🇸 USD - US Dollar
+                            </SelectItem>
+                            <SelectItem value="AED">
+                              🇦🇪 AED - UAE Dirham
+                            </SelectItem>
                             <SelectItem value="EUR">🇪🇺 EUR - Euro</SelectItem>
-                            <SelectItem value="GBP">🇬🇧 GBP - British Pound</SelectItem>
-                            <SelectItem value="CNY">🇨🇳 CNY - Chinese Yuan</SelectItem>
-                            <SelectItem value="TWD">🇹🇼 TWD - Taiwan Dollar</SelectItem>
+                            <SelectItem value="GBP">
+                              🇬🇧 GBP - British Pound
+                            </SelectItem>
+                            <SelectItem value="CNY">
+                              🇨🇳 CNY - Chinese Yuan
+                            </SelectItem>
+                            <SelectItem value="TWD">
+                              🇹🇼 TWD - Taiwan Dollar
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -875,10 +1145,13 @@ export default function AddProductForm() {
                       render={({ field }) => (
                         <FormItem className="flex items-center justify-between rounded-lg border bg-white p-4">
                           <div>
-                            <FormLabel className="text-base font-medium">Enable Add to Cart</FormLabel>
+                            <FormLabel className="text-base font-medium">
+                              Enable Add to Cart
+                            </FormLabel>
                             <p className="text-sm text-gray-500">
-                              When enabled, customers can add this product to cart and checkout with Razorpay.
-                              When disabled, customers will request a quote instead.
+                              When enabled, customers can add this product to
+                              cart and checkout with Razorpay. When disabled,
+                              customers will request a quote instead.
                             </p>
                           </div>
                           <FormControl>
@@ -897,9 +1170,12 @@ export default function AddProductForm() {
                       render={({ field }) => (
                         <FormItem className="flex items-center justify-between rounded-lg border bg-white p-4">
                           <div>
-                            <FormLabel className="text-base font-medium">Show Price to Customers</FormLabel>
+                            <FormLabel className="text-base font-medium">
+                              Show Price to Customers
+                            </FormLabel>
                             <p className="text-sm text-gray-500">
-                              When disabled, the price will be hidden on the product page.
+                              When disabled, the price will be hidden on the
+                              product page.
                             </p>
                           </div>
                           <FormControl>
@@ -1120,7 +1396,7 @@ export default function AddProductForm() {
                               {...field}
                               onChange={(e) =>
                                 field.onChange(
-                                  parseInt(e.target.value) || undefined
+                                  parseInt(e.target.value) || undefined,
                                 )
                               }
                             />
@@ -1153,7 +1429,7 @@ export default function AddProductForm() {
                               updateSpecification(
                                 index,
                                 "value",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className="flex-1"

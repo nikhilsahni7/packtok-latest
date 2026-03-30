@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@packtok/ui/components/button";
-import { X, Download, ZoomIn, ZoomOut, RotateCw } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { Download, RotateCw, X, ZoomIn, ZoomOut } from "lucide-react";
 import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
 
 interface MediaPreviewModalProps {
   isOpen: boolean;
@@ -22,6 +22,7 @@ export default function MediaPreviewModal({
 }: MediaPreviewModalProps) {
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -57,13 +58,45 @@ export default function MediaPreviewModal({
   const handleZoomOut = () => setZoom((prev) => Math.max(prev - 0.25, 0.25));
   const handleRotate = () => setRotation((prev) => (prev + 90) % 360);
 
-  const handleDownload = () => {
+  const triggerDownload = (href: string, fileName: string) => {
     const link = document.createElement("a");
-    link.href = mediaUrl;
-    link.download = mediaName;
+    link.href = href;
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDownload = async () => {
+    if (isDownloading) return;
+
+    setIsDownloading(true);
+    let objectUrl: string | null = null;
+
+    try {
+      // For local blob previews, the direct download attribute works reliably.
+      if (mediaUrl.startsWith("blob:")) {
+        triggerDownload(mediaUrl, mediaName);
+        return;
+      }
+
+      const response = await fetch(mediaUrl);
+      if (!response.ok) {
+        throw new Error("Failed to fetch media for download");
+      }
+
+      const blob = await response.blob();
+      objectUrl = URL.createObjectURL(blob);
+      triggerDownload(objectUrl, mediaName);
+    } catch {
+      // Fallback without leaving admin page: open media in a new tab.
+      window.open(mediaUrl, "_blank", "noopener,noreferrer");
+    } finally {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+      setIsDownloading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -114,6 +147,7 @@ export default function MediaPreviewModal({
             variant="outline"
             size="sm"
             onClick={handleDownload}
+            disabled={isDownloading}
             className="bg-white/10 border-white/20 text-white hover:bg-white/20"
           >
             <Download className="h-4 w-4" />

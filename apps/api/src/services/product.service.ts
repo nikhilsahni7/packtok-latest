@@ -157,6 +157,7 @@ export const changeProductStatus = async (
       title: true,
       productType: true,
       status: true,
+      quantity: true,
       category: { select: { name: true } },
       submissionStatus: true,
     },
@@ -172,15 +173,41 @@ export const changeProductStatus = async (
       existing.submissionStatus !== null &&
       existing.submissionStatus !== UserSubmissionStatus.APPROVED
     ) {
-      throw new Error(
+      throw new ApiError(
+        400,
         "Cannot mark product as AVAILABLE — it must be approved first. Please approve the submission before changing status."
+      );
+    }
+
+    if ((existing.quantity ?? 0) <= 0) {
+      throw new ApiError(
+        400,
+        "Cannot mark product as AVAILABLE with zero stock. Please update stock/quantity first."
       );
     }
   }
 
-  const updated = await prisma.marketplaceProduct.update({
-    where: { id: productId },
-    data: { status: newStatus },
+  const updated = await prisma.$transaction(async (tx) => {
+    const next = await tx.marketplaceProduct.update({
+      where: { id: productId },
+      data:
+        newStatus === MarketplaceProductStatus.SOLD ||
+        newStatus === MarketplaceProductStatus.OUT_OF_STOCK
+          ? { status: newStatus, quantity: 0 }
+          : { status: newStatus },
+    });
+
+    if (
+      newStatus === MarketplaceProductStatus.SOLD ||
+      newStatus === MarketplaceProductStatus.OUT_OF_STOCK
+    ) {
+      await tx.productInventory.updateMany({
+        where: { productId },
+        data: { stockOnHand: 0 },
+      });
+    }
+
+    return next;
   });
 
   if (

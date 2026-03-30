@@ -4,7 +4,7 @@ import api from "@/lib/axios";
 import { useAuthStore } from "@/store/auth-store";
 import { User } from "@/types/auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 interface VendorLoginPayload {
@@ -12,11 +12,20 @@ interface VendorLoginPayload {
   password: string;
 }
 
+interface ApiErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export function useVendorLogin() {
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setRefreshToken = useAuthStore((s) => s.setRefreshToken);
   const setUser = useAuthStore((s) => s.setUser);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -25,8 +34,15 @@ export function useVendorLogin() {
         ...payload,
         email: payload.email.toLowerCase().trim(),
       };
-      const { data } = await api.post("/api/v1/auth/login-vendor", normalizedPayload);
-      return data.data as { accessToken: string; refreshToken: string; user: User };
+      const { data } = await api.post(
+        "/api/v1/auth/login-vendor",
+        normalizedPayload
+      );
+      return data.data as {
+        accessToken: string;
+        refreshToken: string;
+        user: User;
+      };
     },
     onSuccess: ({ accessToken, refreshToken, user }) => {
       setAccessToken(accessToken);
@@ -37,9 +53,19 @@ export function useVendorLogin() {
       toast.success("Logged in successfully");
       router.push("/vendor/dashboard");
     },
-    onError: (err: Error) => {
-      const axiosError = err as any;
+    onError: (err: Error, variables) => {
+      const axiosError = err as ApiErrorResponse;
       const message = axiosError?.response?.data?.message || "Login failed";
+
+      if (message.toLowerCase().includes("account not verified")) {
+        const email = encodeURIComponent(variables.email.toLowerCase().trim());
+        const callbackUrl = searchParams?.get("callbackUrl");
+        const href = callbackUrl
+          ? `/auth/verify-otp?email=${email}&type=vendor&callbackUrl=${encodeURIComponent(callbackUrl)}`
+          : `/auth/verify-otp?email=${email}&type=vendor`;
+        router.push(href);
+      }
+
       toast.error(message);
     },
   });

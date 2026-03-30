@@ -1,34 +1,43 @@
 "use client";
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@packtok/ui/components/alert-dialog";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@packtok/ui/components/dropdown-menu";
-import { Activity, Edit, Gavel, MoreHorizontal, Package, Trash2 } from "lucide-react";
+import {
+  Activity,
+  Edit,
+  Eye,
+  Gavel,
+  MoreHorizontal,
+  Package,
+  Trash2,
+} from "lucide-react";
 import Image from "next/image";
 import {
-    MarketplaceProduct,
-    MarketplaceProductStatus,
+  MarketplaceProduct,
+  MarketplaceProductStatus,
 } from "../../../../types/product";
 import { cxBadge, cxTypeBadge } from "../../../../utils/badges";
 
 interface ProductGridProps {
   products: MarketplaceProduct[];
+  onView: (product: MarketplaceProduct) => void;
   onEdit: (product: MarketplaceProduct) => void;
   onDelete: (productId: string) => void;
   onStatusChange: (productId: string, status: MarketplaceProductStatus) => void;
@@ -38,6 +47,7 @@ interface ProductGridProps {
 
 export function ProductGrid({
   products,
+  onView,
   onEdit,
   onDelete,
   onStatusChange,
@@ -82,6 +92,10 @@ export function ProductGrid({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-50">
+                  <DropdownMenuItem onClick={() => onView(product)}>
+                    <Eye className="w-4 h-4 mr-2" />
+                    View Product
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onEdit(product)}>
                     <Edit className="w-4 h-4 mr-2" />
                     Edit
@@ -184,12 +198,28 @@ export function ProductGrid({
                       REJECTED
                     </Badge>
                   )}
-                  {product.createdByUser?.role === "ADMIN" || product.createdByUser?.role === "SUPER_ADMIN" ? (
-                    <Badge variant="outline" className="border-blue-200 text-blue-700 bg-blue-50">ADMIN</Badge>
+                  {product.createdByUser?.role === "ADMIN" ||
+                  product.createdByUser?.role === "SUPER_ADMIN" ? (
+                    <Badge
+                      variant="outline"
+                      className="border-blue-200 text-blue-700 bg-blue-50"
+                    >
+                      ADMIN
+                    </Badge>
                   ) : product.createdByUser?.role === "VENDOR" ? (
-                    <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50">VENDOR</Badge>
+                    <Badge
+                      variant="outline"
+                      className="border-purple-200 text-purple-700 bg-purple-50"
+                    >
+                      VENDOR
+                    </Badge>
                   ) : product.createdByUser?.role === "NORMAL_USER" ? (
-                    <Badge variant="outline" className="border-gray-200 text-gray-700 bg-gray-50">USER</Badge>
+                    <Badge
+                      variant="outline"
+                      className="border-gray-200 text-gray-700 bg-gray-50"
+                    >
+                      USER
+                    </Badge>
                   ) : null}
                   <Badge className={`${cxBadge(product.status)} text-xs`}>
                     {product.status.replace("_", " ")}
@@ -200,14 +230,19 @@ export function ProductGrid({
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Price:</span>
                 <span className="font-semibold text-gray-900">
-                  {product.currency || "INR"} {Number(product.price).toLocaleString()}
+                  {product.currency || "INR"}{" "}
+                  {Number(product.price).toLocaleString()}
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Stock:</span>
-                <span className={`font-medium ${(product.quantity ?? 0) === 0 ? 'text-red-600' : 'text-gray-900'}`}>
-                  {(product.quantity ?? 0) === 0 ? 'Out of Stock' : `${product.quantity} pcs`}
+                <span
+                  className={`font-medium ${(product.quantity ?? 0) === 0 ? "text-red-600" : "text-gray-900"}`}
+                >
+                  {(product.quantity ?? 0) === 0
+                    ? "Out of Stock"
+                    : `${product.quantity} pcs`}
                 </span>
               </div>
 
@@ -239,6 +274,15 @@ export function ProductGrid({
               >
                 <Gavel className="h-3 w-3 mr-1" />
                 Auction
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => onView(product)}
+              >
+                <Eye className="h-3 w-3 mr-1" />
+                View
               </Button>
               <Button
                 variant="outline"

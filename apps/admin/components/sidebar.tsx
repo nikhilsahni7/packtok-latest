@@ -1,12 +1,12 @@
 "use client";
 
-import { LogOut, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { navigation } from "../constants/navigation";
 import { useAuthStore } from "../store/auth-store";
 import { useUiStore } from "../store/ui-store";
-import { useRouter, usePathname } from "next/navigation";
-import { navigation } from "../constants/navigation";
 import { Tooltip } from "./tooltip";
 
 export function Sidebar() {
@@ -24,7 +24,7 @@ export function Sidebar() {
 
   return (
     <div
-      className={`flex flex-col bg-white shadow-lg transition-all duration-300 ${sidebarCollapsed ? "w-16" : "w-64"}`}
+      className={`h-full flex flex-col overflow-hidden bg-white shadow-lg transition-all duration-300 ${sidebarCollapsed ? "w-16" : "w-64"}`}
     >
       {/* Logo */}
       <div className="flex items-center h-16 px-6 border-b border-gray-200 justify-between">

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { Sidebar } from "../../components/sidebar";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { useAuthStore, useHasHydrated } from "../../store/auth-store";
 import { useUiStore } from "../../store/ui-store";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { Sidebar } from "../../components/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -41,10 +41,10 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-[100dvh] overflow-hidden bg-gray-100">
       <Sidebar />
       <main
-        className={`flex-1 overflow-y-auto transition-all duration-300 ${sidebarCollapsed ? "ml-0" : "ml-0"}`}
+        className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden transition-all duration-300 ${sidebarCollapsed ? "ml-0" : "ml-0"}`}
       >
         {children}
       </main>

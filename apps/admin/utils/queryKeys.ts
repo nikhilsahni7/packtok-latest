@@ -15,4 +15,6 @@ export const QK = {
   articles: ["articles"] as const,
   podcasts: ["podcasts"] as const,
   podcastSeries: ["podcastSeries"] as const,
+  adminNotifications: ["adminNotifications"] as const,
+  emailSubscriptions: ["emailSubscriptions"] as const,
 } as const;

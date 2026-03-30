@@ -3,23 +3,24 @@
 import { MarketplaceProductStatus } from "@packtok/db";
 import { Request, Response } from "express";
 import {
-    approveSubmission,
-    changeProductStatus,
-    createProductAsAdmin,
-    deleteProduct,
-    getPendingSubmissions,
-    getProductByIdForAdmin,
-    listAllProductsForAdmin,
-    rejectSubmission,
-    updateProduct,
+  approveSubmission,
+  changeProductStatus,
+  createProductAsAdmin,
+  deleteProduct,
+  getPendingSubmissions,
+  getProductByIdForAdmin,
+  listAllProductsForAdmin,
+  rejectSubmission,
+  updateProduct,
 } from "../services/product.service";
+import { ApiError } from "../utils/apiError";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
 import {
-    uploadDocumentToSupabase,
-    uploadImageToSupabase,
-    uploadThumbnailImageToSupabase,
-    uploadVideoToSupabase,
+  uploadDocumentToSupabase,
+  uploadImageToSupabase,
+  uploadThumbnailImageToSupabase,
+  uploadVideoToSupabase,
 } from "../utils/storage.service";
 
 const processUploadedMedia = async (files: any) => {
@@ -167,7 +168,7 @@ export const adminUpdateProductStatus = asyncHandler(
     const { id } = req.params;
     const { status } = req.body;
     if (!Object.values(MarketplaceProductStatus).includes(status)) {
-      throw new Error("Invalid status value");
+      throw new ApiError(400, "Invalid status value");
     }
     const updated = await changeProductStatus(id, status);
     res

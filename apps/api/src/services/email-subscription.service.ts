@@ -160,3 +160,43 @@ export const subscribeToEmailUpdates = async (input: SubscribeInput) => {
 
   return { subscription: created, alreadySubscribed: false };
 };
+
+export const listEmailSubscriptionsForAdmin = async (params?: {
+  page?: number;
+  limit?: number;
+  type?: EmailSubscriptionType;
+}) => {
+  const safePage = params?.page && params.page > 0 ? params.page : 1;
+  const safeLimit =
+    params?.limit && params.limit > 0 ? Math.min(params.limit, 100) : 20;
+  const skip = (safePage - 1) * safeLimit;
+
+  const where = params?.type ? { type: params.type } : undefined;
+
+  const [data, total, podcastCount, newsletterCount] = await Promise.all([
+    prisma.emailSubscription.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: safeLimit,
+    }),
+    prisma.emailSubscription.count({ where }),
+    prisma.emailSubscription.count({ where: { type: "PODCAST" } }),
+    prisma.emailSubscription.count({ where: { type: "NEWSLETTER" } }),
+  ]);
+
+  return {
+    data,
+    meta: {
+      page: safePage,
+      limit: safeLimit,
+      total,
+      hasNext: skip + data.length < total,
+    },
+    summary: {
+      totalAll: podcastCount + newsletterCount,
+      podcast: podcastCount,
+      newsletter: newsletterCount,
+    },
+  };
+};

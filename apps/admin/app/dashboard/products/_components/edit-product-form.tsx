@@ -3,51 +3,51 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-    ComboboxOption,
-    CustomCombobox,
+  ComboboxOption,
+  CustomCombobox,
 } from "@packtok/ui/components/custom-combobox";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@packtok/ui/components/form";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@packtok/ui/components/select";
 import { Switch } from "@packtok/ui/components/switch";
 import { Textarea } from "@packtok/ui/components/textarea";
 import {
-    FileText,
-    FileVideo,
-    HelpCircle,
-    Minus,
-    Plus,
-    Save,
-    Upload,
-    X
+  FileText,
+  FileVideo,
+  HelpCircle,
+  Minus,
+  Plus,
+  Save,
+  Upload,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import {
-    useCategories,
-    useCreateCategory,
-    useUpdateProduct,
+  useCategories,
+  useCreateCategory,
+  useUpdateProduct,
 } from "../../../../hooks";
 import {
-    updateProductSchema,
-    type UpdateProductFormData,
+  updateProductSchema,
+  type UpdateProductFormData,
 } from "../../../../schemas/product-schema";
 import { MarketplaceProduct } from "../../../../types/product";
 import MediaPreviewModal from "./media-preview-modal";
@@ -58,16 +58,27 @@ interface EditProductFormProps {
 
 export default function EditProductForm({ product }: EditProductFormProps) {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [isImageDragActive, setIsImageDragActive] = useState(false);
+  const [isThumbnailDragActive, setIsThumbnailDragActive] = useState(false);
+  const [isVideoDragActive, setIsVideoDragActive] = useState(false);
+  const [isVideoThumbnailDragActive, setIsVideoThumbnailDragActive] =
+    useState(false);
+  const [isPdfDragActive, setIsPdfDragActive] = useState(false);
   const [existingImages, setExistingImages] = useState<string[]>(
-    product.images || []
+    product.images || [],
   );
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
+  const thumbnailInputRef = useRef<HTMLInputElement | null>(null);
+  const videoInputRef = useRef<HTMLInputElement | null>(null);
+  const videoThumbnailInputRef = useRef<HTMLInputElement | null>(null);
+  const pdfInputRef = useRef<HTMLInputElement | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [existingThumbnail, setExistingThumbnail] = useState<string | null>(
-    product.imagesThumbnail || null
+    product.imagesThumbnail || null,
   );
   const [video, setVideo] = useState<File | null>(null);
   const [existingVideo, setExistingVideo] = useState<string | null>(
-    product.videoUrl || null
+    product.videoUrl || null,
   );
   const [videoThumbnail, setVideoThumbnail] = useState<File | null>(null);
   const [existingVideoThumbnail, setExistingVideoThumbnail] = useState<
@@ -75,7 +86,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   >(product.videoThumbnail || null);
   const [pdf, setPdf] = useState<File | null>(null);
   const [existingPdf, setExistingPdf] = useState<string | null>(
-    product.pdfUrl || null
+    product.pdfUrl || null,
   );
   const [specifications, setSpecifications] = useState<
     { key: string; value: string }[]
@@ -88,12 +99,16 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     }
     return [{ key: "", value: "" }];
   });
-  const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>(() => {
-    if (product.faqs && Array.isArray(product.faqs)) {
-      return product.faqs.length > 0 ? product.faqs : [{ question: "", answer: "" }];
-    }
-    return [{ question: "", answer: "" }];
-  });
+  const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>(
+    () => {
+      if (product.faqs && Array.isArray(product.faqs)) {
+        return product.faqs.length > 0
+          ? product.faqs
+          : [{ question: "", answer: "" }];
+      }
+      return [{ question: "", answer: "" }];
+    },
+  );
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMedia, setModalMedia] = useState<{
     url: string;
@@ -116,7 +131,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   const openMediaModal = (
     fileOrUrl: File | string,
     type: "image" | "video",
-    name: string
+    name: string,
   ) => {
     const url =
       typeof fileOrUrl === "string" ? fileOrUrl : createPreviewUrl(fileOrUrl);
@@ -170,14 +185,15 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       condition: product.condition || "NEW",
       manufacturer: product.manufacturer || "",
       model: product.model || "",
-      year: product.year ? (Number(product.year) || undefined) : undefined,
+      year: product.year ? Number(product.year) || undefined : undefined,
       category: product.category?.name || "",
       subCategory: product.subCategory || "",
       specifications: "",
       additionalInfo: product.additionalInfo || "",
       cartEnabled: product.cartEnabled || false,
       currency: product.currency || "INR",
-      displayPrice: product.displayPrice !== undefined ? product.displayPrice : true,
+      displayPrice:
+        product.displayPrice !== undefined ? product.displayPrice : true,
     },
   });
 
@@ -203,7 +219,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       });
 
       const validSpecs = specifications.filter(
-        (spec) => spec.key.trim() && spec.value.trim()
+        (spec) => spec.key.trim() && spec.value.trim(),
       );
       if (validSpecs.length > 0) {
         const specsObj = validSpecs.reduce(
@@ -211,14 +227,14 @@ export default function EditProductForm({ product }: EditProductFormProps) {
             acc[spec.key] = spec.value;
             return acc;
           },
-          {} as Record<string, string>
+          {} as Record<string, string>,
         );
         formData.append("specifications", JSON.stringify(specsObj));
       }
 
       // Add FAQs
       const validFaqs = faqs.filter(
-        (faq) => faq.question.trim() && faq.answer.trim()
+        (faq) => faq.question.trim() && faq.answer.trim(),
       );
       formData.append("faqs", JSON.stringify(validFaqs));
 
@@ -259,26 +275,67 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     }
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
+  const addImages = (files: File[]) => {
     const totalImages = uploadedImages.length + existingImages.length;
 
-    if (files && totalImages + files.length <= 5) {
-      const newImages = Array.from(files);
-      setUploadedImages([...uploadedImages, ...newImages]);
-    } else if (files && totalImages + files.length > 5) {
+    if (totalImages + files.length <= 5) {
+      setUploadedImages([...uploadedImages, ...files]);
+    } else {
       toast.error("Maximum 5 images allowed");
     }
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    addImages(Array.from(files));
+    event.target.value = "";
+  };
+
+  const handleGalleryDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsImageDragActive(false);
+
+    const files = Array.from(event.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/"),
+    );
+
+    if (!files.length) {
+      toast.error("Please drop image files only");
+      return;
+    }
+
+    addImages(files);
+  };
+
   const handleThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (file) {
       setThumbnail(file);
       setExistingThumbnail(null);
     }
+
+    event.target.value = "";
+  };
+
+  const handleThumbnailDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsThumbnailDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find((candidate) =>
+      candidate.type.startsWith("image/"),
+    );
+
+    if (!file) {
+      toast.error("Please drop an image file");
+      return;
+    }
+
+    setThumbnail(file);
+    setExistingThumbnail(null);
   };
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -287,16 +344,54 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       setVideo(file);
       setExistingVideo(null);
     }
+
+    event.target.value = "";
+  };
+
+  const handleVideoDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsVideoDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find((candidate) =>
+      candidate.type.startsWith("video/"),
+    );
+
+    if (!file) {
+      toast.error("Please drop a video file");
+      return;
+    }
+
+    setVideo(file);
+    setExistingVideo(null);
   };
 
   const handleVideoThumbnailUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (file) {
       setVideoThumbnail(file);
       setExistingVideoThumbnail(null);
     }
+
+    event.target.value = "";
+  };
+
+  const handleVideoThumbnailDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsVideoThumbnailDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find((candidate) =>
+      candidate.type.startsWith("image/"),
+    );
+
+    if (!file) {
+      toast.error("Please drop an image file");
+      return;
+    }
+
+    setVideoThumbnail(file);
+    setExistingVideoThumbnail(null);
   };
 
   const handlePdfUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -305,6 +400,27 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       setPdf(file);
       setExistingPdf(null);
     }
+
+    event.target.value = "";
+  };
+
+  const handlePdfDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsPdfDragActive(false);
+
+    const file = Array.from(event.dataTransfer.files).find(
+      (candidate) =>
+        candidate.type === "application/pdf" ||
+        candidate.name.toLowerCase().endsWith(".pdf"),
+    );
+
+    if (!file) {
+      toast.error("Please drop a PDF file");
+      return;
+    }
+
+    setPdf(file);
+    setExistingPdf(null);
   };
 
   const removeImage = (index: number) => {
@@ -328,7 +444,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   const updateSpecification = (
     index: number,
     field: "key" | "value",
-    value: string
+    value: string,
   ) => {
     const updated = [...specifications];
     updated[index][field] = value;
@@ -348,7 +464,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   const updateFaq = (
     index: number,
     field: "question" | "answer",
-    value: string
+    value: string,
   ) => {
     const updated = [...faqs];
     updated[index][field] = value;
@@ -365,7 +481,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
 
   // Get subcategories for the selected category
   const selectedCategoryData = categories.find(
-    (cat) => cat.name === watchedCategory
+    (cat) => cat.name === watchedCategory,
   );
   const availableSubcategories = selectedCategoryData?.subcategories || [];
 
@@ -429,19 +545,52 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 </span>
               </Label>
               <div className="flex items-start gap-6">
-                <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer group">
-                  <label className="cursor-pointer text-center p-4">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => thumbnailInputRef.current?.click()}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      thumbnailInputRef.current?.click();
+                    }
+                  }}
+                  onDragEnter={(event) => {
+                    event.preventDefault();
+                    setIsThumbnailDragActive(true);
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setIsThumbnailDragActive(true);
+                  }}
+                  onDragLeave={(event) => {
+                    event.preventDefault();
+                    setIsThumbnailDragActive(false);
+                  }}
+                  onDrop={handleThumbnailDrop}
+                  className={`w-32 h-32 border-2 border-dashed rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer group ${
+                    isThumbnailDragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+                  }`}
+                >
+                  <div className="text-center p-4">
                     <Upload className="h-8 w-8 text-gray-400 group-hover:text-blue-500 mx-auto mb-2 transition-colors" />
                     <span className="text-sm text-gray-600 group-hover:text-blue-600 font-medium">
-                      {thumbnail || existingThumbnail ? "Replace" : "Upload"}
+                      {isThumbnailDragActive
+                        ? "Drop Thumbnail"
+                        : thumbnail || existingThumbnail
+                          ? "Replace"
+                          : "Upload"}
                     </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleThumbnailUpload}
-                      className="hidden"
-                    />
-                  </label>
+                  </div>
+                  <input
+                    ref={thumbnailInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailUpload}
+                    className="hidden"
+                  />
                 </div>
                 {(thumbnail || existingThumbnail) && (
                   <div className="flex items-start gap-4">
@@ -461,7 +610,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                             openMediaModal(
                               thumbnail || existingThumbnail!,
                               "image",
-                              thumbnail ? thumbnail.name : "Current thumbnail"
+                              thumbnail ? thumbnail.name : "Current thumbnail",
                             )
                           }
                         />
@@ -496,7 +645,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                           openMediaModal(
                             thumbnail || existingThumbnail!,
                             "image",
-                            thumbnail ? thumbnail.name : "Current thumbnail"
+                            thumbnail ? thumbnail.name : "Current thumbnail",
                           )
                         }
                         className="text-xs w-fit"
@@ -514,19 +663,52 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 Gallery Images (Max 5)
               </Label>
               <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
-                <div className="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-blue-400 cursor-pointer">
-                  <label className="cursor-pointer text-center">
-                    <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                    <span className="text-sm text-gray-600">Add Images</span>
+                {uploadedImages.length + existingImages.length < 5 && (
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => galleryInputRef.current?.click()}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        galleryInputRef.current?.click();
+                      }
+                    }}
+                    onDragEnter={(event) => {
+                      event.preventDefault();
+                      setIsImageDragActive(true);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setIsImageDragActive(true);
+                    }}
+                    onDragLeave={(event) => {
+                      event.preventDefault();
+                      setIsImageDragActive(false);
+                    }}
+                    onDrop={handleGalleryDrop}
+                    className={`aspect-square border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
+                      isImageDragActive
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400"
+                    }`}
+                  >
+                    <div className="text-center p-3">
+                      <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <span className="text-sm text-gray-600">
+                        {isImageDragActive ? "Drop Images" : "Add Images"}
+                      </span>
+                    </div>
                     <input
+                      ref={galleryInputRef}
                       type="file"
                       multiple
                       accept="image/*"
                       onChange={handleImageUpload}
                       className="hidden"
                     />
-                  </label>
-                </div>
+                  </div>
+                )}
 
                 {existingImages.map((imageUrl, index) => (
                   <div
@@ -543,7 +725,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                         openMediaModal(
                           imageUrl,
                           "image",
-                          `Gallery image ${index + 1}`
+                          `Gallery image ${index + 1}`,
                         )
                       }
                     />
@@ -595,19 +777,52 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                   Product Video (Optional)
                 </Label>
                 <div className="flex items-center gap-4">
-                  <div className="w-24 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-blue-400 cursor-pointer">
-                    <label className="cursor-pointer text-center">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => videoInputRef.current?.click()}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        videoInputRef.current?.click();
+                      }
+                    }}
+                    onDragEnter={(event) => {
+                      event.preventDefault();
+                      setIsVideoDragActive(true);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setIsVideoDragActive(true);
+                    }}
+                    onDragLeave={(event) => {
+                      event.preventDefault();
+                      setIsVideoDragActive(false);
+                    }}
+                    onDrop={handleVideoDrop}
+                    className={`w-24 h-16 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
+                      isVideoDragActive
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400"
+                    }`}
+                  >
+                    <div className="text-center px-1">
                       <FileVideo className="h-6 w-6 text-gray-400 mx-auto mb-1" />
                       <span className="text-xs text-gray-600">
-                        {video || existingVideo ? "Replace" : "Upload"}
+                        {isVideoDragActive
+                          ? "Drop"
+                          : video || existingVideo
+                            ? "Replace"
+                            : "Upload"}
                       </span>
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={handleVideoUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    </div>
+                    <input
+                      ref={videoInputRef}
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoUpload}
+                      className="hidden"
+                    />
                   </div>
                   {(video || existingVideo) && (
                     <div className="flex items-center gap-4">
@@ -620,7 +835,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                             openMediaModal(
                               video || existingVideo!,
                               "video",
-                              video ? video.name : "Current video"
+                              video ? video.name : "Current video",
                             )
                           }
                         />
@@ -651,21 +866,52 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                   Video Thumbnail (Optional)
                 </Label>
                 <div className="flex items-center gap-4">
-                  <div className="w-24 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-blue-400 cursor-pointer">
-                    <label className="cursor-pointer text-center">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => videoThumbnailInputRef.current?.click()}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        videoThumbnailInputRef.current?.click();
+                      }
+                    }}
+                    onDragEnter={(event) => {
+                      event.preventDefault();
+                      setIsVideoThumbnailDragActive(true);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setIsVideoThumbnailDragActive(true);
+                    }}
+                    onDragLeave={(event) => {
+                      event.preventDefault();
+                      setIsVideoThumbnailDragActive(false);
+                    }}
+                    onDrop={handleVideoThumbnailDrop}
+                    className={`w-24 h-16 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
+                      isVideoThumbnailDragActive
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400"
+                    }`}
+                  >
+                    <div className="text-center px-1">
                       <Upload className="h-6 w-6 text-gray-400 mx-auto mb-1" />
                       <span className="text-xs text-gray-600">
-                        {videoThumbnail || existingVideoThumbnail
-                          ? "Replace"
-                          : "Upload"}
+                        {isVideoThumbnailDragActive
+                          ? "Drop"
+                          : videoThumbnail || existingVideoThumbnail
+                            ? "Replace"
+                            : "Upload"}
                       </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleVideoThumbnailUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    </div>
+                    <input
+                      ref={videoThumbnailInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleVideoThumbnailUpload}
+                      className="hidden"
+                    />
                   </div>
                   {(videoThumbnail || existingVideoThumbnail) && (
                     <div className="flex items-center gap-4">
@@ -686,7 +932,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               "image",
                               videoThumbnail
                                 ? videoThumbnail.name
-                                : "Current video thumbnail"
+                                : "Current video thumbnail",
                             )
                           }
                         />
@@ -720,19 +966,52 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 Specification Sheet PDF (Optional)
               </Label>
               <div className="flex items-center gap-4">
-                <div className="w-24 h-16 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-blue-400 cursor-pointer">
-                  <label className="cursor-pointer text-center">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => pdfInputRef.current?.click()}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      pdfInputRef.current?.click();
+                    }
+                  }}
+                  onDragEnter={(event) => {
+                    event.preventDefault();
+                    setIsPdfDragActive(true);
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setIsPdfDragActive(true);
+                  }}
+                  onDragLeave={(event) => {
+                    event.preventDefault();
+                    setIsPdfDragActive(false);
+                  }}
+                  onDrop={handlePdfDrop}
+                  className={`w-24 h-16 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
+                    isPdfDragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300 hover:border-blue-400"
+                  }`}
+                >
+                  <div className="text-center px-1">
                     <FileText className="h-6 w-6 text-gray-400 mx-auto mb-1" />
                     <span className="text-xs text-gray-600">
-                      {pdf || existingPdf ? "Replace" : "Upload"}
+                      {isPdfDragActive
+                        ? "Drop"
+                        : pdf || existingPdf
+                          ? "Replace"
+                          : "Upload"}
                     </span>
-                    <input
-                      type="file"
-                      accept=".pdf"
-                      onChange={handlePdfUpload}
-                      className="hidden"
-                    />
-                  </label>
+                  </div>
+                  <input
+                    ref={pdfInputRef}
+                    type="file"
+                    accept=".pdf"
+                    onChange={handlePdfUpload}
+                    className="hidden"
+                  />
                 </div>
                 {(pdf || existingPdf) && (
                   <div className="flex items-center gap-4">
@@ -835,7 +1114,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               {...field}
                               onChange={(e) => {
                                 const val = e.target.value;
-                                field.onChange(val === "" ? "" : parseInt(val) || 0);
+                                field.onChange(
+                                  val === "" ? "" : parseInt(val) || 0,
+                                );
                               }}
                             />
                           </FormControl>
@@ -862,7 +1143,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               {...field}
                               onChange={(e) => {
                                 const val = e.target.value;
-                                field.onChange(val === "" ? "" : Number.parseFloat(val) || 0);
+                                field.onChange(
+                                  val === "" ? "" : Number.parseFloat(val) || 0,
+                                );
                               }}
                             />
                           </FormControl>
@@ -889,13 +1172,25 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
-                            <SelectItem value="USD">🇺🇸 USD - US Dollar</SelectItem>
-                            <SelectItem value="AED">🇦🇪 AED - UAE Dirham</SelectItem>
+                            <SelectItem value="INR">
+                              🇮🇳 INR - Indian Rupee
+                            </SelectItem>
+                            <SelectItem value="USD">
+                              🇺🇸 USD - US Dollar
+                            </SelectItem>
+                            <SelectItem value="AED">
+                              🇦🇪 AED - UAE Dirham
+                            </SelectItem>
                             <SelectItem value="EUR">🇪🇺 EUR - Euro</SelectItem>
-                            <SelectItem value="GBP">🇬🇧 GBP - British Pound</SelectItem>
-                            <SelectItem value="CNY">🇨🇳 CNY - Chinese Yuan</SelectItem>
-                            <SelectItem value="TWD">🇹🇼 TWD - Taiwan Dollar</SelectItem>
+                            <SelectItem value="GBP">
+                              🇬🇧 GBP - British Pound
+                            </SelectItem>
+                            <SelectItem value="CNY">
+                              🇨🇳 CNY - Chinese Yuan
+                            </SelectItem>
+                            <SelectItem value="TWD">
+                              🇹🇼 TWD - Taiwan Dollar
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -922,10 +1217,13 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       render={({ field }) => (
                         <FormItem className="flex items-center justify-between rounded-lg border bg-white p-4">
                           <div>
-                            <FormLabel className="text-base font-medium text-black">Enable Add to Cart</FormLabel>
+                            <FormLabel className="text-base font-medium text-black">
+                              Enable Add to Cart
+                            </FormLabel>
                             <p className="text-sm text-gray-500">
-                              When enabled, customers can add this product to cart and checkout with Razorpay.
-                              When disabled, customers will request a quote instead.
+                              When enabled, customers can add this product to
+                              cart and checkout with Razorpay. When disabled,
+                              customers will request a quote instead.
                             </p>
                           </div>
                           <FormControl>
@@ -944,9 +1242,12 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                       render={({ field }) => (
                         <FormItem className="flex items-center justify-between rounded-lg border bg-white p-4">
                           <div>
-                            <FormLabel className="text-base font-medium text-black">Show Price to Customers</FormLabel>
+                            <FormLabel className="text-base font-medium text-black">
+                              Show Price to Customers
+                            </FormLabel>
                             <p className="text-sm text-gray-500">
-                              When disabled, the price will be hidden on the product page.
+                              When disabled, the price will be hidden on the
+                              product page.
                             </p>
                           </div>
                           <FormControl>
@@ -961,8 +1262,6 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                   </div>
                 </div>
               )}
-
-
 
               <div className="bg-white p-6 rounded-lg shadow-sm">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -1169,7 +1468,11 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               {...field}
                               onChange={(e) => {
                                 const val = e.target.value;
-                                field.onChange(val === "" ? undefined : parseInt(val) || undefined);
+                                field.onChange(
+                                  val === ""
+                                    ? undefined
+                                    : parseInt(val) || undefined,
+                                );
                               }}
                             />
                           </FormControl>
@@ -1201,7 +1504,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                               updateSpecification(
                                 index,
                                 "value",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                             className="flex-1"
@@ -1325,7 +1628,6 @@ export default function EditProductForm({ product }: EditProductFormProps) {
               </div>
             </div>
           </div>
-
 
           <div className="flex justify-end space-x-4">
             <Button

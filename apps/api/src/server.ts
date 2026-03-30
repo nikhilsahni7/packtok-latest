@@ -15,6 +15,7 @@ import { initSocketServer } from "./realtime/socket";
 import addressRouter from "./routers/address.routes";
 import adminArticleRouter from "./routers/admin.article.routes";
 import adminAuctionsRouter from "./routers/admin.auctions.routes";
+import adminEmailSubscriptionRouter from "./routers/admin.email-subscription.routes";
 import adminInvestmentRouter from "./routers/admin.investment.routes";
 import adminNotificationRouter from "./routers/admin.notification.routes";
 import adminOrderRouter from "./routers/admin.order.routes";
@@ -99,6 +100,7 @@ app.use("/api/v1/investments", investmentRouter);
 app.use("/api/v1/admins/investments", adminInvestmentRouter);
 app.use("/api/v1/notifications", notificationRouter);
 app.use("/api/v1/admins/notifications", adminNotificationRouter);
+app.use("/api/v1/admins/email-subscriptions", adminEmailSubscriptionRouter);
 app.use("/api/v1", reviewRouter); // Review routes
 app.use("/api/v1/admins/reviews", adminReviewRouter); // Admin review routes
 app.use("/api/v1/subscriptions", subscriptionRouter); // Vendor subscription routes
