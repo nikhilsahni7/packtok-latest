@@ -1,5 +1,6 @@
 import { prisma, Prisma, User } from "@packtok/db";
 import crypto from "crypto";
+import { CountryCode, parsePhoneNumberFromString } from "libphonenumber-js";
 import { Resend } from "resend";
 import config from "../config";
 import { ApiError } from "../utils/apiError";
@@ -66,6 +67,48 @@ const assertValidOtp = (otp: string) => {
   }
 };
 
+const normalizeCountryCode = (country?: string): string | undefined => {
+  if (!country) return undefined;
+  const normalized = country.trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(normalized)) {
+    throw new ApiError(400, "Country code must be a valid 2-letter ISO code");
+  }
+  return normalized;
+};
+
+const normalizeAndValidatePhone = (
+  phoneNumber?: string,
+  country?: string
+): string | undefined => {
+  if (!phoneNumber) return undefined;
+
+  const normalizedCountry = normalizeCountryCode(country);
+  if (!normalizedCountry) {
+    throw new ApiError(
+      400,
+      "Country is required when phone number is provided"
+    );
+  }
+
+  const parsed = parsePhoneNumberFromString(
+    phoneNumber,
+    normalizedCountry as CountryCode
+  );
+
+  if (!parsed || !parsed.isValid()) {
+    throw new ApiError(
+      400,
+      "Please provide a valid phone number for the selected country"
+    );
+  }
+
+  if (normalizedCountry === "IN" && parsed.nationalNumber.length !== 10) {
+    throw new ApiError(400, "Indian mobile number must be exactly 10 digits");
+  }
+
+  return parsed.number;
+};
+
 /**
  * Registers a user in Supabase auth and in the local Prisma `User` table for metadata.
  */
@@ -79,6 +122,12 @@ export const registerUser = async (userData: {
   assertStrongPassword(userData.password);
 
   const normalizedEmail = userData.email.toLowerCase().trim();
+  const normalizedCountry = normalizeCountryCode(userData.country);
+  const normalizedPhoneNumber = normalizeAndValidatePhone(
+    userData.phone_number,
+    normalizedCountry
+  );
+
   const existingUser = await prisma.user.findUnique({
     where: { email: normalizedEmail },
   });
@@ -87,9 +136,9 @@ export const registerUser = async (userData: {
   }
 
   // If phone number is supplied ensure it's unique in our DB first
-  if (userData.phone_number) {
+  if (normalizedPhoneNumber) {
     const existsPhone = await prisma.user.findFirst({
-      where: { phone_number: userData.phone_number },
+      where: { phone_number: normalizedPhoneNumber },
       select: { id: true },
     });
     if (existsPhone) {
@@ -100,8 +149,8 @@ export const registerUser = async (userData: {
   const { data, error } = await supabase.auth.admin.createUser({
     email: normalizedEmail,
     password: userData.password,
-    phone: userData.phone_number,
-    user_metadata: { name: userData.name, country: userData.country },
+    phone: normalizedPhoneNumber,
+    user_metadata: { name: userData.name, country: normalizedCountry },
     email_confirm: false,
   });
 
@@ -113,7 +162,16 @@ export const registerUser = async (userData: {
     ) {
       throw new ApiError(409, "User with this email already exists");
     }
-    throw new ApiError(500, `Supabase error: ${error?.message}`);
+    if (
+      errorMsg.includes("phone") &&
+      (errorMsg.includes("already") || errorMsg.includes("exists"))
+    ) {
+      throw new ApiError(409, "Phone number is already in use");
+    }
+    throw new ApiError(
+      500,
+      "Unable to create account right now. Please try again shortly."
+    );
   }
 
   let newUser: User;
@@ -123,8 +181,8 @@ export const registerUser = async (userData: {
         id: data.user.id,
         name: userData.name,
         email: normalizedEmail,
-        phone_number: userData.phone_number,
-        country: userData.country,
+        phone_number: normalizedPhoneNumber,
+        country: normalizedCountry,
       },
     } as any);
   } catch (err) {

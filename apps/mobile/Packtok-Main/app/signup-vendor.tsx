@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { CountryCode, parsePhoneNumberFromString } from "libphonenumber-js/min";
 import { useMemo, useState } from "react";
 
 import {
@@ -57,6 +58,38 @@ const COUNTRIES = [
   { code: "AR", name: "Argentina", flag: "🇦🇷", dial: "+54" },
   { code: "ZA", name: "South Africa", flag: "🇿🇦", dial: "+27" },
 ];
+
+const validatePhoneNumber = (
+  localPhone: string,
+  dialCode: string,
+  countryCode: string,
+): string | null => {
+  if (!localPhone.trim()) return null; // phone is optional
+
+  const digitsOnly = localPhone.replace(/\D/g, "");
+  if (!digitsOnly) return null;
+
+  const normalizedCountry = countryCode.trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(normalizedCountry)) {
+    return "Please select a valid country for phone number";
+  }
+
+  const e164 = `${dialCode}${digitsOnly}`;
+  const parsed = parsePhoneNumberFromString(
+    e164,
+    normalizedCountry as CountryCode,
+  );
+
+  if (!parsed || !parsed.isValid()) {
+    return "Please enter a valid phone number for the selected country";
+  }
+
+  if (normalizedCountry === "IN" && parsed.nationalNumber.length !== 10) {
+    return "Indian mobile number must be exactly 10 digits";
+  }
+
+  return null;
+};
 
 export default function SignupVendorScreen() {
   const router = useRouter();
@@ -178,6 +211,21 @@ export default function SignupVendorScreen() {
         type: "error",
         text1: "Validation Error",
         text2: "Please select a valid country",
+        position: "top",
+        visibilityTime: 3000,
+      });
+      return;
+    }
+    const phoneError = validatePhoneNumber(
+      phoneNumber,
+      selectedCountry.dial,
+      selectedCountry.code,
+    );
+    if (phoneError) {
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: phoneError,
         position: "top",
         visibilityTime: 3000,
       });

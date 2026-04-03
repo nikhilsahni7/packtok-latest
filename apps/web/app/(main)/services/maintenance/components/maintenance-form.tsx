@@ -4,25 +4,25 @@ import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditi
 import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useMaintenanceSubmission } from "@/hooks";
 import {
-    MaintenanceFormData,
-    maintenanceSchema,
+  MaintenanceFormData,
+  maintenanceSchema,
 } from "@/schemas/maintenance-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
 } from "@packtok/ui/components/card";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@packtok/ui/components/select";
 import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
@@ -37,6 +37,8 @@ export function MaintenanceForm() {
 
   const form = useForm<MaintenanceFormData>({
     resolver: zodResolver(maintenanceSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       agreeToTerms: false,
     },
@@ -76,11 +78,9 @@ export function MaintenanceForm() {
 
   return (
     <>
-
       <div className="form-bg ">
         <Card className="w-[95%] md:w-[85%] mx-auto p-3 sm:p-5">
           <CardHeader>
-
             <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
               <CardTitle className="text-2xl capitalize font-bold">
                 Maintenance Request for corrugated and packaging industry
@@ -88,24 +88,36 @@ export function MaintenanceForm() {
             </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10"
+            >
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)] p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Label htmlFor="maintenanceType" className="text-[15.5px] pb-3">Maintenance Type</Label>
+                  <Label
+                    htmlFor="maintenanceType"
+                    className="text-[15.5px] pb-3"
+                  >
+                    Maintenance Type
+                  </Label>
                   <Select
                     onValueChange={(value) =>
                       setValue(
                         "maintenanceType",
                         value as
-                        | "PREVENTIVE"
-                        | "CORRECTIVE"
-                        | "PREDICTIVE"
-                        | "EMERGENCY"
+                          | "PREVENTIVE"
+                          | "CORRECTIVE"
+                          | "PREDICTIVE"
+                          | "EMERGENCY",
+                        { shouldValidate: true, shouldDirty: true }
                       )
                     }
                   >
                     <SelectTrigger
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.maintenanceType && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.maintenanceType && "border-red-500"
+                      )}
                     >
                       <SelectValue placeholder="Select maintenance type" />
                     </SelectTrigger>
@@ -125,12 +137,17 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="companyName" className="text-[15.5px] pb-3">Company Name</Label>
+                  <Label htmlFor="companyName" className="text-[15.5px] pb-3">
+                    Company Name
+                  </Label>
                   <Input
                     id="companyName"
                     placeholder="Packtok Machinery Pvt Ltd"
                     {...register("companyName")}
-                    className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.companyName && "border-red-500")}
+                    className={cn(
+                      "border-[#D3D3D3] px-4 h-[44px]",
+                      errors.companyName && "border-red-500"
+                    )}
                   />
                   {errors.companyName && (
                     <p className="text-red-500 text-sm mt-1">
@@ -140,12 +157,17 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="address" className="text-[15.5px] pb-3">Address</Label>
+                  <Label htmlFor="address" className="text-[15.5px] pb-3">
+                    Address
+                  </Label>
                   <Input
                     id="address"
                     placeholder="Plot 21, Industrial Estate"
                     {...register("address")}
-                    className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.address && "border-red-500")}
+                    className={cn(
+                      "border-[#D3D3D3] px-4 h-[44px]",
+                      errors.address && "border-red-500"
+                    )}
                   />
                   {errors.address && (
                     <p className="text-red-500 text-sm mt-1">
@@ -155,12 +177,17 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="machineName" className="text-[15.5px] pb-3">Machine Name</Label>
+                  <Label htmlFor="machineName" className="text-[15.5px] pb-3">
+                    Machine Name
+                  </Label>
                   <Input
                     id="machineName"
                     placeholder="Cartoner 2000"
                     {...register("machineName")}
-                    className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.machineName && "border-red-500")}
+                    className={cn(
+                      "border-[#D3D3D3] px-4 h-[44px]",
+                      errors.machineName && "border-red-500"
+                    )}
                   />
                   {errors.machineName && (
                     <p className="text-red-500 text-sm mt-1">
@@ -170,7 +197,10 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="machineIdOrSerialNumber" className="text-[15.5px] pb-3">
+                  <Label
+                    htmlFor="machineIdOrSerialNumber"
+                    className="text-[15.5px] pb-3"
+                  >
                     Machine ID or Serial Number
                   </Label>
                   <Input
@@ -178,7 +208,8 @@ export function MaintenanceForm() {
                     placeholder="C2K-23-XY"
                     {...register("machineIdOrSerialNumber")}
                     className={cn(
-                      "border-[#D3D3D3] px-4 h-[44px]", errors.machineIdOrSerialNumber && "border-red-500"
+                      "border-[#D3D3D3] px-4 h-[44px]",
+                      errors.machineIdOrSerialNumber && "border-red-500"
                     )}
                   />
                   {errors.machineIdOrSerialNumber && (
@@ -189,12 +220,20 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="locationInFacility" className="text-[15.5px] pb-3">Location in Facility</Label>
+                  <Label
+                    htmlFor="locationInFacility"
+                    className="text-[15.5px] pb-3"
+                  >
+                    Location in Facility
+                  </Label>
                   <Input
                     id="locationInFacility"
                     placeholder="Line 3"
                     {...register("locationInFacility")}
-                    className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.locationInFacility && "border-red-500")}
+                    className={cn(
+                      "border-[#D3D3D3] px-4 h-[44px]",
+                      errors.locationInFacility && "border-red-500"
+                    )}
                   />
                   {errors.locationInFacility && (
                     <p className="text-red-500 text-sm mt-1">
@@ -204,7 +243,9 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="manufacturer" className="text-[15.5px] pb-3">Manufacturer (Optional)</Label>
+                  <Label htmlFor="manufacturer" className="text-[15.5px] pb-3">
+                    Manufacturer (Optional)
+                  </Label>
                   <Input
                     id="manufacturer"
                     placeholder="ACME"
@@ -214,7 +255,10 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="installationDate" className="text-[15.5px] pb-3">
+                  <Label
+                    htmlFor="installationDate"
+                    className="text-[15.5px] pb-3"
+                  >
                     Installation Date (Optional)
                   </Label>
                   <Input
@@ -226,7 +270,10 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="supervisorApprovalName" className="text-[15.5px] pb-3">
+                  <Label
+                    htmlFor="supervisorApprovalName"
+                    className="text-[15.5px] pb-3"
+                  >
                     Supervisor Approval Name (Optional)
                   </Label>
                   <Input
@@ -237,9 +284,11 @@ export function MaintenanceForm() {
                   />
                 </div>
 
-
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="checklistDetails" className="text-[15.5px] pb-3">
+                  <Label
+                    htmlFor="checklistDetails"
+                    className="text-[15.5px] pb-3"
+                  >
                     Checklist Details (Optional)
                   </Label>
                   <Textarea
@@ -252,7 +301,9 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="partsReplaced" className="text-[15.5px] pb-3">Parts Replaced (Optional)</Label>
+                  <Label htmlFor="partsReplaced" className="text-[15.5px] pb-3">
+                    Parts Replaced (Optional)
+                  </Label>
                   <Textarea
                     id="partsReplaced"
                     placeholder="belt: yes, filter: no"
@@ -263,7 +314,10 @@ export function MaintenanceForm() {
                 </div>
 
                 <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
-                  <Label htmlFor="technicianNotes" className="text-[15.5px] pb-3">
+                  <Label
+                    htmlFor="technicianNotes"
+                    className="text-[15.5px] pb-3"
+                  >
                     Technician Notes (Optional)
                   </Label>
                   <Textarea
@@ -276,13 +330,13 @@ export function MaintenanceForm() {
                 </div>
               </div>
 
-
               <div className="px-10 pb-6">
                 <TermsAndConditionsCheckbox
                   checked={form.watch("agreeToTerms")}
                   onCheckedChange={(checked: boolean) =>
                     form.setValue("agreeToTerms", checked, {
                       shouldValidate: true,
+                      shouldDirty: true,
                     })
                   }
                   error={form.formState.errors.agreeToTerms?.message}

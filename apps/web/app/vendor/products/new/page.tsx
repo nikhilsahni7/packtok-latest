@@ -5,27 +5,28 @@ import { useVendorApplication } from "@/hooks/useVendorApplication";
 import { useMySubscription } from "@/hooks/useVendorSubscription";
 import api from "@/lib/axios";
 import {
-    Button,
-    Card,
-    Input,
-    Label,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Textarea,
+  Button,
+  Card,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
 } from "@packtok/ui";
 import {
-    ArrowRight,
-    Crown,
-    FileText,
-    ImagePlus,
-    Loader2,
-    ShieldAlert,
-    Trash2,
-    Upload,
-    Video,
+  ArrowLeft,
+  ArrowRight,
+  Crown,
+  FileText,
+  ImagePlus,
+  Loader2,
+  ShieldAlert,
+  Trash2,
+  Upload,
+  Video,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -278,6 +279,13 @@ export default function NewVendorProductPage() {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl mx-auto">
+      <Link
+        href="/vendor/products"
+        className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+      >
+        <ArrowLeft className="h-4 w-4" /> Back to Products
+      </Link>
+
       {/* Subscription bar */}
       <div className="flex flex-wrap items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-3 sm:px-4 py-3">
         <div className="flex-1 text-sm text-blue-900">
@@ -526,7 +534,10 @@ export default function NewVendorProductPage() {
             </h2>
             <div className="space-y-2">
               {specs.map((s, idx) => (
-                <div key={idx} className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                <div
+                  key={idx}
+                  className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center"
+                >
                   <Input
                     placeholder="Key (e.g. Speed)"
                     value={s.key}

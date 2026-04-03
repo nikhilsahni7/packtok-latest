@@ -5,15 +5,16 @@ import { useMySubscription } from "@/hooks/useVendorSubscription";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-    AlertCircle,
-    CheckCircle2,
-    Crown,
-    ExternalLink,
-    Globe,
-    Loader2,
-    Package,
-    Pencil,
-    Plus,
+  AlertCircle,
+  ArrowLeft,
+  CheckCircle2,
+  Crown,
+  ExternalLink,
+  Globe,
+  Loader2,
+  Package,
+  Pencil,
+  Plus,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,12 +29,22 @@ export default function VendorReleasedPage() {
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
+      <Link
+        href="/vendor/dashboard"
+        className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+      >
+        <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+      </Link>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Released Products</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Released Products
+          </h1>
           <p className="text-sm text-gray-500 mt-1">
-            {products.length} approved product{products.length !== 1 ? "s" : ""} live on marketplace
+            {products.length} approved product{products.length !== 1 ? "s" : ""}{" "}
+            live on marketplace
           </p>
         </div>
         {canCreate ? (
@@ -69,9 +80,12 @@ export default function VendorReleasedPage() {
       {!isLoading && !isError && products.length === 0 && (
         <div className="text-center py-20 bg-white rounded-xl border">
           <Globe className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="font-semibold text-gray-900 mb-2">No released products</h3>
+          <h3 className="font-semibold text-gray-900 mb-2">
+            No released products
+          </h3>
           <p className="text-gray-500 mb-6 text-sm max-w-sm mx-auto">
-            Products appear here once they are approved by admin and live on the marketplace
+            Products appear here once they are approved by admin and live on the
+            marketplace
           </p>
           {canCreate ? (
             <Link href="/vendor/products/new">
@@ -93,7 +107,8 @@ export default function VendorReleasedPage() {
       {!isLoading && products.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {products.map((product) => {
-            const isOutOfStock = product.status === "OUT_OF_STOCK" || product.quantity === 0;
+            const isOutOfStock =
+              product.status === "OUT_OF_STOCK" || product.quantity === 0;
 
             return (
               <div
@@ -130,7 +145,9 @@ export default function VendorReleasedPage() {
 
                 {/* Info */}
                 <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 truncate">{product.title}</h3>
+                  <h3 className="font-semibold text-gray-900 truncate">
+                    {product.title}
+                  </h3>
                   {product.manufacturer && (
                     <p className="text-xs text-gray-400 mt-0.5 truncate">
                       {product.manufacturer}
@@ -141,10 +158,20 @@ export default function VendorReleasedPage() {
                   <div className="flex items-center justify-between mt-3">
                     <div>
                       <p className="text-lg font-bold text-gray-900">
-                        {product.currency} {Number.parseFloat(product.price).toLocaleString()}
+                        {product.currency}{" "}
+                        {Number.parseFloat(product.price).toLocaleString()}
                       </p>
                       <p className="text-xs text-gray-400">
-                        Stock: <span className={product.quantity > 0 ? "text-green-600" : "text-red-500"}>{product.quantity}</span>
+                        Stock:{" "}
+                        <span
+                          className={
+                            product.quantity > 0
+                              ? "text-green-600"
+                              : "text-red-500"
+                          }
+                        >
+                          {product.quantity}
+                        </span>
                       </p>
                     </div>
                     <div className="flex gap-1.5">

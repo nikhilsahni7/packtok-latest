@@ -10,6 +10,7 @@ import {
   deleteOwnProduct,
   getInventory,
   getOwnProduct,
+  getVendorProductAnalytics,
   listOwnProducts,
   removeGalleryImageForOwnProduct,
   submitOwnProductForReview,
@@ -190,5 +191,16 @@ export const vendorCreateDraft = asyncHandler(
   async (req: Request, res: Response) => {
     const draft = await createVendorDraft(req.user!.id, req.body);
     res.status(201).json(new ApiResponse(201, draft, "Draft created"));
+  }
+);
+
+export const vendorGetAnalytics = asyncHandler(
+  async (req: Request, res: Response) => {
+    const range =
+      typeof req.query.range === "string" ? req.query.range : undefined;
+    const analytics = await getVendorProductAnalytics(req.user!.id, range);
+    res
+      .status(200)
+      .json(new ApiResponse(200, analytics, "Vendor analytics fetched"));
   }
 );

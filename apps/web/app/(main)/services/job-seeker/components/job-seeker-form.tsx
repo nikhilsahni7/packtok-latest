@@ -41,6 +41,8 @@ export function JobSeekerForm() {
 
   const form = useForm({
     resolver: zodResolver(jobSeekerSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       hasPreviouslyWorkedWithUs: false,
       agreeToTerms: false,
@@ -81,13 +83,16 @@ export function JobSeekerForm() {
       }
 
       setCv(file);
-      setValue("cv", file);
+      setValue("cv", file, { shouldValidate: true, shouldDirty: true });
     }
   };
 
   const removeCv = () => {
     setCv(null);
-    setValue("cv", undefined as unknown as File);
+    setValue("cv", undefined as unknown as File, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   const onSubmit = async (data: JobSeekerFormData) => {
@@ -98,7 +103,7 @@ export function JobSeekerForm() {
         ...data,
         previousWorkEndDate: data.previousWorkEndDate
           ? new Date(data.previousWorkEndDate).toISOString()
-          : undefined
+          : undefined,
       };
       await jobSeekerSubmission.mutateAsync(formattedData);
       setIsSuccess(true);
@@ -108,7 +113,8 @@ export function JobSeekerForm() {
       setHasPreviousWork(false);
     } catch (error: unknown) {
       const message =
-        (error as any)?.response?.data?.message || "Failed to submit job seeker profile";
+        (error as any)?.response?.data?.message ||
+        "Failed to submit job seeker profile";
       setError(message);
       setIsSuccess(false);
       setShowModal(true);
@@ -121,14 +127,20 @@ export function JobSeekerForm() {
         <Card className="w-[95%] md:w-[85%] mx-auto">
           <CardHeader>
             <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
-              <CardTitle className="text-2xl font-bold capitalize">Job Seeker Profile for corrugated and packaging industry</CardTitle>
-
+              <CardTitle className="text-2xl font-bold capitalize">
+                Job Seeker Profile for corrugated and packaging industry
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10"
+            >
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">Section: 1 Personal Information</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                  Section: 1 Personal Information
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div className="grid grid-cols-1  md:grid-cols-2 gap-4">
                     <Label htmlFor="firstName">First Name</Label>
@@ -136,7 +148,10 @@ export function JobSeekerForm() {
                       id="firstName"
                       placeholder="John"
                       {...register("firstName")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.firstName && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.firstName && "border-red-500"
+                      )}
                     />
                     {errors.firstName && (
                       <p className="text-red-500 text-sm mt-1">
@@ -151,7 +166,10 @@ export function JobSeekerForm() {
                       id="lastName"
                       placeholder="Doe"
                       {...register("lastName")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.lastName && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.lastName && "border-red-500"
+                      )}
                     />
                     {errors.lastName && (
                       <p className="text-red-500 text-sm mt-1">
@@ -166,7 +184,10 @@ export function JobSeekerForm() {
                       id="phone"
                       placeholder="+1 (555) 123-4567"
                       {...register("phone")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.phone && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.phone && "border-red-500"
+                      )}
                     />
                     {errors.phone && (
                       <p className="text-red-500 text-sm mt-1">
@@ -187,7 +208,6 @@ export function JobSeekerForm() {
                     />
                   </div>
 
-
                   <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                     <Label htmlFor="address">Address</Label>
                     <Textarea
@@ -195,7 +215,10 @@ export function JobSeekerForm() {
                       placeholder="123 Main Street, Apartment 4B"
                       rows={3}
                       {...register("address")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.address && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.address && "border-red-500"
+                      )}
                     />
                     {errors.address && (
                       <p className="text-red-500 text-sm mt-1">
@@ -204,14 +227,16 @@ export function JobSeekerForm() {
                     )}
                   </div>
 
-
                   <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                     <Label htmlFor="city">City</Label>
                     <Input
                       id="city"
                       placeholder="New York"
                       {...register("city")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.city && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.city && "border-red-500"
+                      )}
                     />
                     {errors.city && (
                       <p className="text-red-500 text-sm mt-1">
@@ -226,7 +251,10 @@ export function JobSeekerForm() {
                       id="state"
                       placeholder="NY"
                       {...register("state")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.state && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.state && "border-red-500"
+                      )}
                     />
                     {errors.state && (
                       <p className="text-red-500 text-sm mt-1">
@@ -241,7 +269,10 @@ export function JobSeekerForm() {
                       id="postalCode"
                       placeholder="10001"
                       {...register("postalCode")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.postalCode && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.postalCode && "border-red-500"
+                      )}
                     />
                     {errors.postalCode && (
                       <p className="text-red-500 text-sm mt-1">
@@ -256,7 +287,10 @@ export function JobSeekerForm() {
                       id="stateOfResidence"
                       placeholder="New York"
                       {...register("stateOfResidence")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]",errors.stateOfResidence && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.stateOfResidence && "border-red-500"
+                      )}
                     />
                     {errors.stateOfResidence && (
                       <p className="text-red-500 text-sm mt-1">
@@ -265,21 +299,28 @@ export function JobSeekerForm() {
                     )}
                   </div>
                 </div>
-
-
               </div>
 
-
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">Section: 2 Job Preferences</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                  Section: 2 Job Preferences
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="positionSought">Position Sought</Label>
                     <Select
-                      onValueChange={(value) => setValue("positionSought", value)}
+                      onValueChange={(value) =>
+                        setValue("positionSought", value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
                     >
                       <SelectTrigger
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.positionSought && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.positionSought && "border-red-500"
+                        )}
                       >
                         <SelectValue placeholder="Select position" />
                       </SelectTrigger>
@@ -291,9 +332,7 @@ export function JobSeekerForm() {
                         <SelectItem value="Maintenance Worker">
                           Maintenance Worker
                         </SelectItem>
-                        <SelectItem value="Management">
-                          Management
-                        </SelectItem>
+                        <SelectItem value="Management">Management</SelectItem>
 
                         <SelectItem value="Supervisor">Supervisor</SelectItem>
                         <SelectItem value="Quality Control">
@@ -318,11 +357,15 @@ export function JobSeekerForm() {
                     </Label>
                     <Select
                       onValueChange={(value) =>
-                        setValue("preferredWorkingMode", value)
+                        setValue("preferredWorkingMode", value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
                       }
                     >
                       <SelectTrigger
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]",
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
                           errors.preferredWorkingMode && "border-red-500"
                         )}
                       >
@@ -352,14 +395,15 @@ export function JobSeekerForm() {
                       placeholder="Specify other position"
                       {...register("otherPosition")}
                       className="border-[#D3D3D3] px-4 h-[44px]"
-
                     />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">Section: 3 Work History</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                  Section: 3 Work History
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div className="flex items-start gap-2">
                     <Checkbox
@@ -367,7 +411,14 @@ export function JobSeekerForm() {
                       checked={hasPreviousWork}
                       onCheckedChange={(checked) => {
                         setHasPreviousWork(checked as boolean);
-                        setValue("hasPreviouslyWorkedWithUs", checked as boolean);
+                        setValue(
+                          "hasPreviouslyWorkedWithUs",
+                          checked as boolean,
+                          {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          }
+                        );
                       }}
                     />
                     <Label htmlFor="hasPreviouslyWorkedWithUs">
@@ -375,7 +426,6 @@ export function JobSeekerForm() {
                     </Label>
                   </div>
                 </div>
-
 
                 {hasPreviousWork && (
                   <div>
@@ -392,7 +442,9 @@ export function JobSeekerForm() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 4 CV Upload</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                  Section: 4 CV Upload
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <Label className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
                     Upload CV
@@ -405,7 +457,9 @@ export function JobSeekerForm() {
                         <span className="text-sm text-gray-600 group-hover:text-blue-600 font-medium">
                           Upload CV (PDF, DOC, DOCX, TXT)
                         </span>
-                        <p className="text-xs text-gray-500 mt-1">Max size: 5MB</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Max size: 5MB
+                        </p>
                         <input
                           type="file"
                           accept=".pdf,.doc,.docx,.txt"
@@ -449,7 +503,9 @@ export function JobSeekerForm() {
                     )}
                   </div>
                   {errors.cv && (
-                    <p className="text-red-500 text-sm mt-1">{errors.cv.message}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.cv.message}
+                    </p>
                   )}
                 </div>
               </div>
@@ -460,6 +516,7 @@ export function JobSeekerForm() {
                   onCheckedChange={(checked: boolean) =>
                     form.setValue("agreeToTerms", checked, {
                       shouldValidate: true,
+                      shouldDirty: true,
                     })
                   }
                   error={form.formState.errors.agreeToTerms?.message}

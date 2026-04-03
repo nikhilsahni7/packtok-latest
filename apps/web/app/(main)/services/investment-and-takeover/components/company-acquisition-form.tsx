@@ -4,26 +4,26 @@ import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditi
 import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useCompanyAcquisitionSubmission } from "@/hooks";
 import {
-    CompanyAcquisitionFormData,
-    companyAcquisitionSchema,
+  CompanyAcquisitionFormData,
+  companyAcquisitionSchema,
 } from "@/schemas/company-acquisition-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
 } from "@packtok/ui/components/card";
 import { Checkbox } from "@packtok/ui/components/checkbox";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@packtok/ui/components/select";
 import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
@@ -40,6 +40,8 @@ export function CompanyAcquisitionForm() {
 
   const form = useForm({
     resolver: zodResolver(companyAcquisitionSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       wantsNda: false,
       isValued: false,
@@ -65,7 +67,10 @@ export function CompanyAcquisitionForm() {
       updatedAdvisors = advisors.filter((a) => a !== advisor);
     }
     setAdvisors(updatedAdvisors);
-    setValue("advisorsEngaged", updatedAdvisors);
+    setValue("advisorsEngaged", updatedAdvisors, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   const advisorOptions = [
@@ -86,7 +91,7 @@ export function CompanyAcquisitionForm() {
         ...data,
         sellerYearEstablished: data.sellerYearEstablished
           ? parseInt(data.sellerYearEstablished.toString(), 10)
-          : undefined
+          : undefined,
       } as CompanyAcquisitionFormData;
       await acquisitionSubmission.mutateAsync(formattedData);
       setIsSuccess(true);
@@ -108,19 +113,23 @@ export function CompanyAcquisitionForm() {
     <>
       <div className="form-bg">
         <Card className="w-[95%] md:w-[85%] mx-auto">
-
           <CardHeader>
             <div className="bg-[#4A3AFF] w-fit text-white px-4 py-3 inline rounded-md">
               <CardTitle className="text-2xl capitalize font-bold">
-                Company Acquisition Inquiry for corrugated and packaging industry
+                Company Acquisition Inquiry for corrugated and packaging
+                industry
               </CardTitle>
             </div>
-
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10"
+            >
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 1 Contact Information</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                  Section: 1 Contact Information
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div className="grid grid-cols-1 gap-4">
                     <Label htmlFor="contactName">Contact Name</Label>
@@ -128,7 +137,10 @@ export function CompanyAcquisitionForm() {
                       id="contactName"
                       placeholder="John Doe"
                       {...register("contactName")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.contactName && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.contactName && "border-red-500"
+                      )}
                     />
                     {errors.contactName && (
                       <p className="text-red-500 text-sm mt-1">
@@ -143,7 +155,10 @@ export function CompanyAcquisitionForm() {
                       id="companyName"
                       placeholder="Packtok Machinery Pvt Ltd"
                       {...register("companyName")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.companyName && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.companyName && "border-red-500"
+                      )}
                     />
                     {errors.companyName && (
                       <p className="text-red-500 text-sm mt-1">
@@ -158,7 +173,10 @@ export function CompanyAcquisitionForm() {
                       id="role"
                       placeholder="CEO"
                       {...register("role")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.role && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.role && "border-red-500"
+                      )}
                     />
                     {errors.role && (
                       <p className="text-red-500 text-sm mt-1">
@@ -174,7 +192,10 @@ export function CompanyAcquisitionForm() {
                       type="email"
                       placeholder="john.doe@company.com"
                       {...register("email")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.email && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.email && "border-red-500"
+                      )}
                     />
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">
@@ -189,7 +210,10 @@ export function CompanyAcquisitionForm() {
                       id="phone"
                       placeholder="+1 (555) 123-4567"
                       {...register("phone")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.phone && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.phone && "border-red-500"
+                      )}
                     />
                     {errors.phone && (
                       <p className="text-red-500 text-sm mt-1">
@@ -201,18 +225,30 @@ export function CompanyAcquisitionForm() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 2 Transaction Details</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                  Section: 2 Transaction Details
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div className="grid grid-cols-1 gap-4">
                     <Label htmlFor="inquirerType">Inquirer Type</Label>
                     <Select
                       onValueChange={(value) => {
                         setInquirerType(value);
-                        setValue("inquirerType", value as "BUYER" | "SELLER" | "ADVISOR_CONSULTANT");
+                        setValue(
+                          "inquirerType",
+                          value as "BUYER" | "SELLER" | "ADVISOR_CONSULTANT",
+                          {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          }
+                        );
                       }}
                     >
                       <SelectTrigger
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.inquirerType && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.inquirerType && "border-red-500"
+                        )}
                       >
                         <SelectValue placeholder="Select inquirer type" />
                       </SelectTrigger>
@@ -235,11 +271,26 @@ export function CompanyAcquisitionForm() {
                     <Label htmlFor="transactionType">Transaction Type</Label>
                     <Select
                       onValueChange={(value) =>
-                        setValue("transactionType", value as "ASSET_SALE" | "STOCK_SHARE_SALE" | "MERGER" | "ACQUISITION_TAKEOVER" | "NOT_SURE")
+                        setValue(
+                          "transactionType",
+                          value as
+                            | "ASSET_SALE"
+                            | "STOCK_SHARE_SALE"
+                            | "MERGER"
+                            | "ACQUISITION_TAKEOVER"
+                            | "NOT_SURE",
+                          {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          }
+                        )
                       }
                     >
                       <SelectTrigger
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.transactionType && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.transactionType && "border-red-500"
+                        )}
                       >
                         <SelectValue placeholder="Select transaction type" />
                       </SelectTrigger>
@@ -273,13 +324,13 @@ export function CompanyAcquisitionForm() {
                     />
                   </div>
                 </div>
-
-
               </div>
 
               {inquirerType === "SELLER" && (
                 <div className="space-y-4">
-                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">Seller Information</h3>
+                  <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                    Seller Information
+                  </h3>
                   <div>
                     <Label htmlFor="sellerBusinessDescription">
                       Business Description
@@ -294,10 +345,25 @@ export function CompanyAcquisitionForm() {
 
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <Label htmlFor="sellerLegalStructure">Legal Structure</Label>
+                      <Label htmlFor="sellerLegalStructure">
+                        Legal Structure
+                      </Label>
                       <Select
                         onValueChange={(value) =>
-                          setValue("sellerLegalStructure", value as "SOLE_PROPRIETORSHIP" | "PARTNERSHIP" | "PVT_LTD" | "PUBLIC" | "LLP" | "OTHER")
+                          setValue(
+                            "sellerLegalStructure",
+                            value as
+                              | "SOLE_PROPRIETORSHIP"
+                              | "PARTNERSHIP"
+                              | "PVT_LTD"
+                              | "PUBLIC"
+                              | "LLP"
+                              | "OTHER",
+                            {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            }
+                          )
                         }
                       >
                         <SelectTrigger>
@@ -307,8 +373,12 @@ export function CompanyAcquisitionForm() {
                           <SelectItem value="SOLE_PROPRIETORSHIP">
                             Sole Proprietorship
                           </SelectItem>
-                          <SelectItem value="PARTNERSHIP">Partnership</SelectItem>
-                          <SelectItem value="PVT_LTD">Private Limited</SelectItem>
+                          <SelectItem value="PARTNERSHIP">
+                            Partnership
+                          </SelectItem>
+                          <SelectItem value="PVT_LTD">
+                            Private Limited
+                          </SelectItem>
                           <SelectItem value="PUBLIC">Public Limited</SelectItem>
                           <SelectItem value="LLP">
                             Limited Liability Partnership
@@ -319,7 +389,9 @@ export function CompanyAcquisitionForm() {
                     </div>
 
                     <div>
-                      <Label htmlFor="sellerIndustrySector">Industry Sector</Label>
+                      <Label htmlFor="sellerIndustrySector">
+                        Industry Sector
+                      </Label>
                       <Input
                         id="sellerIndustrySector"
                         placeholder="Manufacturing"
@@ -340,7 +412,9 @@ export function CompanyAcquisitionForm() {
                     </div>
 
                     <div>
-                      <Label htmlFor="sellerAnnualRevenue">Annual Revenue</Label>
+                      <Label htmlFor="sellerAnnualRevenue">
+                        Annual Revenue
+                      </Label>
                       <Input
                         id="sellerAnnualRevenue"
                         placeholder="$5M"
@@ -421,13 +495,18 @@ export function CompanyAcquisitionForm() {
               )}
 
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 3 Additional Information</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                  Section: 3 Additional Information
+                </h3>
                 <div className="px-10 border-t-[1px] py-4 border-[#E0E0E0]">
                   <div>
                     <Label className="py-2">Advisors Engaged</Label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 grid-cols-1 md:grid-cols-3 gap-3 mt-2">
                       {advisorOptions.map((advisor) => (
-                        <div key={advisor} className="flex items-start border p-4 border-[#D3D3D3] justify-start text-[#828282] gap-2">
+                        <div
+                          key={advisor}
+                          className="flex items-start border p-4 border-[#D3D3D3] justify-start text-[#828282] gap-2"
+                        >
                           <Checkbox
                             id={advisor}
                             checked={advisors.includes(advisor)}
@@ -435,7 +514,10 @@ export function CompanyAcquisitionForm() {
                               handleAdvisorChange(advisor, checked as boolean)
                             }
                           />
-                          <Label htmlFor={advisor} className="text-sm font-normal">
+                          <Label
+                            htmlFor={advisor}
+                            className="text-sm font-normal"
+                          >
                             {advisor}
                           </Label>
                         </div>
@@ -448,7 +530,10 @@ export function CompanyAcquisitionForm() {
                       <Checkbox
                         id="isValued"
                         onCheckedChange={(checked) =>
-                          setValue("isValued", checked as boolean)
+                          setValue("isValued", checked as boolean, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
                         }
                       />
                       <Label htmlFor="isValued">Business has been valued</Label>
@@ -458,7 +543,10 @@ export function CompanyAcquisitionForm() {
                       <Checkbox
                         id="hasOngoingLitigation"
                         onCheckedChange={(checked) =>
-                          setValue("hasOngoingLitigation", checked as boolean)
+                          setValue("hasOngoingLitigation", checked as boolean, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
                         }
                       />
                       <Label htmlFor="hasOngoingLitigation">
@@ -470,7 +558,14 @@ export function CompanyAcquisitionForm() {
                       <Checkbox
                         id="hasChangeOfControlClauses"
                         onCheckedChange={(checked) =>
-                          setValue("hasChangeOfControlClauses", checked as boolean)
+                          setValue(
+                            "hasChangeOfControlClauses",
+                            checked as boolean,
+                            {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            }
+                          )
                         }
                       />
                       <Label htmlFor="hasChangeOfControlClauses">
@@ -482,7 +577,10 @@ export function CompanyAcquisitionForm() {
                       <Checkbox
                         id="wantsNda"
                         onCheckedChange={(checked) =>
-                          setValue("wantsNda", checked as boolean)
+                          setValue("wantsNda", checked as boolean, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
                         }
                       />
                       <Label htmlFor="wantsNda">Wants NDA</Label>
@@ -518,6 +616,7 @@ export function CompanyAcquisitionForm() {
                     onCheckedChange={(checked: boolean) =>
                       form.setValue("agreeToTerms", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                     error={form.formState.errors.agreeToTerms?.message}

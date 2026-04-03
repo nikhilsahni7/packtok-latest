@@ -58,6 +58,35 @@ export default function PodcastsPage() {
     return matchesSearch && matchesTag;
   });
 
+  const renderPodcastCards = () => {
+    const shouldCenterCards = filteredPodcasts.length <= 2;
+
+    if (shouldCenterCards) {
+      return (
+        <div className="flex flex-wrap justify-center gap-8">
+          {filteredPodcasts.map((podcast) => (
+            <div key={podcast.id} className="w-full max-w-sm">
+              <PodcastCard podcast={podcast} />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        {filteredPodcasts.map((podcast) => (
+          <div
+            key={podcast.id}
+            className="w-full max-w-sm xl:max-w-none xl:w-auto"
+          >
+            <PodcastCard podcast={podcast} />
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   let content: ReactNode;
   if (isLoading) {
     content = (
@@ -74,11 +103,7 @@ export default function PodcastsPage() {
                 Latest Episodes
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPodcasts.map((podcast) => (
-                <PodcastCard key={podcast.id} podcast={podcast} />
-              ))}
-            </div>
+            {renderPodcastCards()}
           </div>
         )}
         {(searchTerm || selectedTag) && (
@@ -86,11 +111,7 @@ export default function PodcastsPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-8">
               {searchTerm ? "Search Results" : `${selectedTag} Podcasts`}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPodcasts.map((podcast) => (
-                <PodcastCard key={podcast.id} podcast={podcast} />
-              ))}
-            </div>
+            {renderPodcastCards()}
           </div>
         )}
       </>

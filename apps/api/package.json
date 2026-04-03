@@ -33,6 +33,7 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "libphonenumber-js": "^1.12.24",
     "multer": "^2.0.1",
     "pdfkit": "^0.17.2",
     "pino": "^9.7.0",

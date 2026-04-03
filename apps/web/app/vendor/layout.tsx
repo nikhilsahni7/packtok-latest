@@ -3,7 +3,10 @@
 import { useAuthStore, useHasHydrated } from "@/store/auth-store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { VendorMobileMenuButton, VendorSidebar } from "./dashboard/components/vendor-sidebar";
+import {
+  VendorMobileMenuButton,
+  VendorSidebar,
+} from "./dashboard/components/vendor-sidebar";
 
 export default function VendorLayout({
   children,
@@ -67,7 +70,7 @@ export default function VendorLayout({
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-20">
+    <div className="bg-gray-50 min-h-screen pt-20 overflow-x-hidden">
       <VendorSidebar
         collapsed={sidebarCollapsed}
         onToggle={toggleSidebar}
@@ -77,7 +80,7 @@ export default function VendorLayout({
       />
       {/* Main content: no margin on mobile, sidebar margin on desktop */}
       <main
-        className={`min-h-[calc(100vh-5rem)] transition-all duration-300 ease-in-out ${
+        className={`min-h-[calc(100vh-5rem)] transition-all duration-300 ease-in-out overflow-x-hidden ${
           sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
         }`}
       >

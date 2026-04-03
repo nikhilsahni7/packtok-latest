@@ -1,10 +1,11 @@
 import { prisma } from "@packtok/db";
 import { Request, Response } from "express";
 import {
-    applyForVendor,
-    approveVendorApplication,
-    listVendorApplications,
-    rejectVendorApplication,
+  applyForVendor,
+  approveVendorApplication,
+  getVendorDashboardAnalytics,
+  listVendorApplications,
+  rejectVendorApplication,
 } from "../services/vendor.service";
 import { ApiResponse } from "../utils/apiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -60,5 +61,18 @@ export const getMyVendorApplication = asyncHandler(
     res
       .status(200)
       .json(new ApiResponse(200, app, "Vendor application status"));
+  }
+);
+
+export const getMyVendorDashboardAnalytics = asyncHandler(
+  async (req: Request, res: Response) => {
+    const range =
+      typeof req.query.range === "string" ? req.query.range : undefined;
+    const analytics = await getVendorDashboardAnalytics(req.user!.id, range);
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, analytics, "Vendor dashboard analytics fetched")
+      );
   }
 );

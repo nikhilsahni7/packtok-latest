@@ -4,26 +4,26 @@ import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditi
 import ServiceSubmissionModal from "@/components/service-submission-modal";
 import { useConsultancySubmission } from "@/hooks";
 import {
-    ConsultancyFormData,
-    consultancySchema,
+  ConsultancyFormData,
+  consultancySchema,
 } from "@/schemas/consultancy-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@packtok/ui/components/button";
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
 } from "@packtok/ui/components/card";
 import { Checkbox } from "@packtok/ui/components/checkbox";
 import { Input } from "@packtok/ui/components/input";
 import { Label } from "@packtok/ui/components/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@packtok/ui/components/select";
 import { Textarea } from "@packtok/ui/components/textarea";
 import { cn } from "@packtok/ui/lib/utils";
@@ -41,6 +41,8 @@ export function ConsultancyForm() {
 
   const form = useForm<ConsultancyFormData>({
     resolver: zodResolver(consultancySchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       agreeToTerms: false,
     },
@@ -117,7 +119,8 @@ export function ConsultancyForm() {
         | "TECHNOLOGY_INTEGRATION_AI_IOT_ROBOTICS"
         | "ENERGY_EFFICIENCY_SUSTAINABILITY"
         | "OTHER"
-      )[]
+      )[],
+      { shouldValidate: true, shouldDirty: true }
     );
   };
 
@@ -140,7 +143,8 @@ export function ConsultancyForm() {
         | "INTEGRATE_AUTOMATION_AI"
         | "COMPLY_WITH_INDUSTRY_STANDARDS"
         | "OTHER"
-      )[]
+      )[],
+      { shouldValidate: true, shouldDirty: true }
     );
   };
 
@@ -364,7 +368,8 @@ export function ConsultancyForm() {
                             | "TEXTILE"
                             | "PLASTICS_PACKAGING"
                             | "ELECTRONICS"
-                            | "OTHER"
+                            | "OTHER",
+                          { shouldValidate: true, shouldDirty: true }
                         );
                         setShowIndustryOther(value === "OTHER");
                       }}
@@ -594,6 +599,7 @@ export function ConsultancyForm() {
                     onCheckedChange={(checked: boolean) =>
                       form.setValue("agreeToTerms", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                     error={form.formState.errors.agreeToTerms?.message}

@@ -1,12 +1,14 @@
 import {
-    MarketplaceProductStatus,
-    Prisma,
-    ProductCondition,
-    ProductType,
-    Role,
-    StockMovementReason,
-    UserSubmissionStatus,
-    prisma,
+  MarketplaceProductStatus,
+  OrderStatus,
+  Prisma,
+  ProductCondition,
+  ProductType,
+  QuoteStatus,
+  Role,
+  StockMovementReason,
+  UserSubmissionStatus,
+  prisma,
 } from "@packtok/db";
 import { ApiError } from "../utils/apiError";
 import { canVendorCreateProduct } from "./subscription.service";
@@ -14,6 +16,43 @@ import { canVendorCreateProduct } from "./subscription.service";
 type ListFilters = {
   status?: MarketplaceProductStatus;
   submissionStatus?: UserSubmissionStatus;
+};
+
+type VendorAnalyticsRange = "all" | "30d" | "90d";
+
+const SALES_ORDER_STATUSES: OrderStatus[] = [
+  OrderStatus.PAID,
+  OrderStatus.PROCESSING,
+  OrderStatus.SHIPPED,
+  OrderStatus.DELIVERED,
+];
+
+const getAnalyticsRange = (range?: string): VendorAnalyticsRange => {
+  if (range === "all" || range === "30d" || range === "90d") {
+    return range;
+  }
+  return "30d";
+};
+
+const startOfDay = (date: Date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+const addDays = (date: Date, days: number) => {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
+const getRangeDateFilter = (range: VendorAnalyticsRange) => {
+  if (range === "all") {
+    return undefined;
+  }
+  const days = range === "30d" ? 30 : 90;
+  const start = addDays(startOfDay(new Date()), -(days - 1));
+  return { gte: start, lte: new Date() };
 };
 
 const ensureOwnership = async (userId: string, productId: string) => {
@@ -130,8 +169,7 @@ export const submitOwnProductForReview = async (
 export const deleteOwnProduct = async (userId: string, productId: string) => {
   const product = await ensureOwnership(userId, productId);
   // Vendors can only delete products that are NOT approved/live
-  const isApproved =
-    product.submissionStatus === UserSubmissionStatus.APPROVED;
+  const isApproved = product.submissionStatus === UserSubmissionStatus.APPROVED;
   if (isApproved) {
     throw new ApiError(
       403,
@@ -238,7 +276,9 @@ export const adjustInventory = async (
         where: { id: productId },
         data: { status: MarketplaceProductStatus.OUT_OF_STOCK },
       });
-    } else if (updatedProduct.status === MarketplaceProductStatus.OUT_OF_STOCK) {
+    } else if (
+      updatedProduct.status === MarketplaceProductStatus.OUT_OF_STOCK
+    ) {
       await tx.marketplaceProduct.update({
         where: { id: productId },
         data: { status: MarketplaceProductStatus.AVAILABLE },
@@ -386,9 +426,323 @@ export const createVendorDraft = async (
       ...(data.model ? { model: data.model } : {}),
       ...(data.year ? { year: data.year } : {}),
       ...(data.quantity ? { quantity: data.quantity } : {}),
-      ...(data.machineType ? { machineType: data.machineType as import("@packtok/db").MachineType } : {}),
+      ...(data.machineType
+        ? { machineType: data.machineType as import("@packtok/db").MachineType }
+        : {}),
     },
     select: { id: true },
   });
   return product;
+};
+
+export const getVendorProductAnalytics = async (
+  userId: string,
+  rangeInput?: string
+) => {
+  const range = getAnalyticsRange(rangeInput);
+  const dateFilter = getRangeDateFilter(range);
+
+  const [
+    totalProducts,
+    statusCounts,
+    submissionCounts,
+    totalViews,
+    topViewedRows,
+    cartRevenueByCurrencyRows,
+    cartOrdersCount,
+    cartUnitsAgg,
+    quoteCompletedRows,
+  ] = await Promise.all([
+    prisma.marketplaceProduct.count({ where: { createdById: userId } }),
+    prisma.marketplaceProduct.groupBy({
+      by: ["status"],
+      where: { createdById: userId },
+      _count: { _all: true },
+    }),
+    prisma.marketplaceProduct.groupBy({
+      by: ["submissionStatus"],
+      where: { createdById: userId },
+      _count: { _all: true },
+    }),
+    prisma.productView.count({
+      where: {
+        product: { createdById: userId },
+        ...(dateFilter ? { viewedAt: dateFilter } : {}),
+      },
+    }),
+    prisma.productView.groupBy({
+      by: ["productId"],
+      where: {
+        product: { createdById: userId },
+        ...(dateFilter ? { viewedAt: dateFilter } : {}),
+      },
+      _count: { _all: true },
+      orderBy: { _count: { productId: "desc" } },
+      take: 5,
+    }),
+    prisma.orderItem.groupBy({
+      by: ["currency"],
+      where: {
+        product: { createdById: userId },
+        order: {
+          status: { in: SALES_ORDER_STATUSES },
+          ...(dateFilter ? { createdAt: dateFilter } : {}),
+        },
+      },
+      _sum: { totalPrice: true },
+    }),
+    prisma.order.count({
+      where: {
+        status: { in: SALES_ORDER_STATUSES },
+        ...(dateFilter ? { createdAt: dateFilter } : {}),
+        items: { some: { product: { createdById: userId } } },
+      },
+    }),
+    prisma.orderItem.aggregate({
+      where: {
+        product: { createdById: userId },
+        order: {
+          status: { in: SALES_ORDER_STATUSES },
+          ...(dateFilter ? { createdAt: dateFilter } : {}),
+        },
+      },
+      _sum: { quantity: true },
+    }),
+    prisma.quoteRequest.findMany({
+      where: {
+        status: QuoteStatus.COMPLETED,
+        product: { createdById: userId },
+        ...(dateFilter ? { updatedAt: dateFilter } : {}),
+      },
+      select: {
+        id: true,
+        productId: true,
+        product: {
+          select: {
+            id: true,
+            title: true,
+            currency: true,
+            price: true,
+            imagesThumbnail: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const cartRevenueByCurrency = cartRevenueByCurrencyRows.map((row) => ({
+    currency: row.currency,
+    amount: Number(row._sum.totalPrice ?? 0),
+  }));
+
+  const quoteRevenueMap = new Map<string, number>();
+  for (const row of quoteCompletedRows) {
+    const currency = row.product.currency;
+    const amount = Number(row.product.price ?? 0);
+    quoteRevenueMap.set(
+      currency,
+      (quoteRevenueMap.get(currency) ?? 0) + amount
+    );
+  }
+  const quoteRevenueByCurrency = Array.from(quoteRevenueMap.entries()).map(
+    ([currency, amount]) => ({ currency, amount })
+  );
+
+  const combinedRevenueMap = new Map<string, number>();
+  for (const row of cartRevenueByCurrency) {
+    combinedRevenueMap.set(
+      row.currency,
+      (combinedRevenueMap.get(row.currency) ?? 0) + row.amount
+    );
+  }
+  for (const row of quoteRevenueByCurrency) {
+    combinedRevenueMap.set(
+      row.currency,
+      (combinedRevenueMap.get(row.currency) ?? 0) + row.amount
+    );
+  }
+  const totalRevenueByCurrency = Array.from(combinedRevenueMap.entries())
+    .map(([currency, amount]) => ({ currency, amount }))
+    .sort((a, b) => b.amount - a.amount);
+
+  const topViewedProductIds = topViewedRows.map((row) => row.productId);
+  const topViewedProducts = topViewedProductIds.length
+    ? await prisma.marketplaceProduct.findMany({
+        where: { id: { in: topViewedProductIds } },
+        select: {
+          id: true,
+          title: true,
+          currency: true,
+          price: true,
+          imagesThumbnail: true,
+        },
+      })
+    : [];
+
+  const topViewedMap = new Map(topViewedProducts.map((p) => [p.id, p]));
+  const topViewed = topViewedRows.map((row) => {
+    const product = topViewedMap.get(row.productId);
+    return {
+      productId: row.productId,
+      title: product?.title ?? "Product",
+      image: product?.imagesThumbnail ?? null,
+      currency: product?.currency ?? "INR",
+      price: Number(product?.price ?? 0),
+      views: row._count._all,
+    };
+  });
+
+  const orderSalesRows = await prisma.orderItem.groupBy({
+    by: ["productId", "currency"],
+    where: {
+      product: { createdById: userId },
+      order: {
+        status: { in: SALES_ORDER_STATUSES },
+        ...(dateFilter ? { createdAt: dateFilter } : {}),
+      },
+    },
+    _sum: { quantity: true, totalPrice: true },
+  });
+
+  const quoteSalesByProduct = new Map<
+    string,
+    { count: number; revenue: number; currency: string }
+  >();
+  for (const row of quoteCompletedRows) {
+    const existing = quoteSalesByProduct.get(row.productId) ?? {
+      count: 0,
+      revenue: 0,
+      currency: row.product.currency,
+    };
+    quoteSalesByProduct.set(row.productId, {
+      count: existing.count + 1,
+      revenue: existing.revenue + Number(row.product.price ?? 0),
+      currency: existing.currency,
+    });
+  }
+
+  const salesByProduct = new Map<
+    string,
+    {
+      unitsSold: number;
+      cartUnitsSold: number;
+      quoteUnitsSold: number;
+      revenue: number;
+      currency: string;
+    }
+  >();
+
+  for (const row of orderSalesRows) {
+    const current = salesByProduct.get(row.productId) ?? {
+      unitsSold: 0,
+      cartUnitsSold: 0,
+      quoteUnitsSold: 0,
+      revenue: 0,
+      currency: row.currency,
+    };
+    const units = Number(row._sum.quantity ?? 0);
+    const revenue = Number(row._sum.totalPrice ?? 0);
+    salesByProduct.set(row.productId, {
+      unitsSold: current.unitsSold + units,
+      cartUnitsSold: current.cartUnitsSold + units,
+      quoteUnitsSold: current.quoteUnitsSold,
+      revenue: current.revenue + revenue,
+      currency: current.currency,
+    });
+  }
+
+  for (const [productId, quoteData] of quoteSalesByProduct.entries()) {
+    const current = salesByProduct.get(productId) ?? {
+      unitsSold: 0,
+      cartUnitsSold: 0,
+      quoteUnitsSold: 0,
+      revenue: 0,
+      currency: quoteData.currency,
+    };
+    salesByProduct.set(productId, {
+      unitsSold: current.unitsSold + quoteData.count,
+      cartUnitsSold: current.cartUnitsSold,
+      quoteUnitsSold: current.quoteUnitsSold + quoteData.count,
+      revenue: current.revenue + quoteData.revenue,
+      currency: current.currency,
+    });
+  }
+
+  const topSellingIds = Array.from(salesByProduct.entries())
+    .sort((a, b) => b[1].unitsSold - a[1].unitsSold)
+    .slice(0, 5)
+    .map(([productId]) => productId);
+
+  const topSellingProducts = topSellingIds.length
+    ? await prisma.marketplaceProduct.findMany({
+        where: { id: { in: topSellingIds } },
+        select: {
+          id: true,
+          title: true,
+          imagesThumbnail: true,
+        },
+      })
+    : [];
+  const topSellingProductMap = new Map(
+    topSellingProducts.map((p) => [p.id, p])
+  );
+  const topSelling = topSellingIds.map((id) => {
+    const metrics = salesByProduct.get(id)!;
+    const product = topSellingProductMap.get(id);
+    return {
+      productId: id,
+      title: product?.title ?? "Product",
+      image: product?.imagesThumbnail ?? null,
+      ...metrics,
+    };
+  });
+
+  const statusBreakdown = statusCounts.reduce<Record<string, number>>(
+    (acc, row) => {
+      acc[row.status] = row._count._all;
+      return acc;
+    },
+    {}
+  );
+
+  const submissionBreakdown = submissionCounts.reduce<Record<string, number>>(
+    (acc, row) => {
+      acc[String(row.submissionStatus)] = row._count._all;
+      return acc;
+    },
+    {}
+  );
+
+  return {
+    range,
+    overview: {
+      totalProducts,
+      totalViews,
+      cartOrdersCount,
+      quoteCompletedCount: quoteCompletedRows.length,
+      totalUnitsSold:
+        Number(cartUnitsAgg._sum.quantity ?? 0) + quoteCompletedRows.length,
+      cartUnitsSold: Number(cartUnitsAgg._sum.quantity ?? 0),
+      quoteUnitsSold: quoteCompletedRows.length,
+      totalRevenueByCurrency,
+      cartRevenueByCurrency,
+      quoteRevenueByCurrency,
+    },
+    breakdown: {
+      status: {
+        available: statusBreakdown[MarketplaceProductStatus.AVAILABLE] ?? 0,
+        outOfStock: statusBreakdown[MarketplaceProductStatus.OUT_OF_STOCK] ?? 0,
+        draft: statusBreakdown[MarketplaceProductStatus.DRAFT] ?? 0,
+        sold: statusBreakdown[MarketplaceProductStatus.SOLD] ?? 0,
+      },
+      submission: {
+        pending:
+          submissionBreakdown[UserSubmissionStatus.PENDING_APPROVAL] ?? 0,
+        approved: submissionBreakdown[UserSubmissionStatus.APPROVED] ?? 0,
+        rejected: submissionBreakdown[UserSubmissionStatus.REJECTED] ?? 0,
+      },
+    },
+    topViewed,
+    topSelling,
+  };
 };

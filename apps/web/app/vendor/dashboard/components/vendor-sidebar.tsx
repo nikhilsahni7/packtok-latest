@@ -4,19 +4,19 @@ import { useVendorProducts } from "@/hooks";
 import { useAuthStore } from "@/store/auth-store";
 import { User } from "@/types/auth";
 import {
-    BarChart3,
-    Boxes,
-    CheckCircle2,
-    ChevronDown,
-    ChevronUp,
-    ChevronsLeft,
-    CreditCard,
-    FileText,
-    LayoutDashboard,
-    LogOut,
-    Menu,
-    Package,
-    X,
+  BarChart3,
+  Boxes,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  ChevronsLeft,
+  CreditCard,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Package,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -154,7 +154,9 @@ export function VendorSidebar({
             className="p-1 rounded-lg hover:bg-gray-100 transition-colors hidden lg:block"
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <ChevronsLeft className={`h-5 w-5 text-gray-600 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+            <ChevronsLeft
+              className={`h-5 w-5 text-gray-600 transition-transform ${collapsed ? "rotate-180" : ""}`}
+            />
           </button>
           {/* Mobile close button */}
           <button
@@ -202,7 +204,7 @@ export function VendorSidebar({
                 )}
 
                 {isCollapsedView && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded hidden group-hover:block z-50 whitespace-nowrap pointer-events-none">
                     {node.name}
                   </div>
                 )}
@@ -251,7 +253,7 @@ export function VendorSidebar({
                 )}
 
                 {isCollapsedView && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded hidden group-hover:block z-50 whitespace-nowrap pointer-events-none">
                     {node.name}
                   </div>
                 )}
@@ -310,7 +312,7 @@ export function VendorSidebar({
 
         <button
           onClick={handleLogout}
-          className={`flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors group ${
+          className={`relative flex items-center w-full px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors group ${
             collapsed && !mobileOpen ? "justify-center" : ""
           }`}
         >
@@ -321,7 +323,7 @@ export function VendorSidebar({
 
           {/* Tooltip for collapsed state */}
           {collapsed && !mobileOpen && (
-            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded hidden group-hover:block z-50 whitespace-nowrap pointer-events-none">
               Logout
             </div>
           )}

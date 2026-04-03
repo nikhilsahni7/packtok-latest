@@ -42,6 +42,8 @@ export function ManpowerHiringForm() {
 
   const form = useForm({
     resolver: zodResolver(manpowerHiringSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       skilledWorkersRequired: "0",
       semiSkilledWorkersRequired: "0",
@@ -77,7 +79,17 @@ export function ManpowerHiringForm() {
       updatedTypes = selectedManpowerTypes.filter((t) => t !== manpowerValue);
     }
     setSelectedManpowerTypes(updatedTypes);
-    setValue("manpowerType", updatedTypes as ("MACHINE_OPERATORS" | "TECHNICIANS" | "MAINTENANCE_WORKERS" | "SUPERVISORS" | "OTHER")[]);
+    setValue(
+      "manpowerType",
+      updatedTypes as (
+        | "MACHINE_OPERATORS"
+        | "TECHNICIANS"
+        | "MAINTENANCE_WORKERS"
+        | "SUPERVISORS"
+        | "OTHER"
+      )[],
+      { shouldValidate: true, shouldDirty: true }
+    );
   };
 
   const onSubmit = async (data: ManpowerHiringFormData) => {
@@ -97,7 +109,7 @@ export function ManpowerHiringForm() {
           : 0,
         unskilledWorkersRequired: data.unskilledWorkersRequired
           ? parseInt(data.unskilledWorkersRequired.toString(), 10)
-          : 0
+          : 0,
       } as ManpowerHiringFormData;
       await manpowerSubmission.mutateAsync(formattedData);
       setIsSuccess(true);
@@ -125,12 +137,16 @@ export function ManpowerHiringForm() {
                 Manpower Hiring Request for corrugated and packaging industry
               </CardTitle>
             </div>
-
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10"
+            >
               <div className="shadow-[0_2px_15px_0_rgba(25, 33, 61, 0.1)]">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 1 Company Information</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                  Section: 1 Company Information
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="companyName">Company Name</Label>
@@ -138,7 +154,10 @@ export function ManpowerHiringForm() {
                       id="companyName"
                       placeholder="Alpha Manufacturing"
                       {...register("companyName")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.companyName && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.companyName && "border-red-500"
+                      )}
                     />
                     {errors.companyName && (
                       <p className="text-red-500 text-sm mt-1">
@@ -153,7 +172,10 @@ export function ManpowerHiringForm() {
                       id="contactPerson"
                       placeholder="John Doe"
                       {...register("contactPerson")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.contactPerson && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.contactPerson && "border-red-500"
+                      )}
                     />
                     {errors.contactPerson && (
                       <p className="text-red-500 text-sm mt-1">
@@ -168,7 +190,10 @@ export function ManpowerHiringForm() {
                       id="designation"
                       placeholder="HR Manager"
                       {...register("designation")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.designation && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.designation && "border-red-500"
+                      )}
                     />
                     {errors.designation && (
                       <p className="text-red-500 text-sm mt-1">
@@ -183,7 +208,10 @@ export function ManpowerHiringForm() {
                       id="phone"
                       placeholder="+1 (555) 123-4567"
                       {...register("phone")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.phone && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.phone && "border-red-500"
+                      )}
                     />
                     {errors.phone && (
                       <p className="text-red-500 text-sm mt-1">
@@ -199,7 +227,10 @@ export function ManpowerHiringForm() {
                       type="email"
                       placeholder="john.doe@company.com"
                       {...register("email")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.email && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.email && "border-red-500"
+                      )}
                     />
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">
@@ -212,16 +243,36 @@ export function ManpowerHiringForm() {
                     <Label htmlFor="industryType">Industry Type</Label>
                     <Select
                       onValueChange={(value) =>
-                        setValue("industryType", value as "MANUFACTURING" | "AUTOMOTIVE" | "FOOD_PROCESSING" | "PHARMACEUTICALS" | "AGRICULTURE" | "CHEMICALS" | "PETROCHEMICALS" | "TEXTILE" | "PLASTICS_PACKAGING" | "ELECTRONICS" | "OTHER")
+                        setValue(
+                          "industryType",
+                          value as
+                            | "MANUFACTURING"
+                            | "AUTOMOTIVE"
+                            | "FOOD_PROCESSING"
+                            | "PHARMACEUTICALS"
+                            | "AGRICULTURE"
+                            | "CHEMICALS"
+                            | "PETROCHEMICALS"
+                            | "TEXTILE"
+                            | "PLASTICS_PACKAGING"
+                            | "ELECTRONICS"
+                            | "OTHER",
+                          { shouldValidate: true, shouldDirty: true }
+                        )
                       }
                     >
                       <SelectTrigger
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.industryType && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.industryType && "border-red-500"
+                        )}
                       >
                         <SelectValue placeholder="Select industry type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="MANUFACTURING">Manufacturing</SelectItem>
+                        <SelectItem value="MANUFACTURING">
+                          Manufacturing
+                        </SelectItem>
                         <SelectItem value="AUTOMOTIVE">Automotive</SelectItem>
                         <SelectItem value="FOOD_PROCESSING">
                           Food Processing
@@ -256,7 +307,10 @@ export function ManpowerHiringForm() {
                       placeholder="123 Industrial Park, Manufacturing District"
                       rows={3}
                       {...register("companyAddress")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.companyAddress && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.companyAddress && "border-red-500"
+                      )}
                     />
                     {errors.companyAddress && (
                       <p className="text-red-500 text-sm mt-1">
@@ -268,16 +322,23 @@ export function ManpowerHiringForm() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 2 Work Details</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                  Section: 2 Work Details
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Label htmlFor="machineryInvolved">Machinery Involved</Label>
+                    <Label htmlFor="machineryInvolved">
+                      Machinery Involved
+                    </Label>
                     <Textarea
                       id="machineryInvolved"
                       placeholder="CNC machines, assembly lines, packaging equipment..."
                       rows={3}
                       {...register("machineryInvolved")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.machineryInvolved && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.machineryInvolved && "border-red-500"
+                      )}
                     />
                     {errors.machineryInvolved && (
                       <p className="text-red-500 text-sm mt-1">
@@ -292,7 +353,10 @@ export function ManpowerHiringForm() {
                       id="workLocation"
                       placeholder="New York, NY"
                       {...register("workLocation")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.workLocation && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.workLocation && "border-red-500"
+                      )}
                     />
                     {errors.workLocation && (
                       <p className="text-red-500 text-sm mt-1">
@@ -307,7 +371,10 @@ export function ManpowerHiringForm() {
                       id="workingHours"
                       placeholder="8 AM - 5 PM"
                       {...register("workingHours")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.workingHours && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.workingHours && "border-red-500"
+                      )}
                     />
                     {errors.workingHours && (
                       <p className="text-red-500 text-sm mt-1">
@@ -315,16 +382,17 @@ export function ManpowerHiringForm() {
                       </p>
                     )}
                   </div>
-
                 </div>
-
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">Section: 3 Manpower Requirements</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium">
+                  Section: 3 Manpower Requirements
+                </h3>
                 <div className="px-10 border-y-[1px] py-4 border-[#E0E0E0]">
-
-                  <Label className="py-4">Manpower Type (Select all that apply)</Label>
+                  <Label className="py-4">
+                    Manpower Type (Select all that apply)
+                  </Label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
                     {manpowerOptions.map((manpower) => (
                       <div
@@ -333,7 +401,9 @@ export function ManpowerHiringForm() {
                       >
                         <Checkbox
                           id={manpower.value}
-                          checked={selectedManpowerTypes.includes(manpower.value)}
+                          checked={selectedManpowerTypes.includes(
+                            manpower.value
+                          )}
                           onCheckedChange={(checked) =>
                             handleManpowerTypeChange(
                               manpower.value,
@@ -356,7 +426,6 @@ export function ManpowerHiringForm() {
                     </p>
                   )}
 
-
                   <div className="grid grid-cols-1 pt-4 md:grid-cols-2 gap-4">
                     <Label htmlFor="skilledWorkersRequired">
                       Skilled Workers Required
@@ -368,7 +437,8 @@ export function ManpowerHiringForm() {
                       placeholder="0"
                       {...register("skilledWorkersRequired")}
                       className={cn(
-                        "border-[#D3D3D3] px-4 h-[44px]", errors.skilledWorkersRequired && "border-red-500"
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.skilledWorkersRequired && "border-red-500"
                       )}
                     />
                     {errors.skilledWorkersRequired && (
@@ -389,7 +459,8 @@ export function ManpowerHiringForm() {
                       placeholder="0"
                       {...register("semiSkilledWorkersRequired")}
                       className={cn(
-                        "border-[#D3D3D3] px-4 h-[44px]", errors.semiSkilledWorkersRequired && "border-red-500"
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.semiSkilledWorkersRequired && "border-red-500"
                       )}
                     />
                     {errors.semiSkilledWorkersRequired && (
@@ -410,7 +481,8 @@ export function ManpowerHiringForm() {
                       placeholder="0"
                       {...register("unskilledWorkersRequired")}
                       className={cn(
-                        "border-[#D3D3D3] px-4 h-[44px]", errors.unskilledWorkersRequired && "border-red-500"
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.unskilledWorkersRequired && "border-red-500"
                       )}
                     />
                     {errors.unskilledWorkersRequired && (
@@ -423,18 +495,27 @@ export function ManpowerHiringForm() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">Section: 4 Hiring Details</h3>
+                <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
+                  Section: 4 Hiring Details
+                </h3>
                 <div className="px-10 border-t-[1px] py-4 border-[#E0E0E0]">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Label htmlFor="hiringDuration"> Hiring Duration</Label>
                     <Select
                       onValueChange={(value) => {
                         setHiringDuration(value);
-                        setValue("hiringDuration", value as "PERMANENT" | "CONTRACT");
+                        setValue(
+                          "hiringDuration",
+                          value as "PERMANENT" | "CONTRACT",
+                          { shouldValidate: true, shouldDirty: true }
+                        );
                       }}
                     >
                       <SelectTrigger
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.hiringDuration && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.hiringDuration && "border-red-500"
+                        )}
                       >
                         <SelectValue placeholder="Select hiring duration" />
                       </SelectTrigger>
@@ -454,11 +535,18 @@ export function ManpowerHiringForm() {
                     <Label htmlFor="hiringUrgency">Hiring Urgency</Label>
                     <Select
                       onValueChange={(value) =>
-                        setValue("hiringUrgency", value as "HIGH" | "MEDIUM" | "LOW")
+                        setValue(
+                          "hiringUrgency",
+                          value as "HIGH" | "MEDIUM" | "LOW",
+                          { shouldValidate: true, shouldDirty: true }
+                        )
                       }
                     >
                       <SelectTrigger
-                        className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.hiringUrgency && "border-red-500")}
+                        className={cn(
+                          "border-[#D3D3D3] px-4 h-[44px]",
+                          errors.hiringUrgency && "border-red-500"
+                        )}
                       >
                         <SelectValue placeholder="Select urgency level" />
                       </SelectTrigger>
@@ -483,7 +571,10 @@ export function ManpowerHiringForm() {
                       id="expectedJoiningDate"
                       type="date"
                       {...register("expectedJoiningDate")}
-                      className={cn("border-[#D3D3D3] px-4 h-[44px]", errors.expectedJoiningDate && "border-red-500")}
+                      className={cn(
+                        "border-[#D3D3D3] px-4 h-[44px]",
+                        errors.expectedJoiningDate && "border-red-500"
+                      )}
                     />
                     {errors.expectedJoiningDate && (
                       <p className="text-red-500 text-sm mt-1">
@@ -529,8 +620,6 @@ export function ManpowerHiringForm() {
                     />
                   </div>
                 </div>
-
-
               </div>
 
               <div className="px-10 pb-6">
@@ -539,6 +628,7 @@ export function ManpowerHiringForm() {
                   onCheckedChange={(checked: boolean) =>
                     form.setValue("agreeToTerms", checked, {
                       shouldValidate: true,
+                      shouldDirty: true,
                     })
                   }
                   error={form.formState.errors.agreeToTerms?.message}

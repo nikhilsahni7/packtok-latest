@@ -67,6 +67,8 @@ export function ProductSubmissionForm() {
 
   const form = useForm<ProductSubmissionFormData>({
     resolver: zodResolver(productSubmissionSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       productType: "MACHINERY",
       condition: "USED",
@@ -95,7 +97,10 @@ export function ProductSubmissionForm() {
 
       const updatedImages = [...uploadedImages, ...newFiles];
       setUploadedImages(updatedImages);
-      setValue("images", updatedImages);
+      setValue("images", updatedImages, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
 
       // Create previews
       const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
@@ -111,7 +116,10 @@ export function ProductSubmissionForm() {
 
     const updatedImages = uploadedImages.filter((_, i) => i !== index);
     setUploadedImages(updatedImages);
-    setValue("images", updatedImages);
+    setValue("images", updatedImages, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
 
     // Remove preview
     const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
@@ -130,7 +138,7 @@ export function ProductSubmissionForm() {
 
       setThumbnail(file);
       setThumbnailPreview(URL.createObjectURL(file));
-      setValue("thumbnail", file);
+      setValue("thumbnail", file, { shouldValidate: true, shouldDirty: true });
     }
   };
 
@@ -144,7 +152,7 @@ export function ProductSubmissionForm() {
 
       setVideo(file);
       setVideoPreview(URL.createObjectURL(file));
-      setValue("video", file);
+      setValue("video", file, { shouldValidate: true, shouldDirty: true });
     }
   };
 
@@ -160,7 +168,10 @@ export function ProductSubmissionForm() {
 
       setVideoThumbnail(file);
       setVideoThumbnailPreview(URL.createObjectURL(file));
-      setValue("videoThumbnail", file);
+      setValue("videoThumbnail", file, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     }
   };
 
@@ -168,7 +179,7 @@ export function ProductSubmissionForm() {
     const file = event.target.files?.[0];
     if (file) {
       setPdf(file);
-      setValue("pdf", file);
+      setValue("pdf", file, { shouldValidate: true, shouldDirty: true });
     }
   };
 
@@ -328,7 +339,8 @@ export function ProductSubmissionForm() {
                         onValueChange={(value) =>
                           setValue(
                             "currency",
-                            value as "INR" | "USD" | "EUR" | "AED" | "CNY"
+                            value as "INR" | "USD" | "EUR" | "AED" | "CNY",
+                            { shouldValidate: true, shouldDirty: true }
                           )
                         }
                         defaultValue="INR"
@@ -366,11 +378,15 @@ export function ProductSubmissionForm() {
                               | "MACHINERY"
                               | "SPARE_PARTS"
                               | "CONSUMABLES"
-                              | "RAW_MATERIALS"
+                              | "RAW_MATERIALS",
+                            { shouldValidate: true, shouldDirty: true }
                           );
                           // Reset machineType when productType changes
                           if (value !== "MACHINERY") {
-                            setValue("machineType", undefined);
+                            setValue("machineType", undefined, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            });
                           }
                         }}
                         defaultValue="MACHINERY"
@@ -412,7 +428,8 @@ export function ProductSubmissionForm() {
                                 | "MONO_CARTON"
                                 | "MASTER_CARTON"
                                 | "BOTH"
-                                | "OTHER"
+                                | "OTHER",
+                              { shouldValidate: true, shouldDirty: true }
                             )
                           }
                         >
@@ -442,7 +459,10 @@ export function ProductSubmissionForm() {
                       <Label htmlFor="condition">Condition</Label>
                       <Select
                         onValueChange={(value) =>
-                          setValue("condition", value as "NEW" | "USED")
+                          setValue("condition", value as "NEW" | "USED", {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
                         }
                         defaultValue="USED"
                       >
@@ -465,7 +485,10 @@ export function ProductSubmissionForm() {
                       <Label htmlFor="categoryName">Category</Label>
                       <Select
                         onValueChange={(value) =>
-                          setValue("categoryName", value)
+                          setValue("categoryName", value, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
                         }
                       >
                         <SelectTrigger className="border-[#D3D3D3] px-4 h-[44px]">
@@ -924,6 +947,7 @@ export function ProductSubmissionForm() {
                     onCheckedChange={(checked: boolean) =>
                       form.setValue("agreeToTerms", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                     error={form.formState.errors.agreeToTerms?.message}

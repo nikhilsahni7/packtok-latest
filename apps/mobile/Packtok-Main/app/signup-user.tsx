@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { CountryCode, parsePhoneNumberFromString } from "libphonenumber-js/min";
 import { useCallback, useMemo, useState } from "react";
 
 import {
@@ -119,12 +120,35 @@ const validatePassword = (password: string): string | null => {
   return null;
 };
 
-const validatePhoneNumber = (phone: string): string | null => {
-  if (!phone.trim()) return null; // phone is optional
-  // Strip the dial code prefix — validate the local number part
-  const digitsOnly = phone.replace(/\D/g, "");
-  if (digitsOnly.length < 4 || digitsOnly.length > 15)
-    return "Please enter a valid phone number";
+const validatePhoneNumber = (
+  localPhone: string,
+  dialCode: string,
+  countryCode: string,
+): string | null => {
+  if (!localPhone.trim()) return null; // phone is optional
+
+  const digitsOnly = localPhone.replace(/\D/g, "");
+  if (!digitsOnly) return null;
+
+  const normalizedCountry = countryCode.trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(normalizedCountry)) {
+    return "Please select a valid country for phone number";
+  }
+
+  const e164 = `${dialCode}${digitsOnly}`;
+  const parsed = parsePhoneNumberFromString(
+    e164,
+    normalizedCountry as CountryCode,
+  );
+
+  if (!parsed || !parsed.isValid()) {
+    return "Please enter a valid phone number for the selected country";
+  }
+
+  if (normalizedCountry === "IN" && parsed.nationalNumber.length !== 10) {
+    return "Indian mobile number must be exactly 10 digits";
+  }
+
   return null;
 };
 
@@ -148,7 +172,7 @@ export default function SignupUserScreen() {
 
   // Phone dial code selection
   const [selectedDialCountry, setSelectedDialCountry] = useState(
-    COUNTRIES.find((c) => c.code === "IN")!
+    COUNTRIES.find((c) => c.code === "IN")!,
   );
   const [showDialCodeModal, setShowDialCodeModal] = useState(false);
   const [dialCodeSearch, setDialCodeSearch] = useState("");
@@ -162,7 +186,7 @@ export default function SignupUserScreen() {
     return COUNTRIES.filter(
       (c) =>
         c.name.toLowerCase().includes(search) ||
-        c.code.toLowerCase().includes(search)
+        c.code.toLowerCase().includes(search),
     );
   }, [countrySearch]);
 
@@ -173,7 +197,7 @@ export default function SignupUserScreen() {
       (c) =>
         c.name.toLowerCase().includes(search) ||
         c.dial.includes(search) ||
-        c.code.toLowerCase().includes(search)
+        c.code.toLowerCase().includes(search),
     );
   }, [dialCodeSearch]);
 
@@ -187,7 +211,11 @@ export default function SignupUserScreen() {
     const emailError = validateEmail(email);
     if (emailError) newErrors.email = emailError;
 
-    const phoneError = validatePhoneNumber(phoneNumber);
+    const phoneError = validatePhoneNumber(
+      phoneNumber,
+      selectedDialCountry.dial,
+      selectedDialCountry.code,
+    );
     if (phoneError) newErrors.phone = phoneError;
 
     if (!selectedCountry) newErrors.country = "Please select a country";
@@ -266,7 +294,7 @@ export default function SignupUserScreen() {
         <Text className="text-gray-400 text-sm ml-2">({item.code})</Text>
       </TouchableOpacity>
     ),
-    []
+    [],
   );
 
   const renderPickerModal = (
@@ -277,7 +305,7 @@ export default function SignupUserScreen() {
     setSearch: (s: string) => void,
     data: typeof COUNTRIES,
     onSelect: (c: (typeof COUNTRIES)[0]) => void,
-    showDial: boolean
+    showDial: boolean,
   ) => (
     <Modal
       visible={visible}
@@ -653,7 +681,7 @@ export default function SignupUserScreen() {
           setCountrySearch("");
           if (errors.country) setErrors((e) => ({ ...e, country: "" }));
         },
-        false
+        false,
       )}
 
       {/* Dial Code Selection Modal */}
@@ -672,7 +700,7 @@ export default function SignupUserScreen() {
           setShowDialCodeModal(false);
           setDialCodeSearch("");
         },
-        true
+        true,
       )}
     </View>
   );

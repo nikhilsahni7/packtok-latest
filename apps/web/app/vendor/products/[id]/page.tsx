@@ -2,37 +2,38 @@
 
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import {
-    useAdjustVendorInventory,
-    useCategories,
-    useDeleteVendorProduct,
-    useRemoveVendorProductImage,
-    useSubmitVendorProduct,
-    useUpdateVendorProduct,
-    useUploadVendorProductMedia,
-    useUpsertVendorInventory,
-    useVendorInventory,
+  useAdjustVendorInventory,
+  useCategories,
+  useDeleteVendorProduct,
+  useRemoveVendorProductImage,
+  useSubmitVendorProduct,
+  useUpdateVendorProduct,
+  useUploadVendorProductMedia,
+  useUpsertVendorInventory,
+  useVendorInventory,
 } from "@/hooks";
 import api from "@/lib/axios";
 import {
-    Button,
-    Card,
-    Input,
-    Label,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Textarea,
+  Button,
+  Card,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
 } from "@packtok/ui";
 import {
-    FileText,
-    ImagePlus,
-    Loader2,
-    Save,
-    Trash2,
-    Upload,
-    Video,
+  ArrowLeft,
+  FileText,
+  ImagePlus,
+  Loader2,
+  Save,
+  Trash2,
+  Upload,
+  Video,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -164,9 +165,12 @@ export default function VendorProductEditorPage() {
       manufacturer: p.manufacturer ?? "",
       model: p.model ?? "",
       year: p.year ?? undefined,
-      specs: p.specifications && typeof p.specifications === "object"
-        ? Object.entries(p.specifications).filter(([k]) => k.trim()).map(([k, v]) => ({ key: k, value: String(v) }))
-        : [],
+      specs:
+        p.specifications && typeof p.specifications === "object"
+          ? Object.entries(p.specifications)
+              .filter(([k]) => k.trim())
+              .map(([k, v]) => ({ key: k, value: String(v) }))
+          : [],
       additionalInfo: p.additionalInfo ?? "",
     });
     setInitialStateStr(initStr);
@@ -199,14 +203,23 @@ export default function VendorProductEditorPage() {
     };
   }, [pendingPreviews]);
 
-  const [removeImageTarget, setRemoveImageTarget] = useState<string | null>(null);
+  const [removeImageTarget, setRemoveImageTarget] = useState<string | null>(
+    null
+  );
 
   // Check for unsaved changes
   useEffect(() => {
     if (!isLoaded || !initialStateStr) return;
 
     // Changes to media instantly make it "unsaved"
-    if (thumbnail || pendingImages.length > 0 || video || videoThumbnail || pdf || removeImageTarget) {
+    if (
+      thumbnail ||
+      pendingImages.length > 0 ||
+      video ||
+      videoThumbnail ||
+      pdf ||
+      removeImageTarget
+    ) {
       setHasChanges(true);
       return;
     }
@@ -231,9 +244,29 @@ export default function VendorProductEditorPage() {
 
     setHasChanges(currentStateStr !== initialStateStr);
   }, [
-    isLoaded, initialStateStr, title, description, price, currency, productType, machineType,
-    condition, quantity, categoryName, subCategory, manufacturer, model, year, specs,
-    additionalInfo, thumbnail, pendingImages, video, videoThumbnail, pdf, removeImageTarget
+    isLoaded,
+    initialStateStr,
+    title,
+    description,
+    price,
+    currency,
+    productType,
+    machineType,
+    condition,
+    quantity,
+    categoryName,
+    subCategory,
+    manufacturer,
+    model,
+    year,
+    specs,
+    additionalInfo,
+    thumbnail,
+    pendingImages,
+    video,
+    videoThumbnail,
+    pdf,
+    removeImageTarget,
   ]);
 
   // ── Handlers ───────────────────────────────────────────────────────────
@@ -338,719 +371,736 @@ export default function VendorProductEditorPage() {
 
   return (
     <>
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
-        <div className="flex gap-2 flex-wrap w-full sm:w-auto">
-          {submissionStatus !== "APPROVED" && (
-            <Button
-              variant="outline"
-              onClick={() => setShowDeleteConfirm(true)}
-              className="text-red-600 border-red-200 hover:bg-red-50 gap-1.5"
-            >
-              <Trash2 className="h-4 w-4" /> Delete
-            </Button>
-          )}
-          <Button
-            onClick={() => void handleSave()}
-            disabled={update.isPending || uploadMedia.isPending}
-            className="bg-green-600 hover:bg-green-700 text-white gap-1.5 w-full sm:w-auto"
-          >
-            {update.isPending || uploadMedia.isPending ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" /> Saving...
-              </span>
-            ) : (
-              <>
-                <Save className="h-4 w-4" /> Save Changes
-              </>
-            )}
-          </Button>
-          <Button
-            onClick={handleSubmitForReview}
-            disabled={submit.isPending}
-            className="w-full sm:w-auto"
-          >
-            Submit for Review
-          </Button>
-        </div>
-      </div>
+      <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-6xl mx-auto">
+        <button
+          type="button"
+          onClick={() => router.push("/vendor/products")}
+          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to Products
+        </button>
 
-      {/* Delete confirmation modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setShowDeleteConfirm(false)}
-            aria-label="Close"
-          />
-          <div className="relative bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                <Trash2 className="h-5 w-5 text-red-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Delete Product</h3>
-                <p className="text-sm text-gray-500">This cannot be undone.</p>
-              </div>
-            </div>
-            <p className="text-sm text-gray-600">
-              Are you sure you want to permanently delete{" "}
-              <strong>{title || "this product"}</strong>?
-            </p>
-            <div className="flex justify-end gap-2">
+        {/* Header */}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
+          <div className="flex gap-2 flex-wrap w-full sm:w-auto">
+            {submissionStatus !== "APPROVED" && (
               <Button
-                variant="secondary"
-                onClick={() => setShowDeleteConfirm(false)}
+                variant="outline"
+                onClick={() => setShowDeleteConfirm(true)}
+                className="text-red-600 border-red-200 hover:bg-red-50 gap-1.5"
               >
-                Cancel
+                <Trash2 className="h-4 w-4" /> Delete
               </Button>
-              <Button
-                onClick={handleDelete}
-                disabled={deleteProduct.isPending}
-                className="bg-red-600 hover:bg-red-700 text-white"
-              >
-                {deleteProduct.isPending ? (
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" /> Deleting...
-                  </span>
-                ) : (
-                  "Yes, Delete"
-                )}
-              </Button>
-            </div>
+            )}
+            <Button
+              onClick={() => void handleSave()}
+              disabled={update.isPending || uploadMedia.isPending}
+              className="bg-green-600 hover:bg-green-700 text-white gap-1.5 w-full sm:w-auto"
+            >
+              {update.isPending || uploadMedia.isPending ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Saving...
+                </span>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" /> Save Changes
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleSubmitForReview}
+              disabled={submit.isPending}
+              className="w-full sm:w-auto"
+            >
+              Submit for Review
+            </Button>
           </div>
         </div>
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* ── Left: Form ──────────────────────────────────────────────── */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Basic Information */}
-          <Card className="p-6 space-y-4">
-            <h2 className="text-base font-semibold text-gray-900">
-              Basic Information
-            </h2>
-            <div>
-              <Label>Product Title</Label>
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Corrugated Machine, Turbine & more"
-              />
-            </div>
-            <div>
-              <Label>Description</Label>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={5}
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label>Manufacturer / Brand</Label>
-                <Input
-                  value={manufacturer}
-                  onChange={(e) => setManufacturer(e.target.value)}
-                  placeholder="e.g. Bobst"
-                />
-              </div>
-              <div>
-                <Label>Model Number</Label>
-                <Input
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                  placeholder="e.g. SP-102E"
-                />
-              </div>
-              <div>
-                <Label>Year</Label>
-                <Input
-                  type="number"
-                  value={year ?? ""}
-                  onChange={(e) =>
-                    setYear(
-                      e.target.value ? Number(e.target.value) : undefined
-                    )
-                  }
-                  placeholder="e.g. 2022"
-                />
-              </div>
-            </div>
-          </Card>
-
-          {/* Category & Classification */}
-          <Card className="p-6 space-y-4">
-            <h2 className="text-base font-semibold text-gray-900">
-              Category & Classification
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Category</Label>
-                <Select
-                  value={categoryName}
-                  onValueChange={(val) => {
-                    setCategoryName(val);
-                    setSubCategory("");
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(categories ?? []).map((c) => (
-                      <SelectItem key={c.id} value={c.name}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {subcategories.length > 0 && (
-                <div>
-                  <Label>Subcategory</Label>
-                  <Select value={subCategory} onValueChange={setSubCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select subcategory" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subcategories.map((sc) => (
-                        <SelectItem key={sc} value={sc}>
-                          {sc}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-              <div>
-                <Label>Product Type</Label>
-                <Select value={productType} onValueChange={setProductType}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[
-                      "MACHINERY",
-                      "SPARE_PARTS",
-                      "CONSUMABLES",
-                      "RAW_MATERIALS",
-                    ].map((t) => (
-                      <SelectItem key={t} value={t}>
-                        {t.replaceAll("_", " ")}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Condition</Label>
-                <Select value={condition} onValueChange={setCondition}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["NEW", "USED"].map((t) => (
-                      <SelectItem key={t} value={t}>
-                        {t}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {productType === "MACHINERY" && (
-                <div>
-                  <Label>Machine Type</Label>
-                  <Select value={machineType} onValueChange={setMachineType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[
-                        "NONE",
-                        "MONO_CARTON",
-                        "MASTER_CARTON",
-                        "BOTH",
-                        "OTHER",
-                      ].map((t) => (
-                        <SelectItem key={t} value={t}>
-                          {t === "NONE" ? "None" : t.replaceAll("_", " ")}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Pricing & Stock */}
-          <Card className="p-6 space-y-4">
-            <h2 className="text-base font-semibold text-gray-900">
-              Pricing & Stock
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label>Price</Label>
-                <Input
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(Number(e.target.value || 0))}
-                />
-              </div>
-              <div>
-                <Label>Currency</Label>
-                <Select value={currency} onValueChange={setCurrency}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CURRENCIES.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Quantity</Label>
-                <Input
-                  type="number"
-                  min={1}
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value || 1))}
-                />
-              </div>
-            </div>
-          </Card>
-
-          {/* Specifications */}
-          <Card className="p-6 space-y-4">
-            <h2 className="text-base font-semibold text-gray-900">
-              Specifications
-            </h2>
-            <div className="space-y-2">
-              {specs.map((s, idx) => (
-                <div key={idx} className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-                  <Input
-                    placeholder="Key"
-                    value={s.key}
-                    className="flex-1"
-                    onChange={(e) =>
-                      setSpecs((prev) =>
-                        prev.map((p, i) =>
-                          i === idx ? { ...p, key: e.target.value } : p
-                        )
-                      )
-                    }
-                  />
-                  <Input
-                    placeholder="Value"
-                    value={s.value}
-                    className="flex-1"
-                    onChange={(e) =>
-                      setSpecs((prev) =>
-                        prev.map((p, i) =>
-                          i === idx ? { ...p, value: e.target.value } : p
-                        )
-                      )
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setSpecs((prev) => prev.filter((_, i) => i !== idx))
-                    }
-                    disabled={specs.length <= 1}
-                    className="p-2 self-end sm:self-auto text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={() =>
-                  setSpecs((prev) => [...prev, { key: "", value: "" }])
-                }
-              >
-                + Add specification
-              </Button>
-            </div>
-          </Card>
-
-          {/* Additional Info */}
-          <Card className="p-6 space-y-4">
-            <h2 className="text-base font-semibold text-gray-900">
-              Additional Information
-            </h2>
-            <Textarea
-              value={additionalInfo}
-              onChange={(e) => setAdditionalInfo(e.target.value)}
-              rows={4}
-              placeholder="Any extra details about the product..."
+        {/* Delete confirmation modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <button
+              type="button"
+              className="absolute inset-0 bg-black/40"
+              onClick={() => setShowDeleteConfirm(false)}
+              aria-label="Close"
             />
-          </Card>
-
-          {/* Inventory */}
-          <Card className="p-6 space-y-4">
-            <h2 className="text-base font-semibold text-gray-900">
-              Inventory
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label>Stock on Hand</Label>
-                <Input
-                  type="number"
-                  value={invStock}
-                  onChange={(e) => setInvStock(Number(e.target.value || 0))}
-                />
+            <div className="relative bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                  <Trash2 className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    Delete Product
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    This cannot be undone.
+                  </p>
+                </div>
               </div>
-              <div>
-                <Label>Low Stock Threshold</Label>
-                <Input
-                  type="number"
-                  value={invLow}
-                  onChange={(e) =>
-                    setInvLow(e.target.value ? Number(e.target.value) : "")
-                  }
-                />
-              </div>
-              <div>
-                <Label>Warehouse Location</Label>
-                <Input
-                  value={invWarehouse}
-                  onChange={(e) => setInvWarehouse(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant="secondary"
-                onClick={async () => {
-                  await upsertInv.mutateAsync({
-                    stockOnHand: invStock,
-                    lowStockThreshold: invLow === "" ? null : Number(invLow),
-                    warehouseLocation: invWarehouse || null,
-                  });
-                  toast.success("Inventory saved");
-                }}
-                disabled={upsertInv.isPending}
-              >
-                {upsertInv.isPending ? "Saving..." : "Save Inventory"}
-              </Button>
-              <div className="flex items-center gap-2">
-                <Input
-                  type="number"
-                  placeholder="Delta (+/-)"
-                  id="inv-delta"
-                  className="w-28"
-                />
-                <select
-                  id="inv-reason"
-                  className="border rounded h-9 px-2 text-sm"
-                >
-                  <option value="ADJUSTMENT">ADJUSTMENT</option>
-                  <option value="RESTOCK">RESTOCK</option>
-                  <option value="SALE">SALE</option>
-                  <option value="RESERVATION">RESERVATION</option>
-                  <option value="CANCELLATION">CANCELLATION</option>
-                </select>
+              <p className="text-sm text-gray-600">
+                Are you sure you want to permanently delete{" "}
+                <strong>{title || "this product"}</strong>?
+              </p>
+              <div className="flex justify-end gap-2">
                 <Button
-                  size="sm"
-                  onClick={async () => {
-                    const delta = Number(
-                      (
-                        document.getElementById(
-                          "inv-delta"
-                        ) as HTMLInputElement
-                      )?.value || 0
-                    );
-                    const reason = (
-                      document.getElementById(
-                        "inv-reason"
-                      ) as HTMLSelectElement
-                    )?.value as
-                      | "ADJUSTMENT"
-                      | "RESTOCK"
-                      | "SALE"
-                      | "RESERVATION"
-                      | "CANCELLATION";
-                    await adjustInv.mutateAsync({ delta, reason });
-                    toast.success("Inventory adjusted");
-                  }}
+                  variant="secondary"
+                  onClick={() => setShowDeleteConfirm(false)}
                 >
-                  Adjust
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleDelete}
+                  disabled={deleteProduct.isPending}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  {deleteProduct.isPending ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" /> Deleting...
+                    </span>
+                  ) : (
+                    "Yes, Delete"
+                  )}
                 </Button>
               </div>
             </div>
-          </Card>
-        </div>
+          </div>
+        )}
 
-        {/* ── Right: Media ────────────────────────────────────────────── */}
-        <div className="space-y-6">
-          {/* Cover / Thumbnail */}
-          <Card className="p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-              <ImagePlus className="h-4 w-4 text-gray-500" /> Cover Image
-            </h2>
-            {existingThumb && !thumbnail && (
-              <div className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={existingThumb}
-                  alt="Current thumbnail"
-                  className="w-full rounded-lg object-cover max-h-48"
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* ── Left: Form ──────────────────────────────────────────────── */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Basic Information */}
+            <Card className="p-6 space-y-4">
+              <h2 className="text-base font-semibold text-gray-900">
+                Basic Information
+              </h2>
+              <div>
+                <Label>Product Title</Label>
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Corrugated Machine, Turbine & more"
                 />
-                <span className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded">
-                  Current
-                </span>
               </div>
-            )}
-            <label className="block cursor-pointer">
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-orange-400 transition-colors bg-gray-50">
-                <Upload className="h-5 w-5 text-gray-400 mx-auto mb-1" />
-                <p className="text-sm text-gray-500">
-                  {thumbnail
-                    ? `Selected: ${thumbnail.name}`
-                    : "Upload new cover image"}
-                </p>
+              <div>
+                <Label>Description</Label>
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={5}
+                />
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => setThumbnail(e.target.files?.[0] ?? null)}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Manufacturer / Brand</Label>
+                  <Input
+                    value={manufacturer}
+                    onChange={(e) => setManufacturer(e.target.value)}
+                    placeholder="e.g. Bobst"
+                  />
+                </div>
+                <div>
+                  <Label>Model Number</Label>
+                  <Input
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                    placeholder="e.g. SP-102E"
+                  />
+                </div>
+                <div>
+                  <Label>Year</Label>
+                  <Input
+                    type="number"
+                    value={year ?? ""}
+                    onChange={(e) =>
+                      setYear(
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
+                    placeholder="e.g. 2022"
+                  />
+                </div>
+              </div>
+            </Card>
+
+            {/* Category & Classification */}
+            <Card className="p-6 space-y-4">
+              <h2 className="text-base font-semibold text-gray-900">
+                Category & Classification
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Category</Label>
+                  <Select
+                    value={categoryName}
+                    onValueChange={(val) => {
+                      setCategoryName(val);
+                      setSubCategory("");
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(categories ?? []).map((c) => (
+                        <SelectItem key={c.id} value={c.name}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {subcategories.length > 0 && (
+                  <div>
+                    <Label>Subcategory</Label>
+                    <Select value={subCategory} onValueChange={setSubCategory}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select subcategory" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {subcategories.map((sc) => (
+                          <SelectItem key={sc} value={sc}>
+                            {sc}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                <div>
+                  <Label>Product Type</Label>
+                  <Select value={productType} onValueChange={setProductType}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[
+                        "MACHINERY",
+                        "SPARE_PARTS",
+                        "CONSUMABLES",
+                        "RAW_MATERIALS",
+                      ].map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t.replaceAll("_", " ")}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Condition</Label>
+                  <Select value={condition} onValueChange={setCondition}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["NEW", "USED"].map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {productType === "MACHINERY" && (
+                  <div>
+                    <Label>Machine Type</Label>
+                    <Select value={machineType} onValueChange={setMachineType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[
+                          "NONE",
+                          "MONO_CARTON",
+                          "MASTER_CARTON",
+                          "BOTH",
+                          "OTHER",
+                        ].map((t) => (
+                          <SelectItem key={t} value={t}>
+                            {t === "NONE" ? "None" : t.replaceAll("_", " ")}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* Pricing & Stock */}
+            <Card className="p-6 space-y-4">
+              <h2 className="text-base font-semibold text-gray-900">
+                Pricing & Stock
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Price</Label>
+                  <Input
+                    type="number"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value || 0))}
+                  />
+                </div>
+                <div>
+                  <Label>Currency</Label>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CURRENCIES.map((c) => (
+                        <SelectItem key={c} value={c}>
+                          {c}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Quantity</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value || 1))}
+                  />
+                </div>
+              </div>
+            </Card>
+
+            {/* Specifications */}
+            <Card className="p-6 space-y-4">
+              <h2 className="text-base font-semibold text-gray-900">
+                Specifications
+              </h2>
+              <div className="space-y-2">
+                {specs.map((s, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center"
+                  >
+                    <Input
+                      placeholder="Key"
+                      value={s.key}
+                      className="flex-1"
+                      onChange={(e) =>
+                        setSpecs((prev) =>
+                          prev.map((p, i) =>
+                            i === idx ? { ...p, key: e.target.value } : p
+                          )
+                        )
+                      }
+                    />
+                    <Input
+                      placeholder="Value"
+                      value={s.value}
+                      className="flex-1"
+                      onChange={(e) =>
+                        setSpecs((prev) =>
+                          prev.map((p, i) =>
+                            i === idx ? { ...p, value: e.target.value } : p
+                          )
+                        )
+                      }
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSpecs((prev) => prev.filter((_, i) => i !== idx))
+                      }
+                      disabled={specs.length <= 1}
+                      className="p-2 self-end sm:self-auto text-gray-400 hover:text-red-500 disabled:opacity-30 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() =>
+                    setSpecs((prev) => [...prev, { key: "", value: "" }])
+                  }
+                >
+                  + Add specification
+                </Button>
+              </div>
+            </Card>
+
+            {/* Additional Info */}
+            <Card className="p-6 space-y-4">
+              <h2 className="text-base font-semibold text-gray-900">
+                Additional Information
+              </h2>
+              <Textarea
+                value={additionalInfo}
+                onChange={(e) => setAdditionalInfo(e.target.value)}
+                rows={4}
+                placeholder="Any extra details about the product..."
               />
-            </label>
-            {thumbnail && (
-              <button
-                type="button"
-                onClick={() => setThumbnail(null)}
-                className="text-xs text-red-500 hover:underline"
-              >
-                Clear selection
-              </button>
-            )}
-          </Card>
+            </Card>
 
-          {/* Gallery Images */}
-          <Card className="p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-              <ImagePlus className="h-4 w-4 text-gray-500" /> Gallery (
-              {existingImages.length + pendingImages.length}/5)
-            </h2>
-
-            {/* Existing images */}
-            {existingImages.length > 0 && (
-              <div>
-                <p className="text-xs text-gray-500 mb-2">
-                  Current images (click to remove)
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {existingImages.map((url) => (
-                    <div
-                      key={url}
-                      className="relative group aspect-square rounded-lg overflow-hidden"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={url}
-                        alt="Gallery"
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setRemoveImageTarget(url)}
-                        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                      >
-                        <Trash2 className="h-5 w-5 text-white" />
-                      </button>
-                    </div>
-                  ))}
+            {/* Inventory */}
+            <Card className="p-6 space-y-4">
+              <h2 className="text-base font-semibold text-gray-900">
+                Inventory
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Stock on Hand</Label>
+                  <Input
+                    type="number"
+                    value={invStock}
+                    onChange={(e) => setInvStock(Number(e.target.value || 0))}
+                  />
+                </div>
+                <div>
+                  <Label>Low Stock Threshold</Label>
+                  <Input
+                    type="number"
+                    value={invLow}
+                    onChange={(e) =>
+                      setInvLow(e.target.value ? Number(e.target.value) : "")
+                    }
+                  />
+                </div>
+                <div>
+                  <Label>Warehouse Location</Label>
+                  <Input
+                    value={invWarehouse}
+                    onChange={(e) => setInvWarehouse(e.target.value)}
+                  />
                 </div>
               </div>
-            )}
-
-            {/* Pending (new) images */}
-            {pendingPreviews.length > 0 && (
-              <div>
-                <p className="text-xs text-gray-500 mb-2">
-                  New images (will be added on save)
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {pendingPreviews.map((src, idx) => (
-                    <div
-                      key={src}
-                      className="relative group aspect-square rounded-lg overflow-hidden border-2 border-orange-300"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={src}
-                        alt={`New ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removePendingImage(idx)}
-                        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                      >
-                        <Trash2 className="h-5 w-5 text-white" />
-                      </button>
-                    </div>
-                  ))}
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  variant="secondary"
+                  onClick={async () => {
+                    await upsertInv.mutateAsync({
+                      stockOnHand: invStock,
+                      lowStockThreshold: invLow === "" ? null : Number(invLow),
+                      warehouseLocation: invWarehouse || null,
+                    });
+                    toast.success("Inventory saved");
+                  }}
+                  disabled={upsertInv.isPending}
+                >
+                  {upsertInv.isPending ? "Saving..." : "Save Inventory"}
+                </Button>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Delta (+/-)"
+                    id="inv-delta"
+                    className="w-28"
+                  />
+                  <select
+                    id="inv-reason"
+                    className="border rounded h-9 px-2 text-sm"
+                  >
+                    <option value="ADJUSTMENT">ADJUSTMENT</option>
+                    <option value="RESTOCK">RESTOCK</option>
+                    <option value="SALE">SALE</option>
+                    <option value="RESERVATION">RESERVATION</option>
+                    <option value="CANCELLATION">CANCELLATION</option>
+                  </select>
+                  <Button
+                    size="sm"
+                    onClick={async () => {
+                      const delta = Number(
+                        (
+                          document.getElementById(
+                            "inv-delta"
+                          ) as HTMLInputElement
+                        )?.value || 0
+                      );
+                      const reason = (
+                        document.getElementById(
+                          "inv-reason"
+                        ) as HTMLSelectElement
+                      )?.value as
+                        | "ADJUSTMENT"
+                        | "RESTOCK"
+                        | "SALE"
+                        | "RESERVATION"
+                        | "CANCELLATION";
+                      await adjustInv.mutateAsync({ delta, reason });
+                      toast.success("Inventory adjusted");
+                    }}
+                  >
+                    Adjust
+                  </Button>
                 </div>
               </div>
-            )}
+            </Card>
+          </div>
 
-            {/* Upload more */}
-            {remainingImageSlots > 0 && (
+          {/* ── Right: Media ────────────────────────────────────────────── */}
+          <div className="space-y-6">
+            {/* Cover / Thumbnail */}
+            <Card className="p-5 space-y-3">
+              <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <ImagePlus className="h-4 w-4 text-gray-500" /> Cover Image
+              </h2>
+              {existingThumb && !thumbnail && (
+                <div className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={existingThumb}
+                    alt="Current thumbnail"
+                    className="w-full rounded-lg object-cover max-h-48"
+                  />
+                  <span className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded">
+                    Current
+                  </span>
+                </div>
+              )}
               <label className="block cursor-pointer">
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-orange-400 transition-colors bg-gray-50">
+                  <Upload className="h-5 w-5 text-gray-400 mx-auto mb-1" />
                   <p className="text-sm text-gray-500">
-                    + Add images ({remainingImageSlots} slots remaining)
+                    {thumbnail
+                      ? `Selected: ${thumbnail.name}`
+                      : "Upload new cover image"}
                   </p>
                 </div>
                 <input
                   type="file"
                   accept="image/*"
-                  multiple
                   className="hidden"
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files ?? []);
-                    const add = files.slice(0, remainingImageSlots);
-                    const previews = add.map((f) => URL.createObjectURL(f));
-                    setPendingImages((prev) => [...prev, ...add]);
-                    setPendingPreviews((prev) => [...prev, ...previews]);
-                  }}
+                  onChange={(e) => setThumbnail(e.target.files?.[0] ?? null)}
                 />
               </label>
-            )}
-          </Card>
-
-          {/* Video */}
-          <Card className="p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-              <Video className="h-4 w-4 text-gray-500" /> Video
-            </h2>
-            {existingVideo && (
-              <div>
-                <p className="text-xs text-gray-500 mb-1">Current video</p>
-                <video controls className="w-full rounded-lg max-h-48">
-                  <source src={existingVideo} />
-                </video>
-              </div>
-            )}
-            <label className="block cursor-pointer">
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-orange-400 transition-colors bg-gray-50">
-                <p className="text-sm text-gray-500">
-                  {video ? `Selected: ${video.name}` : "Upload new video"}
-                </p>
-              </div>
-              <input
-                type="file"
-                accept="video/*"
-                className="hidden"
-                onChange={(e) => setVideo(e.target.files?.[0] ?? null)}
-              />
-            </label>
-            {video && (
-              <button
-                type="button"
-                onClick={() => setVideo(null)}
-                className="text-xs text-red-500 hover:underline"
-              >
-                Clear selection
-              </button>
-            )}
-            {/* Video thumbnail */}
-            {(existingVideo || video) && (
-              <div className="pt-2">
-                <Label className="text-xs">Video Thumbnail</Label>
-                {existingVideoThumb && (
-                  <div className="mt-1">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={existingVideoThumb}
-                      alt="Video thumb"
-                      className="w-20 h-20 rounded object-cover"
-                    />
-                  </div>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="mt-1 text-xs"
-                  onChange={(e) =>
-                    setVideoThumbnail(e.target.files?.[0] ?? null)
-                  }
-                />
-              </div>
-            )}
-          </Card>
-
-          {/* PDF */}
-          <Card className="p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-              <FileText className="h-4 w-4 text-gray-500" /> PDF Spec Sheet
-            </h2>
-            {existingPdf && (
-              <a
-                href={existingPdf}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm text-blue-600 hover:underline"
-              >
-                View current PDF
-              </a>
-            )}
-            {pdf ? (
-              <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                <span className="text-sm text-gray-700 truncate">
-                  {pdf.name}
-                </span>
+              {thumbnail && (
                 <button
                   type="button"
-                  onClick={() => setPdf(null)}
-                  className="p-1 text-red-500 hover:text-red-700"
+                  onClick={() => setThumbnail(null)}
+                  className="text-xs text-red-500 hover:underline"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  Clear selection
                 </button>
-              </div>
-            ) : (
+              )}
+            </Card>
+
+            {/* Gallery Images */}
+            <Card className="p-5 space-y-3">
+              <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <ImagePlus className="h-4 w-4 text-gray-500" /> Gallery (
+                {existingImages.length + pendingImages.length}/5)
+              </h2>
+
+              {/* Existing images */}
+              {existingImages.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Current images (click to remove)
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {existingImages.map((url) => (
+                      <div
+                        key={url}
+                        className="relative group aspect-square rounded-lg overflow-hidden"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={url}
+                          alt="Gallery"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setRemoveImageTarget(url)}
+                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                        >
+                          <Trash2 className="h-5 w-5 text-white" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Pending (new) images */}
+              {pendingPreviews.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-2">
+                    New images (will be added on save)
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {pendingPreviews.map((src, idx) => (
+                      <div
+                        key={src}
+                        className="relative group aspect-square rounded-lg overflow-hidden border-2 border-orange-300"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={src}
+                          alt={`New ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removePendingImage(idx)}
+                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                        >
+                          <Trash2 className="h-5 w-5 text-white" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Upload more */}
+              {remainingImageSlots > 0 && (
+                <label className="block cursor-pointer">
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-orange-400 transition-colors bg-gray-50">
+                    <p className="text-sm text-gray-500">
+                      + Add images ({remainingImageSlots} slots remaining)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files ?? []);
+                      const add = files.slice(0, remainingImageSlots);
+                      const previews = add.map((f) => URL.createObjectURL(f));
+                      setPendingImages((prev) => [...prev, ...add]);
+                      setPendingPreviews((prev) => [...prev, ...previews]);
+                    }}
+                  />
+                </label>
+              )}
+            </Card>
+
+            {/* Video */}
+            <Card className="p-5 space-y-3">
+              <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <Video className="h-4 w-4 text-gray-500" /> Video
+              </h2>
+              {existingVideo && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Current video</p>
+                  <video controls className="w-full rounded-lg max-h-48">
+                    <source src={existingVideo} />
+                  </video>
+                </div>
+              )}
               <label className="block cursor-pointer">
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-orange-400 transition-colors bg-gray-50">
-                  <p className="text-sm text-gray-500">Upload PDF</p>
+                  <p className="text-sm text-gray-500">
+                    {video ? `Selected: ${video.name}` : "Upload new video"}
+                  </p>
                 </div>
                 <input
                   type="file"
-                  accept="application/pdf"
+                  accept="video/*"
                   className="hidden"
-                  onChange={(e) => setPdf(e.target.files?.[0] ?? null)}
+                  onChange={(e) => setVideo(e.target.files?.[0] ?? null)}
                 />
               </label>
-            )}
-          </Card>
+              {video && (
+                <button
+                  type="button"
+                  onClick={() => setVideo(null)}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Clear selection
+                </button>
+              )}
+              {/* Video thumbnail */}
+              {(existingVideo || video) && (
+                <div className="pt-2">
+                  <Label className="text-xs">Video Thumbnail</Label>
+                  {existingVideoThumb && (
+                    <div className="mt-1">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={existingVideoThumb}
+                        alt="Video thumb"
+                        className="w-20 h-20 rounded object-cover"
+                      />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="mt-1 text-xs"
+                    onChange={(e) =>
+                      setVideoThumbnail(e.target.files?.[0] ?? null)
+                    }
+                  />
+                </div>
+              )}
+            </Card>
+
+            {/* PDF */}
+            <Card className="p-5 space-y-3">
+              <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <FileText className="h-4 w-4 text-gray-500" /> PDF Spec Sheet
+              </h2>
+              {existingPdf && (
+                <a
+                  href={existingPdf}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  View current PDF
+                </a>
+              )}
+              {pdf ? (
+                <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                  <span className="text-sm text-gray-700 truncate">
+                    {pdf.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPdf(null)}
+                    className="p-1 text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <label className="block cursor-pointer">
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-orange-400 transition-colors bg-gray-50">
+                    <p className="text-sm text-gray-500">Upload PDF</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={(e) => setPdf(e.target.files?.[0] ?? null)}
+                  />
+                </label>
+              )}
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
 
-    {/* Remove Image Confirm Modal */}
-    <ConfirmModal
-      open={!!removeImageTarget}
-      onConfirm={() => removeImageTarget && handleRemoveExistingImage(removeImageTarget)}
-      onCancel={() => setRemoveImageTarget(null)}
-      title="Remove Image"
-      description="Are you sure you want to remove this image from the gallery?"
-      confirmLabel="Remove"
-      variant="danger"
-    />
+      {/* Remove Image Confirm Modal */}
+      <ConfirmModal
+        open={!!removeImageTarget}
+        onConfirm={() =>
+          removeImageTarget && handleRemoveExistingImage(removeImageTarget)
+        }
+        onCancel={() => setRemoveImageTarget(null)}
+        title="Remove Image"
+        description="Are you sure you want to remove this image from the gallery?"
+        confirmLabel="Remove"
+        variant="danger"
+      />
     </>
   );
 }

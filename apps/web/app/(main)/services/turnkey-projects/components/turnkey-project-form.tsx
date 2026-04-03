@@ -34,6 +34,8 @@ export function TurnkeyProjectForm() {
 
   const form = useForm<TurnkeyProjectFormData>({
     resolver: zodResolver(turnkeyProjectSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       utilitiesAvailable: false,
       requiresOngoingSupport: false,
@@ -63,7 +65,6 @@ export function TurnkeyProjectForm() {
     { value: "ELECTRONICS", label: "Electronics" },
     { value: "OTHER", label: "Other" },
   ];
-
 
   const serviceOptions = [
     { value: "FEASIBILITY_STUDY", label: "Feasibility Study" },
@@ -109,7 +110,8 @@ export function TurnkeyProjectForm() {
         | "PLASTICS_PACKAGING"
         | "ELECTRONICS"
         | "OTHER"
-      )[]
+      )[],
+      { shouldValidate: true, shouldDirty: true }
     );
   };
 
@@ -134,7 +136,8 @@ export function TurnkeyProjectForm() {
         | "MAINTENANCE_AFTER_SALES_SUPPORT"
         | "REGULATORY_COMPLIANCE_SETUP"
         | "OTHER"
-      )[]
+      )[],
+      { shouldValidate: true, shouldDirty: true }
     );
   };
 
@@ -168,7 +171,10 @@ export function TurnkeyProjectForm() {
                   Turnkey Project Inquiry for corrugated and packaging industry
                 </h1>
               </div>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-8 border border-[#E0E0E0] shadow-[0_2px_4px_0_rgba(0, 0, 0, 0.25)] [&_input]:h-12 [&_input]:text-base [&_textarea]:min-h-28 [&_textarea]:text-base [&_[role=combobox]]:h-12 [&_label]:whitespace-normal [&_label]:break-words [&_.px-10]:px-4 sm:[&_.px-10]:px-10"
+              >
                 <div className="m-0">
                   <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
                     Section 1: Contact Information
@@ -183,7 +189,6 @@ export function TurnkeyProjectForm() {
                       </Label>
                       <Input
                         id="contactName"
-
                         {...register("contactName")}
                         className={cn(
                           "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
@@ -228,7 +233,6 @@ export function TurnkeyProjectForm() {
                       </Label>
                       <Input
                         id="role"
-
                         {...register("role")}
                         className={cn(
                           "border-[#D3D3D3] px-4 h-[44px] focus:border-purple-500 focus:ring-purple-500",
@@ -252,7 +256,6 @@ export function TurnkeyProjectForm() {
                       <Input
                         id="email"
                         type="email"
-
                         {...register("email")}
                         className={cn(
                           "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
@@ -275,7 +278,6 @@ export function TurnkeyProjectForm() {
                       </Label>
                       <Input
                         id="phone"
-
                         {...register("phone")}
                         className={cn(
                           "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
@@ -298,7 +300,6 @@ export function TurnkeyProjectForm() {
                       </Label>
                       <Input
                         id="website"
-
                         {...register("website")}
                         className={cn(
                           "border-[#D3D3D3] px-4 h-[44px]  focus:border-purple-500 focus:ring-purple-500",
@@ -356,7 +357,6 @@ export function TurnkeyProjectForm() {
                         </p>
                       )}
 
-
                       <div className=" py-4">
                         <div className="space-y-2 mb-10 grid grid-cols-1 gap-4">
                           <Label
@@ -370,13 +370,13 @@ export function TurnkeyProjectForm() {
                               setValue(
                                 "facilityType",
                                 value as
-                                | "NEW_PRODUCTION_PLANT"
-                                | "EXPANSION_OF_EXISTING_FACILITY"
-                                | "MODERNIZATION_AUTOMATION"
-                                | "OTHER"
+                                  | "NEW_PRODUCTION_PLANT"
+                                  | "EXPANSION_OF_EXISTING_FACILITY"
+                                  | "MODERNIZATION_AUTOMATION"
+                                  | "OTHER",
+                                { shouldValidate: true, shouldDirty: true }
                               )
                             }
-
                           >
                             <SelectTrigger
                               className={cn(
@@ -419,7 +419,8 @@ export function TurnkeyProjectForm() {
                             {...register("targetProductionCapacity")}
                             className={cn(
                               "h-[44px] focus:border-purple-500 focus:ring-purple-500",
-                              errors.targetProductionCapacity && "border-red-500"
+                              errors.targetProductionCapacity &&
+                                "border-red-500"
                             )}
                           />
                           {errors.targetProductionCapacity && (
@@ -455,10 +456,6 @@ export function TurnkeyProjectForm() {
                         </div>
                       </div>
                     </div>
-
-
-
-
                   </div>
                 </div>
 
@@ -479,10 +476,11 @@ export function TurnkeyProjectForm() {
                           setValue(
                             "completionTimeline",
                             value as
-                            | "MONTHS_0_6"
-                            | "MONTHS_6_12"
-                            | "YEARS_1_2"
-                            | "FLEXIBLE_TO_BE_DISCUSSED"
+                              | "MONTHS_0_6"
+                              | "MONTHS_6_12"
+                              | "YEARS_1_2"
+                              | "FLEXIBLE_TO_BE_DISCUSSED",
+                            { shouldValidate: true, shouldDirty: true }
                           )
                         }
                       >
@@ -496,7 +494,9 @@ export function TurnkeyProjectForm() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="MONTHS_0_6">0-6 Months</SelectItem>
-                          <SelectItem value="MONTHS_6_12">6-12 Months</SelectItem>
+                          <SelectItem value="MONTHS_6_12">
+                            6-12 Months
+                          </SelectItem>
                           <SelectItem value="YEARS_1_2">1-2 Years</SelectItem>
                           <SelectItem value="FLEXIBLE_TO_BE_DISCUSSED">
                             Flexible (To be discussed)
@@ -522,11 +522,12 @@ export function TurnkeyProjectForm() {
                           setValue(
                             "estimatedBudget",
                             value as
-                            | "UNDER_1M"
-                            | "M1_5"
-                            | "M5_10"
-                            | "OVER_10M"
-                            | "TO_BE_DISCUSSED"
+                              | "UNDER_1M"
+                              | "M1_5"
+                              | "M5_10"
+                              | "OVER_10M"
+                              | "TO_BE_DISCUSSED",
+                            { shouldValidate: true, shouldDirty: true }
                           )
                         }
                       >
@@ -567,10 +568,11 @@ export function TurnkeyProjectForm() {
                           setValue(
                             "fundingStatus",
                             value as
-                            | "FULLY_FUNDED"
-                            | "PARTIALLY_FUNDED"
-                            | "SEEKING_FINANCING"
-                            | "OTHER"
+                              | "FULLY_FUNDED"
+                              | "PARTIALLY_FUNDED"
+                              | "SEEKING_FINANCING"
+                              | "OTHER",
+                            { shouldValidate: true, shouldDirty: true }
                           )
                         }
                       >
@@ -613,7 +615,8 @@ export function TurnkeyProjectForm() {
                         onValueChange={(value) =>
                           setValue(
                             "siteAvailableStatus",
-                            value as "YES" | "NO" | "IN_PLANNING"
+                            value as "YES" | "NO" | "IN_PLANNING",
+                            { shouldValidate: true, shouldDirty: true }
                           )
                         }
                       >
@@ -628,7 +631,9 @@ export function TurnkeyProjectForm() {
                         <SelectContent>
                           <SelectItem value="YES">Yes</SelectItem>
                           <SelectItem value="NO">No</SelectItem>
-                          <SelectItem value="IN_PLANNING">In Planning</SelectItem>
+                          <SelectItem value="IN_PLANNING">
+                            In Planning
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       {errors.siteAvailableStatus && (
@@ -642,7 +647,7 @@ export function TurnkeyProjectForm() {
 
                 <div className="m-0">
                   <h3 className="text-[18px]  text-[#25252D] py-6 px-10 m-0 font-medium ">
-                    Section 4:  Services Needed
+                    Section 4: Services Needed
                   </h3>
                   <div className="border-y px-10 py-6 border-[#E0E0E0] grid grid-cols-1  gap-3">
                     {serviceOptions.map((service) => (
@@ -654,7 +659,10 @@ export function TurnkeyProjectForm() {
                           id={service.value}
                           checked={selectedServices.includes(service.value)}
                           onCheckedChange={(checked) =>
-                            handleServiceChange(service.value, checked as boolean)
+                            handleServiceChange(
+                              service.value,
+                              checked as boolean
+                            )
                           }
                         />
                         <Label
@@ -693,12 +701,14 @@ export function TurnkeyProjectForm() {
                       />
                     </div>
                     <div className="grid py-10 grid-cols-1 grid-cols-1 md:grid-cols-3  gap-4">
-
                       <div className="flex items-start border p-4 border-[#D3D3D3] justify-start gap-2">
                         <Checkbox
                           id="utilitiesAvailable"
                           onCheckedChange={(checked) =>
-                            setValue("utilitiesAvailable", checked as boolean)
+                            setValue("utilitiesAvailable", checked as boolean, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            })
                           }
                         />
                         <Label
@@ -713,7 +723,14 @@ export function TurnkeyProjectForm() {
                         <Checkbox
                           id="requiresOngoingSupport"
                           onCheckedChange={(checked) =>
-                            setValue("requiresOngoingSupport", checked as boolean)
+                            setValue(
+                              "requiresOngoingSupport",
+                              checked as boolean,
+                              {
+                                shouldValidate: true,
+                                shouldDirty: true,
+                              }
+                            )
                           }
                         />
                         <Label
@@ -730,7 +747,8 @@ export function TurnkeyProjectForm() {
                           onCheckedChange={(checked) =>
                             setValue(
                               "interestedInFutureUpgrades",
-                              checked as boolean
+                              checked as boolean,
+                              { shouldValidate: true, shouldDirty: true }
                             )
                           }
                         />
@@ -742,7 +760,6 @@ export function TurnkeyProjectForm() {
                         </Label>
                       </div>
                     </div>
-
 
                     <div className="space-y-2 grid grid-cols-1 gap-4 mb-6">
                       <Label
@@ -776,8 +793,6 @@ export function TurnkeyProjectForm() {
                       />
                     </div>
                   </div>
-
-
                 </div>
 
                 <div className="px-10 pb-6">
@@ -786,6 +801,7 @@ export function TurnkeyProjectForm() {
                     onCheckedChange={(checked: boolean) =>
                       form.setValue("agreeToTerms", checked, {
                         shouldValidate: true,
+                        shouldDirty: true,
                       })
                     }
                     error={form.formState.errors.agreeToTerms?.message}
@@ -803,13 +819,11 @@ export function TurnkeyProjectForm() {
                       : "Submit Inquiry"}
                   </Button>
                 </div>
-
               </form>
             </div>
           </div>
         </div>
       </div>
-
 
       <ServiceSubmissionModal
         isOpen={showModal}

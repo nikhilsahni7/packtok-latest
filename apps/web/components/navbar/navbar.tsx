@@ -106,7 +106,7 @@ export default function Navbar() {
             )
       )}
     >
-      <div className="w-[80%] mx-auto ">
+      <div className="w-[94%] sm:w-[90%] xl:w-[84%] 2xl:w-[80%] mx-auto">
         <div className="flex items-center justify-between py-3">
           {/* Logo */}
           <div className="flex-shrink-0">
@@ -122,7 +122,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-6 2xl:gap-8">
             {navbarLinks.map((link, idx) => (
               <Button variant="link" key={idx} asChild>
                 <Link
@@ -141,7 +141,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Icons */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-4 flex-shrink-0">
             {/* Desktop Search */}
             <div className="relative search-container">
               {isSearchOpen ? (
@@ -232,7 +232,7 @@ export default function Navbar() {
                 <Link
                   href="/account"
                   className={cn(
-                    "text-sm font-medium hover:underline transition-colors duration-500 ease-in-out",
+                    "text-sm font-medium hover:underline transition-colors duration-500 ease-in-out max-w-28 xl:max-w-36 truncate",
                     scrolled
                       ? "text-gray-700 hover:text-gray-900"
                       : "text-white hover:text-gray-300"
@@ -242,7 +242,7 @@ export default function Navbar() {
                 </Link>
                 <LogoutButton
                   className={cn(
-                    "transition-colors duration-500 ease-in-out",
+                    "transition-colors duration-500 ease-in-out h-8 px-2 xl:px-3",
                     scrolled
                       ? "text-gray-700 hover:text-gray-900"
                       : "text-white hover:text-orange-300"
@@ -265,7 +265,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={() => setToggle(!toggle)}
               className={cn(
@@ -284,7 +284,7 @@ export default function Navbar() {
         {toggle && (
           <div
             className={cn(
-              "md:hidden border-t transition-all duration-500 ease-in-out",
+              "lg:hidden border-t transition-all duration-500 ease-in-out",
               scrolled ? "border-gray-200 bg-white" : "border-gray-700 bg-black"
             )}
           >

@@ -5,17 +5,18 @@ import { useMySubscription } from "@/hooks/useVendorSubscription";
 import { Badge } from "@packtok/ui/components/badge";
 import { Button } from "@packtok/ui/components/button";
 import {
-    AlertCircle,
-    AlertTriangle,
-    Clock,
-    Crown,
-    FileEdit,
-    Loader2,
-    Package,
-    Pencil,
-    Plus,
-    Trash2,
-    XCircle,
+  AlertCircle,
+  AlertTriangle,
+  ArrowLeft,
+  Clock,
+  Crown,
+  FileEdit,
+  Loader2,
+  Package,
+  Pencil,
+  Plus,
+  Trash2,
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,7 +28,10 @@ export default function VendorDraftsPage() {
   const { data: subInfo } = useMySubscription();
   const deleteProduct = useDeleteVendorProduct();
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
   const drafts = data ?? [];
   const canCreate = subInfo?.canCreateProduct ?? true;
 
@@ -49,6 +53,13 @@ export default function VendorDraftsPage() {
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
+      <Link
+        href="/vendor/dashboard"
+        className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+      >
+        <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+      </Link>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -142,7 +153,9 @@ export default function VendorDraftsPage() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 truncate">{product.title}</h3>
+                    <h3 className="font-semibold text-gray-900 truncate">
+                      {product.title}
+                    </h3>
                     <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                       <Badge className="bg-gray-100 text-gray-600 gap-1 text-xs">
                         <Pencil className="h-3 w-3" /> Draft
@@ -165,21 +178,39 @@ export default function VendorDraftsPage() {
                       </div>
                     )}
                     <p className="text-xs text-gray-400 mt-1.5">
-                      {product.currency} {Number.parseFloat(product.price).toLocaleString()}
+                      {product.currency}{" "}
+                      {Number.parseFloat(product.price).toLocaleString()}
                       {" · "}
-                      Created {new Date(product.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                      Created{" "}
+                      {new Date(product.createdAt).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
                   </div>
 
                   {/* Actions */}
                   <div className="shrink-0 flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto">
-                    <Link href={`/vendor/products/${product.id}`} className="flex-1 sm:flex-none">
-                      <Button variant="outline" size="sm" className="gap-1.5 w-full sm:w-auto">
+                    <Link
+                      href={`/vendor/products/${product.id}`}
+                      className="flex-1 sm:flex-none"
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 w-full sm:w-auto"
+                      >
                         <Pencil className="h-3.5 w-3.5" /> Edit
                       </Button>
                     </Link>
                     <button
-                      onClick={() => setDeleteTarget({ id: product.id, title: product.title })}
+                      onClick={() =>
+                        setDeleteTarget({
+                          id: product.id,
+                          title: product.title,
+                        })
+                      }
                       disabled={deletingId === product.id}
                       className="p-2 rounded-md border border-red-200 hover:bg-red-50 text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
                       title="Delete"

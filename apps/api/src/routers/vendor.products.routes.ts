@@ -4,6 +4,7 @@ import {
   vendorAdjustInventory,
   vendorCreateDraft,
   vendorDeleteProduct,
+  vendorGetAnalytics,
   vendorGetInventory,
   vendorGetProduct,
   vendorListProducts,
@@ -22,6 +23,7 @@ const router = Router();
 router.use(authMiddleware, hasRole(Role.VENDOR));
 
 router.get("/", vendorListProducts);
+router.get("/analytics", vendorGetAnalytics);
 router.post("/drafts", vendorCreateDraft);
 router.get("/:id", vendorGetProduct);
 router.patch("/:id", vendorUpdateProduct);

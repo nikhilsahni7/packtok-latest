@@ -15,6 +15,20 @@ interface VendorSignupPayload {
   notes?: string;
 }
 
+const sanitizeSignupErrorMessage = (message?: string) => {
+  const fallback = "Signup failed";
+  if (!message) return fallback;
+
+  const normalized = message.trim();
+  const lower = normalized.toLowerCase();
+
+  if (lower.startsWith("supabase")) {
+    return "Unable to create account right now. Please try again shortly.";
+  }
+
+  return normalized;
+};
+
 export function useVendorSignup() {
   const router = useRouter();
 
@@ -24,7 +38,10 @@ export function useVendorSignup() {
         ...payload,
         email: payload.email.toLowerCase().trim(),
       };
-      const { data } = await api.post("/api/v1/auth/signup-vendor", normalizedPayload);
+      const { data } = await api.post(
+        "/api/v1/auth/signup-vendor",
+        normalizedPayload
+      );
       return data;
     },
     onSuccess: (_data, variables) => {
@@ -35,7 +52,9 @@ export function useVendorSignup() {
     },
     onError: (err: Error) => {
       const axiosError = err as any;
-      const message = axiosError?.response?.data?.message || "Signup failed";
+      const message = sanitizeSignupErrorMessage(
+        axiosError?.response?.data?.message
+      );
       toast.error(message);
     },
   });
