@@ -89,7 +89,7 @@ const categories = [
   },
   {
     id: "12",
-    name: "Investment/Takeover",
+    name: "Acquisition & Takeover",
     icon: require("@/assets/images/investment.png"),
     available: true,
   },
@@ -104,7 +104,8 @@ export default function CategoriesScreen() {
   });
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { startListening, isListening, transcript } = useVoiceSearch();
+  const { startListening, stopListening, isListening, transcript } =
+    useVoiceSearch();
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -150,7 +151,7 @@ export default function CategoriesScreen() {
         case "Sell Old Machine":
           router.push("/services/sell-old-machine");
           break;
-        case "Investment/Takeover":
+        case "Acquisition & Takeover":
           router.push("/services/investment-takeover");
           break;
         case "Man Power":
@@ -307,7 +308,9 @@ export default function CategoriesScreen() {
             onSubmitEditing={handleSearch}
             returnKeyType="search"
           />
-          <TouchableOpacity onPress={startListening}>
+          <TouchableOpacity
+            onPress={isListening ? stopListening : startListening}
+          >
             <Feather
               name="mic"
               size={20}

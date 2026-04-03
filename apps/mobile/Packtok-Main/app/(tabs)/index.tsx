@@ -48,7 +48,8 @@ export default function HomeScreen() {
     isFetching: isFetchingUnreadCount,
   } = useUnreadNotificationsCount({ enabled: !!user });
 
-  const { startListening, isListening, transcript } = useVoiceSearch();
+  const { startListening, stopListening, isListening, transcript } =
+    useVoiceSearch();
   const isVendor = user?.role === "VENDOR";
 
   const handleSearch = () => {
@@ -233,7 +234,9 @@ export default function HomeScreen() {
             onSubmitEditing={handleSearch}
             returnKeyType="search"
           />
-          <TouchableOpacity onPress={startListening}>
+          <TouchableOpacity
+            onPress={isListening ? stopListening : startListening}
+          >
             <Feather
               name="mic"
               size={20}

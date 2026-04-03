@@ -1,4 +1,6 @@
+import { useCreateQuote } from "@/hooks/useCreateQuote";
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -11,7 +13,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useCreateQuote } from "@/hooks/useCreateQuote";
 
 interface QuoteModalProps {
   visible: boolean;
@@ -35,6 +36,7 @@ export default function QuoteModal({
   productId,
   productTitle,
 }: QuoteModalProps) {
+  const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [email, setEmail] = useState("");
@@ -97,7 +99,7 @@ export default function QuoteModal({
           setErrors({});
           setTimeout(() => onClose(), 1500);
         },
-      }
+      },
     );
   };
 
@@ -175,7 +177,8 @@ export default function QuoteModal({
                 value={phoneNo}
                 onChangeText={(text) => {
                   setPhoneNo(text);
-                  if (errors.phoneNo) setErrors((e) => ({ ...e, phoneNo: undefined }));
+                  if (errors.phoneNo)
+                    setErrors((e) => ({ ...e, phoneNo: undefined }));
                 }}
                 placeholder="Your phone number"
                 placeholderTextColor="#9CA3AF"
@@ -201,7 +204,8 @@ export default function QuoteModal({
                 value={email}
                 onChangeText={(text) => {
                   setEmail(text);
-                  if (errors.email) setErrors((e) => ({ ...e, email: undefined }));
+                  if (errors.email)
+                    setErrors((e) => ({ ...e, email: undefined }));
                 }}
                 placeholder="Your email address"
                 placeholderTextColor="#9CA3AF"
@@ -288,7 +292,21 @@ export default function QuoteModal({
                 )}
               </View>
               <Text className="text-sm text-gray-600 flex-1 leading-5">
-                I agree to the Terms & Conditions and Privacy Policy. I confirm that the information provided is accurate.
+                I agree to the{" "}
+                <Text
+                  className="text-orange-600 underline"
+                  onPress={() => router.push("/terms-conditions" as any)}
+                >
+                  Terms & Conditions
+                </Text>{" "}
+                and{" "}
+                <Text
+                  className="text-orange-600 underline"
+                  onPress={() => router.push("/privacy-policy" as any)}
+                >
+                  Privacy Policy
+                </Text>
+                . I confirm that the information provided is accurate.
               </Text>
             </TouchableOpacity>
 

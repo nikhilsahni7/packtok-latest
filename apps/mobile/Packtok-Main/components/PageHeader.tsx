@@ -43,9 +43,8 @@ export default function PageHeader({
     enabled: !!user,
   });
   const isControlled = onSearchChange !== undefined;
-  const { startListening, isListening, transcript } = useVoiceSearch(
-    isControlled ? { onResult: onSearchChange } : undefined,
-  );
+  const { startListening, stopListening, isListening, transcript } =
+    useVoiceSearch(isControlled ? { onResult: onSearchChange } : undefined);
   const [localSearchQuery, setLocalSearchQuery] = useState("");
   const prevTranscriptRef = useRef("");
 
@@ -207,7 +206,9 @@ export default function PageHeader({
               onSubmitEditing={handleSearch}
               returnKeyType="search"
             />
-            <TouchableOpacity onPress={startListening}>
+            <TouchableOpacity
+              onPress={isListening ? stopListening : startListening}
+            >
               <Feather
                 name="mic"
                 size={20}

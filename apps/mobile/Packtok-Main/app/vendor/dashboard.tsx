@@ -1,5 +1,9 @@
 import VendorButton from "@/components/VendorButton";
 import {
+  VendorAnalyticsRange,
+  useVendorDashboardAnalytics,
+} from "@/hooks/useVendorAnalytics";
+import {
   useApplyVendor,
   useVendorApplication,
 } from "@/hooks/useVendorApplication";
@@ -24,11 +28,34 @@ import {
 
 const { width } = Dimensions.get("window");
 
+const DASHBOARD_RANGE_OPTIONS: VendorAnalyticsRange[] = ["30d", "90d", "all"];
+
+const rangeLabel = (range: VendorAnalyticsRange) => {
+  if (range === "all") return "All";
+  if (range === "30d") return "30D";
+  return "90D";
+};
+
+const formatCurrency = (value: number, currency: string) => {
+  try {
+    return new Intl.NumberFormat("en", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 2,
+    }).format(value);
+  } catch {
+    return `${currency} ${value.toFixed(2)}`;
+  }
+};
+
 export default function VendorDashboardScreen() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const [companyName, setCompanyName] = useState("");
   const [notes, setNotes] = useState("");
+  const [selectedRange, setSelectedRange] =
+    useState<VendorAnalyticsRange>("30d");
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("all");
 
   const {
     data: application,
@@ -44,14 +71,25 @@ export default function VendorDashboardScreen() {
     refetch: refetchSubscription,
   } = useMyVendorSubscription();
   const { data: products = [], refetch: refetchProducts } = useVendorProducts();
+  const {
+    data: dashboardAnalytics,
+    isLoading: isAnalyticsLoading,
+    refetch: refetchAnalytics,
+  } = useVendorDashboardAnalytics(selectedRange);
 
   const onRefresh = useCallback(async () => {
     await Promise.allSettled([
       refetchApplication(),
       refetchSubscription(),
       refetchProducts(),
+      refetchAnalytics(),
     ]);
-  }, [refetchApplication, refetchSubscription, refetchProducts]);
+  }, [
+    refetchApplication,
+    refetchSubscription,
+    refetchProducts,
+    refetchAnalytics,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -97,9 +135,40 @@ export default function VendorDashboardScreen() {
         ? "bg-amber-500"
         : "bg-blue-500";
   const canCreateProduct = subscription?.canCreateProduct ?? true;
-  const recentProducts = useMemo(() => products.slice(0, 5), [products]);
+  const recentFlowProducts = useMemo(() => products.slice(0, 4), [products]);
   const accountName = user?.name || user?.email || "Vendor";
   const planName = subscription?.subscription?.planNameSnapshot || "Free";
+  const revenueByCurrency =
+    dashboardAnalytics?.overview.revenueByCurrency ?? [];
+  const activeCurrencyExists = revenueByCurrency.some(
+    (item) => item.currency === selectedCurrency,
+  );
+  const effectiveCurrency =
+    selectedCurrency === "all" || activeCurrencyExists
+      ? selectedCurrency
+      : "all";
+  const selectedCurrencyTotal =
+    effectiveCurrency === "all"
+      ? null
+      : (revenueByCurrency.find(
+          (item) => item.currency === effectiveCurrency,
+        ) ?? null);
+  const displayCurrency =
+    effectiveCurrency === "all"
+      ? (dashboardAnalytics?.overview.primaryCurrency ?? null)
+      : effectiveCurrency;
+  const displayRevenue =
+    selectedCurrencyTotal?.amount ??
+    dashboardAnalytics?.overview.totalRevenue ??
+    0;
+  const trendRows =
+    effectiveCurrency === "all"
+      ? (dashboardAnalytics?.trend ?? [])
+      : (dashboardAnalytics?.trend ?? []).map((item) => ({
+          ...item,
+          revenue: item.currency === effectiveCurrency ? item.revenue : 0,
+        }));
+  const trendMaxRevenue = Math.max(...trendRows.map((item) => item.revenue), 1);
 
   if (isLoading) {
     return (
@@ -372,42 +441,265 @@ export default function VendorDashboardScreen() {
               </View>
 
               <View className="mt-4 bg-white border border-gray-200 rounded-2xl p-4">
-                <Text className="text-base font-semibold text-gray-900 mb-3">
-                  Notifications
-                </Text>
-                {recentProducts.length === 0 ? (
-                  <Text className="text-sm text-gray-500">
-                    No recent product activity.
+                <View className="flex-row items-center justify-between">
+                  <Text className="text-base font-semibold text-gray-900">
+                    Performance
                   </Text>
-                ) : (
-                  recentProducts.map((item) => (
-                    <View
-                      key={item.id}
-                      className="flex-row items-center justify-between py-2 border-b border-gray-100"
-                    >
-                      <View className="flex-1 pr-3">
+                  <TouchableOpacity
+                    onPress={() => router.push("/vendor/analytics" as any)}
+                    className="px-3 py-1.5 rounded-lg bg-gray-900"
+                  >
+                    <Text className="text-[11px] text-white font-semibold">
+                      Analytics
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text className="text-xs text-gray-500 mt-1">
+                  Sales, orders, views and customer trends.
+                </Text>
+
+                <View className="flex-row mt-3 bg-gray-100 rounded-xl p-1">
+                  {DASHBOARD_RANGE_OPTIONS.map((item) => {
+                    const active = item === selectedRange;
+                    return (
+                      <TouchableOpacity
+                        key={item}
+                        onPress={() => setSelectedRange(item)}
+                        className={`flex-1 py-2 rounded-lg items-center ${active ? "bg-white" : ""}`}
+                      >
                         <Text
-                          className="text-sm font-medium text-gray-900"
-                          numberOfLines={1}
+                          className={`text-[11px] font-semibold ${active ? "text-gray-900" : "text-gray-500"}`}
                         >
-                          {item.title}
+                          {rangeLabel(item)}
                         </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                <View className="flex-row flex-wrap mt-3 -mx-1.5">
+                  <View className="w-1/3 px-1.5 mb-3">
+                    <View className="bg-[#F9FAFB] border border-gray-100 rounded-xl p-2.5">
+                      <Text className="text-[10px] text-gray-500">Sales</Text>
+                      <Text
+                        className="text-sm font-bold text-gray-900 mt-1"
+                        numberOfLines={1}
+                      >
+                        {isAnalyticsLoading
+                          ? "..."
+                          : displayCurrency
+                            ? formatCurrency(displayRevenue, displayCurrency)
+                            : "No sales"}
+                      </Text>
+                    </View>
+                  </View>
+                  <View className="w-1/3 px-1.5 mb-3">
+                    <View className="bg-[#F9FAFB] border border-gray-100 rounded-xl p-2.5">
+                      <Text className="text-[10px] text-gray-500">Orders</Text>
+                      <Text className="text-sm font-bold text-gray-900 mt-1">
+                        {dashboardAnalytics?.overview.totalOrders ?? 0}
+                      </Text>
+                    </View>
+                  </View>
+                  <View className="w-1/3 px-1.5 mb-3">
+                    <View className="bg-[#F9FAFB] border border-gray-100 rounded-xl p-2.5">
+                      <Text className="text-[10px] text-gray-500">Views</Text>
+                      <Text className="text-sm font-bold text-gray-900 mt-1">
+                        {dashboardAnalytics?.overview.totalViews ?? 0}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+
+                {revenueByCurrency.length > 0 && (
+                  <View className="flex-row flex-wrap -mx-1.5 mt-1">
+                    <TouchableOpacity
+                      onPress={() => setSelectedCurrency("all")}
+                      className="px-1.5 mb-2"
+                    >
+                      <View
+                        className={`px-2.5 py-1 rounded-full border ${effectiveCurrency === "all" ? "bg-blue-50 border-blue-300" : "bg-gray-50 border-gray-200"}`}
+                      >
                         <Text
-                          className="text-xs text-gray-500 mt-0.5"
-                          numberOfLines={1}
+                          className={`text-[10px] ${effectiveCurrency === "all" ? "text-blue-700" : "text-gray-600"}`}
                         >
-                          {item.submissionStatus === "PENDING_APPROVAL"
-                            ? "Submitted and waiting for admin review"
-                            : item.submissionStatus === "APPROVED"
-                              ? "Live in marketplace"
-                              : item.submissionStatus === "REJECTED"
-                                ? "Requires changes"
-                                : "Saved as draft"}
+                          All
                         </Text>
                       </View>
-                      <Feather name="chevron-right" size={16} color="#9CA3AF" />
-                    </View>
-                  ))
+                    </TouchableOpacity>
+                    {revenueByCurrency.map((item) => {
+                      const active = effectiveCurrency === item.currency;
+                      return (
+                        <TouchableOpacity
+                          key={item.currency}
+                          onPress={() => setSelectedCurrency(item.currency)}
+                          className="px-1.5 mb-2"
+                        >
+                          <View
+                            className={`px-2.5 py-1 rounded-full border ${active ? "bg-blue-50 border-blue-300" : "bg-gray-50 border-gray-200"}`}
+                          >
+                            <Text
+                              className={`text-[10px] ${active ? "text-blue-700" : "text-gray-600"}`}
+                            >
+                              {item.currency}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                )}
+
+                <View className="mt-3 bg-gray-50 border border-gray-100 rounded-xl p-3">
+                  <Text className="text-xs font-semibold text-gray-800 mb-2">
+                    Revenue Trend
+                  </Text>
+                  {trendRows.length === 0 ? (
+                    <Text className="text-xs text-gray-500">
+                      No trend data for selected range.
+                    </Text>
+                  ) : (
+                    trendRows.map((row, index) => (
+                      <View key={`${row.label}-${index}`} className="mb-2.5">
+                        <View className="flex-row items-center justify-between mb-1">
+                          <Text className="text-[10px] text-gray-600">
+                            {row.label}
+                          </Text>
+                          <Text className="text-[10px] text-gray-700">
+                            {displayCurrency
+                              ? formatCurrency(row.revenue, displayCurrency)
+                              : row.revenue.toFixed(2)}
+                          </Text>
+                        </View>
+                        <View className="h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                          <View
+                            className="h-full bg-[#6366F1]"
+                            style={{
+                              width: `${Math.max((row.revenue / trendMaxRevenue) * 100, 2)}%`,
+                            }}
+                          />
+                        </View>
+                      </View>
+                    ))
+                  )}
+                </View>
+
+                <View className="mt-3 bg-gray-50 border border-gray-100 rounded-xl p-3">
+                  <Text className="text-xs font-semibold text-gray-800">
+                    Customer Mix
+                  </Text>
+                  <Text className="text-xs text-gray-600 mt-1">
+                    New:{" "}
+                    {dashboardAnalytics?.customerDistribution.newCustomers ?? 0}{" "}
+                    | Returning:{" "}
+                    {dashboardAnalytics?.customerDistribution
+                      .returningCustomers ?? 0}
+                  </Text>
+                  <Text className="text-xs text-gray-600 mt-1">
+                    Total Customers:{" "}
+                    {dashboardAnalytics?.customerDistribution.totalCustomers ??
+                      0}
+                  </Text>
+                </View>
+
+                <View className="mt-3">
+                  <Text className="text-xs font-semibold text-gray-800 mb-2">
+                    Popular Products
+                  </Text>
+                  {dashboardAnalytics?.popularProducts?.length ? (
+                    dashboardAnalytics.popularProducts
+                      .slice(0, 3)
+                      .map((item) => (
+                        <View
+                          key={item.productId}
+                          className="flex-row items-center justify-between py-2 border-b border-gray-100"
+                        >
+                          <View className="flex-1 pr-3">
+                            <Text
+                              className="text-xs font-medium text-gray-900"
+                              numberOfLines={1}
+                            >
+                              {item.title}
+                            </Text>
+                            <Text className="text-[10px] text-gray-500 mt-0.5">
+                              {item.unitsSold} sold
+                            </Text>
+                          </View>
+                          <Text className="text-[10px] font-semibold text-gray-900">
+                            {formatCurrency(item.revenue, item.currency)}
+                          </Text>
+                        </View>
+                      ))
+                  ) : (
+                    <Text className="text-xs text-gray-500">
+                      No popular products yet.
+                    </Text>
+                  )}
+                </View>
+              </View>
+
+              <View className="mt-4 bg-white border border-gray-200 rounded-2xl p-4">
+                <Text className="text-base font-semibold text-gray-900">
+                  Launch Radar
+                </Text>
+                <Text className="text-xs text-gray-500 mt-1">
+                  Your latest product workflow snapshot.
+                </Text>
+
+                {recentFlowProducts.length === 0 ? (
+                  <Text className="text-sm text-gray-500 mt-3">
+                    No product movement yet.
+                  </Text>
+                ) : (
+                  <View className="mt-3">
+                    {recentFlowProducts.map((item) => (
+                      <View
+                        key={item.id}
+                        className="py-2.5 border-b border-gray-100"
+                      >
+                        <View className="flex-row items-center justify-between">
+                          <Text
+                            className="text-sm font-medium text-gray-900 flex-1 pr-2"
+                            numberOfLines={1}
+                          >
+                            {item.title}
+                          </Text>
+                          <View
+                            className={`px-2 py-0.5 rounded-full ${
+                              item.submissionStatus === "APPROVED"
+                                ? "bg-emerald-100"
+                                : item.submissionStatus === "PENDING_APPROVAL"
+                                  ? "bg-amber-100"
+                                  : item.submissionStatus === "REJECTED"
+                                    ? "bg-rose-100"
+                                    : "bg-gray-100"
+                            }`}
+                          >
+                            <Text
+                              className={`text-[10px] font-semibold ${
+                                item.submissionStatus === "APPROVED"
+                                  ? "text-emerald-700"
+                                  : item.submissionStatus === "PENDING_APPROVAL"
+                                    ? "text-amber-700"
+                                    : item.submissionStatus === "REJECTED"
+                                      ? "text-rose-700"
+                                      : "text-gray-600"
+                              }`}
+                            >
+                              {item.submissionStatus === "PENDING_APPROVAL"
+                                ? "REVIEW"
+                                : item.submissionStatus === "APPROVED"
+                                  ? "LIVE"
+                                  : item.submissionStatus === "REJECTED"
+                                    ? "FIX"
+                                    : "DRAFT"}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
                 )}
               </View>
 
@@ -447,6 +739,13 @@ export default function VendorDashboardScreen() {
                       bg: "bg-[#ECFDF3]",
                       onPress: () =>
                         router.push("/vendor/products?tab=released" as any),
+                    },
+                    {
+                      title: "Analytics",
+                      note: "Performance insights",
+                      icon: "bar-chart-2",
+                      bg: "bg-[#F3F0FF]",
+                      onPress: () => router.push("/vendor/analytics" as any),
                     },
                   ].map((action) => (
                     <TouchableOpacity

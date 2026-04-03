@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -75,7 +75,7 @@ export default function MachineryInstallerFormScreen() {
     const currentImages = watchImages || [];
     setValue(
       "machineImages",
-      currentImages.filter((_, i) => i !== index)
+      currentImages.filter((_, i) => i !== index),
     );
   };
 
@@ -89,7 +89,7 @@ export default function MachineryInstallerFormScreen() {
       if (!result.canceled && result.assets) {
         const currentVideos = watchVideos || [];
         const oversized = result.assets.find(
-          (file) => file.size && file.size > 10 * 1024 * 1024
+          (file) => file.size && file.size > 10 * 1024 * 1024,
         );
 
         if (oversized) {
@@ -123,7 +123,7 @@ export default function MachineryInstallerFormScreen() {
     const currentVideos = watchVideos || [];
     setValue(
       "machineVideos",
-      currentVideos.filter((_, i) => i !== index)
+      currentVideos.filter((_, i) => i !== index),
     );
   };
 
@@ -220,7 +220,10 @@ export default function MachineryInstallerFormScreen() {
   );
 
   return (
-    <SafeAreaView edges={["top", "left", "right"]} className="flex-1 bg-gray-50">
+    <SafeAreaView
+      edges={["top", "left", "right"]}
+      className="flex-1 bg-gray-50"
+    >
       <StatusBar style="dark" />
 
       {/* Header */}
@@ -352,7 +355,12 @@ export default function MachineryInstallerFormScreen() {
                 onPress={handlePickImages}
                 className="bg-gray-50 border border-dashed border-gray-300 rounded-lg p-4 items-center justify-center flex-row"
               >
-                <Feather name="image" size={20} color="#6B7280" className="mr-2" />
+                <Feather
+                  name="image"
+                  size={20}
+                  color="#6B7280"
+                  className="mr-2"
+                />
                 <Text className="text-gray-600 font-medium">Pick Images</Text>
               </TouchableOpacity>
               {watchImages && watchImages.length > 0 && (
@@ -386,7 +394,12 @@ export default function MachineryInstallerFormScreen() {
                 onPress={handlePickVideos}
                 className="bg-gray-50 border border-dashed border-gray-300 rounded-lg p-4 items-center justify-center flex-row"
               >
-                <Feather name="video" size={20} color="#6B7280" className="mr-2" />
+                <Feather
+                  name="video"
+                  size={20}
+                  color="#6B7280"
+                  className="mr-2"
+                />
                 <Text className="text-gray-600 font-medium">Pick Videos</Text>
               </TouchableOpacity>
               {watchVideos && watchVideos.length > 0 && (
@@ -527,8 +540,21 @@ export default function MachineryInstallerFormScreen() {
               )}
             </View>
             <Text className="text-sm text-gray-600 flex-1 leading-5">
-              I agree to the Terms & Conditions and Privacy Policy. I confirm
-              that the information provided is accurate.
+              I agree to the{" "}
+              <Text
+                className="text-blue-600 underline"
+                onPress={() => router.push("/terms-conditions" as any)}
+              >
+                Terms & Conditions
+              </Text>{" "}
+              and{" "}
+              <Text
+                className="text-blue-600 underline"
+                onPress={() => router.push("/privacy-policy" as any)}
+              >
+                Privacy Policy
+              </Text>
+              . I confirm that the information provided is accurate.
             </Text>
           </TouchableOpacity>
 

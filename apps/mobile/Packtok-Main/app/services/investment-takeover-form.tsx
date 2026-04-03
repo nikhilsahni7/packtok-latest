@@ -144,7 +144,7 @@ export default function InvestmentTakeoverFormScreen() {
       if (!token) {
         Alert.alert(
           "Authentication Required",
-          "Please login to submit an investment/takeover inquiry.",
+          "Please login to submit an acquisition/takeover inquiry.",
           [
             {
               text: "Go to Login",
@@ -168,6 +168,7 @@ export default function InvestmentTakeoverFormScreen() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
     watch,
   } = useForm<CompanyAcquisitionFormData>({
     resolver: zodResolver(companyAcquisitionSchema),
@@ -205,6 +206,29 @@ export default function InvestmentTakeoverFormScreen() {
     { value: "OTHER", label: "Other" },
   ];
 
+  const advisorOptions = [
+    "Investment Banker",
+    "Business Broker",
+    "Legal Counsel",
+    "Financial Advisor",
+    "Tax Advisor",
+    "Valuation Expert",
+    "Other",
+  ];
+
+  const selectedAdvisors = watch("advisorsEngaged") || [];
+
+  const toggleAdvisor = (advisor: string) => {
+    const updatedAdvisors = selectedAdvisors.includes(advisor)
+      ? selectedAdvisors.filter((item) => item !== advisor)
+      : [...selectedAdvisors, advisor];
+
+    setValue("advisorsEngaged", updatedAdvisors, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
+
   const onSubmit = async (data: CompanyAcquisitionFormData) => {
     if (!agreeToTerms) {
       Alert.alert(
@@ -234,7 +258,7 @@ export default function InvestmentTakeoverFormScreen() {
       reset();
       setAgreeToTerms(false);
     } catch (error: any) {
-      let message = "Failed to submit investment/takeover inquiry";
+      let message = "Failed to submit acquisition/takeover inquiry";
 
       if (error?.response?.status === 401) {
         message = "Authentication failed. Please login again.";
@@ -267,11 +291,11 @@ export default function InvestmentTakeoverFormScreen() {
             <Feather name="arrow-left" size={20} color="#fff" />
           </TouchableOpacity>
           <Text className="text-white text-xl font-bold flex-1">
-            Investment/Takeover Inquiry
+            Acquisition & Takeover Inquiry
           </Text>
         </View>
         <Text className="text-white/90 text-sm">
-          Company acquisition and investment opportunities
+          Company acquisition and takeover opportunities
         </Text>
       </View>
 
@@ -284,7 +308,7 @@ export default function InvestmentTakeoverFormScreen() {
           {/* Section 1: Contact Information */}
           <View className="mb-6">
             <Text className="text-lg font-bold text-gray-900 mb-4">
-              Section 1: Contact Information
+              Section: 1 Contact Information
             </Text>
 
             <Controller
@@ -419,7 +443,7 @@ export default function InvestmentTakeoverFormScreen() {
           {/* Section 2: Transaction Details */}
           <View className="mb-6">
             <Text className="text-lg font-bold text-gray-900 mb-4">
-              Section 2: Transaction Details
+              Section: 2 Transaction Details
             </Text>
 
             <Controller
@@ -492,12 +516,10 @@ export default function InvestmentTakeoverFormScreen() {
             />
           </View>
 
-          {/* Section 3: Seller Information (if applicable) */}
-          {(inquirerType === "SELLER" ||
-            inquirerType === "ADVISOR_CONSULTANT") && (
+          {inquirerType === "SELLER" && (
             <View className="mb-6">
               <Text className="text-lg font-bold text-gray-900 mb-4">
-                Section 3: Seller Information
+                Seller Information
               </Text>
 
               <Controller
@@ -511,7 +533,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="Describe the business being sold..."
+                      placeholder="Describe your business..."
                       multiline
                       numberOfLines={4}
                       textAlignVertical="top"
@@ -550,7 +572,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="e.g., Manufacturing, Technology"
+                      placeholder="Manufacturing"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
                   </View>
@@ -568,7 +590,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="e.g., 2010"
+                      placeholder="2000"
                       keyboardType="numeric"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
@@ -587,7 +609,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="e.g., $5M"
+                      placeholder="$5M"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
                   </View>
@@ -605,7 +627,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="e.g., $1M"
+                      placeholder="$1M"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
                   </View>
@@ -623,7 +645,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="List key assets..."
+                      placeholder="Describe key assets..."
                       multiline
                       numberOfLines={3}
                       textAlignVertical="top"
@@ -635,12 +657,10 @@ export default function InvestmentTakeoverFormScreen() {
             </View>
           )}
 
-          {/* Section 4: Buyer Information (if applicable) */}
-          {(inquirerType === "BUYER" ||
-            inquirerType === "ADVISOR_CONSULTANT") && (
+          {inquirerType === "BUYER" && (
             <View className="mb-6">
               <Text className="text-lg font-bold text-gray-900 mb-4">
-                Section 4: Buyer Information
+                Buyer Information
               </Text>
 
               <Controller
@@ -654,7 +674,10 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="Type of business you're looking for..."
+                      placeholder="Describe the type of business you're looking to acquire..."
+                      multiline
+                      numberOfLines={3}
+                      textAlignVertical="top"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
                   </View>
@@ -672,7 +695,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="e.g., $1M - $10M revenue"
+                      placeholder="$1M - $10M revenue"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
                   </View>
@@ -690,7 +713,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="Preferred location..."
+                      placeholder="North America"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
                   </View>
@@ -708,7 +731,7 @@ export default function InvestmentTakeoverFormScreen() {
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="e.g., Majority stake, 100%"
+                      placeholder="100% or majority stake"
                       className="border border-gray-300 rounded-lg px-4 py-3"
                     />
                   </View>
@@ -717,11 +740,25 @@ export default function InvestmentTakeoverFormScreen() {
             </View>
           )}
 
-          {/* Section 5: Legal & Compliance */}
+          {/* Section 3: Additional Information */}
           <View className="mb-6">
             <Text className="text-lg font-bold text-gray-900 mb-4">
-              Section 5: Legal & Compliance
+              Section: 3 Additional Information
             </Text>
+
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-gray-700 mb-2">
+                Advisors Engaged
+              </Text>
+              {advisorOptions.map((advisor) => (
+                <Checkbox
+                  key={advisor}
+                  checked={selectedAdvisors.includes(advisor)}
+                  onPress={() => toggleAdvisor(advisor)}
+                  label={advisor}
+                />
+              ))}
+            </View>
 
             <Controller
               control={control}
@@ -794,18 +831,11 @@ export default function InvestmentTakeoverFormScreen() {
                   <Checkbox
                     checked={value || false}
                     onPress={() => onChange(!value)}
-                    label="Wants NDA (Non-Disclosure Agreement)"
+                    label="Wants NDA"
                   />
                 </View>
               )}
             />
-          </View>
-
-          {/* Section 6: Additional Information */}
-          <View className="mb-6">
-            <Text className="text-lg font-bold text-gray-900 mb-4">
-              Section 6: Additional Information
-            </Text>
 
             <Controller
               control={control}
@@ -844,8 +874,21 @@ export default function InvestmentTakeoverFormScreen() {
               {agreeToTerms && <Feather name="check" size={14} color="white" />}
             </View>
             <Text className="text-sm text-gray-600 flex-1 leading-5">
-              I agree to the Terms & Conditions and Privacy Policy. I confirm
-              that the information provided is accurate.
+              I agree to the{" "}
+              <Text
+                className="text-blue-600 underline"
+                onPress={() => router.push("/terms-conditions" as any)}
+              >
+                Terms & Conditions
+              </Text>{" "}
+              and{" "}
+              <Text
+                className="text-blue-600 underline"
+                onPress={() => router.push("/privacy-policy" as any)}
+              >
+                Privacy Policy
+              </Text>
+              . I confirm that the information provided is accurate.
             </Text>
           </TouchableOpacity>
 
@@ -884,7 +927,7 @@ export default function InvestmentTakeoverFormScreen() {
                 Success!
               </Text>
               <Text className="text-sm text-gray-600 text-center">
-                Your investment/takeover inquiry has been submitted
+                Your acquisition/takeover inquiry has been submitted
                 successfully. We&apos;ll get back to you soon.
               </Text>
             </View>

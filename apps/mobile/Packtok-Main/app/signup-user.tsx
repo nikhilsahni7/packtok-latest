@@ -609,8 +609,19 @@ export default function SignupUserScreen() {
                 </View>
                 <Text className="flex-1 text-gray-600 text-sm">
                   I agree to the{" "}
-                  <Text className="text-orange-500">Terms of Service</Text> and{" "}
-                  <Text className="text-orange-500">Privacy Policy</Text>
+                  <Text
+                    className="text-orange-500 underline"
+                    onPress={() => router.push("/terms-conditions" as any)}
+                  >
+                    Terms of Service
+                  </Text>{" "}
+                  and{" "}
+                  <Text
+                    className="text-orange-500 underline"
+                    onPress={() => router.push("/privacy-policy" as any)}
+                  >
+                    Privacy Policy
+                  </Text>
                 </Text>
               </TouchableOpacity>
               {errors.terms ? (

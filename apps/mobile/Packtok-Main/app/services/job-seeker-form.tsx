@@ -146,7 +146,10 @@ export default function JobSeekerFormScreen() {
 
   const onSubmit = async (data: any) => {
     if (!agreeToTerms) {
-      Alert.alert("Error", "You must agree to the Terms and Conditions to proceed.");
+      Alert.alert(
+        "Error",
+        "You must agree to the Terms and Conditions to proceed.",
+      );
       return;
     }
 
@@ -586,13 +589,24 @@ export default function JobSeekerFormScreen() {
                 : "bg-white border-gray-300"
             }`}
           >
-            {agreeToTerms && (
-              <Feather name="check" size={14} color="white" />
-            )}
+            {agreeToTerms && <Feather name="check" size={14} color="white" />}
           </View>
           <Text className="text-sm text-gray-600 flex-1 leading-5">
-            I agree to the Terms & Conditions and Privacy Policy. I confirm
-            that the information provided is accurate.
+            I agree to the{" "}
+            <Text
+              className="text-blue-600 underline"
+              onPress={() => router.push("/terms-conditions" as any)}
+            >
+              Terms & Conditions
+            </Text>{" "}
+            and{" "}
+            <Text
+              className="text-blue-600 underline"
+              onPress={() => router.push("/privacy-policy" as any)}
+            >
+              Privacy Policy
+            </Text>
+            . I confirm that the information provided is accurate.
           </Text>
         </TouchableOpacity>
 

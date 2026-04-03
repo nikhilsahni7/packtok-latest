@@ -9,37 +9,37 @@ export type VendorDashboardAnalytics = {
   overview: {
     totalRevenue: number;
     primaryCurrency: string | null;
-    revenueByCurrency: Array<{
+    revenueByCurrency: {
       currency: string;
       amount: number;
-    }>;
+    }[];
     totalOrders: number;
     totalViews: number;
     salesChangePercent: number | null;
     ordersChangePercent: number | null;
     comparisonLabel: string;
   };
-  trend: Array<{
+  trend: {
     label: string;
     revenue: number;
     currency: string | null;
     orders: number;
     views: number;
-  }>;
+  }[];
   customerDistribution: {
     totalCustomers: number;
     newCustomers: number;
     returningCustomers: number;
     newCustomerPercent: number;
   };
-  popularProducts: Array<{
+  popularProducts: {
     productId: string;
     title: string;
     image: string | null;
     revenue: number;
     currency: string;
     unitsSold: number;
-  }>;
+  }[];
 };
 
 export type VendorProductAnalytics = {
@@ -52,9 +52,9 @@ export type VendorProductAnalytics = {
     totalUnitsSold: number;
     cartUnitsSold: number;
     quoteUnitsSold: number;
-    totalRevenueByCurrency: Array<{ currency: string; amount: number }>;
-    cartRevenueByCurrency: Array<{ currency: string; amount: number }>;
-    quoteRevenueByCurrency: Array<{ currency: string; amount: number }>;
+    totalRevenueByCurrency: { currency: string; amount: number }[];
+    cartRevenueByCurrency: { currency: string; amount: number }[];
+    quoteRevenueByCurrency: { currency: string; amount: number }[];
   };
   breakdown: {
     status: {
@@ -69,15 +69,15 @@ export type VendorProductAnalytics = {
       rejected: number;
     };
   };
-  topViewed: Array<{
+  topViewed: {
     productId: string;
     title: string;
     image: string | null;
     currency: string;
     price: number;
     views: number;
-  }>;
-  topSelling: Array<{
+  }[];
+  topSelling: {
     productId: string;
     title: string;
     image: string | null;
@@ -86,7 +86,7 @@ export type VendorProductAnalytics = {
     quoteUnitsSold: number;
     revenue: number;
     currency: string;
-  }>;
+  }[];
 };
 
 export function useVendorDashboardAnalytics(range: VendorAnalyticsRange) {

@@ -42,7 +42,7 @@ const servicesData = [
 
   {
     id: 4,
-    title: "Investment/ Takeover",
+    title: "Acquisition & Takeover",
     image: require("@/assets/images/InvestmentTakeover.png"),
     route: "/services/investment-takeover",
     bgColor: "#C61B6E",

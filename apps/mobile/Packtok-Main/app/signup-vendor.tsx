@@ -485,7 +485,20 @@ export default function SignupVendorScreen() {
               ) : null}
             </View>
             <Text className="text-xs text-gray-600 ml-3 flex-1 leading-5">
-              I agree to the Terms of Service and Privacy Policy
+              I agree to the{" "}
+              <Text
+                className="text-orange-500 underline"
+                onPress={() => router.push("/terms-conditions" as any)}
+              >
+                Terms of Service
+              </Text>{" "}
+              and{" "}
+              <Text
+                className="text-orange-500 underline"
+                onPress={() => router.push("/privacy-policy" as any)}
+              >
+                Privacy Policy
+              </Text>
             </Text>
           </TouchableOpacity>
         </View>

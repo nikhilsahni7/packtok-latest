@@ -87,6 +87,21 @@ export default function SettingsScreen() {
             <Feather name="chevron-right" size={20} color="#9CA3AF" />
           </TouchableOpacity>
 
+          {/* Forgot Password */}
+          <TouchableOpacity
+            onPress={() => router.push("/forgot-password")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="key" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Forgot Password
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
           {/* Notifications */}
           <TouchableOpacity
             onPress={() => router.push("/notifications")}
@@ -149,6 +164,20 @@ export default function SettingsScreen() {
                   <Feather name="package" size={20} color="#374151" />
                   <Text className="text-base text-gray-900 ml-3">
                     Vendor Products
+                  </Text>
+                </View>
+                <Feather name="chevron-right" size={20} color="#9CA3AF" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => router.push("/vendor/analytics" as any)}
+                className="flex-row items-center justify-between py-4 border-b border-gray-100"
+                activeOpacity={0.7}
+              >
+                <View className="flex-row items-center">
+                  <Feather name="bar-chart-2" size={20} color="#374151" />
+                  <Text className="text-base text-gray-900 ml-3">
+                    Vendor Analytics
                   </Text>
                 </View>
                 <Feather name="chevron-right" size={20} color="#9CA3AF" />
@@ -269,6 +298,66 @@ export default function SettingsScreen() {
             <View className="flex-row items-center">
               <Feather name="info" size={20} color="#374151" />
               <Text className="text-base text-gray-900 ml-3">About</Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
+          {/* Terms & Conditions */}
+          <TouchableOpacity
+            onPress={() => router.push("/terms-conditions")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="file-text" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Terms & Conditions
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
+          {/* Privacy Policy */}
+          <TouchableOpacity
+            onPress={() => router.push("/privacy-policy")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="shield" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Privacy Policy
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
+          {/* Refund Policy */}
+          <TouchableOpacity
+            onPress={() => router.push("/refund-policy")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="rotate-ccw" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Refund Policy
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#9CA3AF" />
+          </TouchableOpacity>
+
+          {/* Shipping & Delivery */}
+          <TouchableOpacity
+            onPress={() => router.push("/shipping-delivery")}
+            className="flex-row items-center justify-between py-4 border-b border-gray-100"
+            activeOpacity={0.7}
+          >
+            <View className="flex-row items-center">
+              <Feather name="truck" size={20} color="#374151" />
+              <Text className="text-base text-gray-900 ml-3">
+                Shipping & Delivery
+              </Text>
             </View>
             <Feather name="chevron-right" size={20} color="#9CA3AF" />
           </TouchableOpacity>

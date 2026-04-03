@@ -31,9 +31,9 @@ export default function InvestmentTakeoverScreen() {
 
   const handleShare = () => {
     void shareServiceDetails({
-      title: "Investment Takeover",
+      title: "Acquisition & Takeover",
       description:
-        "Packtok supports business acquisition, investment, and takeover opportunities across industrial and manufacturing sectors.",
+        "Packtok supports business acquisition and takeover opportunities across industrial and manufacturing sectors.",
     });
   };
 
@@ -68,7 +68,7 @@ export default function InvestmentTakeoverScreen() {
         <View className="bg-white rounded-t-[70px] -mt-16 px-10 pt-20">
           {/* Title */}
           <Text className="text-[36px] text-center font-bold text-gray-900 mb-4">
-            Investment/Takeover
+            Acquisition & Takeover
           </Text>
 
           {/* Action Buttons */}
@@ -115,11 +115,11 @@ export default function InvestmentTakeoverScreen() {
           {/* Description */}
           <View className="mb-6">
             <Text className="text-gray-700 text-justify leading-6 text-base">
-              Investment/takeover is a strategic business arrangement where an
-              investor or company benefits from capital and expertise. This
-              service facilitates mergers, acquisitions, and final handover. We
-              ensure seamless transition while maximizing the value of the
-              enterprise.
+              Acquisition and takeover are strategic business arrangements where
+              one company or investor gains control of another business. This
+              service facilitates valuation, negotiation, due diligence, and
+              final handover. We ensure a smooth transition while maximizing the
+              value of the enterprise.
             </Text>
           </View>
 
@@ -135,6 +135,36 @@ export default function InvestmentTakeoverScreen() {
               Fill the Form
             </Text>
           </TouchableOpacity>
+
+          <View className="mt-4 mb-6 rounded-3xl border border-gray-200 p-5 bg-[#F8FAFC]">
+            <View className="self-start px-3 py-1 rounded-full bg-gray-900 mb-3">
+              <Text className="text-[11px] font-semibold text-white uppercase tracking-wide">
+                New
+              </Text>
+            </View>
+
+            <Text className="text-xl font-bold text-gray-900 uppercase leading-7">
+              Explore Premium Industrial Facilities
+            </Text>
+
+            <Text className="text-gray-600 text-sm mt-3 leading-5">
+              Discover high-value manufacturing plants and warehouses,
+              production-ready with turnkey operations for immediate
+              acquisition.
+            </Text>
+
+            <TouchableOpacity
+              onPress={() =>
+                router.push("/services/acquisition-facilities" as any)
+              }
+              className="mt-4 bg-black rounded-full py-3.5 items-center"
+              activeOpacity={0.8}
+            >
+              <Text className="text-white font-semibold text-sm">
+                Browse Facilities & Send Query
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
 

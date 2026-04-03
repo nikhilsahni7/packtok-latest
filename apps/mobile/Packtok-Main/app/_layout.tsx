@@ -190,6 +190,14 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="services/acquisition-facilities"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
             name="services/sell-old-machine"
             options={{
               headerShown: false,
@@ -397,6 +405,38 @@ function RootLayoutNav() {
             }}
           />
           <Stack.Screen
+            name="terms-conditions"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="privacy-policy"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="refund-policy"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="shipping-delivery"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
             name="help-support"
             options={{
               headerShown: false,
@@ -446,6 +486,14 @@ function RootLayoutNav() {
           />
           <Stack.Screen
             name="vendor/dashboard"
+            options={{
+              headerShown: false,
+              gestureEnabled: true,
+              animation: "slide_from_right",
+            }}
+          />
+          <Stack.Screen
+            name="vendor/analytics"
             options={{
               headerShown: false,
               gestureEnabled: true,
