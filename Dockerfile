@@ -14,12 +14,10 @@ WORKDIR /app
 
 FROM base AS builder
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json ./
+COPY . .
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
   pnpm install --frozen-lockfile
-
-COPY . .
 
 # Generate Prisma client and build all packages
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
