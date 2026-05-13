@@ -1,16 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "node_modules/dist",
+    "outDir": "dist",
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "allowJs": false,
     "noEmit": false,
     "module": "commonjs",
     "target": "es2020",
     "moduleResolution": "node",
     "baseUrl": ".",
-    "paths": {
-      "@packtok/*": ["../../packages/*/src"],
-    },
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "node_modules/dist"],
+  "exclude": ["node_modules", "dist"],
 }

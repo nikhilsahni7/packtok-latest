@@ -2,7 +2,12 @@
   "name": "@packtok/api",
   "version": "0.0.0",
   "private": true,
-  "main": "src/server.ts",
+  "main": "dist/server.js",
+  "files": [
+    "dist",
+    "prisma",
+    "package.json"
+  ],
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
@@ -12,10 +17,11 @@
     "format:check": "prettier --check src/**/*.ts",
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma",
     "prisma:push": "prisma db push --schema=./prisma/schema.prisma",
     "seed": "tsx src/seed.ts",
     "seed:products": "tsx src/seed-products.ts",
-    "start:prod": "pnpm --filter @packtok/db build && node dist/apps/api/src/server.js",
+    "start:prod": "node dist/server.js",
     "print:product": "tsx src/scripts/print-product.ts"
   },
   "dependencies": {
@@ -40,6 +46,7 @@
     "pino": "^9.7.0",
     "pino-http": "^10.5.0",
     "pino-pretty": "^13.0.0",
+    "prisma": "^6.10.1",
     "razorpay": "^2.9.3",
     "resend": "^4.6.0",
     "sharp": "^0.34.2",
@@ -64,7 +71,6 @@
     "@typescript-eslint/parser": "^8.35.0",
     "eslint": "^8.57.0",
     "prettier": "^3.6.0",
-    "prisma": "^6.10.1",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }

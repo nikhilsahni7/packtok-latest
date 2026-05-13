@@ -1,0 +1,71 @@
+# Ignore everything by default, then explicitly include the pruned build inputs.
+**
+
+!apps
+!apps/api
+!apps/api/**
+!packages
+!packages/db
+!packages/db/**
+!packages/utils
+!packages/utils/**
+!packages/config
+!packages/config/**
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!turbo.json
+!tsconfig.base.json
+!Dockerfile
+
+# Dependency directories.
+**/node_modules
+**/node_modules/**
+
+# Apps that are not part of the API container.
+apps/web
+apps/web/**
+apps/admin
+apps/admin/**
+apps/mobile
+apps/mobile/**
+
+# Local build and tool caches.
+**/.next
+**/.next/**
+**/.turbo
+**/.turbo/**
+**/.expo
+**/.expo/**
+**/coverage
+**/coverage/**
+**/dist
+**/dist/**
+**/*.tsbuildinfo
+
+# Secrets and local environment files.
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Tests and local-only files.
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+**/__tests__
+**/__tests__/**
+
+# VCS, logs, docs, and editor settings.
+.git
+.git/**
+**/*.log
+.vscode
+.vscode/**
+.idea
+.idea/**
+README.md
+README.*
+docs
+docs/**

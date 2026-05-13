@@ -1,0 +1,38 @@
+services:
+  api:
+    image: ghcr.io/nikhilsahni7/packtok-api:latest
+    container_name: packtok-api
+    env_file:
+      - ./apps/api/.env.production
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    networks:
+      - packtok-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/v1/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional automatic updates via Watchtower.
+  # watchtower:
+  #   image: containrrr/watchtower:latest
+  #   container_name: packtok-watchtower
+  #   restart: unless-stopped
+  #   command: --interval 300 --cleanup packtok-api
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - packtok-net
+
+networks:
+  packtok-net:
+    name: packtok-net
+    driver: bridge

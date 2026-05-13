@@ -73,6 +73,10 @@ app.get("/healthcheck", (req: Request, res: Response): void => {
   res.status(200).send("OK");
 });
 
+app.get("/api/v1/healthcheck", (req: Request, res: Response): void => {
+  res.status(200).send("OK");
+});
+
 // API Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/admins", adminRouter);

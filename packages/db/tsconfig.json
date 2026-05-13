@@ -2,14 +2,15 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "allowJs": false,
     "noEmit": false,
+    "declaration": true,
     "module": "commonjs",
     "target": "es2020",
     "moduleResolution": "node",
     "baseUrl": ".",
-    "paths": {
-      "@packtok/*": ["../*/src"]
-    },
     "types": ["node"]
   },
   "include": ["src/**/*"],
