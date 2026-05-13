@@ -15,6 +15,7 @@ on:
       - "Dockerfile"
       - "docker-compose.yml"
       - ".github/workflows/deploy-api.yml"
+  workflow_dispatch:
 
 concurrency:
   group: deploy-api-${{ github.ref }}
