@@ -59,7 +59,7 @@ app.use(
   cors({
     origin: allowedOrigins,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // Allow cookies to be sent
+    credentials: true, // Allow cookies to be send
     optionsSuccessStatus: 204, // For legacy browser support
   })
 );
