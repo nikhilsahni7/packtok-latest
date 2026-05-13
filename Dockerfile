@@ -48,7 +48,9 @@ COPY --from=deps /app/tsconfig.base.json ./tsconfig.base.json
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
   pnpm --filter @packtok/api exec prisma generate --schema=prisma/schema.prisma \
   && pnpm turbo run build --filter=@packtok/api... \
-  && pnpm deploy --filter=@packtok/api --prod /app/deploy
+  && pnpm deploy --filter=@packtok/api --prod /app/deploy \
+  && cd /app/deploy \
+  && node node_modules/prisma/build/index.js generate --schema=./prisma/schema.prisma
 
 FROM node:20-alpine AS runner
 
