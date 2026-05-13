@@ -15,17 +15,9 @@ NC="\033[0m"
 
 IMAGE="${REGISTRY}/${IMAGE_NAME}"
 
-info() {
-  printf "${YELLOW}%s${NC}\n" "$1"
-}
-
-success() {
-  printf "${GREEN}%s${NC}\n" "$1"
-}
-
-fail() {
-  printf "${RED}%s${NC}\n" "$1"
-}
+info()    { printf "${YELLOW}%s${NC}\n" "$1"; }
+success() { printf "${GREEN}%s${NC}\n" "$1"; }
+fail()    { printf "${RED}%s${NC}\n" "$1"; }
 
 require_real_value() {
   local name="$1"
@@ -64,24 +56,16 @@ GREEN="\033[0;32m"
 YELLOW="\033[1;33m"
 NC="\033[0m"
 
-info() {
-  printf "${YELLOW}%s${NC}\n" "$1"
-}
-
-success() {
-  printf "${GREEN}%s${NC}\n" "$1"
-}
-
-fail() {
-  printf "${RED}%s${NC}\n" "$1"
-}
+info()    { printf "${YELLOW}%s${NC}\n" "$1"; }
+success() { printf "${GREEN}%s${NC}\n" "$1"; }
+fail()    { printf "${RED}%s${NC}\n" "$1"; }
 
 cd "${COMPOSE_DIR}"
 
 PREVIOUS_IMAGE_ID="$(docker compose images -q api 2>/dev/null || true)"
 
 info "Pulling latest Compose image"
-docker compose pull
+docker compose pull api
 
 info "Running Prisma migrations with ${IMAGE}:${GIT_SHA}"
 docker run --rm \
@@ -90,32 +74,40 @@ docker run --rm \
   node node_modules/prisma/build/index.js migrate deploy --schema=./prisma/schema.prisma
 
 info "Starting API"
-docker compose up -d --no-build
+docker compose up -d --no-build --remove-orphans
 
 info "Waiting for API health check"
-sleep 30
-
-if curl -fsS http://127.0.0.1:3001/api/v1/healthcheck >/dev/null; then
-  success "Deployment healthy"
-else
-  fail "Health check failed"
-
-  if [[ -n "${PREVIOUS_IMAGE_ID}" ]]; then
-    info "Rolling back to previous local image ${PREVIOUS_IMAGE_ID}"
-    docker tag "${PREVIOUS_IMAGE_ID}" "${IMAGE}:latest"
-    docker compose up -d --no-build
-    sleep 15
-    curl -fsS http://127.0.0.1:3001/api/v1/healthcheck >/dev/null
-    success "Rollback healthy"
-  else
-    fail "No previous image was available for rollback"
+for i in $(seq 1 20); do
+  if curl -fsS http://127.0.0.1:3001/api/v1/healthcheck >/dev/null 2>&1; then
+    success "✅ Health check passed on attempt $i"
+    break
   fi
+  if [ "$i" -eq 20 ]; then
+    fail "❌ Health check failed after 20 attempts"
+    if [[ -n "${PREVIOUS_IMAGE_ID}" ]]; then
+      info "Rolling back to previous local image ${PREVIOUS_IMAGE_ID}"
+      docker tag "${PREVIOUS_IMAGE_ID}" "${IMAGE}:latest"
+      docker compose up -d --no-build
+      sleep 10
+      if curl -fsS http://127.0.0.1:3001/api/v1/healthcheck >/dev/null 2>&1; then
+        success "Rollback healthy"
+      else
+        fail "Rollback also failed"
+      fi
+    else
+      fail "No previous image was available for rollback"
+    fi
+    docker compose logs --tail=100 api
+    exit 1
+  fi
+  sleep 3
+done
 
-  exit 1
-fi
+# Cleanup dangling and old images
+docker image prune -f --filter "until=168h" >/dev/null 2>&1 || true
 
-info "Last 50 API log lines"
-docker compose logs --tail=50 api
+info "Last 20 API log lines"
+docker compose logs --tail=20 api
 REMOTE_SCRIPT
 
 success "Deploy complete: ${IMAGE}:${GIT_SHA}"

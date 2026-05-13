@@ -7,32 +7,29 @@ services:
     ports:
       - "3001:3001"
     restart: unless-stopped
-    networks:
-      - packtok-net
+    # Give the graceful-shutdown handler time to drain connections.
+    stop_grace_period: 30s
+    # Security: read-only root FS; only /tmp is writable.
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=64m
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 128M
+    security_opt:
+      - no-new-privileges:true
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/v1/healthcheck"]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/api/v1/healthcheck').then(r=>{if(!r.ok)throw r.status}).catch(()=>process.exit(1))"]
       interval: 30s
-      timeout: 10s
-      start_period: 40s
+      timeout: 5s
+      start_period: 30s
       retries: 3
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
-
-  # Optional automatic updates via Watchtower.
-  # watchtower:
-  #   image: containrrr/watchtower:latest
-  #   container_name: packtok-watchtower
-  #   restart: unless-stopped
-  #   command: --interval 300 --cleanup packtok-api
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   networks:
-  #     - packtok-net
-
-networks:
-  packtok-net:
-    name: packtok-net
-    driver: bridge

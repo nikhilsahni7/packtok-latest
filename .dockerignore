@@ -1,71 +1,37 @@
-# Ignore everything by default, then explicitly include the pruned build inputs.
-**
-
-!apps
-!apps/api
-!apps/api/**
-!packages
-!packages/db
-!packages/db/**
-!packages/utils
-!packages/utils/**
-!packages/config
-!packages/config/**
-!package.json
-!pnpm-lock.yaml
-!pnpm-workspace.yaml
-!turbo.json
-!tsconfig.base.json
-!Dockerfile
-
-# Dependency directories.
+# ── Dependency & build caches ──
 **/node_modules
-**/node_modules/**
-
-# Apps that are not part of the API container.
-apps/web
-apps/web/**
-apps/admin
-apps/admin/**
-apps/mobile
-apps/mobile/**
-
-# Local build and tool caches.
-**/.next
-**/.next/**
 **/.turbo
-**/.turbo/**
+**/.next
 **/.expo
-**/.expo/**
 **/coverage
-**/coverage/**
 **/dist
-**/dist/**
 **/*.tsbuildinfo
 
-# Secrets and local environment files.
+# ── Environment / secrets ──
 .env
 .env.*
 **/.env
 **/.env.*
 
-# Tests and local-only files.
+# ── Tests ──
 **/*.test.ts
 **/*.test.tsx
 **/*.spec.ts
 **/*.spec.tsx
 **/__tests__
-**/__tests__/**
 
-# VCS, logs, docs, and editor settings.
+# ── VCS, logs, docs, editor config ──
 .git
-.git/**
 **/*.log
 .vscode
-.vscode/**
 .idea
-.idea/**
+docs
 README.md
 README.*
-docs
-docs/**
+vps-setup.md
+vps-migration.md
+
+# ── Apps that are not part of the API container ──
+apps/web
+apps/admin
+apps/mobile
