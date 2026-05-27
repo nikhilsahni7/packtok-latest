@@ -1,8 +1,9 @@
 import { Feather } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -20,6 +21,144 @@ import {
   MachineryInstallerFormData,
   useSubmitMachineryInstaller,
 } from "../../hooks/useMachineryInstaller";
+
+const InstallationDateTimeInput = ({
+  value,
+  onChange,
+  error,
+}: {
+  value?: string;
+  onChange: (value: string) => void;
+  error?: boolean;
+}) => {
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const selectedDate = value ? new Date(value) : undefined;
+
+  const formatDate = (date?: Date) => {
+    if (!date || Number.isNaN(date.getTime())) return "Select preferred date";
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (date?: Date) => {
+    if (!date || Number.isNaN(date.getTime())) return "Select preferred time";
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
+  const mergeDate = (base: Date | undefined, picked: Date) => {
+    const next = new Date(base || new Date());
+    next.setFullYear(
+      picked.getFullYear(),
+      picked.getMonth(),
+      picked.getDate(),
+    );
+    return next;
+  };
+
+  const mergeTime = (base: Date | undefined, picked: Date) => {
+    const next = new Date(base || new Date());
+    next.setHours(picked.getHours(), picked.getMinutes(), 0, 0);
+    return next;
+  };
+
+  return (
+    <View className="mb-4">
+      <Text className="text-sm font-medium text-gray-700 mb-1">
+        When (Preferred Installation Date & Time){" "}
+        <Text className="text-red-500">*</Text>
+      </Text>
+
+      <View className="flex-row gap-3">
+        <TouchableOpacity
+          onPress={() => setShowDatePicker(true)}
+          className={`flex-1 bg-white border rounded-lg px-4 py-3 flex-row items-center justify-between ${
+            error ? "border-red-500" : "border-gray-200"
+          }`}
+          activeOpacity={0.7}
+        >
+          <Text
+            className={`flex-1 mr-3 ${
+              selectedDate ? "text-gray-900" : "text-gray-400"
+            }`}
+            numberOfLines={1}
+          >
+            {formatDate(selectedDate)}
+          </Text>
+          <Feather
+            name="calendar"
+            size={18}
+            color={selectedDate ? "#111827" : "#9CA3AF"}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setShowTimePicker(true)}
+          className={`flex-1 bg-white border rounded-lg px-4 py-3 flex-row items-center justify-between ${
+            error ? "border-red-500" : "border-gray-200"
+          }`}
+          activeOpacity={0.7}
+        >
+          <Text
+            className={`flex-1 mr-3 ${
+              selectedDate ? "text-gray-900" : "text-gray-400"
+            }`}
+            numberOfLines={1}
+          >
+            {formatTime(selectedDate)}
+          </Text>
+          <Feather
+            name="clock"
+            size={18}
+            color={selectedDate ? "#111827" : "#9CA3AF"}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {error && (
+        <Text className="text-red-500 text-xs mt-1 font-medium">
+          Please select a preferred installation date and time
+        </Text>
+      )}
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={selectedDate || new Date()}
+          mode="date"
+          display="default"
+          minimumDate={new Date()}
+          onChange={(event, pickedDate) => {
+            setShowDatePicker(false);
+            if (event.type === "set" && pickedDate) {
+              onChange(mergeDate(selectedDate, pickedDate).toISOString());
+            }
+          }}
+        />
+      )}
+
+      {showTimePicker && (
+        <DateTimePicker
+          value={selectedDate || new Date()}
+          mode="time"
+          display="default"
+          onChange={(event, pickedDate) => {
+            setShowTimePicker(false);
+            if (event.type === "set" && pickedDate) {
+              onChange(mergeTime(selectedDate, pickedDate).toISOString());
+            }
+          }}
+        />
+      )}
+    </View>
+  );
+};
 
 export default function MachineryInstallerFormScreen() {
   const router = useRouter();
@@ -455,11 +594,16 @@ export default function MachineryInstallerFormScreen() {
               label="From Where"
               placeholder="e.g. Factory, Warehouse"
             />
-            {/* Using a simple text input for datetime for simplicity on mobile, mimicking the type="datetime-local" approach if a native picker isn't fully integrated */}
-            <InputField
+            <Controller
+              control={control}
               name="preferredInstallationDateTime"
-              label="When (Preferred Date & Time)"
-              placeholder="e.g. YYYY-MM-DD HH:MM"
+              render={({ field: { onChange, value } }) => (
+                <InstallationDateTimeInput
+                  value={value}
+                  onChange={onChange}
+                  error={!!errors.preferredInstallationDateTime}
+                />
+              )}
             />
             <InputField
               name="whereLocation"

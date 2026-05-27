@@ -49,12 +49,12 @@ export default function VendorNewProductScreen() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("0");
+  const [price, setPrice] = useState("");
   const [currency, setCurrency] = useState("INR");
   const [productType, setProductType] = useState("MACHINERY");
   const [condition, setCondition] = useState("NEW");
   const [machineType, setMachineType] = useState("NONE");
-  const [quantity, setQuantity] = useState("1");
+  const [quantity, setQuantity] = useState("");
   const [categoryName, setCategoryName] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [manufacturer, setManufacturer] = useState("");

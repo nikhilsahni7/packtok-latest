@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import * as SecureStore from "expo-secure-store";
-const API_BASE_URL = "https://api.nikhilsahni.xyz";
+const API_BASE_URL = "https://api.knotorious.us";
 
 interface AxiosRequestConfigWithRetry extends AxiosRequestConfig {
   _retry?: boolean;
