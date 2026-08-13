@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
-const API_BASE_URL = "https://api.knotorious.us";
+const API_BASE_URL = "https://api.knotorious.sbs";
 const SOCKET_PATH = "/socket.io";
 
 export const getSocket = (): Socket | null => {

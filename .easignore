@@ -1,0 +1,62 @@
+# EAS archives from the git root in this monorepo. Exclude non-mobile apps,
+# repo metadata, caches, and server/web files from mobile builds.
+/.git
+/.git/
+/.git/**
+/.github/
+/.turbo/
+/node_modules/
+/packages/
+/apps/api/
+/apps/admin/
+/apps/web/
+/docs/
+/nginx/
+
+# Root-level files not needed to compile the Expo mobile app.
+/.env
+/.env.*
+/.dockerignore
+/Dockerfile
+/docker-compose.yml
+/deploy.sh
+/README.md
+/check_db.ts
+/turbo.json
+/pnpm-lock.yaml
+/pnpm-workspace.yaml
+/tsconfig.base.json
+/vps-migration.md
+/vps-setup.md
+
+# Mobile dependencies and generated output.
+/apps/mobile/Packtok-Main/node_modules/
+/apps/mobile/Packtok-Main/.expo/
+/apps/mobile/Packtok-Main/dist/
+/apps/mobile/Packtok-Main/web-build/
+/apps/mobile/Packtok-Main/expo-env.d.ts
+
+# Generated native folders; EAS Build will prebuild these from app config.
+/apps/mobile/Packtok-Main/android/
+/apps/mobile/Packtok-Main/ios/
+/apps/mobile/Packtok-Main/.kotlin/
+/apps/mobile/Packtok-Main/*.orig.*
+
+# Credentials, env, logs, and local-only mobile files.
+/apps/mobile/Packtok-Main/*.jks
+/apps/mobile/Packtok-Main/*.p8
+/apps/mobile/Packtok-Main/*.p12
+/apps/mobile/Packtok-Main/*.key
+/apps/mobile/Packtok-Main/*.mobileprovision
+/apps/mobile/Packtok-Main/*.pem
+/apps/mobile/Packtok-Main/.env
+/apps/mobile/Packtok-Main/.env.*
+!/apps/mobile/Packtok-Main/.env.example
+/apps/mobile/Packtok-Main/*.log
+/apps/mobile/Packtok-Main/.metro-health-check*
+/apps/mobile/Packtok-Main/*.tsbuildinfo
+/apps/mobile/Packtok-Main/coverage/
+/apps/mobile/Packtok-Main/.vscode/
+/apps/mobile/Packtok-Main/README.md
+/apps/mobile/Packtok-Main/docs/
+/apps/mobile/Packtok-Main/app-example/

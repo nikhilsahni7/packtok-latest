@@ -1,0 +1,688 @@
+================================================================================
+PACKTOK CHATBOT SYSTEM SPECIFICATION & IMPLEMENTATION PROPOSAL
+================================================================================
+Context Date: June 2026
+Target System: Packtok Bot
+Tech Stack: Express (apps/api), Next.js App Router (apps/web & apps/admin),
+            Supabase PostgreSQL, Socket.IO, Vercel AI SDK
+LLM Selection: Google Gemini 3.5 Flash (via Google AI Studio Free Tier API key)
+
+--------------------------------------------------------------------------------
+PROBLEM STATEMENT & BUSINESS GOALS
+--------------------------------------------------------------------------------
+Packtok is a complex packaging and industrial commerce platform supporting features
+like product catalogs, quote management, auctions, services (turnkey, maintenance,
+manpower, installer), and custom vendor workflows.
+
+This complexity leads to two major bottlenecks:
+1. Customers (NORMAL_USER) struggle to find services (e.g. Turnkey requests, manpower
+   applications), locate technical documents, track orders, or participate in live bidding.
+2. Vendors (VENDOR) require active guidance on listing specifications, product approvals,
+   understanding subscription plan limits, and interpreting catalog metrics.
+
+--------------------------------------------------------------------------------
+WHAT WE ARE BUILDING
+--------------------------------------------------------------------------------
+We are building "Packtok Bot", a real-time, streaming AI assistant integrated into the
+Next.js web client, Next.js admin dashboard, and Express API server.
+
+Key Features:
+* Dynamic Personality: The bot recognizes if the user is a Normal User or a Vendor (using
+  your existing Supabase JWT decoder) and alters its prompt context accordingly.
+* Zero Hallucination via Tool Calling: The bot does not invent data. It uses Vercel AI SDK
+  Tools to query the live Postgres database (searching products via Full-Text Search, checking
+  active auctions, or retrieving order logs).
+* Deep Linking UI: The bot includes action buttons/links in its markdown responses to drive
+  conversions (e.g., "Click here to fill out a Turnkey Projects request form").
+* Live Chat Takeover: If the bot gets confused or the user requests human assistance, a socket
+  escalates the chat session. Admins are notified in the admin app and can click "Take Over"
+  to chat directly with the user via Socket.IO, bypassing the AI.
+
+--------------------------------------------------------------------------------
+COST & RATE LIMIT PROFILE (100% FREE STARTER)
+--------------------------------------------------------------------------------
+* Core SDK: Vercel AI SDK (Apache-2.0 open-source library, completely free, runs on your own VPS/API server).
+* LLM: Google Gemini 3.5 Flash (the industry-standard fast agent model in June 2026).
+* Developer API limits in Google AI Studio (Free Tier):
+  - 15 RPM (Requests Per Minute)
+  - 1,500 RPD (Requests Per Day) - easily covering your 1,000+ daily call requirement.
+  - 32,000 TPM (Tokens Per Minute)
+* Cost Protection: No credit card is required to obtain the AI Studio API key. When rate limits
+  are exceeded, the API returns a 429 error and stops (no unexpected charges).
+* Pay-As-You-Go Scale: If you outgrow the free tier, pricing is exceptionally low ($0.075 /
+  million input tokens, $0.30 / million output tokens).
+
+--------------------------------------------------------------------------------
+1. DEPENDENCY INSTALLATIONS
+--------------------------------------------------------------------------------
+Run the following commands in the workspace root:
+
+```bash
+# Install AI SDK and Google Gemini provider in the Express Backend
+pnpm --filter @packtok/api add ai @ai-sdk/google zod
+
+# Install Vercel AI SDK React hooks in the Web Frontend
+pnpm --filter @packtok/web add @ai-sdk/react zod
+
+# Install Vercel AI SDK React hooks in the Admin Panel
+pnpm --filter @packtok/admin add @ai-sdk/react zod
+```
+
+--------------------------------------------------------------------------------
+RECOMMENDED PACKTOK V1 CHATBOT PLAN (JUNE 2026)
+--------------------------------------------------------------------------------
+
+This section replaces the broad "build everything at once" approach above with a
+smaller v1 that matches how production chatbots are typically shipped by support
+and commerce companies in 2026.
+
+What companies are actually doing:
+- Grounding answers in trusted sources first: help center content, product data,
+  order data, service forms, policies, and operational docs.
+- Adding action tools second: look up records, create tickets, update workflows,
+  and route users to the right form or team.
+- Escalating to humans with full context: transcript, user identity, intent,
+  and last tool results travel with the handoff.
+- Measuring everything: resolution rate, deflection, escalation rate, and the
+  intents that failed most often.
+
+Packtok v1 scope:
+- Marketplace product search and discovery.
+- Order status lookup for authenticated users.
+- Service request routing for turnkey, manpower, installer, maintenance, and
+  consultancy flows.
+- Subscription and vendor-plan questions.
+- Human escalation when the bot cannot verify an answer.
+
+Out of scope for v1:
+- Free-form chatbot answers over every Packtok domain.
+- Admin takeover without server-side role verification.
+- Client-generated session ids as the source of truth.
+- Unbounded external web search.
+
+Recommended architecture:
+1. UI
+- One shared chat entry point in web and admin.
+- Mobile support can be added later if the web flow proves stable.
+- Show suggested actions as buttons, not only markdown links.
+
+2. Session model
+- Create chat sessions on the server.
+- Persist a signed guest token or authenticated user id with each session.
+- Store every user, assistant, and admin message in Postgres.
+- Keep a status field for bot_active, human_escalated, and resolved.
+
+3. Bot behavior
+- Use a strict system prompt per role: NORMAL_USER, VENDOR, and ADMIN.
+- Keep the bot grounded in a small tool set.
+- If the bot cannot verify a claim, it should say so and offer escalation.
+
+4. Tools
+- Product search over MarketplaceProduct.
+- Order lookup over Order for the current user only.
+- Service form discovery and deep links.
+- Subscription plan lookup.
+- Escalate-to-human tool that updates the session status server-side.
+
+5. Handoff
+- Admins should take over from the admin panel after server auth and permission
+  checks.
+- The takeover event should join the same session room, not create a separate
+  one.
+- Admin messages should be persisted and mirrored to the user in real time.
+
+6. Observability
+- Log every tool call, latency, and outcome.
+- Track unresolved intents and repeated failures.
+- Review escalations weekly to improve the prompt and tools.
+
+7. Safety and reliability
+- Rate limit per user and per IP.
+- Cache repeated catalog and plan lookups.
+- Do not rely on the model for authorization decisions.
+- Do not expose internal ids or admin-only data to guests.
+
+Practical implementation order:
+1. Add a chat_sessions table and a chat_messages table.
+2. Add authenticated HTTP endpoints for message streaming and history.
+3. Add socket auth and room joining for live handoff.
+4. Add the web widget.
+5. Add the admin takeover dashboard.
+6. Add analytics and QA after the v1 flow is stable.
+
+Recommended success metrics:
+- First response latency.
+- Tool-call success rate.
+- Escalation rate.
+- Human takeover completion rate.
+- User satisfaction after resolution.
+
+Recommended changes to the original proposal:
+- Replace the claim "zero hallucination" with "grounded responses for supported
+  intents".
+- Replace client-side session generation with a server-issued session id.
+- Remove adminId from the client takeover event.
+- Add auth checks to history and socket events.
+- Delay vendor analytics, podcasts, articles, and auctions until the core support
+  flows are stable.
+
+Bottom line:
+- Build a narrow, grounded, role-aware support assistant first.
+- Make it good at Packtok tasks, not generic chat.
+- Treat human escalation, auditability, and metrics as first-class features.
+
+--------------------------------------------------------------------------------
+2. DATABASE SCHEMA MIGRATION (apps/api/prisma/schema.prisma)
+--------------------------------------------------------------------------------
+Add the following models and enums to the end of your `schema.prisma` file:
+
+```prisma
+// ===== Packtok Bot Chatbot Models =====
+
+enum ChatSessionStatus {
+  BOT_ACTIVE
+  HUMAN_ESCALATED
+  RESOLVED
+}
+
+model ChatSession {
+  id           String            @id @default(cuid())
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  status       ChatSessionStatus @default(BOT_ACTIVE)
+  userRole     Role              @default(NORMAL_USER)
+
+  // Relations
+  userId       String?           // Optional (guests can chat)
+  user         User?             @relation("ChatSessions", fields: [userId], references: [id], onDelete: Cascade)
+  assignedToId String?           // Admin taking over
+  assignedTo   User?             @relation("ChatAssignedToAdmin", fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  messages     ChatMessage[]
+
+  @@map("chat_sessions")
+  @@index([userId])
+  @@index([status])
+}
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  sender      String   // "user" | "assistant" | "admin"
+  text        String   @db.Text
+  toolCalls   Json?    // Optional debug info capturing tools used
+
+  // Relations
+  sessionId   String
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("chat_messages")
+  @@index([sessionId, createdAt])
+}
+```
+
+Also add these reverse relations inside the `User` model:
+```prisma
+// Inside model User {
+// ...
+  chatSessions            ChatSession[]        @relation("ChatSessions")
+  assignedChatSessions    ChatSession[]        @relation("ChatAssignedToAdmin")
+// }
+```
+
+Run migration tasks:
+```bash
+pnpm --filter @packtok/api prisma:generate
+pnpm --filter @packtok/api prisma:migrate
+```
+
+--------------------------------------------------------------------------------
+3. BACKEND ROUTING & STREAMING CONTROLLER (apps/api)
+--------------------------------------------------------------------------------
+
+### File: `apps/api/src/controllers/chatbot.controller.ts` (NEW)
+Create this file to handle the stateless message stream and tool executions:
+
+```typescript
+import { Request, Response } from 'express';
+import { streamText, tool } from 'ai';
+import { google } from '@ai-sdk/google';
+import { z } from 'zod';
+import { prisma } from '@packtok/db';
+import { ApiError } from '../utils/apiError';
+
+export const streamChatResponse = async (req: Request, res: Response): Promise<void> => {
+  const { messages, sessionId } = req.body;
+  if (!messages || !Array.isArray(messages)) {
+    throw new ApiError(400, "Messages array is required");
+  }
+
+  const currentUser = req.user; // Set by authMiddleware if token is sent
+  const userRole = currentUser?.role || 'NORMAL_USER';
+
+  // 1. Establish the custom system prompt depending on who is talking to the bot
+  const systemPrompt = userRole === 'VENDOR'
+    ? `You are the Packtok Vendor Assistant. Assist the logged-in vendor (${currentUser?.name || 'Guest Vendor'}) with their dashboard queries.
+       Guide them on listing marketplace products, moderations, checking subscription plans, and catalog rules.
+       Keep your answers professional and action-oriented. Recommend navigation paths inside our platform (/vendor/dashboard, /vendor/products).`
+    : `You are the Packtok Customer Assistant. Help the user (${currentUser?.name || 'Guest User'}) navigate our marketplace and services.
+       Guide them through:
+       - Marketplace: search products, explain condition (NEW/USED)
+       - Services: Turnkey facilities, Manpower hiring, Machinery installation, Maintenance requests.
+       - Podcasts & Articles: point them to educational packaging media.
+       Suggest links when referring to features (e.g. /marketplace, /services, /bidding).`;
+
+  // 2. Stream using Vercel AI SDK calling Gemini 3.5 Flash
+  const result = await streamText({
+    model: google('gemini-3.5-flash'),
+    system: systemPrompt,
+    messages,
+    maxSteps: 3, // Enable multi-step tool calls automatically
+    tools: {
+      searchProducts: tool({
+        description: 'Search marketplace products by keyword using database full-text search',
+        parameters: z.object({ query: z.string() }),
+        execute: async ({ query }) => {
+          return prisma.marketplaceProduct.findMany({
+            where: {
+              OR: [
+                { title: { contains: query, mode: 'insensitive' } },
+                { description: { contains: query, mode: 'insensitive' } }
+              ],
+              status: 'AVAILABLE'
+            },
+            take: 5,
+            select: { id: true, title: true, price: true, currency: true, status: true }
+          });
+        }
+      }),
+      getOrderStatus: tool({
+        description: 'Get details and delivery status of a specific order using the order number',
+        parameters: z.object({ orderNumber: z.string() }),
+        execute: async ({ orderNumber }) => {
+          if (!currentUser) return { error: "Authentication required to view order history." };
+          const order = await prisma.order.findFirst({
+            where: { orderNumber, userId: currentUser.id }
+          });
+          return order
+            ? { orderNumber: order.orderNumber, status: order.status, total: order.totalAmount, trackingNumber: order.trackingNumber }
+            : { error: "Order not found or access denied." };
+        }
+      }),
+      escalateToHuman: tool({
+        description: 'Connect the user to a live support agent (escalation)',
+        parameters: z.object({}),
+        execute: async () => {
+          if (sessionId) {
+            await prisma.chatSession.update({
+              where: { id: sessionId },
+              data: { status: 'HUMAN_ESCALATED' }
+            });
+          }
+          return { status: "escalated", message: "Live agent request received. Transferring chat room..." };
+        }
+      })
+    }
+  });
+
+  // 3. Set headers and pipe standard AI SDK stream to the Express response
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  result.pipeDataStreamToResponse(res);
+};
+
+export const getSessionHistory = async (req: Request, res: Response): Promise<void> => {
+  const { sessionId } = req.params;
+  const history = await prisma.chatMessage.findMany({
+    where: { sessionId },
+    orderBy: { createdAt: 'asc' }
+  });
+  res.status(200).json({ success: true, data: history });
+};
+```
+
+### File: `apps/api/src/routers/chatbot.routes.ts` (NEW)
+Expose the chatbot endpoints:
+
+```typescript
+import { Router } from "express";
+import { streamChatResponse, getSessionHistory } from "../controllers/chatbot.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
+
+const router = Router();
+
+// Allow optional auth (guests can chat as well)
+router.post("/message", (req, res, next) => {
+  // If authorization header or cookie exists, pass through authMiddleware
+  if (req.headers.authorization || req.cookies?.accessToken) {
+    authMiddleware(req, res, next);
+  } else {
+    next();
+  }
+}, streamChatResponse);
+
+router.get("/session/:sessionId/history", getSessionHistory);
+
+export default router;
+```
+
+### Mount router in `apps/api/src/server.ts`:
+```typescript
+import chatbotRouter from "./routers/chatbot.routes";
+// ...
+app.use("/api/v1/chatbot", chatbotRouter);
+```
+
+--------------------------------------------------------------------------------
+4. SOCKET.IO INTEGRATION FOR TAKE-OVER (apps/api/src/realtime/socket.ts)
+--------------------------------------------------------------------------------
+Add namespaces and hooks inside `apps/api/src/realtime/socket.ts` to allow live-chat takeovers:
+
+```typescript
+// Inside the socket server listener setup (initSocketServer):
+
+socket.on("chat:join", ({ sessionId }: { sessionId: string }) => {
+  socket.join(`chat:${sessionId}`);
+  logger.info({ sessionId, socketId: socket.id }, "Joined chat session room");
+});
+
+// User or admin transmits manual messages
+socket.on("chat:message", async (payload: { sessionId: string; text: string; sender: "user" | "admin" }) => {
+  const { sessionId, text, sender } = payload;
+
+  // Save message to Postgres database
+  const savedMessage = await prisma.chatMessage.create({
+    data: {
+      sessionId,
+      sender,
+      text
+    }
+  });
+
+  // Broadcast message to all participants in this room
+  io?.to(`chat:${sessionId}`).emit("chat:message_received", savedMessage);
+});
+
+// Admin takes control
+socket.on("chat:takeover", async ({ sessionId, adminId }: { sessionId: string; adminId: string }) => {
+  await prisma.chatSession.update({
+    where: { id: sessionId },
+    data: {
+      status: 'HUMAN_ESCALATED',
+      assignedToId: adminId
+    }
+  });
+
+  io?.to(`chat:${sessionId}`).emit("chat:status_changed", {
+    status: 'HUMAN_ESCALATED',
+    assignedToId: adminId,
+    message: "An Admin has joined the chat and will assist you directly."
+  });
+});
+
+// Resolve session
+socket.on("chat:resolve", async ({ sessionId }: { sessionId: string }) => {
+  await prisma.chatSession.update({
+    where: { id: sessionId },
+    data: { status: 'RESOLVED' }
+  });
+
+  io?.to(`chat:${sessionId}`).emit("chat:status_changed", {
+    status: 'RESOLVED',
+    message: "This support session has been marked as resolved."
+  });
+});
+```
+
+--------------------------------------------------------------------------------
+5. FRONTEND CHAT WIDGET (apps/web/components/chatbot/chat-widget.tsx)
+--------------------------------------------------------------------------------
+A visual, floating chatbot widget utilizing Vercel's framework-agnostic client hook.
+
+```tsx
+import React, { useState, useEffect } from 'react';
+import { useChat } from '@ai-sdk/react';
+import { getSocket } from '../../lib/socket';
+
+export function ChatWidget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [sessionId, setSessionId] = useState<string>('');
+  const [chatStatus, setChatStatus] = useState<'BOT' | 'ADMIN'>('BOT');
+
+  // Initialize Session ID on mount
+  useEffect(() => {
+    let activeId = localStorage.getItem('packtok_chat_session_id');
+    if (!activeId) {
+      activeId = 'chat_' + Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('packtok_chat_session_id', activeId);
+    }
+    setSessionId(activeId);
+  }, []);
+
+  const { messages, input, handleInputChange, handleSubmit, setMessages, append } = useChat({
+    api: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/chatbot/message`,
+    body: { sessionId },
+    onResponse: (response) => {
+      // Check if tool execution triggered escalation
+      if (response.headers.get('x-chatbot-status') === 'HUMAN_ESCALATED') {
+        setChatStatus('ADMIN');
+      }
+    }
+  });
+
+  // Listen to live Admin Takeover sockets
+  useEffect(() => {
+    if (!sessionId) return;
+    const socket = getSocket();
+    if (!socket) return;
+
+    socket.emit("chat:join", { sessionId });
+
+    socket.on("chat:message_received", (msg: any) => {
+      if (msg.sender === 'admin') {
+        setMessages((prev) => [...prev, { id: msg.id, role: 'assistant', content: msg.text }]);
+      }
+    });
+
+    socket.on("chat:status_changed", (data: any) => {
+      if (data.status === 'HUMAN_ESCALATED') {
+        setChatStatus('ADMIN');
+        setMessages((prev) => [...prev, { id: Math.random().toString(), role: 'system', content: data.message }]);
+      } else if (data.status === 'RESOLVED') {
+        setChatStatus('BOT');
+        setMessages((prev) => [...prev, { id: Math.random().toString(), role: 'system', content: data.message }]);
+      }
+    });
+
+    return () => {
+      socket.off("chat:message_received");
+      socket.off("chat:status_changed");
+    };
+  }, [sessionId]);
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    if (chatStatus === 'ADMIN') {
+      const socket = getSocket();
+      if (socket) {
+        socket.emit("chat:message", { sessionId, text: input, sender: "user" });
+        setMessages((prev) => [...prev, { id: Math.random().toString(), role: 'user', content: input }]);
+      }
+    } else {
+      handleSubmit(e);
+    }
+  };
+
+  return (
+    <>
+      {/* Floating Toggle Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-xl transition-all hover:scale-105 active:scale-95"
+      >
+        💬
+      </button>
+
+      {/* Floating Chat window */}
+      {isOpen && (
+        <div className="fixed bottom-24 right-6 z-50 w-96 max-h-[500px] flex flex-col bg-white rounded-2xl border border-gray-100 shadow-2xl overflow-hidden transition-all duration-300">
+          <div className="p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold flex justify-between items-center shadow-sm">
+            <div className="flex items-center space-x-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-green-400 animate-pulse"></span>
+              <span>Packtok Support {chatStatus === 'ADMIN' && '(Live Agent)'}</span>
+            </div>
+            <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-200">✕</button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 h-80 bg-gray-50/50">
+            {messages.map((m) => (
+              <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`p-3 rounded-2xl max-w-[85%] text-sm ${
+                  m.role === 'user'
+                    ? 'bg-blue-600 text-white rounded-tr-none'
+                    : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-tl-none'
+                }`}>
+                  {m.content}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <form onSubmit={handleSendMessage} className="p-3 bg-white border-t flex items-center space-x-2">
+            <input
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Type your message..."
+              className="flex-1 px-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"
+            />
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700">
+              Send
+            </button>
+          </form>
+        </div>
+      )}
+    </>
+  );
+}
+```
+
+--------------------------------------------------------------------------------
+6. ADMIN TAKE-OVER HUB (apps/admin/app/dashboard/chatbots/page.tsx)
+--------------------------------------------------------------------------------
+Admins can monitor threads and click "Take Over" to override the bot response:
+
+```tsx
+import React, { useState, useEffect } from 'react';
+import { getSocket } from '../../../lib/socket';
+
+export default function AdminChatbotDashboard() {
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [activeSession, setActiveSession] = useState<any>(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [replyText, setReplyText] = useState('');
+
+  // 1. Fetch escalated sessions on load
+  useEffect(() => {
+    fetch('/api/v1/admins/chatbot/sessions?status=HUMAN_ESCALATED')
+      .then(res => res.json())
+      .then(data => setSessions(data.sessions || []));
+  }, []);
+
+  // 2. Select a session, join socket room
+  const handleSelectSession = (session: any) => {
+    setActiveSession(session);
+    const socket = getSocket();
+    if (socket) {
+      socket.emit("chat:join", { sessionId: session.id });
+    }
+
+    // Load history
+    fetch(`/api/v1/chatbot/session/${session.id}/history`)
+      .then(res => res.json())
+      .then(data => setMessages(data.data || []));
+  };
+
+  // 3. Take Over session from Bot control
+  const handleTakeOver = () => {
+    if (!activeSession) return;
+    const socket = getSocket();
+    if (socket) {
+      socket.emit("chat:takeover", { sessionId: activeSession.id, adminId: "admin-id" });
+    }
+  };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!replyText.trim() || !activeSession) return;
+
+    const socket = getSocket();
+    if (socket) {
+      socket.emit("chat:message", { sessionId: activeSession.id, text: replyText, sender: "admin" });
+      setReplyText('');
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-50 p-6">
+      {/* Session List */}
+      <div className="w-1/3 bg-white border-r rounded-l-xl p-4 overflow-y-auto">
+        <h2 className="text-lg font-bold mb-4">Escalated Chats</h2>
+        <div className="space-y-2">
+          {sessions.map(s => (
+            <div
+              key={s.id}
+              onClick={() => handleSelectSession(s)}
+              className={`p-3 rounded-lg cursor-pointer border ${activeSession?.id === s.id ? 'bg-blue-50 border-blue-500' : 'bg-gray-50 border-gray-200'}`}
+            >
+              <div className="font-semibold text-sm">Session: {s.id.substring(0, 8)}...</div>
+              <div className="text-xs text-red-500">Awaiting Agent</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Chat Space */}
+      <div className="w-2/3 bg-white rounded-r-xl flex flex-col p-4">
+        {activeSession ? (
+          <>
+            <div className="flex justify-between items-center border-b pb-4 mb-4">
+              <h3 className="font-bold">Active Chat Room</h3>
+              <button onClick={handleTakeOver} className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600">
+                Take Over Chat
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-2 bg-gray-50 rounded-lg">
+              {messages.map(m => (
+                <div key={m.id} className={`flex ${m.sender === 'admin' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`p-3 rounded-lg max-w-[70%] ${m.sender === 'admin' ? 'bg-blue-600 text-white' : 'bg-white shadow border'}`}>
+                    <div className="text-xs opacity-70 mb-1">{m.sender}</div>
+                    <div>{m.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleSendMessage} className="flex space-x-2">
+              <input
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                placeholder="Type reply as Live Agent..."
+                className="flex-1 border rounded-lg px-3 py-2 focus:outline-none"
+              />
+              <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                Send
+              </button>
+            </form>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center text-gray-400">
+            Select an escalated conversation to view chat details
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+```

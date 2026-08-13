@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Expo and build output
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Generated native folders; EAS Build will prebuild these from app config.
+/android
+/ios
+.kotlin/
+*.orig.*
+
+# Credentials and local environment
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+.env
+.env.*
+!.env.example
+
+# Logs and caches
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+pnpm-debug.*
+.metro-health-check*
+*.tsbuildinfo
+coverage/
+
+# Local-only project files
+.vscode/
+.DS_Store
+README.md
+docs/
+app-example/
