@@ -1,11 +1,13 @@
 services:
   api:
-    image: ghcr.io/nikhilsahni7/packtok-api:latest
+    # IMAGE_TAG is set by CI to the commit SHA; `latest` is only a local fallback.
+    image: ghcr.io/nikhilsahni7/packtok-api:${IMAGE_TAG:-latest}
     container_name: packtok-api
     env_file:
       - ./apps/api/.env.production
     ports:
-      - "3001:3001"
+      # Loopback only — nginx on the host is the public entrypoint (80/443).
+      - "127.0.0.1:3001:3001"
     restart: unless-stopped
     # Give the graceful-shutdown handler time to drain connections.
     stop_grace_period: 30s

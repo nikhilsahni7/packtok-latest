@@ -1,5 +1,5 @@
 # Run after DNS points to the VPS:
-# sudo certbot --nginx -d api.knotorious.us
+# sudo certbot --nginx -d api.packtok.com
 
 limit_req_zone $binary_remote_addr zone=packtok_auth:10m rate=10r/s;
 
@@ -11,7 +11,7 @@ map $http_upgrade $connection_upgrade {
 server {
   listen 80;
   listen [::]:80;
-  server_name api.knotorious.us;
+  server_name api.packtok.com;
 
   access_log /var/log/nginx/packtok-api.access.log;
   error_log /var/log/nginx/packtok-api.error.log warn;
@@ -28,11 +28,11 @@ server {
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
-  server_name api.knotorious.us;
+  server_name api.packtok.com;
 
-  ssl_certificate /etc/letsencrypt/live/api.knotorious.us/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/api.knotorious.us/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/api.knotorious.us/chain.pem;
+  ssl_certificate /etc/letsencrypt/live/api.packtok.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/api.packtok.com/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/api.packtok.com/chain.pem;
 
   access_log /var/log/nginx/packtok-api.access.log;
   error_log /var/log/nginx/packtok-api.error.log warn;

@@ -1,5 +1,12 @@
-# Required GitHub secrets:
-# VPS_HOST, VPS_USER, VPS_SSH_PRIVATE_KEY, VPS_PORT
+# Required GitHub secrets (Settings → Secrets and variables → Actions):
+#   VPS_HOST              e.g. 3.129.147.126
+#   VPS_USER              e.g. ubuntu
+#   VPS_PORT              e.g. 22
+#   VPS_SSH_PRIVATE_KEY   dedicated deploy key (public half on the VPS)
+#
+# The GHCR image stays private: the deploy job logs the VPS into GHCR with
+# the short-lived GITHUB_TOKEN and logs out again when it finishes, so no
+# long-lived registry credential ever lives on the VPS.
 
 name: Deploy API
 
@@ -11,27 +18,31 @@ on:
       - "apps/api/**"
       - "packages/db/**"
       - "packages/utils/**"
+      - "packages/config/**"
       - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
       - "Dockerfile"
       - "docker-compose.yml"
       - ".github/workflows/deploy-api.yml"
   workflow_dispatch:
 
+# Never cancel a deploy mid-flight (migrations may be running).
 concurrency:
-  group: deploy-api-${{ github.ref }}
-  cancel-in-progress: true
+  group: deploy-api
+  cancel-in-progress: false
 
 env:
   IMAGE_NAME: ghcr.io/nikhilsahni7/packtok-api
+  COMPOSE_DIR: /home/ubuntu/packtok
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       packages: write
     outputs:
-      image: ${{ env.IMAGE_NAME }}
       sha_tag: ${{ steps.vars.outputs.sha_tag }}
     steps:
       - name: Checkout
@@ -56,6 +67,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          platforms: linux/amd64
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.sha_tag }}
@@ -66,8 +78,16 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    permissions:
+      contents: read
+      packages: read
     steps:
-      - name: Deploy on VPS
+      - name: Checkout (for docker-compose.yml)
+        uses: actions/checkout@v4
+
+      - name: Prepare deploy directory on VPS
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -76,39 +96,78 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             set -euo pipefail
+            mkdir -p "${{ env.COMPOSE_DIR }}/apps/api"
+            if [ ! -f "${{ env.COMPOSE_DIR }}/apps/api/.env.production" ]; then
+              echo "::error::Missing ${{ env.COMPOSE_DIR }}/apps/api/.env.production on the VPS — create it before deploying."
+              exit 1
+            fi
+            docker compose version
 
-            IMAGE="${{ needs.build-and-push.outputs.image }}"
-            GIT_SHA="${{ needs.build-and-push.outputs.sha_tag }}"
-            COMPOSE_DIR="/home/ubuntu/packtok"
+      - name: Sync docker-compose.yml to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "docker-compose.yml"
+          target: ${{ env.COMPOSE_DIR }}
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.sha_tag }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          envs: IMAGE_TAG,GHCR_TOKEN,GHCR_USER
+          script: |
+            set -euo pipefail
+
+            IMAGE="${{ env.IMAGE_NAME }}"
+            COMPOSE_DIR="${{ env.COMPOSE_DIR }}"
 
             cd "$COMPOSE_DIR"
+            export IMAGE_TAG
 
-            # Capture previous image ID for rollback
+            # Short-lived GHCR login for this deploy only.
+            printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            trap 'docker logout ghcr.io >/dev/null 2>&1 || true' EXIT
+
+            # Capture the running image ID for rollback before swapping.
             PREV_IMAGE="$(docker compose images -q api 2>/dev/null || true)"
 
-            # Run Prisma migrations before swapping the container
+            echo "Pulling ${IMAGE}:${IMAGE_TAG}"
+            docker compose pull api
+
+            echo "Running Prisma migrations"
             docker run --rm \
               --env-file ./apps/api/.env.production \
-              "${IMAGE}:${GIT_SHA}" \
+              "${IMAGE}:${IMAGE_TAG}" \
               node node_modules/prisma/build/index.js migrate deploy --schema=./prisma/schema.prisma
 
-            # Pull new image and start
-            docker compose pull api
+            echo "Starting API (${IMAGE_TAG})"
             docker compose up -d --no-build --remove-orphans
 
-            # Health-check retry loop (up to 60 seconds)
-            echo "⏳ Waiting for health check…"
+            echo "Waiting for health check..."
             for i in $(seq 1 20); do
               if curl -fsS http://127.0.0.1:3001/api/v1/healthcheck >/dev/null 2>&1; then
-                echo "✅ Health check passed on attempt $i"
+                echo "Health check passed on attempt $i"
                 break
               fi
               if [ "$i" -eq 20 ]; then
-                echo "❌ Health check failed after 20 attempts — rolling back"
+                echo "Health check failed after 20 attempts"
                 if [ -n "$PREV_IMAGE" ]; then
-                  docker tag "$PREV_IMAGE" "${IMAGE}:latest"
-                  docker compose up -d --no-build
+                  echo "Rolling back to previous image ${PREV_IMAGE}"
+                  docker tag "$PREV_IMAGE" "${IMAGE}:rollback"
+                  IMAGE_TAG=rollback docker compose up -d --no-build
                   sleep 10
+                  curl -fsS http://127.0.0.1:3001/api/v1/healthcheck >/dev/null 2>&1 \
+                    && echo "Rollback healthy" || echo "Rollback also unhealthy"
                 fi
                 docker compose logs --tail=100 api
                 exit 1
@@ -116,7 +175,6 @@ jobs:
               sleep 3
             done
 
-            # Cleanup dangling and old images to free disk
             docker image prune -f --filter "until=168h" >/dev/null 2>&1 || true
-
             docker compose logs --tail=20 api
+            echo "Deploy complete: ${IMAGE}:${IMAGE_TAG}"
