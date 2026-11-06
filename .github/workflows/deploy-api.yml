@@ -10,20 +10,10 @@
 
 name: Deploy API
 
+# Manual only: automatic deploys go through ./deploy.sh (builds on the VPS,
+# zero GitHub Actions minutes). Re-add a `push:` trigger here if you want
+# GitHub-hosted CI/CD back (free tier: 2,000 Linux minutes/month).
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "apps/api/**"
-      - "packages/db/**"
-      - "packages/utils/**"
-      - "packages/config/**"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      - "Dockerfile"
-      - "docker-compose.yml"
-      - ".github/workflows/deploy-api.yml"
   workflow_dispatch:
 
 # Never cancel a deploy mid-flight (migrations may be running).
