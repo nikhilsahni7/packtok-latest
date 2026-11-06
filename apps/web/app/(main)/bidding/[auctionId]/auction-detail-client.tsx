@@ -1,5 +1,6 @@
 "use client";
 
+import { apiBaseUrl } from "@/lib/api-url";
 import { ReviewsSection } from "@/components/reviews/reviews-section";
 import { useAuctionRealtime } from "@/hooks/useAuctionRealtime";
 import {
@@ -158,7 +159,7 @@ export default function AuctionDetailPage({ auctionId }: { auctionId: string }) 
     const fetchReviewStats = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${auction.productId}/reviews/stats`
+          `${apiBaseUrl}/api/v1/products/${auction.productId}/reviews/stats`
         );
         const data = await res.json();
         if (data.statusCode === 200 && data.data) {

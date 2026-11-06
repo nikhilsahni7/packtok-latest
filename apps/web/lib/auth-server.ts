@@ -1,3 +1,4 @@
+import { getServerApiBaseUrl } from "@/lib/api-url.server";
 import { User } from "@/types/auth";
 import axios from "axios";
 import { cookies } from "next/headers";
@@ -11,7 +12,7 @@ export async function getCurrentUserServer(): Promise<User | null> {
 
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/me`,
+      `${getServerApiBaseUrl()}/api/v1/auth/me`,
       {
         headers: {
           Cookie: `refreshToken=${refresh.value}`,

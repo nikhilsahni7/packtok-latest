@@ -1,3 +1,4 @@
+import { apiBaseUrl } from "@/lib/api-url";
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
@@ -5,7 +6,7 @@ let socket: Socket | null = null;
 const SOCKET_PATH = "/socket.io";
 
 const getBaseUrl = () => {
-  const url = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const url = apiBaseUrl;
   if (!url) {
     throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
   }

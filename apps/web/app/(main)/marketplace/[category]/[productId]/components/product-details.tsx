@@ -1,5 +1,6 @@
 "use client";
 
+import { apiBaseUrl } from "@/lib/api-url";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { ReviewsSection } from "@/components/reviews/reviews-section";
 import { useBookmarkToggle } from "@/hooks/useBookmarks";
@@ -100,7 +101,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     const fetchReviewStats = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${product.id}/reviews/stats`
+          `${apiBaseUrl}/api/v1/products/${product.id}/reviews/stats`
         );
         const data = await res.json();
         if (data.statusCode === 200 && data.data && data.data.totalReviews > 0) {

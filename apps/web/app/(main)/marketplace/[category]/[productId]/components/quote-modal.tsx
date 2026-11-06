@@ -1,5 +1,6 @@
 "use client";
 
+import { apiBaseUrl } from "@/lib/api-url";
 import { TermsAndConditionsCheckbox } from "@/components/forms/terms-and-conditions-checkbox";
 import { useAuthStore } from "@/store/auth-store";
 import { Check, X } from "lucide-react";
@@ -63,7 +64,7 @@ export default function QuoteModal({
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/quotes`,
+        `${apiBaseUrl}/api/v1/quotes`,
         {
           method: "POST",
           headers: {

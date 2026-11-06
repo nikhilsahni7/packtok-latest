@@ -1,5 +1,6 @@
 "use client";
 
+import { apiBaseUrl } from "@/lib/api-url";
 import { User } from "@/types/auth";
 import { useEffect, useState } from "react";
 import { create } from "zustand";
@@ -28,7 +29,7 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         try {
           await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/logout`,
+            `${apiBaseUrl}/api/v1/auth/logout`,
             {
               method: "POST",
               credentials: "include",

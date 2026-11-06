@@ -1,3 +1,4 @@
+import { getServerApiBaseUrl } from "@/lib/api-url.server";
 import { Newsletter } from "@/components";
 import { notFound } from "next/navigation";
 import ProductDetails from "./components/product-details";
@@ -12,7 +13,7 @@ interface ProductPageProps {
 async function getProduct(productId: string) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${productId}`,
+      `${getServerApiBaseUrl()}/api/v1/products/${productId}`,
       {
         cache: "no-store",
       }

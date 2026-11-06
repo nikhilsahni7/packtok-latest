@@ -1,5 +1,6 @@
 "use client";
 
+import { apiBaseUrl } from "@/lib/api-url";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { Edit2, Trash2, VerifiedIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -49,7 +50,7 @@ export function ReviewsSection
   const fetchReviews = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${productId}/reviews`
+        `${apiBaseUrl}/api/v1/products/${productId}/reviews`
       );
       const data = await res.json();
       if (data.statusCode === 200 && data.data) {
@@ -64,7 +65,7 @@ export function ReviewsSection
   const fetchStats = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${productId}/reviews/stats`
+        `${apiBaseUrl}/api/v1/products/${productId}/reviews/stats`
       );
       const data = await res.json();
       if (data.statusCode === 200 && data.data) {
@@ -80,7 +81,7 @@ export function ReviewsSection
     if (!accessToken) return;
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${productId}/reviews/can-review`,
+        `${apiBaseUrl}/api/v1/products/${productId}/reviews/can-review`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -110,7 +111,7 @@ export function ReviewsSection
     setIsSubmitting(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${productId}/reviews`,
+        `${apiBaseUrl}/api/v1/products/${productId}/reviews`,
         {
           method: "POST",
           headers: {
@@ -148,7 +149,7 @@ export function ReviewsSection
     setIsSubmitting(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/reviews/${existingReview.id}`,
+        `${apiBaseUrl}/api/v1/reviews/${existingReview.id}`,
         {
           method: "PUT",
           headers: {
@@ -184,7 +185,7 @@ export function ReviewsSection
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/reviews/${existingReview.id}`,
+        `${apiBaseUrl}/api/v1/reviews/${existingReview.id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${accessToken}` },

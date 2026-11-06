@@ -1,5 +1,6 @@
 "use client";
 
+import { apiBaseUrl } from "@/lib/api-url";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -17,7 +18,7 @@ export function ProductRating({ productId }: ProductRatingProps) {
     const fetchStats = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/products/${productId}/reviews/stats`
+          `${apiBaseUrl}/api/v1/products/${productId}/reviews/stats`
         );
         const data = await res.json();
         if (data.statusCode === 200 && data.data && data.data.totalReviews > 0) {

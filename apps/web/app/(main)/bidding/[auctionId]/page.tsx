@@ -1,3 +1,4 @@
+import { getServerApiBaseUrl } from "@/lib/api-url.server";
 import type { Metadata } from "next";
 import AuctionDetailClient from "./auction-detail-client";
 
@@ -8,7 +9,7 @@ interface AuctionPageProps {
 }
 
 async function getAuction(auctionId: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
+  const baseUrl = getServerApiBaseUrl();
   try {
     const res = await fetch(`${baseUrl}/api/v1/auctions/${auctionId}`, {
       next: { revalidate: 60 }, // Revalidate every minute for SEO

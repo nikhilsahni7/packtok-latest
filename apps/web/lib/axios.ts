@@ -1,3 +1,4 @@
+import { apiBaseUrl } from "@/lib/api-url";
 import { useAuthStore } from "@/store/auth-store";
 import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from "axios";
 
@@ -6,7 +7,7 @@ interface AxiosRequestConfigWithRetry extends AxiosRequestConfig {
 }
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: apiBaseUrl,
   withCredentials: true,
 });
 
