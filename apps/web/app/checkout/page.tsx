@@ -114,6 +114,15 @@ export default function CheckoutPage() {
       }
 
       const razorpay = new window.Razorpay(options as any);
+      // TODO(UX): razorpay.open() is non-blocking, so the finally below
+      // clears isProcessing immediately — during the real payment and the
+      // 5-6s verify call there is no spinner and the Pay button is live
+      // again (double-click creates duplicate orders). Add a checkout
+      // state machine (creating -> paying -> verifying -> done) with a
+      // blocking "Verifying payment, do not close" overlay, register
+      // razorpay.on("payment.failed"), and on verify error poll
+      // GET /api/v1/orders/:id for PAID instead of declaring failure —
+      // the payment may already be captured server-side.
       razorpay.open();
     } catch (error: any) {
       console.error("Checkout error:", error);

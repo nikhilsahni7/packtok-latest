@@ -41,6 +41,8 @@ export interface OrderWithDetails extends Order {
 
 // ===== Helpers =====
 
+// TODO: count+1 races under concurrent checkouts and collides on the unique
+// orderNumber — replace with a DB sequence or retry-on-conflict.
 const generateOrderNumber = async (): Promise<string> => {
   const today = new Date();
   const dateStr = today.toISOString().slice(0, 10).replace(/-/g, "");
@@ -53,8 +55,17 @@ const generateOrderNumber = async (): Promise<string> => {
   return `PKT-${dateStr}-${String(count + 1).padStart(4, "0")}`;
 };
 
+// VPS (Ohio) -> Supabase pooler (Singapore) costs ~200-400ms per query, and
+// these transactions run 10+ sequential queries, so Prisma's default 5s
+// timeout expired mid-verification and rolled back captured payments
+// (PKT-20261106-0001/0003). 30s is a demo-safe ceiling, not a fix for the
+// latency itself — see TODOs below.
+const TX_OPTIONS = { maxWait: 10_000, timeout: 30_000 };
+
 const toMinorUnits = (amount: Prisma.Decimal, currency: string): number => {
   // Most currencies use 2 decimal places (100 minor units = 1 major unit)
+  // TODO: use the currency exponent instead of hardcoded x100 (JPY/KRW are
+  // 0-decimal, KWD/BHD are 3-decimal); the free-form product currency allows them.
   return Math.round(amount.toNumber() * 100);
 };
 
@@ -153,6 +164,11 @@ export const createOrderFromCart = async (
     }
 
     // Create Razorpay order
+    // TODO: move this HTTP call outside the transaction (holds the tx open;
+    // a commit failure orphans the Razorpay order).
+    // TODO: non-INR currencies need Razorpay "International Payments"
+    // activation on the live account, or order creation fails — gate by
+    // an allowlist until that is enabled.
     const razorpayOrder = await createRazorpayOrder({
       amountInPaise: toMinorUnits(totalAmount, currency),
       currency,
@@ -177,13 +193,24 @@ export const createOrderFromCart = async (
     });
 
     return { order, razorpayOrder };
-  });
+  }, TX_OPTIONS);
 
   return { ...result, razorpayKey };
 };
 
 /**
  * Verify Razorpay payment and complete order
+ *
+ * TODO (needs Razorpay dashboard access): add POST /api/v1/orders/webhook
+ * for payment.captured / payment.failed with RAZORPAY_WEBHOOK_SECRET as the
+ * source of truth — today, if the browser closes after capture but before
+ * this handler runs, money is taken and the order stays PENDING_PAYMENT
+ * forever. This endpoint then becomes the fallback, not the only path.
+ * TODO: bind the payment to this order before mutating anything — check
+ * order.payment.razorpayOrderId === razorpayOrderId and compare amount and
+ * currency against order.totalAmount (a signature from any cheaper payment
+ * currently replays against any orderId). Also check ownership BEFORE the
+ * failed-signature branch below marks orders PAYMENT_FAILED.
  */
 export const verifyPaymentAndCompleteOrder = async (
   userId: string,
@@ -249,6 +276,9 @@ export const verifyPaymentAndCompleteOrder = async (
     });
 
     // Deduct stock for each item
+    // TODO: guard the decrement (quantity >= item.quantity) and claim the
+    // PENDING_PAYMENT -> PAID transition atomically — concurrent verifies
+    // currently double-decrement and stock can go negative.
     for (const item of order.items) {
       // Update product quantity
       const updatedProduct = await tx.marketplaceProduct.update({
@@ -289,8 +319,10 @@ export const verifyPaymentAndCompleteOrder = async (
     });
 
     return updatedOrder;
-  });
+  }, TX_OPTIONS);
 
+  // TODO: clearCart deletes the whole cart, including items added in another
+  // tab after this order was created — delete only this order's items.
   // Clear cart after successful payment
   await clearCart(userId);
 

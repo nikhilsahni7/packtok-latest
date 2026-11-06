@@ -69,6 +69,8 @@ export const verifyPaymentSignature = (
     .createHmac("sha256", config.razorpay.keySecret)
     .update(`${orderId}|${paymentId}`)
     .digest("hex");
+  // TODO: use crypto.timingSafeEqual (with length guard) — plain === leaks
+  // timing. Shared by orders, subscriptions, and auctions.
   return digest === signature;
 };
 
